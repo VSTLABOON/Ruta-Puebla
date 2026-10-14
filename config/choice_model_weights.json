@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "descripcion": "Pesos y coeficientes para el calculo del puntaje S_i en OPTW y calibracion del modelo de eleccion de Ruta Abierta Puebla",
+  "estado_calibracion": "ajustable tras las pruebas de campo",
+  "pesos_puntaje_parada_S_i": {
+    "w_interes": {
+      "valor_defecto": 0.4,
+      "descripcion": "Ponderacion asignada a la afinidad tematica del visitante",
+      "estado": "ajustable tras las pruebas de campo"
+    },
+    "w_presupuesto": {
+      "valor_defecto": 0.2,
+      "descripcion": "Ponderacion asignada a la concordancia con el presupuesto declarado",
+      "estado": "ajustable tras las pruebas de campo"
+    },
+    "w_dispersion": {
+      "valor_defecto": 0.2,
+      "descripcion": "Bono por visita a zonas con oferta subaprovechada fuera del nucleo (Analco, El Alto, La Luz, Xanenetla)",
+      "estado": "ajustable tras las pruebas de campo"
+    },
+    "w_local": {
+      "valor_defecto": 0.2,
+      "descripcion": "Bono por establecimiento tradicional o micro/pequena empresa registrada en DENUE",
+      "estado": "ajustable tras las pruebas de campo"
+    }
+  },
+  "coeficientes_modelo_eleccion_logistica": {
+    "beta_tiempo_caminado_min": {
+      "estimacion": -0.689,
+      "intervalo_confianza_95": [
+        -0.79,
+        0.07
+      ],
+      "estado": "calibrado con entrevistas piloto - ajustable tras pruebas de campo"
+    },
+    "beta_costo_total_mxn": {
+      "estimacion": -0.964,
+      "intervalo_confianza_95": [
+        -1.114,
+        -0.126
+      ],
+      "estado": "calibrado con entrevistas piloto - ajustable tras pruebas de campo"
+    },
+    "beta_pct_verificado": {
+      "estimacion": 1.158,
+      "intervalo_confianza_95": [
+        0.419,
+        0.793
+      ],
+      "estado": "calibrado con entrevistas piloto - ajustable tras pruebas de campo"
+    },
+    "beta_pct_local": {
+      "estimacion": 0.274,
+      "intervalo_confianza_95": [
+        -0.189,
+        0.525
+      ],
+      "estado": "calibrado con entrevistas piloto - ajustable tras pruebas de campo"
+    },
+    "beta_pct_periferia": {
+      "estimacion": 0.108,
+      "intervalo_confianza_95": [
+        -0.276,
+        0.395
+      ],
+      "estado": "calibrado con entrevistas piloto - ajustable tras pruebas de campo"
+    }
+  },
+  "cupos_maximos_por_zona_defecto": {
+    "zocalo_centro_nucleo": 3,
+    "barrio_analco": 4,
+    "barrio_la_luz": 3,
+    "barrio_el_alto": 3,
+    "barrio_xanenetla": 3
+  }
+}

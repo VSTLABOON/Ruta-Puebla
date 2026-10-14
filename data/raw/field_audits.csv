@@ -1,0 +1,31 @@
+id,segment_id,auditor_id,free_width_m,slope_pct,surface,has_steps,obstacles,ramp_start,ramp_end,crossing_type,timestamp,notes
+aud_001,seg_zocalo_16sep_e,auditor_A,1.90,1.2,laja_colonial_nivelada,0,ninguno,1,1,marked,2026-10-01T09:30:00Z,Tramo amplio frente a Catedral
+aud_002,seg_zocalo_16sep_e,auditor_B,1.85,1.5,laja_colonial_nivelada,0,ninguno,1,1,marked,2026-10-01T09:35:00Z,Validacion en par coincidente
+aud_003,seg_zocalo_16sep_w,auditor_A,1.60,1.0,laja_colonial,0,bolardo_lateral,1,1,marked,2026-10-01T09:45:00Z,Acera poniente con bolardo que no interrumpe franja
+aud_004,seg_palafox_5ote_s,auditor_A,1.55,1.8,laja_colonial,0,ninguno,1,1,marked,2026-10-01T10:10:00Z,Frente a Biblioteca Palafoxiana
+aud_005,seg_palafox_5ote_s,auditor_B,1.50,2.0,laja_colonial,0,ninguno,1,1,marked,2026-10-01T10:15:00Z,Acuerdo con auditor A
+aud_006,seg_palafox_5ote_n,auditor_B,1.20,2.1,concreto,0,poste_cfe,0,1,marked,2026-10-01T10:30:00Z,Poste reduce paso pero permite silla de ruedas
+aud_007,seg_amparo_2sur_w,auditor_A,1.40,2.5,laja_colonial,0,ninguno,1,1,marked,2026-10-01T11:00:00Z,Entrada a Museo Amparo nivelada
+aud_008,seg_amparo_2sur_e,auditor_B,1.35,2.4,laja_colonial,0,ninguno,1,1,marked,2026-10-01T11:05:00Z,Coincidencia de evaluacion
+aud_009,seg_rosario_5mayo_w,auditor_A,1.80,0.8,adoquin_asentado,0,comercio_ambulante,1,1,marked,2026-10-01T11:40:00Z,Corredor peatonal 5 de mayo
+aud_010,seg_rosario_5mayo_w,auditor_C,1.75,1.0,adoquin_asentado,0,comercio_ambulante,1,1,marked,2026-10-01T11:45:00Z,Acuerdo sobre superficie y paso
+aud_011,seg_sapos_6sur_w,auditor_A,1.10,3.2,laja_colonial,0,mesas_temporales,1,0,marked,2026-10-01T12:15:00Z,Plazuela de los Sapos extremo sur sin rampa
+aud_012,seg_sapos_6sur_w,auditor_B,1.05,3.0,laja_colonial,0,mesas_temporales,1,0,marked,2026-10-01T12:20:00Z,Confirmada falta de rampa sur
+aud_013,seg_ovando_puente,auditor_A,1.30,4.0,laja_colonial,0,ninguno,1,1,marked,2026-10-02T09:15:00Z,Conexion hacia Analco por Puente de Ovando
+aud_014,seg_ovando_puente,auditor_C,1.35,3.8,laja_colonial,0,ninguno,1,1,marked,2026-10-02T09:20:00Z,Rampa suave en ambos lados
+aud_015,seg_analco_parque_w,auditor_A,1.60,1.5,adoquin_asentado,0,puestos_fin_semana,1,1,marked,2026-10-02T10:00:00Z,Borde poniente de Parque de Analco
+aud_016,seg_analco_parque_w,auditor_B,1.60,1.4,adoquin_asentado,0,puestos_fin_semana,1,1,marked,2026-10-02T10:05:00Z,Plena concordancia inter-auditor
+aud_017,seg_analco_calle7ote_s,auditor_A,0.75,2.2,concreto,1,escalon_acceso,0,0,unmarked,2026-10-02T10:40:00Z,Banqueta angosta con escalon continuo de 18cm sin rampa
+aud_018,seg_analco_calle7ote_s,auditor_C,0.70,2.5,concreto,1,escalon_acceso,0,0,unmarked,2026-10-02T10:45:00Z,Confirmada barrera severa para silla de ruedas
+aud_019,seg_analco_taller_5ote,auditor_A,1.25,1.8,adoquin_asentado,0,ninguno,1,1,marked,2026-10-02T11:20:00Z,Callejon hacia taller artesanal
+aud_020,seg_luz_palafox_s,auditor_B,0.85,3.5,laja_colonial,0,poste_alumbrado,0,0,unmarked,2026-10-02T12:00:00Z,Acera sur hacia Barrio de La Luz con poste
+aud_021,seg_luz_palafox_n,auditor_A,1.30,2.8,concreto,0,ninguno,1,1,marked,2026-10-02T12:30:00Z,Acera norte transitable con rampas
+aud_022,seg_luz_horno_acceso,auditor_B,0.95,4.5,empedrado,1,escalon_entrada_20cm,0,0,none,2026-10-02T13:00:00Z,Acceso historico a hornos con desnivel
+aud_023,seg_alto_sanfco_jardin,auditor_A,1.70,1.2,adoquin_asentado,0,ninguno,1,1,marked,2026-10-03T09:30:00Z,Andador peatonal arbolado hacia El Alto
+aud_024,seg_alto_sanfco_jardin,auditor_C,1.75,1.1,adoquin_asentado,0,ninguno,1,1,marked,2026-10-03T09:35:00Z,Alta concordancia de sendero accesible
+aud_025,seg_alto_mercado_14norte,auditor_B,1.40,2.0,concreto,0,mercancia_temporal,1,1,marked,2026-10-03T10:15:00Z,Acceso a Mercado El Alto con rampa frontal
+aud_026,seg_alto_lavaderos_almoloya,auditor_A,1.20,3.0,laja_colonial_nivelada,0,ninguno,1,1,marked,2026-10-03T11:00:00Z,Paseo peatonal San Francisco
+aud_027,seg_xane_concordia_norte,auditor_B,1.30,3.8,concreto,0,ninguno,1,1,marked,2026-10-03T11:45:00Z,Subida hacia Barrio de Xanenetla
+aud_028,seg_xane_calle4norte_w,auditor_A,1.15,4.2,adoquin,0,ninguno,1,1,marked,2026-10-03T12:20:00Z,Callejon de los murales acera poniente
+aud_029,seg_xane_calle4norte_w,auditor_C,1.10,4.0,adoquin,0,ninguno,1,1,marked,2026-10-03T12:25:00Z,Concordancia en acera de murales
+aud_030,seg_xane_callejuela_empedrada,auditor_B,0.80,6.5,empedrado_desprendido,1,escalones_cantera_30cm,0,0,none,2026-10-03T13:00:00Z,Callejon cerrado con tres escalones altos sin rampa

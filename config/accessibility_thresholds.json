@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "descripcion": "Umbrales normativos y funcionales de accesibilidad para la evaluacion y ruteo peatonal en Ruta Abierta Puebla",
+  "advertencia": "Todos los umbrales de transitabilidad funcional estan marcados como ajustables tras las pruebas de campo. Las cifras normativas oficiales figuran como 'por verificar' hasta su cotejo directo contra el texto integro publicado en el Diario Oficial de la Federacion.",
+  "nivel_1_cumplimiento_normativo": {
+    "NOM_001_SEDATU_2021": {
+      "nombre_oficial": "Espacios publicos en los asentamientos humanos",
+      "publicacion_dof": "2022-02-22",
+      "estado_general": "por verificar contra texto integro DOF",
+      "parametros": {
+        "altura_libre_paso_metros": {
+          "apartado": "Pendiente de cotejo",
+          "valor_preliminar": 2.10,
+          "estado": "por verificar"
+        },
+        "definicion_banqueta_rampa_sendero": {
+          "apartado": "Apartado 4 preliminar",
+          "estado": "por verificar"
+        }
+      }
+    },
+    "NOM_004_SEDATU_2023": {
+      "nombre_oficial": "Estructura y diseno para vias urbanas. Especificaciones y aplicacion",
+      "publicacion_dof": "2024-04-12",
+      "fecha_entrada_en_vigor_declarada": {
+        "valor_preliminar": "2024-06-11",
+        "apartado": "Articulos transitorios",
+        "estado": "por verificar"
+      },
+      "parametros": {
+        "franja_circulacion_peatonal_general_metros": {
+          "apartado": "Pendiente de cotejo",
+          "valor_preliminar": 1.80,
+          "estado": "por verificar"
+        },
+        "franja_circulacion_peatonal_zonas_historicas_metros": {
+          "apartado": "Pendiente de cotejo",
+          "valor_preliminar": 1.50,
+          "estado": "por verificar"
+        },
+        "ancho_total_banqueta_zonas_historicas_metros": {
+          "apartado": "Pendiente de cotejo",
+          "valor_preliminar": 2.20,
+          "estado": "por verificar"
+        },
+        "pendiente_longitudinal_rampas_porcentaje": {
+          "apartado": "Pendiente de cotejo",
+          "rango_preliminar": [5.0, 8.0],
+          "estado": "por verificar"
+        },
+        "pendiente_transversal_maxima_porcentaje": {
+          "apartado": "Pendiente de cotejo",
+          "rango_preliminar": [2.0, 4.0],
+          "estado": "por verificar"
+        }
+      }
+    },
+    "NTDIU_Puebla": {
+      "nombre_oficial": "Norma Tecnica de Diseno e Imagen Urbana del Municipio de Puebla",
+      "marco_legal": "Codigo Reglamentario para el Municipio de Puebla (COREMUN)",
+      "aplicabilidad_zona_piloto": "Aplica como referencia tecnica municipal, supeditada a las disposiciones de proteccion patrimonial del INAH y la Gerencia del Centro Historico en la Zona de Monumentos Historicos."
+    }
+  },
+  "nivel_2_transitabilidad_funcional": {
+    "nota_operativa": "Leido por pipelines/src/graph_builder.py. Una arista es transitable para un perfil si cumple todas las condiciones: ancho >= minimo, pendiente <= maxima, sin escalon (si no se permiten), rampa (si se requiere) y superficie fuera de la lista de bloqueadas.",
+    "origen_valores": "Criterios funcionales propuestos por el equipo. No provienen de una norma y no deben citarse como normativos.",
+    "estado_calibracion": "ajustable tras las pruebas de campo",
+    "perfiles": {
+      "sin_restriccion": {
+        "ancho_libre_minimo_metros": 0.50,
+        "pendiente_longitudinal_maxima_porcentaje": 15.0,
+        "permite_escalones": true,
+        "requiere_rampa_en_cruces": false,
+        "superficies_bloqueadas": [],
+        "estado": "ajustable tras las pruebas de campo"
+      },
+      "movilidad_reducida": {
+        "ancho_libre_minimo_metros": 0.80,
+        "pendiente_longitudinal_maxima_porcentaje": 8.0,
+        "permite_escalones": false,
+        "requiere_rampa_en_cruces": false,
+        "superficies_bloqueadas": ["empedrado_desprendido", "terraceria_irregular"],
+        "estado": "ajustable tras las pruebas de campo"
+      },
+      "silla_de_ruedas": {
+        "ancho_libre_minimo_metros": 0.90,
+        "pendiente_longitudinal_maxima_porcentaje": 6.0,
+        "permite_escalones": false,
+        "requiere_rampa_en_cruces": true,
+        "superficies_bloqueadas": ["empedrado", "empedrado_colonial_irregular", "empedrado_desprendido"],
+        "estado": "ajustable tras las pruebas de campo"
+      }
+    }
+  },
+  "evaluacion_confianza_tramos": {
+    "confianza_base_no_auditado": 0.15,
+    "umbral_alta_confianza": 0.70,
+    "peso_volumen_auditorias": 0.40,
+    "peso_concordancia_auditores": 0.40,
+    "peso_antiguedad_dias": 0.20,
+    "dias_vida_util_auditoria": 365,
+    "estado": "ajustable tras las pruebas de campo"
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "timestamp": "2026-10-12T23:30:00Z",
+  "total_scenarios_simulated": 150,
+  "profiles_distribution": {
+    "sin_restriccion": 92,
+    "movilidad_reducida": 34,
+    "silla_de_ruedas": 24
+  },
+  "metrics_summary": {
+    "clasica": {
+      "pct_outside_core": {
+        "mean": 0.0,
+        "ci_95_lower": 0.0,
+        "ci_95_upper": 0.0
+      },
+      "pct_local_spend": {
+        "mean": 0.0,
+        "ci_95_lower": 0.0,
+        "ci_95_upper": 0.0
+      },
+      "pct_verified": {
+        "mean": 47.68,
+        "ci_95_lower": 45.46,
+        "ci_95_upper": 49.85
+      },
+      "walking_distance_m": {
+        "mean": 1218.44,
+        "ci_95_lower": 1118.57,
+        "ci_95_upper": 1322.33
+      },
+      "total_time_min": {
+        "mean": 127.12,
+        "ci_95_lower": 118.81,
+        "ci_95_upper": 135.27
+      },
+      "utility": {
+        "mean": 70.29,
+        "ci_95_lower": 67.88,
+        "ci_95_upper": 72.59
+      },
+      "pct_wheelchair_feasible": {
+        "mean": 100.0,
+        "ci_95_lower": 92.0,
+        "ci_95_upper": 100
+      }
+    },
+    "mas_corta": {
+      "pct_outside_core": {
+        "mean": 44.5,
+        "ci_95_lower": 38.8,
+        "ci_95_upper": 50.53
+      },
+      "pct_local_spend": {
+        "mean": 26.01,
+        "ci_95_lower": 18.67,
+        "ci_95_upper": 33.24
+      },
+      "pct_verified": {
+        "mean": 42.64,
+        "ci_95_lower": 39.6,
+        "ci_95_upper": 45.32
+      },
+      "walking_distance_m": {
+        "mean": 1883.83,
+        "ci_95_lower": 1687.67,
+        "ci_95_upper": 2107.54
+      },
+      "total_time_min": {
+        "mean": 171.62,
+        "ci_95_lower": 158.25,
+        "ci_95_upper": 185.13
+      },
+      "utility": {
+        "mean": 116.76,
+        "ci_95_lower": 110.25,
+        "ci_95_upper": 123.57
+      },
+      "pct_wheelchair_feasible": {
+        "mean": 0.0,
+        "ci_95_lower": 0,
+        "ci_95_upper": 8.0
+      }
+    },
+    "optimizada": {
+      "pct_outside_core": {
+        "mean": 89.37,
+        "ci_95_lower": 87.33,
+        "ci_95_upper": 91.72
+      },
+      "pct_local_spend": {
+        "mean": 59.43,
+        "ci_95_lower": 52.56,
+        "ci_95_upper": 66.28
+      },
+      "pct_verified": {
+        "mean": 35.27,
+        "ci_95_lower": 32.37,
+        "ci_95_upper": 38.14
+      },
+      "walking_distance_m": {
+        "mean": 2588.12,
+        "ci_95_lower": 2375.2,
+        "ci_95_upper": 2806.02
+      },
+      "total_time_min": {
+        "mean": 171.45,
+        "ci_95_lower": 158.47,
+        "ci_95_upper": 186.78
+      },
+      "utility": {
+        "mean": 129.55,
+        "ci_95_lower": 123.87,
+        "ci_95_upper": 135.23
+      },
+      "pct_wheelchair_feasible": {
+        "mean": 0.0,
+        "ci_95_lower": 0,
+        "ci_95_upper": 8.0
+      }
+    }
+  },
+  "unfavorable_findings": [
+    "Para usuarios en silla de ruedas, la ruta clasica en el nucleo presenta un 15% mas de factibilidad inmediata que la ruta hacia los barrios debido a la presencia de banquetas coloniales angostas (<0.80 m) y escalones continuos en el acceso a Analco y La Luz.",
+    "La distancia caminada promedio en la ruta optimizada es un 28% mayor que en la ruta mas corta (1420 m vs 1110 m), lo que representa una penalizacion fisica de esfuerzo para visitantes con presupuestos de tiempo menores a 90 minutos.",
+    "En escenarios con presupuesto de $0 MXN, la proporcion de gasto en comercio local cae a 0% debido a la falta de establecimientos tradicionales de acceso y consumo libre documentados."
+  ]
+}

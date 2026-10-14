@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+
+/* Patrones accesibles para representacion visual no dependiente exclusivamente del color */
+.pattern-verified {
+  stroke-dasharray: none;
+}
+
+.pattern-unverified {
+  stroke-dasharray: 4, 4;
+}
+
+/* Estilos de impresion y alto contraste */
+@media (forced-colors: active) {
+  .high-contrast-border {
+    border: 2px solid CanvasText;
+  }
+}

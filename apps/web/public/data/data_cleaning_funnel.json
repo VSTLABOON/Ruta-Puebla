@@ -1,0 +1,68 @@
+{
+  "fuente": "INEGI - Directorio Estadistico Nacional de Unidades Economicas (DENUE 2026)",
+  "fecha_corte": "2026-05-20",
+  "embudo_etapas": [
+    {
+      "etapa": 1,
+      "nombre": "Universo Total Estatal",
+      "descripcion": "Total de unidades economicas en el archivo censal del Estado de Puebla",
+      "registros": 410693,
+      "pct_retenido": 100.0
+    },
+    {
+      "etapa": 2,
+      "nombre": "Municipio de Puebla",
+      "descripcion": "Filtrado por clave municipal cve_mun == '114' (Puebla Capital)",
+      "registros": 107087,
+      "pct_retenido": 26.07
+    },
+    {
+      "etapa": 3,
+      "nombre": "Delimitacion Espacial Piloto",
+      "descripcion": "Bounding Box del Centro Historico y barrios Analco, La Luz, El Alto y Xanenetla",
+      "registros": 4456,
+      "pct_retenido": 1.08
+    },
+    {
+      "etapa": 4,
+      "nombre": "Pertinencia Turistico-Cultural",
+      "descripcion": "Codigos SCIAN de artesanias, loza de barro, talavera, gastronomia tradicional, dulces tipicos, libros y museos",
+      "registros": 742,
+      "pct_retenido": 0.18
+    },
+    {
+      "etapa": 5,
+      "nombre": "Escala Micro y Negocio Local",
+      "descripcion": "Unidades de 0 a 5 y 6 a 10 empleados (excluyendo franquicias y corporativos masivos)",
+      "registros": 676,
+      "pct_retenido": 0.16
+    },
+    {
+      "etapa": 6,
+      "nombre": "Depuracion de Cadenas Comerciales",
+      "descripcion": "Exclusion por palabras clave corporativas (OXXO, Farmacias del Ahorro, etc.)",
+      "registros": 676,
+      "pct_retenido": 0.16
+    }
+  ],
+  "distribucion_zonas": {
+    "zocalo_centro_nucleo": 236,
+    "barrio_el_alto": 14,
+    "barrio_analco": 389,
+    "barrio_la_luz": 34,
+    "barrio_xanenetla": 3
+  },
+  "principales_giros": {
+    "Comercio al por menor en tiendas de artesanías": 183,
+    "Restaurantes con servicio de preparación de alimentos a la carta o de comida corrida": 98,
+    "Comercio al por menor de dulces y materias primas para repostería": 75,
+    "Restaurantes con servicio de preparación de tacos y tortas": 74,
+    "Cafeterías, fuentes de sodas, neverías, refresquerías y similares": 73,
+    "Restaurantes con servicio de preparación de antojitos": 60,
+    "Comercio al por menor de artículos usados": 38,
+    "Artistas, escritores y técnicos independientes": 25,
+    "Comercio al por menor de libros": 15,
+    "Panificación tradicional": 14
+  },
+  "total_unidades_curadas_para_red": 676
+}

@@ -1,0 +1,114 @@
+[
+  {
+    "id": "corpus_catedral_01",
+    "poi_id": "poi_catedral",
+    "titulo": "Construcción y traza angelopolitana de la Catedral de Puebla",
+    "fuente": "INAH / Guía Oficial del Centro Histórico de Puebla (2023)",
+    "fragmento": "Iniciada en 1575 por mandato de Felipe II bajo el diseño de Francisco Becerra y continuada por Juan Gómez de Trasmonte. Consagrada en 1649 por el obispo Juan de Palafox y Mendoza antes de su partida a España. Cuenta con las torres más altas del país (más de 69 metros) y el Altar de los Reyes proyectado por el arquitecto Manuel Tolsá.",
+    "temas": ["arquitectura", "barroco", "virreinato", "patrimonio", "iglesia"]
+  },
+  {
+    "id": "corpus_catedral_02",
+    "poi_id": "poi_catedral",
+    "titulo": "Leyenda y secreto de la campana María",
+    "fuente": "Crónica Tradicional Poblana, Hugo Leicht / Las Calles de Puebla",
+    "fragmento": "La campana mayor, llamada Santa María de la Concepción, pesa más de 8 toneladas. La leyenda urbana poblana del siglo XVII relata que los operarios no lograban izarla a la torre norte; una mañana despertaron y la campana ya pendía de su sitio, atribuyendo la faena a una cuadrilla de ángeles bajados del cielo durante la madrugada.",
+    "temas": ["leyenda", "angeles", "campana", "secreto", "tradicion"]
+  },
+  {
+    "id": "corpus_palafoxiana_01",
+    "poi_id": "poi_palafoxiana",
+    "titulo": "Fundación de la Biblioteca Palafoxiana y Donación Episcopal",
+    "fuente": "UNESCO Memoria del Mundo / Archivo Histórico de la Biblioteca Palafoxiana (2022)",
+    "fragmento": "Fundada el 5 de septiembre de 1646 cuando el obispo Juan de Palafox y Mendoza donó 5,000 volúmenes de su biblioteca personal al Real Colegio de San Juan con la condición expresa de que fuera abierta 'a toda persona que supiese leer'. Es reconocida como la primera biblioteca pública de América que permanece en su sede original intacta.",
+    "temas": ["libros", "unesco", "historia", "educacion", "palafox"]
+  },
+  {
+    "id": "corpus_palafoxiana_02",
+    "poi_id": "poi_palafoxiana",
+    "titulo": "La Rueda de Libros y el Retablo de la Virgen de Trapani",
+    "fuente": "Catálogo de Bienes Muebles de San Pedro y San Pablo, Secretaría de Cultura de Puebla",
+    "fragmento": "Entre sus tres niveles de estantería de cedro y ayacahuite destaca la 'rueda de lectura' o atril giratorio novohispano del siglo XVIII, diseñado para consultar hasta 8 infolios simultáneamente sin cerrar ninguno, precursora física del hipertexto.",
+    "temas": ["muebles", "tecnologia_virreinal", "libros", "secreto"]
+  },
+  {
+    "id": "corpus_amparo_01",
+    "poi_id": "poi_amparo",
+    "titulo": "De Hospital San Juan de Letrán a Museo Amparo",
+    "fuente": "Fundación Amparo / Archivo Arquitectónico del Museo Amparo (2024)",
+    "fragmento": "El inmueble albergó el Hospital de San Juan de Letrán fundado en 1538 para mujeres indígenas, luego Colegio de San Pedro y posteriormente casa habitación. Restaurado bajo proyecto de Pedro Ramírez Vázquez y remodelado por Enrique Norten, resguarda una de las colecciones prehispánicas más rigurosas de Mesoamérica con salas táctiles adaptadas.",
+    "temas": ["museo", "arte_prehispanico", "arquitectura", "accesibilidad"]
+  },
+  {
+    "id": "corpus_rosario_01",
+    "poi_id": "poi_capilla_rosario",
+    "titulo": "Capilla del Rosario: Joyel del Barroco Novohispano",
+    "fuente": "INAH Monumentos Históricos / Convento de Santo Domingo",
+    "fragmento": "Construida entre 1650 y 1690 por la orden de los dominicos. Descrita en su época por fray Diego de Gorozpe como la 'Octava Maravilla del Mundo'. Toda la bóveda y los muros están recubiertos de yesería estucada en oro de 24 quilates con alegorías teológicas y representaciones indígenas de sirenas y flores locales entrelazadas con las letanías lauretanas.",
+    "temas": ["oro", "barroco", "yeseria", "santo_domingo", "arte_sacro"]
+  },
+  {
+    "id": "corpus_sapos_01",
+    "poi_id": "poi_sapo_antiguedades",
+    "titulo": "El Desbordamiento del Río San Francisco y el Callejón de los Sapos",
+    "fuente": "Cronista Municipal de Puebla / Catastro Histórico Barrio de San Roque",
+    "fragmento": "En la época colonial, las aguas del río San Francisco crecían e inundaban la actual calle 6 Sur, estancándose en charcas donde proliferaban millares de sapos, dando origen al nombre popular. Con el tiempo se instalaron molinos de trigo, herrerías y, desde el siglo XX, anticuarios, restauradores de muebles virreinales y librerías de lance.",
+    "temas": ["sapos", "antiguedades", "rio_san_francisco", "comercio_local"]
+  },
+  {
+    "id": "corpus_analco_01",
+    "poi_id": "poi_parque_analco",
+    "titulo": "Analco: El Asentamiento Indígena al Otro Lado del Río",
+    "fuente": "INAH / Asentamientos de Barrios de Indios en Puebla de los Ángeles",
+    "fragmento": "Analco significa en náhuatl 'al otro lado del río'. Fundado en 1531 por indígenas tlaxcaltecas que cruzaban el río San Francisco para edificar las iglesias y casonas de la traza española. En su plaza se celebraba el tianguis dominical de trueque de loza, semillas y flores, tradición de comercio vecinal que persiste casi 500 años después.",
+    "temas": ["indigena", "tlaxcaltecas", "nahuatl", "tianguis", "analco"]
+  },
+  {
+    "id": "corpus_analco_02",
+    "poi_id": "poi_templo_analco",
+    "titulo": "Templo del Santo Ángel Custodio y las Campanas de Barrio",
+    "fuente": "Parroquia de Analco / Catálogo Parroquial Angelopolitano",
+    "fragmento": "Erigido en la segunda mitad del siglo XVI como ermita de Ánimas y transformado en parroquia barroca. Sus muros de mampostería gruesa y su campanario resguardan la devoción de los gremios de panaderos, arrieros y canteros que habitaron el barrio.",
+    "temas": ["iglesia", "patrimonio", "analco", "gremios"]
+  },
+  {
+    "id": "corpus_talavera_analco_01",
+    "poi_id": "poi_taller_talavera_analco",
+    "titulo": "La Ordenanza de Loceros de 1653 y la Talavera de Analco",
+    "fuente": "Consejo Regulador de la Talavera de Puebla (DO Talavera)",
+    "fragmento": "En 1653 el virrey aprobó las 'Ordenanzas del Gremio de Loceros', exigiendo que cada maestro alfarero marcara sus piezas en la base con iniciales registradas para certificar el esmalte de estaño y plomo libre de impurezas. Los microtalleres de Analco conservan el torneado a pedal manual, la molienda de barros negro y blanco, y el secado en sombra.",
+    "temas": ["talavera", "artesania", "ordenanza", "taller_familiar", "denominacion_origen"]
+  },
+  {
+    "id": "corpus_la_luz_01",
+    "poi_id": "poi_horno_la_luz",
+    "titulo": "Alfarería de La Luz: Los Últimos Hornos de Leña Árabes de América",
+    "fuente": "Colectivo de Alfareros de La Luz / Memoria Oral de Maestros del Barrio",
+    "fragmento": "El Callejón de la Alfarería del Barrio de La Luz alberga los únicos hornos de leña de tipología árabe (tiro invertido subterráneo con cámara de cocción abovedada) en funcionamiento ininterrumpido desde fines del siglo XVIII. Aquí se elaboran las cazuelas y ollas de barro colorado vidriado indispensables para la cocción lenta del mole poblano tradicional.",
+    "temas": ["alfareria", "horno_arabe", "barro_rojo", "la_luz", "mole_poblano", "oficio_vivo"]
+  },
+  {
+    "id": "corpus_el_alto_01",
+    "poi_id": "poi_mercado_el_alto",
+    "titulo": "El Alto: Sitio Fundacional y la Plaza de Garibaldi Poblano",
+    "fuente": "Archivo Histórico Municipal de Puebla / Fundación de la Ciudad de los Ángeles (1531)",
+    "fragmento": "En las inmediaciones de El Alto se celebró el 16 de abril de 1531 la misa fundacional de la Puebla de los Ángeles por fray Toribio de Benavente 'Motolinía'. El Mercado El Alto, formalizado en 1930, es la cuna de las cocinas tradicionales de cemitas poblanas preparadas con pápalo fresco y quesillo deshebrado, acompañado por cuadrillas de mariachis vernáculos.",
+    "temas": ["fundacion", "motolinia", "cemitas", "mariachi", "mercado", "el_alto"]
+  },
+  {
+    "id": "corpus_almoloya_01",
+    "poi_id": "poi_casa_aguada",
+    "titulo": "Manantial y Lavaderos de Almoloya: Agua y Sociabilidad Femenina",
+    "fuente": "Secretaría de Medio Ambiente / Rescate de los Manantiales de San Francisco",
+    "fragmento": "Almoloya significa 'lugar donde mana el agua'. En el siglo XIX se construyeron los lavaderos públicos techados abastecidos por el ojo de agua de San Francisco. Eran el epicentro de la vida social de las lavanderas poblanas, quienes intercambiaban noticias, recetas y cantos populares mientras limpiaban lienzos sobre losa de piedra labrada.",
+    "temas": ["lavaderos", "agua", "manantial", "mujeres", "historia_social"]
+  },
+  {
+    "id": "corpus_xanenetla_01",
+    "poi_id": "poi_ciudad_mural",
+    "titulo": "Xanenetla: De Barrio Ladrillero a Ciudad Mural Comunitaria",
+    "fuente": "Colectivo Tomate / Secretaría de Turismo del Estado de Puebla",
+    "fragmento": "Xanenetla proviene del náhuatl 'lugar de xalnene' (arena pedregosa o toba). Históricamente fue el barrio de los hornos de ladrillo que suministraron el material para construir los conventos poblanos. En 2012, vecinos y artistas plasmaron más de 70 murales de gran formato sobre fachadas, narrando la memoria oral de las familias del callejón.",
+    "temas": ["murales", "arte_urbano", "ladrilleros", "comunidad", "xanenetla"]
+  }
+]

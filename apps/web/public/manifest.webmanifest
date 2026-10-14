@@ -1,0 +1,16 @@
+{
+  "name": "Ruta Abierta Puebla",
+  "short_name": "RutaAbierta",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "Sistema de generacion de rutas peatonales accesibles y turismo sostenible en el Centro Historico de Puebla",
+  "icons": [
+    {
+      "src": "/data/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

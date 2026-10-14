@@ -1,0 +1,102 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: ruta_abierta_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ruta_abierta_puebla
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secure_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ruta_abierta_puebla"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  route-service:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.python-svc
+      args:
+        SERVICE_DIR: services/route
+    container_name: ruta_abierta_route_svc
+    restart: unless-stopped
+    environment:
+      PORT: 8001
+      DATABASE_URL: postgresql://postgres:postgres_secure_pass@db:5432/ruta_abierta_puebla
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  accessibility-service:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.python-svc
+      args:
+        SERVICE_DIR: services/accessibility
+    container_name: ruta_abierta_access_svc
+    restart: unless-stopped
+    environment:
+      PORT: 8002
+      DATABASE_URL: postgresql://postgres:postgres_secure_pass@db:5432/ruta_abierta_puebla
+    ports:
+      - "8002:8002"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  recommend-service:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.python-svc
+      args:
+        SERVICE_DIR: services/recommend
+    container_name: ruta_abierta_recommend_svc
+    restart: unless-stopped
+    environment:
+      PORT: 8003
+      DATABASE_URL: postgresql://postgres:postgres_secure_pass@db:5432/ruta_abierta_puebla
+    ports:
+      - "8003:8003"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.gateway
+    container_name: ruta_abierta_gateway
+    restart: unless-stopped
+    environment:
+      PORT: 8000
+      ROUTE_SVC_URL: http://route-service:8001
+      ACCESS_SVC_URL: http://accessibility-service:8002
+      RECOMMEND_SVC_URL: http://recommend-service:8003
+    ports:
+      - "8000:8000"
+    depends_on:
+      - route-service
+      - accessibility-service
+      - recommend-service
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.web
+    container_name: ruta_abierta_web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+
+volumes:
+  pgdata:

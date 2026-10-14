@@ -1,0 +1,25 @@
+{
+  "name": "@ruta-abierta/shared-types",
+  "version": "1.0.0",
+  "description": "Tipos TypeScript compartidos para Ruta Abierta Puebla",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,860 @@
+[
+  {
+    "id": "poi_catedral",
+    "name": "Catedral Basilica de Nuestra Senora de la Inmaculada Concepcion",
+    "category": "iglesia",
+    "coordinates": [
+      -98.1983,
+      19.0428
+    ],
+    "hours": {
+      "open": "09:00",
+      "close": "19:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 45,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_101",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "patrimonio",
+      "arquitectura",
+      "arte_sacro",
+      "monumento"
+    ],
+    "description": {
+      "es": "Catedral virreinal del siglo XVII con las torres mas altas de Mexico y altar de los Reyes de Manuel Tolsa.",
+      "en": "17th century viceregal cathedral featuring the tallest church towers in Mexico and the Kings altar by Manuel Tolsa."
+    },
+    "address": "Calle 16 de Septiembre s/n, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "La Campana Maria y los Angeles",
+      "descripcion": "Una campana de 8 toneladas que, segun la cronica popular del siglo XVII, fue izada al campanario norte por una cuadrilla de angeles durante la madrugada.",
+      "pista": "Observa la torre norte de la Catedral, la mas alta de Mexico con mas de 69 metros.",
+      "insignia_nombre": "Custodio Angelopolitano"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Juan de Palafox y Mendoza",
+        "rol": "Obispo de Puebla y Virrey de la Nueva Espana",
+        "epoca": "1649",
+        "relato": "Consagro solemnemente la Catedral el 18 de abril de 1649 tras casi un siglo de obras inconclusas, aportando su patrimonio personal para concluirla."
+      },
+      {
+        "nombre": "Manuel Tolsa",
+        "rol": "Arquitecto y escultor neoclasico",
+        "epoca": "1797",
+        "relato": "Diseno el cipres del Altar de los Reyes utilizando marmol de Tecali y bronces dorados al fuego."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_cat_01",
+        "autor": "Elena R.",
+        "procedencia": "Puebla Capital",
+        "fecha": "2026-09-12",
+        "testimonio": "El acceso por la rampa sur sobre 16 de Septiembre es completamente plano y el atrio tiene lajas niveladas.",
+        "perfil": "silla_de_ruedas"
+      },
+      {
+        "id": "mem_cat_02",
+        "autor": "Carlos M.",
+        "procedencia": "Guadalajara",
+        "fecha": "2026-10-02",
+        "testimonio": "Escuchar el repique de las campanas a mediodia frente al zocalo es un momento inolvidable.",
+        "perfil": "sin_restriccion"
+      }
+    ]
+  },
+  {
+    "id": "poi_palafoxiana",
+    "name": "Biblioteca Palafoxiana",
+    "category": "museo",
+    "coordinates": [
+      -98.1991,
+      19.0424
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 45,
+    "visit_duration_min": 40,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_102",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "patrimonio",
+      "historia",
+      "libros",
+      "unesco"
+    ],
+    "description": {
+      "es": "Primera biblioteca publica de America, fundada en 1646 por el obispo Juan de Palafox y Mendoza, inscrita en Memoria del Mundo de la UNESCO.",
+      "en": "First public library in the Americas, founded in 1646 by Bishop Juan de Palafox y Mendoza, registered in UNESCO Memory of the World."
+    },
+    "address": "Av. 5 Oriente 5, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "El Atril Giratorio del Siglo XVIII",
+      "descripcion": "Una rueda de lectura novohispana de cedro y ayacahuite que permitia al lector consultar hasta 8 infolios simultaneamente sin cerrar ninguno.",
+      "pista": "Busca el atril giratorio en el corredor central de la biblioteca.",
+      "insignia_nombre": "Bibliófilo Virreinal"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Juan de Palafox y Mendoza",
+        "rol": "Fundador y donante episcopal",
+        "epoca": "1646",
+        "relato": "Dono sus 5,000 libros personales con la instruccion expresa de que fuera abierta para todo aquel que supiese leer."
+      },
+      {
+        "nombre": "Francisco Fabian y Fuero",
+        "rol": "Obispo ilustrado",
+        "epoca": "1773",
+        "relato": "Mando erigir los tres niveles de estanteria dorada y el retablo de la Virgen de Trapani."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_pal_01",
+        "autor": "Dra. Teresa V.",
+        "procedencia": "Investigadora BUAP",
+        "fecha": "2026-09-28",
+        "testimonio": "El aroma a papel antiguo y madera de cedro se conserva intacto. Cuenta con rampa de acceso desde el patio central de Casa de la Cultura.",
+        "perfil": "movilidad_reducida"
+      }
+    ]
+  },
+  {
+    "id": "poi_amparo",
+    "name": "Museo Amparo",
+    "category": "museo",
+    "coordinates": [
+      -98.1998,
+      19.0416
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 85,
+    "visit_duration_min": 60,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_103",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "arte_prehispanico",
+      "arte_virreinal",
+      "arte_contemporaneo",
+      "terraza"
+    ],
+    "description": {
+      "es": "Museo de arte prehispanico, virreinal y contemporaneo con terraza panoramica hacia las cupulas de la ciudad.",
+      "en": "Pre-Hispanic, viceregal, and contemporary art museum with a scenic rooftop terrace looking over city domes."
+    },
+    "address": "Calle 2 Sur 708, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "La Terraza Panoramica de las Cupulas",
+      "descripcion": "Un mirador elevado con vista de 360 grados que alinea las cupulas coloniales de azulejos con la silueta de los volcanes.",
+      "pista": "Toma el elevador accesible hasta el mirador en la azotea del museo.",
+      "insignia_nombre": "Vigía de San Pedro"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Manuel Espinosa Yglesias",
+        "rol": "Fundador del museo",
+        "epoca": "1991",
+        "relato": "Creo el museo en honor a su esposa Amparo Rugarcia, reintegrando antiguas casonas virreinales del Hospital de San Juan de Letran."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_amp_01",
+        "autor": "Andres S.",
+        "procedencia": "Turista CDMX",
+        "fecha": "2026-10-01",
+        "testimonio": "Excelente accesibilidad para carriolas y sillas de ruedas; elevadores amplios en todas las salas.",
+        "perfil": "movilidad_reducida"
+      }
+    ]
+  },
+  {
+    "id": "poi_capilla_rosario",
+    "name": "Capilla del Rosario (Templo de Santo Domingo)",
+    "category": "iglesia",
+    "coordinates": [
+      -98.1993,
+      19.0453
+    ],
+    "hours": {
+      "open": "09:30",
+      "close": "17:30"
+    },
+    "cost_mxn": 20,
+    "visit_duration_min": 35,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": false,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_104",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "barroco",
+      "yeseria",
+      "oro",
+      "patrimonio"
+    ],
+    "description": {
+      "es": "Obra cumbre del barroco novohispano del siglo XVII revestida con lamina de oro de 24 quilates y yeseria.",
+      "en": "Masterpiece of 17th-century New Spanish baroque decorated with 24-karat gold leaf and intricate plasterwork."
+    },
+    "address": "Calle 5 de Mayo y 4 Poniente, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "Sirenas y Flores Novohispanas en Oro",
+      "descripcion": "Entre las yeserias estucadas en lamina de oro de 24 quilates, alfareros y yeseros indigenas plasmaron sirenas y flores de cempasuchil integradas en las alegorias cristianas.",
+      "pista": "Observa con atencion el friso dorado sobre el zocalo de talavera.",
+      "insignia_nombre": "Buscador de la Octava Maravilla"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Diego de Gorozpe",
+        "rol": "Cronista de la orden de Santo Domingo",
+        "epoca": "1690",
+        "relato": "La bautizo como la Octava Maravilla del Mundo durante su dedicacion festiva de ocho dias."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_ros_01",
+        "autor": "Guillermo P.",
+        "procedencia": "Visitante internacional",
+        "fecha": "2026-09-18",
+        "testimonio": "El resplandor dorado es inigualable en todo el continente americano.",
+        "perfil": "sin_restriccion"
+      }
+    ]
+  },
+  {
+    "id": "poi_sapo_antiguedades",
+    "name": "Bazar los Sapos y Talleres Tradicionales",
+    "category": "artesania",
+    "coordinates": [
+      -98.1963,
+      19.0411
+    ],
+    "hours": {
+      "open": "10:30",
+      "close": "19:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_sapo_01",
+    "is_local_business": true,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "antiguedades",
+      "artesania",
+      "comercio_local",
+      "callejon"
+    ],
+    "description": {
+      "es": "Plazuela y callejon tradicional con anticuarios, librerias de viejo y cafeterias de barrio en fincas coloniales.",
+      "en": "Traditional alleyway and square with antique dealers, second-hand books, and neighborhood cafes in colonial estates."
+    },
+    "address": "Calle 6 Sur y 5 Oriente, Los Sapos",
+    "secret_to_unlock": {
+      "titulo": "El Desbordamiento y la Plazuela de Ranas",
+      "descripcion": "El callejon se anegaba con las crecidas del rio San Francisco y proliferaban miles de anfibios. Los anticuarios abrieron sus locales aqui a mediados del siglo XX rescatando herrajes del barroco.",
+      "pista": "Localiza la fuente de cantera con el sapo tallado en el centro de la plazuela.",
+      "insignia_nombre": "Anticuario de Los Sapos"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Arrieros del Camino Real",
+        "rol": "Comerciantes virreinales",
+        "epoca": "Siglo XVIII",
+        "relato": "Hospedaban sus mulas en las posadas del barrio antes de continuar hacia Veracruz."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_sap_01",
+        "autor": "Leticia H.",
+        "procedencia": "Turista",
+        "fecha": "2026-10-04",
+        "testimonio": "Un rincon colorido lleno de historia; las cafeterias tienen mesas al aire libre muy acogedoras.",
+        "perfil": "sin_restriccion"
+      }
+    ],
+    "artisan_profile": {
+      "nombre_taller": "Antiguedades y Restauracion Virreinal Los Sapos",
+      "maestro_artesano": "Don Agustin Morales",
+      "oficio": "Restaurador de muebles y anticuario tradicional",
+      "fundacion_anio": 1968,
+      "demostracion_en_vivo": "Pulido con cera de abeja natural y recuperacion de herrajes coloniales en forja",
+      "horario_demostracion": "Sabados y Domingos 12:00 a 14:00",
+      "tecnica_ancestral": "Restauracion tradicional en madera de cedro y nogal novohispano",
+      "sello_artesanal": "Sello Los Sapos 1968"
+    }
+  },
+  {
+    "id": "poi_parque_analco",
+    "name": "Parque y Tianguis Artesanal de Analco",
+    "category": "espacio_publico",
+    "coordinates": [
+      -98.1925,
+      19.0418
+    ],
+    "hours": {
+      "open": "09:00",
+      "close": "20:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 45,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_201",
+    "is_local_business": true,
+    "zone": "barrio_analco",
+    "tags": [
+      "artesania",
+      "espacio_abierto",
+      "gastronomia_popular",
+      "barrio_tradicional"
+    ],
+    "description": {
+      "es": "Plaza historica del barrio indigena de Analco fundada en el siglo XVI, sede de productores artesanales y dulceria poblana.",
+      "en": "Historic square of the 16th-century indigenous quarter of Analco, home to traditional craft producers and regional confectionery."
+    },
+    "address": "Calle 10 Sur y 3 Oriente, Barrio de Analco",
+    "secret_to_unlock": {
+      "titulo": "El Peaje del Puente de Ovando",
+      "descripcion": "Para cruzar del barrio indigena de Analco a la ciudad virreinal, la familia Ovando erigio un puente con arco de cantera cobrando peaje a los transeuntes.",
+      "pista": "Camina hacia el arco del Puente de Ovando en la esquina poniente del jardin.",
+      "insignia_nombre": "Caminante de Analco"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Tlaxcaltecas Fundadores de Analco",
+        "rol": "Comunidad indigena constructora",
+        "epoca": "1531",
+        "relato": "Cruzo diariamente el rio para labrar la cantera y edificar la traza de la Puebla colonial."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_ana_01",
+        "autor": "Dona Lupe",
+        "procedencia": "Artesana local",
+        "fecha": "2026-10-05",
+        "testimonio": "Llevo 42 anos vendiendo camotes y borrachitos en Analco; aqui el dulce poblano se elabora en cazo de cobre.",
+        "perfil": "sin_restriccion"
+      }
+    ]
+  },
+  {
+    "id": "poi_templo_analco",
+    "name": "Templo del Santo Angel Custodio de Analco",
+    "category": "iglesia",
+    "coordinates": [
+      -98.1918,
+      19.0415
+    ],
+    "hours": {
+      "open": "08:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 25,
+    "languages": [
+      "es"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_202",
+    "is_local_business": false,
+    "zone": "barrio_analco",
+    "tags": [
+      "patrimonio",
+      "historia_indigena",
+      "siglo_xvi"
+    ],
+    "description": {
+      "es": "Parroquia virreinal representativa del asentamiento indigena de Analco al oriente del rio San Francisco.",
+      "en": "Viceregal parish representative of the indigenous Analco settlement east of the San Francisco river."
+    },
+    "address": "Calle 7 Oriente 1202, Barrio de Analco",
+    "secret_to_unlock": {
+      "titulo": "El Angel Custodio y la Epidemia de 1640",
+      "descripcion": "La parroquia resguarda la escultura del Angel Custodio, nombrado protector del barrio tras las inundaciones y epidemias virreinales.",
+      "pista": "Observa el nicho central del altar de piedra.",
+      "insignia_nombre": "Protector del Barrio"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Gremio de Panaderos de Analco",
+        "rol": "Hermandad barrial",
+        "epoca": "Siglo XVII",
+        "relato": "Mantuvo la custodia de la capilla y sus campanas con limosnas de las panaderias de trigo."
+      }
+    ]
+  },
+  {
+    "id": "poi_taller_talavera_analco",
+    "name": "Taller Familiar de Ceramica y Talavera Analco",
+    "category": "comercio_local",
+    "coordinates": [
+      -98.1931,
+      19.0425
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_tal_02",
+    "is_local_business": true,
+    "zone": "barrio_analco",
+    "tags": [
+      "artesania",
+      "talavera",
+      "comercio_local",
+      "taller"
+    ],
+    "description": {
+      "es": "Microtaller artesanal de elaboracion de ceramica con denominacion de origen Talavera de Puebla.",
+      "en": "Family-run micro-workshop making certified Puebla Talavera ceramic pottery."
+    },
+    "address": "Calle 5 Oriente 1004, Barrio de Analco",
+    "secret_to_unlock": {
+      "titulo": "La Firma Secreta del Maestro Locero",
+      "descripcion": "Desde las ordenanzas virreinales de 1653, cada pieza autentica debe llevar la firma del maestro alfarero pintada a mano con oxido de cobalto en la base cruda.",
+      "pista": "Pide al maestro artesano que te muestre la base sin vidriar de una pieza en reposo.",
+      "insignia_nombre": "Maestro de la Talavera"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Diego Gaytan",
+        "rol": "Alcalde del gremio de loceros",
+        "epoca": "1653",
+        "relato": "Promulgo las primeras normas de calidad para distinguir la talavera fina de la loza corriente."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_tal_01",
+        "autor": "Mariana G.",
+        "procedencia": "Puebla",
+        "fecha": "2026-09-30",
+        "testimonio": "Ver al maestro pintar a pulso las lineas finas de cobalto sin equivocarse demuestra decadas de maestria.",
+        "perfil": "sin_restriccion"
+      }
+    ],
+    "artisan_profile": {
+      "nombre_taller": "Taller Familiar de Talavera Analco Tradicional",
+      "maestro_artesano": "Maestro Gilberto Salazar",
+      "oficio": "Maestro Locero de Talavera Certificada",
+      "fundacion_anio": 1924,
+      "demostracion_en_vivo": "Modelado en torno de pie y estarcido con carbon vegetal sobre esmalte crudo",
+      "horario_demostracion": "Lunes a Viernes 11:30 y 16:00",
+      "tecnica_ancestral": "Doble horneado a 1,050 °C y uso exclusivo de oxidos minerales naturales",
+      "sello_artesanal": "Talavera Analco D.O. 1924"
+    }
+  },
+  {
+    "id": "poi_horno_la_luz",
+    "name": "Alfareria Tradicional del Barrio de La Luz",
+    "category": "artesania",
+    "coordinates": [
+      -98.1905,
+      19.0441
+    ],
+    "hours": {
+      "open": "09:00",
+      "close": "17:00"
+    },
+    "cost_mxn": 15,
+    "visit_duration_min": 40,
+    "languages": [
+      "es"
+    ],
+    "entrance_accessible": false,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_alf_01",
+    "is_local_business": true,
+    "zone": "barrio_la_luz",
+    "tags": [
+      "alfareria",
+      "horno_arabe",
+      "comercio_local",
+      "barrio_tradicional"
+    ],
+    "description": {
+      "es": "Unico complejo de hornos de lena arabes de barro vidriado y loza colorada en operacion continua desde el siglo XVIII.",
+      "en": "Sole historic complex of 18th-century wood-fired pottery kilns in continuous operation producing traditional red earthenware."
+    },
+    "address": "Calle Juan de Palafox y Mendoza 1403, Barrio de La Luz",
+    "secret_to_unlock": {
+      "titulo": "El Fuego Ininterrumpido de 250 Anos",
+      "descripcion": "Los hornos arabes de tiro subterraneo de La Luz se calientan con lena de encino y tardan 36 horas continuas en alcanzar el punto de fusion del barro colorado vidriado.",
+      "pista": "Observa el arco de ladrillo refractario y la boveda subterranea en el callejon.",
+      "insignia_nombre": "Guardián del Barro Rojo"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Familias Alfareras de La Luz",
+        "rol": "Artesanos del barro novohispano",
+        "epoca": "Siglo XVIII",
+        "relato": "Establecieron sus hornos en la orilla del rio San Francisco para aprovechar los depositos arcillosos."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_luz_01",
+        "autor": "Dr. Fernando B.",
+        "procedencia": "Oaxaca",
+        "fecha": "2026-10-06",
+        "testimonio": "Es el ultimo conjunto de hornos arabes activos en Mexico. Un patrimonio vivo que no debe perderse.",
+        "perfil": "sin_restriccion"
+      }
+    ],
+    "artisan_profile": {
+      "nombre_taller": "Alfareria Tradicional de Hornos Arabes de La Luz",
+      "maestro_artesano": "Maestro Mateo Cortes",
+      "oficio": "Alfarero tradicional de cazuelas de barro vidriado",
+      "fundacion_anio": 1785,
+      "demostracion_en_vivo": "Torneado a mano de cazuelas moleras y preparacion del barro en pila de decantacion",
+      "horario_demostracion": "Diario 10:30 a 13:00",
+      "tecnica_ancestral": "Horno de lena de tipologia arabe con camara subterranea y vidriado libre de plomo",
+      "sello_artesanal": "Alfareria La Luz - Siglo XVIII"
+    }
+  },
+  {
+    "id": "poi_templo_la_luz",
+    "name": "Templo de Nuestra Senora de la Luz",
+    "category": "iglesia",
+    "coordinates": [
+      -98.1912,
+      19.0446
+    ],
+    "hours": {
+      "open": "08:30",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 20,
+    "languages": [
+      "es"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_301",
+    "is_local_business": false,
+    "zone": "barrio_la_luz",
+    "tags": [
+      "patrimonio",
+      "siglo_xviii",
+      "barrio_tradicional"
+    ],
+    "description": {
+      "es": "Iglesia de barrio del siglo XVIII con fachada de argamasa y azulejo poblano, corazon historico de los alfareros.",
+      "en": "18th-century neighborhood church with plaster mortar and Puebla tile facade, the historic heart of the potters quarter."
+    },
+    "address": "Av. 2 Oriente y 14 Norte, Barrio de La Luz",
+    "secret_to_unlock": {
+      "titulo": "La Fachada de Petatillo Donada por Alfareros",
+      "descripcion": "Los propios alfareros de La Luz decoraron el frontispicio de su templo con azulejos rojos y amarillos simulando un petate de barro tejido.",
+      "pista": "Examina la pared lateral sobre la calle Juan de Palafox y Mendoza.",
+      "insignia_nombre": "Devoto de La Luz"
+    }
+  },
+  {
+    "id": "poi_mercado_el_alto",
+    "name": "Mercado El Alto (Plaza de las Cocinas y Garibaldi Poblano)",
+    "category": "gastronomia",
+    "coordinates": [
+      -98.1916,
+      19.0468
+    ],
+    "hours": {
+      "open": "08:00",
+      "close": "22:00"
+    },
+    "cost_mxn": 60,
+    "visit_duration_min": 50,
+    "languages": [
+      "es"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "denue",
+    "denue_id": "denue_alto_01",
+    "is_local_business": true,
+    "zone": "barrio_el_alto",
+    "tags": [
+      "gastronomia",
+      "cemitas",
+      "mariachi",
+      "mole_poblano",
+      "comercio_local"
+    ],
+    "description": {
+      "es": "Mercado gastronomico tradicional edificado en 1930 en el sitio fundacional de la ciudad, famoso por cemitas poblanas y musica vernacular.",
+      "en": "Traditional food market built in 1930 at the city founding site, renowned for authentic cemitas sandwiches and traditional music."
+    },
+    "address": "Calle 14 Norte 1208, Barrio de El Alto",
+    "secret_to_unlock": {
+      "titulo": "El Secreto del Papaloquelite en la Cemita",
+      "descripcion": "La cemita original de El Alto nunca se calienta: el pan crujiente de piso se sirve a temperatura ambiente con milanesa fresca, quesillo deshebrado y hojas de papalo recien cortadas.",
+      "pista": "Pasa por el pasillo central del mercado donde tocan las cuadrillas de mariachis.",
+      "insignia_nombre": "Cemita Master de El Alto"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente 'Motolinia'",
+        "rol": "Misionero y cronista franciscano",
+        "epoca": "1531",
+        "relato": "Celebro la primera misa de fundacion de la Puebla de los Angeles en las colinas de El Alto."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_alt_01",
+        "autor": "Ramon J.",
+        "procedencia": "Puebla",
+        "fecha": "2026-10-08",
+        "testimonio": "El mercado tiene piso parejo y rampa de acceso; se puede comer una autentica cemita poblana con musica de mariachi en vivo.",
+        "perfil": "movilidad_reducida"
+      }
+    ],
+    "artisan_profile": {
+      "nombre_taller": "Cocina Tradicional y Cemitas Dona Chelo",
+      "maestro_artesano": "Cocinera Tradicional Consuelo Morales",
+      "oficio": "Cocinera tradicional de antojitos y mole poblano",
+      "fundacion_anio": 1952,
+      "demostracion_en_vivo": "Molienda de cuatro chiles secos en metate de piedra volcanica para mole poblano",
+      "horario_demostracion": "Diario 12:00 a 17:00",
+      "tecnica_ancestral": "Coccion lenta en cazuela de barro de La Luz con manteca de cerdo y chocolate de tablilla",
+      "sello_artesanal": "Cocina Tipica El Alto 1952"
+    }
+  },
+  {
+    "id": "poi_casa_aguada",
+    "name": "Manantial y Lavaderos Historicos de Almoloya",
+    "category": "historico",
+    "coordinates": [
+      -98.1928,
+      19.0457
+    ],
+    "hours": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_401",
+    "is_local_business": false,
+    "zone": "barrio_el_alto",
+    "tags": [
+      "historia",
+      "fundacion_puebla",
+      "agua",
+      "patrimonio"
+    ],
+    "description": {
+      "es": "Vestigios hidraulicos del manantial de Almoloya donde se celebro la primera misa de fundacion de la Puebla de los Angeles en 1531.",
+      "en": "Hydraulic heritage of the Almoloya spring where the first founding mass of Puebla de los Angeles was held in 1531."
+    },
+    "address": "Calle 10 Norte y 14 Oriente, Paseo de San Francisco",
+    "secret_to_unlock": {
+      "titulo": "El Manantial que Surtia al Convento",
+      "descripcion": "Bajo las losas de piedra de los lavaderos fluye agua de manantial cristalina que surtio al huerto de los franciscanos desde el siglo XVI.",
+      "pista": "Observa el canal de silleria que desemboca en la alberca de reposo.",
+      "insignia_nombre": "Aguador de Almoloya"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Lavanderas de Almoloya",
+        "rol": "Gremio vecinal femenino",
+        "epoca": "Siglo XIX",
+        "relato": "Utilizaban las 36 piletas de piedra como espacio de ayuda mutua e intercambio de cantos populares."
+      }
+    ]
+  },
+  {
+    "id": "poi_ciudad_mural",
+    "name": "Proyecto Ciudad Mural Xanenetla",
+    "category": "espacio_publico",
+    "coordinates": [
+      -98.1901,
+      19.0492
+    ],
+    "hours": {
+      "open": "08:00",
+      "close": "19:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 50,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_501",
+    "is_local_business": false,
+    "zone": "barrio_xanenetla",
+    "tags": [
+      "arte_urbano",
+      "muralismo",
+      "comunitario",
+      "barrio_tradicional"
+    ],
+    "description": {
+      "es": "Galeria comunitaria al aire libre con mas de 50 murales colectivos en las fachadas de un barrio de ladrilleros del siglo XVI.",
+      "en": "Community open-air art gallery featuring over 50 collective murals painted across a 16th-century brickmakers quarter."
+    },
+    "address": "Calle 4 Norte y 28 Oriente, Barrio de Xanenetla",
+    "secret_to_unlock": {
+      "titulo": "El Ladrillo de 1890 Oculto en el Muro",
+      "descripcion": "En uno de los 70 murales comunitarios se incrusto un ladrillo rojo original cocido en los hornos antiguos de Xanenetla en el siglo XIX.",
+      "pista": "Inspecciona el mural del aguila de fuego sobre la Calle 4 Norte.",
+      "insignia_nombre": "Explorador de Xanenetla"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Familias Ladrilleras de Xanenetla",
+        "rol": "Pobladores fundadores del callejon",
+        "epoca": "Siglo XIX",
+        "relato": "Hornearon millones de ladrillos rojos y losetas con los que se edificaron los claustros y casonas del centro."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_xan_01",
+        "autor": "Valeria N.",
+        "procedencia": "Turista",
+        "fecha": "2026-10-09",
+        "testimonio": "Caminar entre las calles empedradas descubriendo murales en cada esquina es una experiencia visual hermosa.",
+        "perfil": "sin_restriccion"
+      }
+    ],
+    "artisan_profile": {
+      "nombre_taller": "Colectivo Comunitario Muralistas de Xanenetla",
+      "maestro_artesano": "Muralista Raul Dominguez",
+      "oficio": "Artista visual y cronista comunitario",
+      "fundacion_anio": 2011,
+      "demostracion_en_vivo": "Tecnicas de estencil y muralismo con pigmentos minerales sobre adobe colonial",
+      "horario_demostracion": "Sabados 11:00 a 13:00",
+      "tecnica_ancestral": "Integracion de relatos orales de las familias del callejon en murales a gran escala",
+      "sello_artesanal": "Xanenetla Ciudad Mural 2011"
+    }
+  },
+  {
+    "id": "poi_antojeria_xanenetla",
+    "name": "Cocina y Antojeria Familiar de Barrio Xanenetla",
+    "category": "comercio_local",
+    "coordinates": [
+      -98.1908,
+      19.0485
+    ],
+    "hours": {
+      "open": "11:00",
+      "close": "19:00"
+    },
+    "cost_mxn": 50,
+    "visit_duration_min": 35,
+    "languages": [
+      "es"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_xane_02",
+    "is_local_business": true,
+    "zone": "barrio_xanenetla",
+    "tags": [
+      "gastronomia",
+      "chalupas",
+      "molotes",
+      "comercio_local"
+    ],
+    "description": {
+      "es": "Microcomercio familiar de preparacion de chalupas, molotes y antojitos tradicionales poblanos atendido por vecinas del barrio.",
+      "en": "Family micro-eatery preparing traditional Puebla chalupas and handmade regional snacks run by neighborhood residents."
+    },
+    "address": "Calle 2 Norte 2604, Barrio de Xanenetla",
+    "secret_to_unlock": {
+      "titulo": "La Chalupa Frita en Manteca Criolla",
+      "descripcion": "Las chalupas se crearon como comida rapida para los horneros de ladrillo: tortilla delgada frita en manteca con salsa verde o roja y hebras de carne deshebrada.",
+      "pista": "Observa el comal de barro concavo y el borboteo de la manteca.",
+      "insignia_nombre": "Gourmet de Callejón"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Antojeria Tradicional Las Cazuelas de Xanenetla",
+      "maestro_artesano": "Dona Beatriz Perez",
+      "oficio": "Cocinera tradicional de chalupas y molotes",
+      "fundacion_anio": 1974,
+      "demostracion_en_vivo": "Elaboracion de chalupas al momento con masa de maiz nixtamalizado criollo",
+      "horario_demostracion": "Viernes a Domingo 13:00 a 19:00",
+      "tecnica_ancestral": "Salsa cocida en molcajete de piedra y fritura rapida en manteca sobre comal caliente",
+      "sello_artesanal": "Chalupas Xanenetla 1974"
+    }
+  }
+]

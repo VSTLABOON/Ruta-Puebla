@@ -1,0 +1,12 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+dist/
+.DS_Store
+*.log
+.env
+.env.local
+coverage/
+.pytest_cache/
+data/raw/denue/

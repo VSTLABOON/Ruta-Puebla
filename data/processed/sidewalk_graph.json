@@ -1,0 +1,1267 @@
+{
+  "nodes": {
+    "n_zocalo_nw": {
+      "id": "n_zocalo_nw",
+      "coordinates": [
+        -98.199,
+        19.0435
+      ]
+    },
+    "n_zocalo_ne": {
+      "id": "n_zocalo_ne",
+      "coordinates": [
+        -98.1975,
+        19.0435
+      ]
+    },
+    "n_zocalo_se": {
+      "id": "n_zocalo_se",
+      "coordinates": [
+        -98.1975,
+        19.0425
+      ]
+    },
+    "n_zocalo_sw": {
+      "id": "n_zocalo_sw",
+      "coordinates": [
+        -98.199,
+        19.0425
+      ]
+    },
+    "n_catedral_s": {
+      "id": "n_catedral_s",
+      "coordinates": [
+        -98.1983,
+        19.042
+      ]
+    },
+    "n_palafox_5ote": {
+      "id": "n_palafox_5ote",
+      "coordinates": [
+        -98.1991,
+        19.0424
+      ]
+    },
+    "n_amparo_2sur": {
+      "id": "n_amparo_2sur",
+      "coordinates": [
+        -98.1998,
+        19.0416
+      ]
+    },
+    "n_rosario_5mayo": {
+      "id": "n_rosario_5mayo",
+      "coordinates": [
+        -98.1993,
+        19.0453
+      ]
+    },
+    "n_sapos_6sur": {
+      "id": "n_sapos_6sur",
+      "coordinates": [
+        -98.1963,
+        19.0411
+      ]
+    },
+    "n_puente_ovando": {
+      "id": "n_puente_ovando",
+      "coordinates": [
+        -98.1945,
+        19.0415
+      ]
+    },
+    "n_analco_parque_w": {
+      "id": "n_analco_parque_w",
+      "coordinates": [
+        -98.193,
+        19.0418
+      ]
+    },
+    "n_analco_parque_e": {
+      "id": "n_analco_parque_e",
+      "coordinates": [
+        -98.192,
+        19.0418
+      ]
+    },
+    "n_analco_calle7ote": {
+      "id": "n_analco_calle7ote",
+      "coordinates": [
+        -98.1918,
+        19.0415
+      ]
+    },
+    "n_analco_5ote": {
+      "id": "n_analco_5ote",
+      "coordinates": [
+        -98.1931,
+        19.0425
+      ]
+    },
+    "n_luz_palafox": {
+      "id": "n_luz_palafox",
+      "coordinates": [
+        -98.1915,
+        19.0441
+      ]
+    },
+    "n_luz_horno": {
+      "id": "n_luz_horno",
+      "coordinates": [
+        -98.1905,
+        19.0441
+      ]
+    },
+    "n_luz_templo": {
+      "id": "n_luz_templo",
+      "coordinates": [
+        -98.1912,
+        19.0446
+      ]
+    },
+    "n_san_francisco_jardin": {
+      "id": "n_san_francisco_jardin",
+      "coordinates": [
+        -98.1928,
+        19.0457
+      ]
+    },
+    "n_alto_mercado": {
+      "id": "n_alto_mercado",
+      "coordinates": [
+        -98.1916,
+        19.0468
+      ]
+    },
+    "n_xane_concordia": {
+      "id": "n_xane_concordia",
+      "coordinates": [
+        -98.191,
+        19.048
+      ]
+    },
+    "n_xane_calle4norte": {
+      "id": "n_xane_calle4norte",
+      "coordinates": [
+        -98.1901,
+        19.0492
+      ]
+    },
+    "n_xane_antojeria": {
+      "id": "n_xane_antojeria",
+      "coordinates": [
+        -98.1908,
+        19.0485
+      ]
+    }
+  },
+  "edges": [
+    {
+      "id": "seg_zocalo_16sep_e",
+      "osm_way_id": "osm_seg_zocalo_16sep_e",
+      "side": "right",
+      "from_node": "n_zocalo_ne",
+      "to_node": "n_catedral_s",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1975,
+            19.0435
+          ],
+          [
+            -98.1983,
+            19.042
+          ]
+        ]
+      },
+      "length_m": 186.8,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 1.2,
+      "width_m": 1.9,
+      "surface": "laja_colonial_nivelada",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_zocalo_16sep_w",
+      "osm_way_id": "osm_seg_zocalo_16sep_w",
+      "side": "left",
+      "from_node": "n_zocalo_nw",
+      "to_node": "n_zocalo_sw",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.199,
+            19.0435
+          ],
+          [
+            -98.199,
+            19.0425
+          ]
+        ]
+      },
+      "length_m": 111.2,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 1.0,
+      "width_m": 1.6,
+      "surface": "laja_colonial",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_zocalo_sur_conn",
+      "osm_way_id": "osm_seg_zocalo_sur_conn",
+      "side": "crossing",
+      "from_node": "n_zocalo_sw",
+      "to_node": "n_catedral_s",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.199,
+            19.0425
+          ],
+          [
+            -98.1983,
+            19.042
+          ]
+        ]
+      },
+      "length_m": 92.2,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 0.5,
+      "width_m": 2.0,
+      "surface": "concreto",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_zocalo_norte_conn",
+      "osm_way_id": "osm_seg_zocalo_norte_conn",
+      "side": "crossing",
+      "from_node": "n_zocalo_nw",
+      "to_node": "n_zocalo_ne",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.199,
+            19.0435
+          ],
+          [
+            -98.1975,
+            19.0435
+          ]
+        ]
+      },
+      "length_m": 157.7,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 0.5,
+      "width_m": 2.0,
+      "surface": "concreto",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_palafox_5ote_s",
+      "osm_way_id": "osm_seg_palafox_5ote_s",
+      "side": "right",
+      "from_node": "n_catedral_s",
+      "to_node": "n_palafox_5ote",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1983,
+            19.042
+          ],
+          [
+            -98.1991,
+            19.0424
+          ]
+        ]
+      },
+      "length_m": 95.1,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 1.8,
+      "width_m": 1.55,
+      "surface": "laja_colonial",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_palafox_5ote_n",
+      "osm_way_id": "osm_seg_palafox_5ote_n",
+      "side": "left",
+      "from_node": "n_zocalo_se",
+      "to_node": "n_palafox_5ote",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1975,
+            19.0425
+          ],
+          [
+            -98.1991,
+            19.0424
+          ]
+        ]
+      },
+      "length_m": 168.5,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 2.1,
+      "width_m": 1.2,
+      "surface": "concreto",
+      "has_curb_ramp": false,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": false
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_amparo_2sur_w",
+      "osm_way_id": "osm_seg_amparo_2sur_w",
+      "side": "left",
+      "from_node": "n_palafox_5ote",
+      "to_node": "n_amparo_2sur",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1991,
+            19.0424
+          ],
+          [
+            -98.1998,
+            19.0416
+          ]
+        ]
+      },
+      "length_m": 115.4,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 2.5,
+      "width_m": 1.4,
+      "surface": "laja_colonial",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_amparo_2sur_e",
+      "osm_way_id": "osm_seg_amparo_2sur_e",
+      "side": "right",
+      "from_node": "n_palafox_5ote",
+      "to_node": "n_amparo_2sur",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1991,
+            19.0424
+          ],
+          [
+            -98.1998,
+            19.0416
+          ]
+        ]
+      },
+      "length_m": 115.4,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 2.4,
+      "width_m": 1.35,
+      "surface": "laja_colonial",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_rosario_5mayo_w",
+      "osm_way_id": "osm_seg_rosario_5mayo_w",
+      "side": "left",
+      "from_node": "n_zocalo_nw",
+      "to_node": "n_rosario_5mayo",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.199,
+            19.0435
+          ],
+          [
+            -98.1993,
+            19.0453
+          ]
+        ]
+      },
+      "length_m": 202.6,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 0.8,
+      "width_m": 1.8,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_rosario_5mayo_e",
+      "osm_way_id": "osm_seg_rosario_5mayo_e",
+      "side": "right",
+      "from_node": "n_zocalo_ne",
+      "to_node": "n_rosario_5mayo",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1975,
+            19.0435
+          ],
+          [
+            -98.1993,
+            19.0453
+          ]
+        ]
+      },
+      "length_m": 275.4,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 0.9,
+      "width_m": 1.7,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_sapos_6sur_w",
+      "osm_way_id": "osm_seg_sapos_6sur_w",
+      "side": "left",
+      "from_node": "n_palafox_5ote",
+      "to_node": "n_sapos_6sur",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1991,
+            19.0424
+          ],
+          [
+            -98.1963,
+            19.0411
+          ]
+        ]
+      },
+      "length_m": 327.9,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 3.2,
+      "width_m": 1.1,
+      "surface": "laja_colonial",
+      "has_curb_ramp": false,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": false
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_sapos_6sur_e",
+      "osm_way_id": "osm_seg_sapos_6sur_e",
+      "side": "right",
+      "from_node": "n_catedral_s",
+      "to_node": "n_sapos_6sur",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1983,
+            19.042
+          ],
+          [
+            -98.1963,
+            19.0411
+          ]
+        ]
+      },
+      "length_m": 232.8,
+      "zone": "zocalo_centro_nucleo",
+      "slope_pct": 2.8,
+      "width_m": 1.25,
+      "surface": "laja_colonial",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_ovando_puente",
+      "osm_way_id": "osm_seg_ovando_puente",
+      "side": "crossing",
+      "from_node": "n_sapos_6sur",
+      "to_node": "n_puente_ovando",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1963,
+            19.0411
+          ],
+          [
+            -98.1945,
+            19.0415
+          ]
+        ]
+      },
+      "length_m": 194.4,
+      "zone": "barrio_analco",
+      "slope_pct": 4.0,
+      "width_m": 1.3,
+      "surface": "laja_colonial",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_ovando_a_analco",
+      "osm_way_id": "osm_seg_ovando_a_analco",
+      "side": "crossing",
+      "from_node": "n_puente_ovando",
+      "to_node": "n_analco_parque_w",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1945,
+            19.0415
+          ],
+          [
+            -98.193,
+            19.0418
+          ]
+        ]
+      },
+      "length_m": 161.2,
+      "zone": "barrio_analco",
+      "slope_pct": 2.0,
+      "width_m": 1.5,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_analco_parque_w",
+      "osm_way_id": "osm_seg_analco_parque_w",
+      "side": "right",
+      "from_node": "n_analco_parque_w",
+      "to_node": "n_analco_parque_e",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.193,
+            19.0418
+          ],
+          [
+            -98.192,
+            19.0418
+          ]
+        ]
+      },
+      "length_m": 105.1,
+      "zone": "barrio_analco",
+      "slope_pct": 1.5,
+      "width_m": 1.6,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_analco_calle7ote_s",
+      "osm_way_id": "osm_seg_analco_calle7ote_s",
+      "side": "right",
+      "from_node": "n_analco_parque_e",
+      "to_node": "n_analco_calle7ote",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.192,
+            19.0418
+          ],
+          [
+            -98.1918,
+            19.0415
+          ]
+        ]
+      },
+      "length_m": 39.4,
+      "zone": "barrio_analco",
+      "slope_pct": 2.2,
+      "width_m": 0.75,
+      "surface": "concreto",
+      "has_curb_ramp": false,
+      "has_steps": true,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": false,
+        "silla_de_ruedas": false
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.995,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_analco_taller_5ote",
+      "osm_way_id": "osm_seg_analco_taller_5ote",
+      "side": "left",
+      "from_node": "n_analco_parque_w",
+      "to_node": "n_analco_5ote",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.193,
+            19.0418
+          ],
+          [
+            -98.1931,
+            19.0425
+          ]
+        ]
+      },
+      "length_m": 78.5,
+      "zone": "barrio_analco",
+      "slope_pct": 1.8,
+      "width_m": 1.25,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_analco_conn_norte",
+      "osm_way_id": "osm_seg_analco_conn_norte",
+      "side": "crossing",
+      "from_node": "n_analco_5ote",
+      "to_node": "n_luz_palafox",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1931,
+            19.0425
+          ],
+          [
+            -98.1915,
+            19.0441
+          ]
+        ]
+      },
+      "length_m": 244.8,
+      "zone": "barrio_analco",
+      "slope_pct": 2.0,
+      "width_m": 1.3,
+      "surface": "concreto",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_luz_palafox_s",
+      "osm_way_id": "osm_seg_luz_palafox_s",
+      "side": "right",
+      "from_node": "n_luz_palafox",
+      "to_node": "n_luz_horno",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1915,
+            19.0441
+          ],
+          [
+            -98.1905,
+            19.0441
+          ]
+        ]
+      },
+      "length_m": 105.1,
+      "zone": "barrio_la_luz",
+      "slope_pct": 3.5,
+      "width_m": 0.85,
+      "surface": "laja_colonial",
+      "has_curb_ramp": false,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": false
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_luz_palafox_n",
+      "osm_way_id": "osm_seg_luz_palafox_n",
+      "side": "left",
+      "from_node": "n_luz_palafox",
+      "to_node": "n_luz_templo",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1915,
+            19.0441
+          ],
+          [
+            -98.1912,
+            19.0446
+          ]
+        ]
+      },
+      "length_m": 63.9,
+      "zone": "barrio_la_luz",
+      "slope_pct": 2.8,
+      "width_m": 1.3,
+      "surface": "concreto",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_luz_horno_acceso",
+      "osm_way_id": "osm_seg_luz_horno_acceso",
+      "side": "crossing",
+      "from_node": "n_luz_templo",
+      "to_node": "n_luz_horno",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1912,
+            19.0446
+          ],
+          [
+            -98.1905,
+            19.0441
+          ]
+        ]
+      },
+      "length_m": 92.2,
+      "zone": "barrio_la_luz",
+      "slope_pct": 4.5,
+      "width_m": 0.95,
+      "surface": "empedrado",
+      "has_curb_ramp": false,
+      "has_steps": true,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": false,
+        "silla_de_ruedas": false
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.675,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_luz_a_sanfco",
+      "osm_way_id": "osm_seg_luz_a_sanfco",
+      "side": "crossing",
+      "from_node": "n_luz_templo",
+      "to_node": "n_san_francisco_jardin",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1912,
+            19.0446
+          ],
+          [
+            -98.1928,
+            19.0457
+          ]
+        ]
+      },
+      "length_m": 207.9,
+      "zone": "barrio_el_alto",
+      "slope_pct": 2.0,
+      "width_m": 1.5,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_alto_sanfco_jardin",
+      "osm_way_id": "osm_seg_alto_sanfco_jardin",
+      "side": "right",
+      "from_node": "n_san_francisco_jardin",
+      "to_node": "n_alto_mercado",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1928,
+            19.0457
+          ],
+          [
+            -98.1916,
+            19.0468
+          ]
+        ]
+      },
+      "length_m": 175.7,
+      "zone": "barrio_el_alto",
+      "slope_pct": 1.2,
+      "width_m": 1.7,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": true,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.996,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_alto_mercado_14norte",
+      "osm_way_id": "osm_seg_alto_mercado_14norte",
+      "side": "left",
+      "from_node": "n_alto_mercado",
+      "to_node": "n_xane_concordia",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1916,
+            19.0468
+          ],
+          [
+            -98.191,
+            19.048
+          ]
+        ]
+      },
+      "length_m": 147.6,
+      "zone": "barrio_el_alto",
+      "slope_pct": 2.0,
+      "width_m": 1.4,
+      "surface": "concreto",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.676,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_xane_concordia_norte",
+      "osm_way_id": "osm_seg_xane_concordia_norte",
+      "side": "right",
+      "from_node": "n_xane_concordia",
+      "to_node": "n_xane_calle4norte",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.191,
+            19.048
+          ],
+          [
+            -98.1901,
+            19.0492
+          ]
+        ]
+      },
+      "length_m": 163.6,
+      "zone": "barrio_xanenetla",
+      "slope_pct": 3.8,
+      "width_m": 1.3,
+      "surface": "concreto",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.676,
+      "audit_count": 1,
+      "is_verified": false
+    },
+    {
+      "id": "seg_xane_calle4norte_w",
+      "osm_way_id": "osm_seg_xane_calle4norte_w",
+      "side": "left",
+      "from_node": "n_xane_calle4norte",
+      "to_node": "n_xane_antojeria",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1901,
+            19.0492
+          ],
+          [
+            -98.1908,
+            19.0485
+          ]
+        ]
+      },
+      "length_m": 107.1,
+      "zone": "barrio_xanenetla",
+      "slope_pct": 4.2,
+      "width_m": 1.15,
+      "surface": "adoquin",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.996,
+      "audit_count": 2,
+      "is_verified": true
+    },
+    {
+      "id": "seg_xane_callejuela_empedrada",
+      "osm_way_id": "osm_seg_xane_callejuela_empedrada",
+      "side": "right",
+      "from_node": "n_xane_concordia",
+      "to_node": "n_xane_antojeria",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.191,
+            19.048
+          ],
+          [
+            -98.1908,
+            19.0485
+          ]
+        ]
+      },
+      "length_m": 59.4,
+      "zone": "barrio_xanenetla",
+      "slope_pct": 6.5,
+      "width_m": 0.8,
+      "surface": "empedrado_desprendido",
+      "has_curb_ramp": false,
+      "has_steps": true,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": false,
+        "silla_de_ruedas": false
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.676,
+      "audit_count": 1,
+      "is_verified": false
+    }
+  ]
+}
