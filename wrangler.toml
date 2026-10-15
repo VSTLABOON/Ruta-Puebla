@@ -1,0 +1,7 @@
+name = "ruta-puebla"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "apps/web/dist"
+
+[assets]
+directory = "./apps/web/dist"
+binding = "ASSETS"
