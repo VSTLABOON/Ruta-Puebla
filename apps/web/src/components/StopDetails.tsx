@@ -1,6 +1,7 @@
 import { useState, type FC } from 'react';
 import { RouteStop, Language, PassportState } from '@ruta-abierta/shared-types';
 import { Store, Accessibility, Check, X, Info, Sparkles, Award, History, MessageSquare, Compass } from 'lucide-react';
+import { CelebrationModal } from './CelebrationModal';
 
 interface StopDetailsProps {
   stops: RouteStop[];
@@ -20,6 +21,12 @@ export const StopDetails: FC<StopDetailsProps> = ({
   onUnlockSecret
 }) => {
   const [activeTabByPoi, setActiveTabByPoi] = useState<Record<string, 'route' | 'secret' | 'memory'>>({});
+  const [celebrationData, setCelebrationData] = useState<{
+    badgeName: string;
+    title: string;
+    description: string;
+    zone: string;
+  } | null>(null);
 
   const formatMinutesToHour = (min: number) => {
     const h = Math.floor(min / 60);
@@ -269,11 +276,17 @@ export const StopDetails: FC<StopDetailsProps> = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             onUnlockSecret(stop.poi.id, secret.insignia_nombre);
+                            setCelebrationData({
+                              badgeName: secret.insignia_nombre,
+                              title: secret.titulo,
+                              description: secret.descripcion,
+                              zone: stop.poi.zone
+                            });
                           }}
-                          className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1.5"
+                          className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs py-2.5 px-3 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5"
                         >
-                          <Award className="w-4 h-4" />
-                          {language === 'es' ? 'Sellar Pasaporte y Revelar Secreto' : 'Stamp Passport & Reveal Secret'}
+                          <Award className="w-4 h-4 text-slate-950" />
+                          <span>{language === 'es' ? 'Sellar Pasaporte y Revelar Secreto' : 'Stamp Passport & Reveal Secret'}</span>
                         </button>
                       </div>
                     ) : (
@@ -354,6 +367,18 @@ export const StopDetails: FC<StopDetailsProps> = ({
           );
         })}
       </div>
+
+      {celebrationData && (
+        <CelebrationModal
+          isOpen={!!celebrationData}
+          onClose={() => setCelebrationData(null)}
+          badgeName={celebrationData.badgeName}
+          title={celebrationData.title}
+          description={celebrationData.description}
+          zone={celebrationData.zone}
+          language={language}
+        />
+      )}
     </div>
   );
 };
