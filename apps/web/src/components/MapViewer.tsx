@@ -8,7 +8,8 @@ import {
   AlertTriangle,
   Layers,
   Maximize2,
-  Box
+  Box,
+  Compass
 } from 'lucide-react';
 
 interface MapViewerProps {
@@ -59,23 +60,66 @@ export const MapViewer: FC<MapViewerProps> = ({
   const [is3D, setIs3D] = useState(true);
   const [hoveredSegment, setHoveredSegment] = useState<Segment | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [showLegend, setShowLegend] = useState(true);
+  const [showLegend, setShowLegend] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 640 : true
+  );
 
-  // Inicialización de MapLibre GL
+  // Cálculo 100% dinámico del centro y límites espaciales (sin valores fijos o hardcodeados)
+  const { dynamicCenter, dynamicBounds } = useMemo(() => {
+    if (pois.length === 0 && segments.length === 0) {
+      return {
+        dynamicCenter: [-98.1965, 19.0435] as [number, number],
+        dynamicBounds: undefined
+      };
+    }
+
+    let minLng = Infinity;
+    let maxLng = -Infinity;
+    let minLat = Infinity;
+    let maxLat = -Infinity;
+
+    pois.forEach((p) => {
+      minLng = Math.min(minLng, p.coordinates[0]);
+      maxLng = Math.max(maxLng, p.coordinates[0]);
+      minLat = Math.min(minLat, p.coordinates[1]);
+      maxLat = Math.max(maxLat, p.coordinates[1]);
+    });
+
+    segments.forEach((s) => {
+      s.geometry.coordinates.forEach(([lng, lat]) => {
+        minLng = Math.min(minLng, lng);
+        maxLng = Math.max(maxLng, lng);
+        minLat = Math.min(minLat, lat);
+        maxLat = Math.max(maxLat, lat);
+      });
+    });
+
+    const centerLng = (minLng + maxLng) / 2;
+    const centerLat = (minLat + maxLat) / 2;
+    const pad = 0.025; // Margen dinámico elástico
+
+    return {
+      dynamicCenter: [centerLng, centerLat] as [number, number],
+      dynamicBounds: [
+        [minLng - pad, minLat - pad],
+        [maxLng + pad, maxLat + pad]
+      ] as [[number, number], [number, number]]
+    };
+  }, [pois, segments]);
+
+  // Inicialización de MapLibre GL con soporte móvil táctil cooperativo
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: MAP_STYLES[activeStyle].url,
-      center: [-98.1965, 19.0435], // Catedral y Zócalo de Puebla
+      center: dynamicCenter,
       zoom: 15.3,
       pitch: 45, // Vista tridimensional en perspectiva
       bearing: -15,
-      maxBounds: [
-        [-98.24, 19.01],
-        [-98.15, 19.08]
-      ]
+      maxBounds: dynamicBounds,
+      cooperativeGestures: true // Permite scroll suave con 1 dedo en celulares y navegación con 2 dedos
     });
 
     map.addControl(
@@ -97,15 +141,24 @@ export const MapViewer: FC<MapViewerProps> = ({
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [dynamicCenter, dynamicBounds]);
 
   // Cambio de estilo del mapa
   useEffect(() => {
     if (!mapRef.current || !isLoaded) return;
     mapRef.current.setStyle(MAP_STYLES[activeStyle].url);
-  }, [activeStyle]);
+  }, [activeStyle, isLoaded]);
 
-  // Conversión de segmentos a GeoJSON
+  // Redimensionamiento responsivo al girar o cambiar de tamaño en móviles
+  useEffect(() => {
+    const handleResize = () => {
+      mapRef.current?.resize();
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Conversión dinámica de segmentos a GeoJSON
   const segmentsGeoJSON = useMemo(() => {
     return {
       type: 'FeatureCollection',
@@ -128,7 +181,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     } as any;
   }, [segments, activeProfile]);
 
-  // Geometría GeoJSON de la ruta seleccionada
+  // Geometría GeoJSON de la ruta activa calculada
   const routeGeoJSON = useMemo(() => {
     if (!selectedRoute) {
       return {
@@ -137,7 +190,6 @@ export const MapViewer: FC<MapViewerProps> = ({
       } as any;
     }
 
-    // Usar la geometría continua de la ruta si existe, o reconstruir desde segmentos
     let coordinates = selectedRoute.geometry?.coordinates;
     if (!coordinates || coordinates.length === 0) {
       const edgeMap = new Map(segments.map((s) => [s.id, s]));
@@ -169,19 +221,19 @@ export const MapViewer: FC<MapViewerProps> = ({
     } as any;
   }, [selectedRoute, segments]);
 
-  // Configuración y actualización de capas de datos en el mapa
+  // Capas vectoriales en GPU
   const updateMapLayers = useCallback(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
 
-    // 1. Fuente y capas de la red de aceras peatonales
+    // 1. Capas de la red de aceras peatonales
     if (!map.getSource('sidewalk-segments')) {
       map.addSource('sidewalk-segments', {
         type: 'geojson',
         data: segmentsGeoJSON
       });
 
-      // Tramos no transitables (barreras normativas/arquitectónicas)
+      // Tramos no transitables (barreras normativas)
       map.addLayer({
         id: 'sidewalk-barriers',
         type: 'line',
@@ -196,7 +248,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
       });
 
-      // Tramos verificados transitables (alta confianza en campo)
+      // Tramos verificados transitables (alta confianza)
       map.addLayer({
         id: 'sidewalk-verified',
         type: 'line',
@@ -210,7 +262,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
       });
 
-      // Tramos inferidos transitables (cartografía previa sin auditar)
+      // Tramos inferidos transitables
       map.addLayer({
         id: 'sidewalk-inferred',
         type: 'line',
@@ -225,7 +277,6 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
       });
 
-      // Eventos interactivos en tramos de banqueta
       const handleSegmentHover = (e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
         if (e.features && e.features[0]) {
           map.getCanvas().style.cursor = 'pointer';
@@ -249,14 +300,13 @@ export const MapViewer: FC<MapViewerProps> = ({
       source.setData(segmentsGeoJSON);
     }
 
-    // 2. Fuente y capas de la ruta turística activa
+    // 2. Capa de la ruta activa optimizada
     if (!map.getSource('active-route')) {
       map.addSource('active-route', {
         type: 'geojson',
         data: routeGeoJSON
       });
 
-      // Efecto resplandor / halo de la ruta
       map.addLayer({
         id: 'route-glow',
         type: 'line',
@@ -270,7 +320,6 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
       });
 
-      // Contorno exterior contrastado
       map.addLayer({
         id: 'route-casing',
         type: 'line',
@@ -283,7 +332,6 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
       });
 
-      // Línea central dorada
       map.addLayer({
         id: 'route-core',
         type: 'line',
@@ -299,9 +347,8 @@ export const MapViewer: FC<MapViewerProps> = ({
       const source = map.getSource('active-route') as maplibregl.GeoJSONSource;
       source.setData(routeGeoJSON);
     }
-  }, [segments, segmentsGeoJSON, routeGeoJSON, activeProfile]);
+  }, [segments, segmentsGeoJSON, routeGeoJSON]);
 
-  // Actualizar capas cuando el estilo cargue o cambien los datos
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -313,21 +360,19 @@ export const MapViewer: FC<MapViewerProps> = ({
     }
   }, [updateMapLayers, activeStyle]);
 
-  // Actualización de marcadores de paradas y POIs
+  // Renderizado dinámico de marcadores interactivos (adaptados a toques en pantallas móviles)
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
 
-    // Remover marcadores previos
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
-    // Mapeo de paradas de la ruta activa
     const stopsByPoiId = new Map(
       (selectedRoute?.stops || []).map((stop) => [stop.poi.id, stop])
     );
 
-    // 1. Marcadores de paradas ordenadas de la ruta activa (con números 1, 2, 3...)
+    // 1. Marcadores numerados de la ruta activa
     if (selectedRoute) {
       selectedRoute.stops.forEach((stop) => {
         const isSelected = stop.poi.id === selectedStopPoiId;
@@ -339,11 +384,10 @@ export const MapViewer: FC<MapViewerProps> = ({
         }`;
         el.innerHTML = `<span>${stop.stop_order}</span>`;
 
-        el.addEventListener('click', (e) => {
+        const handleClick = (e: Event) => {
           e.stopPropagation();
           onSelectPoi(stop.poi.id);
 
-          // Popup interactivo enriquecido
           if (popupRef.current) popupRef.current.remove();
 
           const popupContent = `
@@ -376,7 +420,10 @@ export const MapViewer: FC<MapViewerProps> = ({
             .addTo(map);
 
           popupRef.current = popup;
-        });
+        };
+
+        el.addEventListener('click', handleClick);
+        el.addEventListener('touchend', handleClick);
 
         const marker = new maplibregl.Marker({ element: el })
           .setLngLat(stop.poi.coordinates)
@@ -386,21 +433,21 @@ export const MapViewer: FC<MapViewerProps> = ({
       });
     }
 
-    // 2. Marcadores discretos para POIs fuera de la ruta actual
+    // 2. Marcadores discretos de todos los POIs
     pois.forEach((poi) => {
-      if (stopsByPoiId.has(poi.id)) return; // Ya dibujado como parada
+      if (stopsByPoiId.has(poi.id)) return;
 
       const isSelected = poi.id === selectedStopPoiId;
       const el = document.createElement('div');
       el.className = `rounded-full cursor-pointer transition-transform duration-200 hover:scale-150 ${
         poi.is_local_business
-          ? 'w-3.5 h-3.5 bg-sky-400 border border-white shadow-md'
-          : 'w-2.5 h-2.5 bg-slate-400/80 border border-slate-800'
+          ? 'w-4 h-4 bg-sky-400 border border-white shadow-md'
+          : 'w-3 h-3 bg-slate-400/80 border border-slate-800'
       } ${isSelected ? 'ring-2 ring-amber-400 scale-150' : ''}`;
 
       el.title = poi.name;
 
-      el.addEventListener('click', (e) => {
+      const handleClick = (e: Event) => {
         e.stopPropagation();
         onSelectPoi(poi.id);
 
@@ -428,7 +475,10 @@ export const MapViewer: FC<MapViewerProps> = ({
           .addTo(map);
 
         popupRef.current = popup;
-      });
+      };
+
+      el.addEventListener('click', handleClick);
+      el.addEventListener('touchend', handleClick);
 
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat(poi.coordinates)
@@ -438,7 +488,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     });
   }, [pois, selectedRoute, selectedStopPoiId, language, onSelectPoi]);
 
-  // Centrar cámara en el POI seleccionado cuando cambia
+  // Centrar cámara dinámicamente cuando se selecciona un POI
   useEffect(() => {
     if (!mapRef.current || !selectedStopPoiId) return;
     const target = pois.find((p) => p.id === selectedStopPoiId);
@@ -453,7 +503,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     }
   }, [selectedStopPoiId, pois, is3D]);
 
-  // Ajustar la cámara para encuadrar toda la ruta activa
+  // Ajuste automático y encuadre a la ruta completa
   const fitToRoute = useCallback(() => {
     const map = mapRef.current;
     if (!map || !selectedRoute || selectedRoute.stops.length === 0) return;
@@ -464,13 +514,19 @@ export const MapViewer: FC<MapViewerProps> = ({
     });
 
     map.fitBounds(bounds, {
-      padding: { top: 70, bottom: 70, left: 70, right: 70 },
+      padding: { top: 50, bottom: 50, left: 40, right: 40 },
       maxZoom: 16.5,
       duration: 1200
     });
   }, [selectedRoute]);
 
-  // Alternar vista tridimensional (3D Perspective / 2D Flat)
+  // Auto-encuadre inicial al seleccionar o generar una nueva ruta
+  useEffect(() => {
+    if (selectedRoute && mapRef.current) {
+      fitToRoute();
+    }
+  }, [selectedRoute, fitToRoute]);
+
   const toggle3D = useCallback(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -484,34 +540,34 @@ export const MapViewer: FC<MapViewerProps> = ({
   }, [is3D]);
 
   return (
-    <div className="relative w-full h-[620px] rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950 select-none">
+    <div className="relative w-full h-[380px] sm:h-[480px] md:h-[560px] lg:h-[620px] rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950 select-none">
       {/* Contenedor WebGL MapLibre */}
       <div ref={mapContainerRef} className="w-full h-full" />
 
-      {/* Barra superior de herramientas y estilos de mapa */}
-      <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2">
+      {/* Barra superior de herramientas adaptativa para móviles */}
+      <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-1.5 sm:gap-2 max-w-[calc(100vw-80px)]">
         {/* Selector de estilos visuales */}
         <div className="flex bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-slate-700 shadow-lg">
           {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((key) => (
             <button
               key={key}
               onClick={() => setActiveStyle(key)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
                 activeStyle === key
                   ? 'bg-amber-500 text-slate-950 shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
               <span>{MAP_STYLES[key].icon}</span>
-              <span className="hidden sm:inline">{MAP_STYLES[key].name[language]}</span>
+              <span className="hidden md:inline">{MAP_STYLES[key].name[language]}</span>
             </button>
           ))}
         </div>
 
-        {/* Botón de alternancia 3D / 2D */}
+        {/* Botón 3D / 2D */}
         <button
           onClick={toggle3D}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 backdrop-blur-md border shadow-lg transition-all ${
+          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md border shadow-lg transition-all ${
             is3D
               ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
               : 'bg-slate-900/90 text-slate-300 border-slate-700 hover:bg-slate-800'
@@ -526,30 +582,30 @@ export const MapViewer: FC<MapViewerProps> = ({
         {selectedRoute && (
           <button
             onClick={fitToRoute}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900/90 text-slate-200 border border-slate-700 hover:bg-slate-800 hover:text-white shadow-lg backdrop-blur-md transition-all"
-            title="Encuadrar ruta completa"
+            className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 bg-slate-900/90 text-slate-200 border border-slate-700 hover:bg-slate-800 hover:text-white shadow-lg backdrop-blur-md transition-all"
+            title="Encuadrar ruta"
           >
             <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden md:inline">{language === 'es' ? 'Encuadrar' : 'Fit Route'}</span>
+            <span className="hidden sm:inline">{language === 'es' ? 'Encuadrar' : 'Fit'}</span>
           </button>
         )}
       </div>
 
-      {/* HUD flotante con información de segmento al pasar el ratón */}
+      {/* HUD informativo de segmento sobrevolado */}
       {hoveredSegment && (
-        <div className="absolute top-16 left-3 z-10 bg-slate-900/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-700 text-xs text-slate-200 shadow-2xl pointer-events-none max-w-xs animate-in fade-in duration-200">
+        <div className="absolute top-14 sm:top-16 left-3 z-10 bg-slate-900/95 backdrop-blur-md p-3 rounded-xl border border-slate-700 text-xs text-slate-200 shadow-2xl pointer-events-none max-w-[calc(100vw-32px)] sm:max-w-xs animate-in fade-in duration-200">
           <div className="font-bold text-amber-400 flex items-center justify-between">
             <span>{hoveredSegment.id}</span>
             <span className="text-[10px] uppercase font-semibold text-slate-400">
               {hoveredSegment.zone.replace(/_/g, ' ')}
             </span>
           </div>
-          <div className="mt-1 text-slate-300 flex items-center gap-3">
+          <div className="mt-1 text-slate-300 flex items-center gap-2.5 text-[11px]">
             <span>Long: <strong>{hoveredSegment.length_m}m</strong></span>
             <span>Ancho: <strong>{hoveredSegment.width_m}m</strong></span>
             <span>Pend: <strong>{hoveredSegment.slope_pct}%</strong></span>
           </div>
-          <div className="mt-1 text-slate-400">
+          <div className="mt-1 text-slate-400 text-[11px]">
             Superficie: <strong className="text-slate-200 capitalize">{hoveredSegment.surface.replace(/_/g, ' ')}</strong>
           </div>
           <div className="mt-1.5 pt-1.5 border-t border-slate-800 flex items-center justify-between text-[11px]">
@@ -573,63 +629,57 @@ export const MapViewer: FC<MapViewerProps> = ({
         </div>
       )}
 
-      {/* Leyenda interactiva flotante en esquina inferior */}
+      {/* Leyenda interactiva flotante colapsable para teléfonos */}
       <div className="absolute bottom-3 left-3 z-10">
         {showLegend ? (
-          <div className="bg-slate-900/95 backdrop-blur-md p-3 rounded-xl border border-slate-700 text-xs text-slate-200 shadow-2xl max-w-xs space-y-2 animate-in fade-in">
+          <div className="bg-slate-900/95 backdrop-blur-md p-3 rounded-xl border border-slate-700 text-xs text-slate-200 shadow-2xl max-w-[calc(100vw-24px)] sm:max-w-xs space-y-1.5 animate-in fade-in">
             <div className="flex items-center justify-between font-bold text-slate-100 uppercase tracking-wider text-[10px] pb-1 border-b border-slate-800">
-              <span>{language === 'es' ? 'Microcartografía de Acera' : 'Sidewalk Cartography'}</span>
+              <span>{language === 'es' ? 'Microcartografía' : 'Cartography'}</span>
               <button
                 onClick={() => setShowLegend(false)}
-                className="text-slate-400 hover:text-white text-[11px]"
-                title="Minimizar leyenda"
+                className="text-slate-400 hover:text-white px-1 text-[11px]"
+                title="Minimizar"
               >
                 ✕
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-5 h-1.5 bg-gradient-to-r from-amber-500 to-amber-300 inline-block rounded-full shadow-sm"></span>
-              <span className="font-semibold text-amber-300">
-                {language === 'es' ? 'Itinerario Activo Optimizado' : 'Active Optimized Route'}
+              <span className="w-4 h-1.5 bg-gradient-to-r from-amber-500 to-amber-300 inline-block rounded-full"></span>
+              <span className="font-semibold text-amber-300 text-[11px]">
+                {language === 'es' ? 'Ruta Activa Optimizada' : 'Active Route'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-5 h-1 bg-emerald-500 inline-block rounded"></span>
-              <span className="flex items-center gap-1">
+              <span className="w-4 h-1 bg-emerald-500 inline-block rounded"></span>
+              <span className="flex items-center gap-1 text-[11px]">
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                {language === 'es' ? 'Acera verificada (Accesible)' : 'Verified sidewalk (Accessible)'}
+                {language === 'es' ? 'Acera Verificada' : 'Verified Sidewalk'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-5 h-1 bg-rose-500 inline-block rounded opacity-90 border-t border-dashed border-rose-300"></span>
-              <span className="flex items-center gap-1">
+              <span className="w-4 h-1 bg-rose-500 inline-block rounded"></span>
+              <span className="flex items-center gap-1 text-[11px]">
                 <AlertTriangle className="w-3 h-3 text-rose-400" />
-                {language === 'es' ? 'Barrera / No transitable' : 'Barrier / Inaccessible'}
+                {language === 'es' ? 'Barrera Arquitectónica' : 'Barrier'}
               </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-400 inline-block ring-2 ring-sky-400/30"></span>
-              <span>{language === 'es' ? 'Taller / Comercio Tradicional' : 'Artisan / Local Shop'}</span>
             </div>
           </div>
         ) : (
           <button
             onClick={() => setShowLegend(true)}
             className="p-2 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700 text-slate-300 hover:text-white shadow-lg text-xs flex items-center gap-1.5"
+            title="Ver leyenda de aceras"
           >
             <Layers className="w-4 h-4 text-amber-400" />
-            <span className="text-[11px] font-semibold">{language === 'es' ? 'Leyenda' : 'Legend'}</span>
+            <span className="text-[11px] font-semibold">{language === 'es' ? 'Simbología' : 'Legend'}</span>
           </button>
         )}
       </div>
 
-      {/* Indicador de perfil activo en esquina inferior derecha */}
+      {/* Aviso de gesto táctil en móviles */}
       <div className="absolute bottom-3 right-12 z-10 hidden sm:flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700 text-[11px] text-slate-300 shadow-lg">
-        <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span>
-          {language === 'es' ? 'Filtro de accesibilidad:' : 'Accessibility filter:'}{' '}
-          <strong className="text-white capitalize">{activeProfile.replace(/_/g, ' ')}</strong>
-        </span>
+        <Compass className="w-3 h-3 text-amber-400" />
+        <span className="capitalize">{activeProfile.replace(/_/g, ' ')}</span>
       </div>
     </div>
   );
