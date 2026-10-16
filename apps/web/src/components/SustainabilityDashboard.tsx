@@ -93,30 +93,30 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start animate-fade-slide">
       {/* Columna Izquierda (7 cols): Simulador de Inversión en Banquetas */}
-      <div className="lg:col-span-7 bg-slate-900 rounded-2xl border border-white/10 p-4 sm:p-5 shadow-lg space-y-3.5">
-        <div className="border-b border-white/10 pb-3 flex flex-wrap items-center justify-between gap-2">
+      <div className="lg:col-span-7 bg-[#0B228A] rounded-2xl border border-[#9597C1]/25 p-4 sm:p-5 shadow-lg space-y-3.5">
+        <div className="border-b border-[#9597C1]/20 pb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 className="text-xs font-extrabold text-white uppercase tracking-wide flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
+            <h3 className="text-xs font-extrabold text-white uppercase tracking-wide flex items-center gap-1.5 font-serif">
+              <AlertTriangle className="w-4 h-4 text-[#EDE28E]" />
               {language === 'es'
                 ? 'Priorización de Obras en Banquetas ("¿Qué pasa si...?")'
                 : 'Sidewalk Works Simulator ("What-If" Analysis)'}
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#9597C1] mt-0.5">
               {language === 'es'
                 ? 'Simula la reparación de banquetas para ver cómo se habilitan los talleres en el mapa.'
                 : 'Simulate repairs to see how workshops unlock on the pedestrian map.'}
             </p>
           </div>
 
-          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-white/10 text-[10px]">
+          <div className="flex items-center gap-1 bg-[#07154E] p-1 rounded-xl border border-[#9597C1]/20 text-[10px]">
             <button
               type="button"
               onClick={() => setSelectedBarrierProfile('silla_de_ruedas')}
               className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
                 selectedBarrierProfile === 'silla_de_ruedas'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#EDE28E] text-[#0E2C9C] shadow'
+                  : 'text-[#9597C1] hover:text-[#EFF1F8]'
               }`}
             >
               {language === 'es' ? 'Silla de Ruedas' : 'Wheelchair'}
@@ -126,8 +126,8 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
               onClick={() => setSelectedBarrierProfile('movilidad_reducida')}
               className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
                 selectedBarrierProfile === 'movilidad_reducida'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#EDE28E] text-[#0E2C9C] shadow'
+                  : 'text-[#9597C1] hover:text-[#EFF1F8]'
               }`}
             >
               {language === 'es' ? 'Movilidad Reducida' : 'Reduced Mobility'}
@@ -150,18 +150,18 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
                 key={segId}
                 className={`p-3 rounded-xl border text-xs space-y-2 transition ${
                   isRepaired
-                    ? 'bg-emerald-950/30 border-emerald-500/40'
-                    : 'bg-slate-950/80 border-white/10 hover:border-white/20'
+                    ? 'bg-[#0E2C9C]/40 border-[#EDE28E]/60 shadow-sm'
+                    : 'bg-[#07154E] border-[#9597C1]/20 hover:border-[#9597C1]/40'
                 }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-black text-amber-400">#{idx + 1}</span>
+                    <span className="font-mono font-black text-[#EDE28E]">#{idx + 1}</span>
                     <span className="font-bold text-white">{b.street || b.tramo}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    <span className="bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
                       +{b.newly_unlocked_pois ?? b.pois_desbloqueados ?? 1}{' '}
                       {language === 'es' ? 'lugar habilitado' : 'unlocked venue'}
                     </span>
@@ -175,13 +175,13 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
                         }}
                         className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${
                           isRepaired
-                            ? 'bg-emerald-500 text-slate-950 shadow'
-                            : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30'
+                            ? 'bg-[#EDE28E] text-[#0E2C9C] shadow font-black'
+                            : 'bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40'
                         }`}
                       >
                         {isRepaired ? (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#0E2C9C]" />
                             <span>{language === 'es' ? 'Reparada' : 'Repaired'}</span>
                           </>
                         ) : (
@@ -195,11 +195,11 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="text-[11px] text-slate-400 flex flex-wrap items-center gap-2">
-                  <span className="uppercase font-mono text-[10px] px-1.5 py-0.2 rounded bg-white/5 text-slate-300">
+                <div className="text-[11px] text-[#9597C1] flex flex-wrap items-center gap-2">
+                  <span className="uppercase font-mono text-[10px] px-1.5 py-0.2 rounded bg-white/5 text-[#EFF1F8]">
                     {(b.zone || b.zona || '').replace(/_/g, ' ')}
                   </span>
-                  <span className="text-rose-300 font-medium">
+                  <span className="text-[#EDE28E] font-medium">
                     {language === 'es' ? 'Obstáculo:' : 'Obstacle:'}{' '}
                     {Array.isArray(b.obstacles)
                       ? b.obstacles.join(', ').replace(/_/g, ' ')
@@ -207,8 +207,8 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
                   </span>
                 </div>
 
-                <div className="text-[11px] text-slate-300">
-                  <strong className="text-emerald-400">
+                <div className="text-[11px] text-[#EFF1F8]">
+                  <strong className="text-[#EDE28E]">
                     {language === 'es' ? 'Habilita acceso a:' : 'Enables access to:'}
                   </strong>{' '}
                   {unlockedList.join(', ')}
@@ -220,16 +220,16 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
       </div>
 
       {/* Columna Derecha (5 cols): Regulador de Capacidad de Carga por Barrio */}
-      <div className="lg:col-span-5 bg-slate-900 rounded-2xl border border-white/10 p-4 sm:p-5 shadow-lg space-y-4">
-        <div className="border-b border-white/10 pb-3 flex items-center justify-between gap-2">
+      <div className="lg:col-span-5 bg-[#0B228A] rounded-2xl border border-[#9597C1]/25 p-4 sm:p-5 shadow-lg space-y-4">
+        <div className="border-b border-[#9597C1]/20 pb-3 flex items-center justify-between gap-2">
           <div>
-            <h3 className="text-xs font-extrabold text-white uppercase tracking-wide flex items-center gap-1.5">
-              <Sliders className="w-4 h-4 text-sky-400" />
+            <h3 className="text-xs font-extrabold text-white uppercase tracking-wide flex items-center gap-1.5 font-serif">
+              <Sliders className="w-4 h-4 text-[#EDE28E]" />
               {language === 'es'
                 ? 'Cupos de Capacidad Barrial (Anti-Saturación)'
                 : 'Neighborhood Capacity Quotas'}
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#9597C1] mt-0.5">
               {language === 'es'
                 ? 'Evita la masificación regulando el aforo de caminantes por hora.'
                 : 'Prevents overcrowding by capping visitors per hour.'}
@@ -243,7 +243,7 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
                 tacticalAudio.playTacticalClick();
                 onResetZoneCaps();
               }}
-              className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 border border-white/10 text-[10px] font-bold text-slate-300 flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-[10px] font-bold text-[#EDE28E] flex items-center gap-1 cursor-pointer"
               title={language === 'es' ? 'Restaurar cupos originales' : 'Reset quotas'}
             >
               <RotateCcw className="w-3 h-3" />
@@ -264,14 +264,14 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
             const maxStopsInSolver = Math.max(1, Math.round(cap / 30));
 
             return (
-              <div key={zone} className="space-y-1 bg-slate-950/70 p-2.5 rounded-xl border border-white/5">
+              <div key={zone} className="space-y-1 bg-[#07154E] p-2.5 rounded-xl border border-[#9597C1]/15">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-200">{zoneLabels[zone] || zone}</span>
+                  <span className="font-bold text-[#EFF1F8]">{zoneLabels[zone] || zone}</span>
                   <div className="flex items-center gap-1.5 font-mono text-[11px]">
-                    <span className="text-sky-300 font-bold">
+                    <span className="text-[#EDE28E] font-bold">
                       {cap} {language === 'es' ? 'caminantes/h' : 'walkers/h'}
                     </span>
-                    <span className="bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded text-[10px] font-bold">
+                    <span className="bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 px-1.5 py-0.2 rounded text-[10px] font-bold">
                       máx {maxStopsInSolver} {maxStopsInSolver === 1 ? 'parada' : 'paradas'}
                     </span>
                   </div>
@@ -283,14 +283,14 @@ export const SustainabilityDashboard: FC<SustainabilityDashboardProps> = ({
                   step="15"
                   value={cap}
                   onChange={(e) => handleCapChange(zone, parseInt(e.target.value, 10))}
-                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
+                  className="w-full h-1.5 bg-[#0B228A] rounded-lg appearance-none cursor-pointer accent-[#EDE28E]"
                 />
               </div>
             );
           })}
         </div>
 
-        <p className="text-[11px] text-slate-400 leading-relaxed border-t border-white/10 pt-2.5">
+        <p className="text-[11px] text-[#9597C1] leading-relaxed border-t border-[#9597C1]/20 pt-2.5">
           {language === 'es'
             ? 'Los límites calibrados regulan las rutas generadas por el sistema para proteger la habitabilidad y tranquilidad de los vecinos de los barrios.'
             : 'Quotas govern generated itineraries to preserve neighborhood life and prevent tourism saturation.'}
