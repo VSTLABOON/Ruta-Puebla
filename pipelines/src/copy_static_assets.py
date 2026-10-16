@@ -18,7 +18,10 @@ def main():
         "accessibility_segments.geojson",
         "pois.json",
         "sidewalk_graph.json",
-        "time_matrices.json"
+        "time_matrices.json",
+        "barrier_ranking.json",
+        "data_cleaning_funnel.json",
+        "simulation_metrics.json"
     ]
     for pf in processed_files:
         src = os.path.join(src_processed, pf)

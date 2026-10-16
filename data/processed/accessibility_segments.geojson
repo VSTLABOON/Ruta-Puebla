@@ -837,6 +837,409 @@
         "has_steps": true,
         "has_curb_ramp": false
       }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1975,
+            19.0435
+          ],
+          [
+            -98.1972,
+            19.0439
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_munecos_2norte",
+        "zone": "zocalo_centro_nucleo",
+        "length_m": 54.5,
+        "width_m": 1.8,
+        "slope_pct": 1.0,
+        "surface": "laja_colonial_nivelada",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1972,
+            19.0439
+          ],
+          [
+            -98.1968,
+            19.0451
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_dulces_6ote",
+        "zone": "zocalo_centro_nucleo",
+        "length_m": 139.9,
+        "width_m": 1.5,
+        "slope_pct": 1.2,
+        "surface": "laja_colonial",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1993,
+            19.0453
+          ],
+          [
+            -98.1968,
+            19.0451
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_dulces_rosario",
+        "zone": "zocalo_centro_nucleo",
+        "length_m": 263.7,
+        "width_m": 1.6,
+        "slope_pct": 1.0,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1972,
+            19.0439
+          ],
+          [
+            -98.1949,
+            19.0445
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_alfenique_4ote",
+        "zone": "zocalo_centro_nucleo",
+        "length_m": 250.8,
+        "width_m": 1.4,
+        "slope_pct": 1.5,
+        "surface": "laja_colonial",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1949,
+            19.0445
+          ],
+          [
+            -98.1942,
+            19.0442
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_parian_6norte",
+        "zone": "zocalo_centro_nucleo",
+        "length_m": 80.8,
+        "width_m": 1.7,
+        "slope_pct": 1.0,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1942,
+            19.0442
+          ],
+          [
+            -98.1924,
+            19.0429
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_parian_bubas",
+        "zone": "barrio_analco",
+        "length_m": 238.1,
+        "width_m": 1.4,
+        "slope_pct": 2.5,
+        "surface": "laja_colonial",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1924,
+            19.0429
+          ],
+          [
+            -98.1931,
+            19.0425
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_bubas_analco",
+        "zone": "barrio_analco",
+        "length_m": 86.0,
+        "width_m": 1.3,
+        "slope_pct": 3.0,
+        "surface": "laja_colonial",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.193,
+            19.0418
+          ],
+          [
+            -98.1922,
+            19.0406
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_analco_vidrio",
+        "zone": "barrio_analco",
+        "length_m": 157.7,
+        "width_m": 1.2,
+        "slope_pct": 2.0,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.192,
+            19.0418
+          ],
+          [
+            -98.1912,
+            19.0421
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_analco_panaderia",
+        "zone": "barrio_analco",
+        "length_m": 90.5,
+        "width_m": 1.25,
+        "slope_pct": 1.8,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1905,
+            19.0441
+          ],
+          [
+            -98.1882,
+            19.0426
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_luz_cazuelas",
+        "zone": "barrio_la_luz",
+        "length_m": 293.7,
+        "width_m": 1.1,
+        "slope_pct": 3.0,
+        "surface": "concreto",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1912,
+            19.0446
+          ],
+          [
+            -98.1882,
+            19.0426
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_luz_cazuelas_templo",
+        "zone": "barrio_la_luz",
+        "length_m": 385.9,
+        "width_m": 1.3,
+        "slope_pct": 2.5,
+        "surface": "concreto",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1928,
+            19.0457
+          ],
+          [
+            -98.1895,
+            19.0449
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_sanfco_templo",
+        "zone": "barrio_el_alto",
+        "length_m": 358.1,
+        "width_m": 1.8,
+        "slope_pct": 1.0,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1901,
+            19.0492
+          ],
+          [
+            -98.1894,
+            19.0504
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_xane_mirador",
+        "zone": "barrio_xanenetla",
+        "length_m": 152.4,
+        "width_m": 1.0,
+        "slope_pct": 7.5,
+        "surface": "empedrado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": false,
+        "transitable_silla_de_ruedas": false,
+        "has_steps": true,
+        "has_curb_ramp": false
+      }
     }
   ]
 }

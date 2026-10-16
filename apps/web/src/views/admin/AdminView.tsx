@@ -1,6 +1,15 @@
-import { useState, useEffect, type FC } from 'react';
-import { Language } from '@ruta-abierta/shared-types';
+import { useState, useEffect, useMemo, type FC } from 'react';
+import {
+  Language,
+  POI,
+  SidewalkGraph,
+  TimeMatrices,
+  MobilityProfile,
+  RouteAlternative,
+  solveOPTW
+} from '@ruta-abierta/shared-types';
 import { SustainabilityDashboard } from '../../components/SustainabilityDashboard';
+import { RouteComparison } from '../../components/RouteComparison';
 import {
   BarChart3,
   Compass,
@@ -9,16 +18,28 @@ import {
   KeyRound,
   Sparkles,
   ShieldCheck,
-  LogOut
+  LogOut,
+  Cpu,
+  Sliders
 } from 'lucide-react';
 import { useRouter } from '../../router/Router';
 import { tacticalAudio } from '../../utils/tacticalAudio';
 
 interface AdminViewProps {
+  pois: POI[];
+  graph: SidewalkGraph | null;
+  matrices: TimeMatrices | null;
+  weights: any;
   language: Language;
 }
 
-export const AdminView: FC<AdminViewProps> = ({ language }) => {
+export const AdminView: FC<AdminViewProps> = ({
+  pois,
+  graph,
+  matrices,
+  weights,
+  language
+}) => {
   const { navigate } = useRouter();
 
   const [session, setSession] = useState<{
@@ -36,6 +57,8 @@ export const AdminView: FC<AdminViewProps> = ({ language }) => {
 
   const [key, setKey] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [evalProfile, setEvalProfile] = useState<MobilityProfile>('silla_de_ruedas');
+  const [selectedRouteName, setSelectedRouteName] = useState<string>('');
 
   useEffect(() => {
     try {
@@ -43,6 +66,56 @@ export const AdminView: FC<AdminViewProps> = ({ language }) => {
       if (saved) setSession(JSON.parse(saved));
     } catch {}
   }, []);
+
+  const optWeights = useMemo(() => {
+    return weights
+      ? {
+          w_interes: weights.pesos_puntaje_parada_S_i.w_interes.valor_defecto,
+          w_presupuesto: weights.pesos_puntaje_parada_S_i.w_presupuesto.valor_defecto,
+          w_dispersion: weights.pesos_puntaje_parada_S_i.w_dispersion.valor_defecto,
+          w_local: weights.pesos_puntaje_parada_S_i.w_local.valor_defecto
+        }
+      : undefined;
+  }, [weights]);
+
+  // Evaluación multicriterio OPTW en vivo para auditores SECIHTI
+  const optwEvaluation = useMemo(() => {
+    if (!pois.length || !graph || !matrices) return null;
+    try {
+      return solveOPTW(
+        {
+          profile: evalProfile,
+          max_time_min: 180,
+          max_budget_mxn: 300,
+          interests: ['patrimonio', 'artesania', 'gastronomia'],
+          language,
+          start_poi_id: 'poi_catedral',
+          balance_local_pct: 80
+        },
+        pois,
+        matrices,
+        graph,
+        { weights: optWeights }
+      );
+    } catch {
+      return null;
+    }
+  }, [pois, graph, matrices, optWeights, evalProfile, language]);
+
+  const activeRoute: RouteAlternative | null = useMemo(() => {
+    if (!optwEvaluation) return null;
+    const all = [optwEvaluation.main_route, ...optwEvaluation.alternative_routes];
+    return all.find((r) => r.name === selectedRouteName) || optwEvaluation.main_route;
+  }, [optwEvaluation, selectedRouteName]);
+
+  const totalUtilityScore = useMemo(() => {
+    if (!activeRoute) return 0;
+    return Number(
+      activeRoute.stops
+        .reduce((acc, s) => acc + s.score_breakdown.total_s_i, 0)
+        .toFixed(2)
+    );
+  }, [activeRoute]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,7 +260,7 @@ export const AdminView: FC<AdminViewProps> = ({ language }) => {
             </form>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Banner de Administrador Activo */}
             <div className="bg-emerald-950/40 border border-emerald-500/30 p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
@@ -208,6 +281,124 @@ export const AdminView: FC<AdminViewProps> = ({ language }) => {
 
             {/* Dashboard de Sostenibilidad SECIHTI */}
             <SustainabilityDashboard language={language} />
+
+            {/* Auditoría Algorítmica OPTW y Explicabilidad Multicriterio (S_i) */}
+            {optwEvaluation && activeRoute && (
+              <div className="space-y-4">
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <Cpu className="w-5 h-5 text-amber-400" />
+                    <div>
+                      <h3 className="text-sm font-bold text-white">
+                        {language === 'es'
+                          ? 'Auditoría Algorítmica OPTW y Explicabilidad Multicriterio (S_i)'
+                          : 'OPTW Algorithmic Audit & Multicriteria Explainability (S_i)'}
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        {language === 'es'
+                          ? 'Comparativa técnica exclusiva para evaluadores (oculta en la vista del turista para evitar fricción visual)'
+                          : 'Technical benchmark exclusively for evaluators (hidden from tourist view for clean UX)'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+                    <Sliders className="w-3.5 h-3.5 text-slate-400 ml-2" />
+                    {(
+                      [
+                        { id: 'silla_de_ruedas', label: language === 'es' ? 'Silla de Ruedas' : 'Wheelchair' },
+                        { id: 'movilidad_reducida', label: language === 'es' ? 'Movilidad Reducida' : 'Reduced Mobility' },
+                        { id: 'sin_restriccion', label: language === 'es' ? 'Estándar' : 'Standard' }
+                      ] as { id: MobilityProfile; label: string }[]
+                    ).map((prof) => (
+                      <button
+                        key={prof.id}
+                        type="button"
+                        onClick={() => setEvalProfile(prof.id)}
+                        className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition cursor-pointer ${
+                          evalProfile === prof.id
+                            ? 'bg-amber-500 text-slate-950'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {prof.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <RouteComparison
+                  mainRoute={optwEvaluation.main_route}
+                  alternativeRoutes={optwEvaluation.alternative_routes}
+                  activeRouteName={activeRoute.name}
+                  onSelectRoute={(r) => setSelectedRouteName(r.name)}
+                  language={language}
+                />
+
+                {/* Desglose Matemático S_i por Parada */}
+                <div className="bg-white text-slate-900 rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wide text-slate-900">
+                        {language === 'es'
+                          ? `Desglose de Utilidad Matemática S_i — ${activeRoute.name}`
+                          : `Mathematical Utility Breakdown S_i — ${activeRoute.name}`}
+                      </h4>
+                      <p className="text-[11px] text-slate-500">
+                        S_i = w_interes · Sim_i + w_presupuesto · Presup_i + w_dispersion · Disp_i + w_local · Local_i
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg font-bold">
+                      Utilidad Acumulada: {totalUtilityScore} pts
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-slate-200 rounded-lg">
+                      <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200 text-[11px]">
+                        <tr>
+                          <th className="p-2">#</th>
+                          <th className="p-2">{language === 'es' ? 'Parada (POI)' : 'Stop (POI)'}</th>
+                          <th className="p-2 text-right">+Afinidad Cultural</th>
+                          <th className="p-2 text-right">+Ajuste Presupuestal</th>
+                          <th className="p-2 text-right">+Dispersión Barrial</th>
+                          <th className="p-2 text-right">+Economía Local</th>
+                          <th className="p-2 text-right">S_i Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-[11px]">
+                        {activeRoute.stops.map((stop) => (
+                          <tr key={stop.poi.id} className="hover:bg-slate-50">
+                            <td className="p-2 font-bold text-slate-900">{stop.stop_order}</td>
+                            <td className="p-2 font-semibold text-slate-900">
+                              {stop.poi.name}
+                              <span className="block text-[10px] text-slate-500 font-normal">
+                                {stop.poi.zone.replace(/_/g, ' ')}
+                              </span>
+                            </td>
+                            <td className="p-2 font-mono text-right text-sky-700 font-semibold">
+                              +{stop.score_breakdown.interest_similarity.toFixed(2)}
+                            </td>
+                            <td className="p-2 font-mono text-right text-emerald-700 font-semibold">
+                              +{stop.score_breakdown.budget_fit.toFixed(2)}
+                            </td>
+                            <td className="p-2 font-mono text-right text-indigo-700 font-semibold">
+                              +{stop.score_breakdown.dispersion_bonus.toFixed(2)}
+                            </td>
+                            <td className="p-2 font-mono text-right text-amber-800 font-semibold">
+                              +{stop.score_breakdown.local_business_bonus.toFixed(2)}
+                            </td>
+                            <td className="p-2 font-mono text-right font-extrabold text-slate-900 bg-amber-50/60">
+                              {stop.score_breakdown.total_s_i.toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -479,6 +479,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                 </div>
               )}
               <HolographicBadge
+                poiId={poi.id}
                 badgeName={poi.secret_to_unlock?.insignia_nombre || `Medallón ${poi.name}`}
                 poiName={poi.name}
                 zone={poi.zone}

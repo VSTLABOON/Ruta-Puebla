@@ -14,29 +14,29 @@
         "ci_95_upper": 0.0
       },
       "pct_local_spend": {
-        "mean": 0.0,
-        "ci_95_lower": 0.0,
-        "ci_95_upper": 0.0
+        "mean": 3.28,
+        "ci_95_lower": 1.86,
+        "ci_95_upper": 4.82
       },
       "pct_verified": {
-        "mean": 47.68,
-        "ci_95_lower": 45.46,
-        "ci_95_upper": 49.85
+        "mean": 42.95,
+        "ci_95_lower": 40.61,
+        "ci_95_upper": 45.01
       },
       "walking_distance_m": {
-        "mean": 1218.44,
-        "ci_95_lower": 1118.57,
-        "ci_95_upper": 1322.33
+        "mean": 1645.32,
+        "ci_95_lower": 1500.22,
+        "ci_95_upper": 1790.88
       },
       "total_time_min": {
-        "mean": 127.12,
-        "ci_95_lower": 118.81,
-        "ci_95_upper": 135.27
+        "mean": 153.38,
+        "ci_95_lower": 142.12,
+        "ci_95_upper": 164.85
       },
       "utility": {
-        "mean": 70.29,
-        "ci_95_lower": 67.88,
-        "ci_95_upper": 72.59
+        "mean": 76.59,
+        "ci_95_lower": 73.34,
+        "ci_95_upper": 79.77
       },
       "pct_wheelchair_feasible": {
         "mean": 100.0,
@@ -46,34 +46,34 @@
     },
     "mas_corta": {
       "pct_outside_core": {
-        "mean": 44.5,
-        "ci_95_lower": 38.8,
-        "ci_95_upper": 50.53
+        "mean": 37.18,
+        "ci_95_lower": 30.75,
+        "ci_95_upper": 44.26
       },
       "pct_local_spend": {
-        "mean": 26.01,
-        "ci_95_lower": 18.67,
-        "ci_95_upper": 33.24
+        "mean": 11.08,
+        "ci_95_lower": 7.4,
+        "ci_95_upper": 14.14
       },
       "pct_verified": {
-        "mean": 42.64,
-        "ci_95_lower": 39.6,
-        "ci_95_upper": 45.32
+        "mean": 44.02,
+        "ci_95_lower": 40.37,
+        "ci_95_upper": 47.52
       },
       "walking_distance_m": {
-        "mean": 1883.83,
-        "ci_95_lower": 1687.67,
-        "ci_95_upper": 2107.54
+        "mean": 1576.56,
+        "ci_95_lower": 1428.32,
+        "ci_95_upper": 1748.92
       },
       "total_time_min": {
-        "mean": 171.62,
-        "ci_95_lower": 158.25,
-        "ci_95_upper": 185.13
+        "mean": 172.52,
+        "ci_95_lower": 159.2,
+        "ci_95_upper": 186.04
       },
       "utility": {
-        "mean": 116.76,
-        "ci_95_lower": 110.25,
-        "ci_95_upper": 123.57
+        "mean": 112.56,
+        "ci_95_lower": 106.5,
+        "ci_95_upper": 118.99
       },
       "pct_wheelchair_feasible": {
         "mean": 0.0,
@@ -83,34 +83,34 @@
     },
     "optimizada": {
       "pct_outside_core": {
-        "mean": 89.37,
-        "ci_95_lower": 87.33,
-        "ci_95_upper": 91.72
+        "mean": 94.87,
+        "ci_95_lower": 92.7,
+        "ci_95_upper": 96.64
       },
       "pct_local_spend": {
-        "mean": 59.43,
-        "ci_95_lower": 52.56,
-        "ci_95_upper": 66.28
+        "mean": 61.37,
+        "ci_95_lower": 54.63,
+        "ci_95_upper": 68.18
       },
       "pct_verified": {
-        "mean": 35.27,
-        "ci_95_lower": 32.37,
-        "ci_95_upper": 38.14
+        "mean": 31.15,
+        "ci_95_lower": 28.12,
+        "ci_95_upper": 34.24
       },
       "walking_distance_m": {
-        "mean": 2588.12,
-        "ci_95_lower": 2375.2,
-        "ci_95_upper": 2806.02
+        "mean": 2639.47,
+        "ci_95_lower": 2429.39,
+        "ci_95_upper": 2874.84
       },
       "total_time_min": {
-        "mean": 171.45,
-        "ci_95_lower": 158.47,
-        "ci_95_upper": 186.78
+        "mean": 172.79,
+        "ci_95_lower": 159.97,
+        "ci_95_upper": 187.71
       },
       "utility": {
-        "mean": 129.55,
-        "ci_95_lower": 123.87,
-        "ci_95_upper": 135.23
+        "mean": 131.26,
+        "ci_95_lower": 125.41,
+        "ci_95_upper": 137.02
       },
       "pct_wheelchair_feasible": {
         "mean": 0.0,

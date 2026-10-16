@@ -24,6 +24,7 @@ import {
   PanelLeftOpen
 } from 'lucide-react';
 import { tacticalAudio } from '../../utils/tacticalAudio';
+import { UserProfile } from '../../types/userRecord';
 
 interface VisitorViewProps {
   pois: POI[];
@@ -35,7 +36,9 @@ interface VisitorViewProps {
   onUnlockSecret: (poiId: string, badgeName: string) => void;
   userLocation: [number, number];
   onUserLocationChange: (coords: [number, number]) => void;
+  currentUser?: UserProfile | null;
   onOpenAuth: () => void;
+  onOpenRecord?: () => void;
   onOpenDataInfo: () => void;
   onToggleLanguage: () => void;
   onToggleViewport?: () => void;
@@ -52,7 +55,9 @@ export const VisitorView: FC<VisitorViewProps> = ({
   onUnlockSecret,
   userLocation,
   onUserLocationChange,
+  currentUser,
   onOpenAuth,
+  onOpenRecord,
   onOpenDataInfo,
   onToggleLanguage,
   onToggleViewport,
@@ -322,10 +327,12 @@ export const VisitorView: FC<VisitorViewProps> = ({
         isPulseActive={isPulseActive}
         unlockedCount={passportState.unlocked_secrets.length}
         language={language}
+        currentUser={currentUser}
         onOpenTuneRoute={() => setIsFilterDrawerOpen(true)}
         onOpenArtisansDirectory={() => setCommandTab('artisans')}
         onExportRoute={handleExportRoute}
         onOpenAuth={onOpenAuth}
+        onOpenRecord={onOpenRecord}
         onOpenDataInfo={onOpenDataInfo}
         onToggleLanguage={onToggleLanguage}
         onToggleViewport={onToggleViewport}

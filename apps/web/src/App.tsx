@@ -3,12 +3,13 @@ import {
   POI,
   SidewalkGraph,
   TimeMatrices,
-  PassportState,
-  MobilityProfile
+  PassportState
 } from '@ruta-abierta/shared-types';
 import { DataInfoModal } from './components/DataInfoModal';
 import { CelebrationModal } from './components/CelebrationModal';
 import { AuthModal } from './components/AuthModal';
+import { UserRecordModal } from './components/UserRecordModal';
+import { UserProfile } from './types/userRecord';
 import { USER_ROLES, UserRole } from './types/roles';
 import {
   Languages,
@@ -22,7 +23,9 @@ import {
   Monitor,
   X,
   Radio,
-  Lock
+  Lock,
+  Trophy,
+  User
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
@@ -31,85 +34,6 @@ import { RouterProvider, useRouter } from './router/Router';
 const VisitorView = React.lazy(() => import('./views/visitor/VisitorView'));
 const ArtisanView = React.lazy(() => import('./views/artisan/ArtisanView'));
 const AdminView = React.lazy(() => import('./views/admin/AdminView'));
-
-// Enriquecer dinámicamente la matriz de tiempos y distancias para incluir las 24 locaciones
-function enrichTimeMatrices(pois: POI[], baseMatrices: TimeMatrices): TimeMatrices {
-  const existingSet = new Set(baseMatrices.poi_ids);
-  const missingPois = pois.filter((p) => !existingSet.has(p.id));
-  if (missingPois.length === 0) return baseMatrices;
-
-  const allIds = [...baseMatrices.poi_ids, ...missingPois.map((p) => p.id)];
-  const poiMap = new Map(pois.map((p) => [p.id, p]));
-  const n = allIds.length;
-  const oldN = baseMatrices.poi_ids.length;
-
-  const haversineMeters = (c1: [number, number], c2: [number, number]) => {
-    const R = 6371e3;
-    const phi1 = (c1[1] * Math.PI) / 180;
-    const phi2 = (c2[1] * Math.PI) / 180;
-    const dPhi = ((c2[1] - c1[1]) * Math.PI) / 180;
-    const dLam = ((c2[0] - c1[0]) * Math.PI) / 180;
-    const a =
-      Math.sin(dPhi / 2) ** 2 +
-      Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLam / 2) ** 2;
-    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.32);
-  };
-
-  const profiles: MobilityProfile[] = ['sin_restriccion', 'movilidad_reducida', 'silla_de_ruedas'];
-  const speedMetersPerMin: Record<MobilityProfile, number> = {
-    sin_restriccion: 72,
-    movilidad_reducida: 55,
-    silla_de_ruedas: 50
-  };
-
-  const newProfiles = {} as TimeMatrices['profiles'];
-
-  for (const prof of profiles) {
-    const oldSub = baseMatrices.profiles[prof];
-    const time_minutes: number[][] = Array.from({ length: n }, () => Array(n).fill(999));
-    const distance_meters: number[][] = Array.from({ length: n }, () => Array(n).fill(99999));
-    const path_segments: string[][][] = Array.from({ length: n }, () =>
-      Array.from({ length: n }, () => [])
-    );
-
-    for (let i = 0; i < n; i++) {
-      for (let j = 0; j < n; j++) {
-        if (i === j) {
-          time_minutes[i][j] = 0;
-          distance_meters[i][j] = 0;
-          path_segments[i][j] = [];
-          continue;
-        }
-        if (i < oldN && j < oldN) {
-          time_minutes[i][j] = oldSub.time_minutes[i][j];
-          distance_meters[i][j] = oldSub.distance_meters[i][j];
-          path_segments[i][j] = oldSub.path_segments[i][j];
-        } else {
-          const pA = poiMap.get(allIds[i]);
-          const pB = poiMap.get(allIds[j]);
-          if (pA && pB) {
-            if (prof !== 'sin_restriccion' && (!pA.entrance_accessible || !pB.entrance_accessible)) {
-              time_minutes[i][j] = 999;
-              distance_meters[i][j] = 99999;
-            } else {
-              const dist = haversineMeters(pA.coordinates, pB.coordinates);
-              distance_meters[i][j] = dist;
-              time_minutes[i][j] = Math.max(2, Math.round(dist / speedMetersPerMin[prof]));
-            }
-          }
-        }
-      }
-    }
-
-    newProfiles[prof] = { time_minutes, distance_meters, path_segments };
-  }
-
-  return {
-    ...baseMatrices,
-    poi_ids: allIds,
-    profiles: newProfiles
-  };
-}
 
 function MainApp() {
   const { activeRoute, navigate } = useRouter();
@@ -127,7 +51,28 @@ function MainApp() {
   // Modales
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Sesión del usuario explorador activo
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
+    try {
+      const saved = localStorage.getItem('ruta_abierta_tourist_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const syncCurrentUser = () => {
+    try {
+      const saved = localStorage.getItem('ruta_abierta_tourist_user');
+      setCurrentUser(saved ? JSON.parse(saved) : null);
+    } catch {
+      setCurrentUser(null);
+    }
+  };
+
   const [celebrationData, setCelebrationData] = useState<{
     badgeName: string;
     title: string;
@@ -196,10 +141,9 @@ function MainApp() {
           fetch('/data/choice_model_weights.json?v=3', fetchOpts).then((r) => r.json())
         ]);
 
-        const enriched = enrichTimeMatrices(poisRes, matricesRes);
         setPois(poisRes);
         setGraph(graphRes);
-        setMatrices(enriched);
+        setMatrices(matricesRes);
         setWeights(weightsRes);
         setIsLoading(false);
       } catch (err) {
@@ -265,100 +209,139 @@ function MainApp() {
             </div>
           </div>
 
-          {/* En Móvil: Cero botones redundantes que ensucien la vista. En Escritorio: Barra completa */}
-          <div className="hidden sm:flex items-center gap-2">
-            {/* Píldoras de Roles con Enrutamiento Directo en Desktop */}
-            <div className="flex bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
+          {/* Botón de Acceso / Login / Mi Récord (Visible en Móvil y Escritorio) */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {currentUser ? (
               <button
                 type="button"
-                onClick={() => navigate('/')}
-                className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
-                  activeRoute === '/'
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => setIsRecordModalOpen(true)}
+                className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm select-none"
+                title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
               >
-                <Compass className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Visitante' : 'Visitor'}</span>
+                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                <span className="max-w-[70px] sm:max-w-[110px] truncate">{currentUser.nickname}</span>
+                <span className="text-[10px] bg-amber-500 text-slate-950 px-1.5 py-0.2 rounded-full font-mono font-black">
+                  Nv.{currentUser.level}
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                title={language === 'es' ? 'Iniciar sesión o registrarse' : 'Login / Register'}
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>{language === 'es' ? 'Login' : 'Login'}</span>
+              </button>
+            )}
+
+            {/* En Escritorio: Barra completa con Roles, Simulador e Idioma */}
+            <div className="hidden sm:flex items-center gap-2">
+              {/* Píldoras de Roles con Enrutamiento Directo en Desktop */}
+              <div className="flex bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
+                <button
+                  type="button"
+                  onClick={() => navigate('/')}
+                  className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                    activeRoute === '/'
+                      ? 'bg-amber-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'Visitante' : 'Visitor'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/taller')}
+                  className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                    activeRoute === '/taller'
+                      ? 'bg-sky-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Store className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'Local' : 'Local'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/admin')}
+                  className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                    activeRoute === '/admin'
+                      ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'Admin' : 'Admin'}</span>
+                </button>
+              </div>
+
+              {/* Botón Mi Récord en Desktop */}
+              <button
+                type="button"
+                onClick={() => setIsRecordModalOpen(true)}
+                className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
+              >
+                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                <span>{language === 'es' ? 'Récord' : 'Records'}</span>
               </button>
 
+              {/* Botón Gestión / Roles en Desktop */}
               <button
                 type="button"
-                onClick={() => navigate('/taller')}
-                className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
-                  activeRoute === '/taller'
-                    ? 'bg-sky-500 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => setIsRoleModalOpen(true)}
+                className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                title={language === 'es' ? 'Cambiar perfil de vista' : 'Switch profile'}
               >
-                <Store className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Local' : 'Local'}</span>
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <span>{language === 'es' ? 'Perfiles' : 'Profiles'}</span>
               </button>
 
+              {/* Simulador móvil vs Pantalla Completa */}
               <button
                 type="button"
-                onClick={() => navigate('/admin')}
-                className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
-                  activeRoute === '/admin'
-                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
+                }}
+                className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+                title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Vista Teléfono'}
               >
-                <BarChart3 className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Admin' : 'Admin'}</span>
+                {viewportMode === 'mobile' ? (
+                  <Monitor className="w-3.5 h-3.5" />
+                ) : (
+                  <Smartphone className="w-3.5 h-3.5" />
+                )}
+              </button>
+
+              {/* Información DENUE y Auditorías */}
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs flex items-center border border-white/10 transition cursor-pointer"
+                title={language === 'es' ? 'Acerca de los datos' : 'About data'}
+              >
+                <Filter className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Selector de Idioma en Desktop */}
+              <button
+                type="button"
+                onClick={() => {
+                  const nextLang = language === 'es' ? 'en' : 'es';
+                  setLanguage(nextLang);
+                }}
+                className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+              >
+                <Languages className="w-3.5 h-3.5" />
+                <span>{language === 'es' ? 'EN' : 'ES'}</span>
               </button>
             </div>
-
-            {/* Botón Acceso / Login en Desktop */}
-            <button
-              type="button"
-              onClick={() => setIsAuthModalOpen(true)}
-              className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-              title={language === 'es' ? 'Acceso a gestión' : 'Login'}
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>{language === 'es' ? 'Login' : 'Login'}</span>
-            </button>
-
-            {/* Simulador móvil vs Pantalla Completa */}
-            <button
-              type="button"
-              onClick={() => {
-                tacticalAudio.playTacticalClick();
-                setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
-              }}
-              className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-white/10 transition cursor-pointer"
-              title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Vista Teléfono'}
-            >
-              {viewportMode === 'mobile' ? (
-                <Monitor className="w-3.5 h-3.5" />
-              ) : (
-                <Smartphone className="w-3.5 h-3.5" />
-              )}
-            </button>
-
-            {/* Información DENUE y Auditorías */}
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs flex items-center border border-white/10 transition cursor-pointer"
-              title={language === 'es' ? 'Acerca de los datos' : 'About data'}
-            >
-              <Filter className="w-3.5 h-3.5" />
-            </button>
-
-            {/* Selector de Idioma en Desktop */}
-            <button
-              type="button"
-              onClick={() => {
-                const nextLang = language === 'es' ? 'en' : 'es';
-                setLanguage(nextLang);
-              }}
-              className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
-            >
-              <Languages className="w-3.5 h-3.5" />
-              <span>{language === 'es' ? 'EN' : 'ES'}</span>
-            </button>
           </div>
         </div>
       </header>
@@ -409,7 +392,9 @@ function MainApp() {
                 onUnlockSecret={handleUnlockSecret}
                 userLocation={userLocation}
                 onUserLocationChange={(coords) => setUserLocation(coords)}
+                currentUser={currentUser}
                 onOpenAuth={() => setIsAuthModalOpen(true)}
+                onOpenRecord={() => setIsRecordModalOpen(true)}
                 onOpenDataInfo={() => setIsModalOpen(true)}
                 onToggleLanguage={() => setLanguage((l) => (l === 'es' ? 'en' : 'es'))}
                 onToggleViewport={() => setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'))}
@@ -422,7 +407,13 @@ function MainApp() {
             )}
 
             {activeRoute === '/admin' && (
-              <AdminView language={language} />
+              <AdminView
+                pois={pois}
+                graph={graph}
+                matrices={matrices}
+                weights={weights}
+                language={language}
+              />
             )}
           </Suspense>
         </div>
@@ -491,12 +482,25 @@ function MainApp() {
         </div>
       )}
 
-      {/* Modal de Autenticación y Login para Artesanos y Administradores */}
+      {/* Modal de Autenticación y Registro (Explorador, Artesano, Gobierno) */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         pois={pois}
         language={language}
+        onSessionChange={syncCurrentUser}
+        onOpenRecord={() => setIsRecordModalOpen(true)}
+      />
+
+      {/* Modal de Mi Récord y Bitácora de Exploración */}
+      <UserRecordModal
+        isOpen={isRecordModalOpen}
+        onClose={() => setIsRecordModalOpen(false)}
+        currentUser={currentUser}
+        passportState={passportState}
+        pois={pois}
+        language={language}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       {/* Modales de Transparencia y Celebración */}

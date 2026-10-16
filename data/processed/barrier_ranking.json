@@ -4,21 +4,30 @@
     "movilidad_reducida": {
       "start_poi_id": "poi_catedral",
       "pois_reachable_now": [
+        "poi_alfareria_cazuelas_luz",
         "poi_amparo",
         "poi_antojeria_xanenetla",
+        "poi_calle_dulces",
         "poi_capilla_rosario",
         "poi_casa_aguada",
+        "poi_casa_alfenique",
+        "poi_casa_munecos",
         "poi_catedral",
         "poi_ciudad_mural",
         "poi_horno_la_luz",
         "poi_mercado_el_alto",
+        "poi_mercado_parian",
         "poi_palafoxiana",
+        "poi_panaderia_horno_analco",
         "poi_parque_analco",
+        "poi_puente_bubas",
         "poi_sapo_antiguedades",
         "poi_taller_talavera_analco",
-        "poi_templo_la_luz"
+        "poi_taller_vidrio_analco",
+        "poi_templo_la_luz",
+        "poi_templo_san_francisco"
       ],
-      "blocked_segments": 3,
+      "blocked_segments": 4,
       "ranking": [
         {
           "segment_id": "seg_analco_calle7ote_s",
@@ -35,6 +44,22 @@
           "unlocked_local_business_count": 0,
           "unlocked_zones": [
             "barrio_analco"
+          ]
+        },
+        {
+          "segment_id": "seg_xane_mirador",
+          "zone": "barrio_xanenetla",
+          "length_m": 152.4,
+          "barrier_causes": [
+            "escalon"
+          ],
+          "unlocked_pois": [
+            "poi_mirador_mural_xanenetla"
+          ],
+          "unlocked_pois_count": 1,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": [
+            "barrio_xanenetla"
           ]
         },
         {
@@ -67,56 +92,31 @@
     "silla_de_ruedas": {
       "start_poi_id": "poi_catedral",
       "pois_reachable_now": [
+        "poi_alfareria_cazuelas_luz",
         "poi_amparo",
         "poi_antojeria_xanenetla",
+        "poi_calle_dulces",
         "poi_capilla_rosario",
         "poi_casa_aguada",
+        "poi_casa_alfenique",
+        "poi_casa_munecos",
         "poi_catedral",
         "poi_ciudad_mural",
+        "poi_horno_la_luz",
         "poi_mercado_el_alto",
+        "poi_mercado_parian",
         "poi_palafoxiana",
+        "poi_panaderia_horno_analco",
         "poi_parque_analco",
+        "poi_puente_bubas",
         "poi_sapo_antiguedades",
         "poi_taller_talavera_analco",
-        "poi_templo_la_luz"
+        "poi_taller_vidrio_analco",
+        "poi_templo_la_luz",
+        "poi_templo_san_francisco"
       ],
-      "blocked_segments": 6,
+      "blocked_segments": 7,
       "ranking": [
-        {
-          "segment_id": "seg_luz_horno_acceso",
-          "zone": "barrio_la_luz",
-          "length_m": 92.2,
-          "barrier_causes": [
-            "escalon",
-            "sin_rampa",
-            "superficie_bloqueada"
-          ],
-          "unlocked_pois": [
-            "poi_horno_la_luz"
-          ],
-          "unlocked_pois_count": 1,
-          "unlocked_local_business_count": 1,
-          "unlocked_zones": [
-            "barrio_la_luz"
-          ]
-        },
-        {
-          "segment_id": "seg_luz_palafox_s",
-          "zone": "barrio_la_luz",
-          "length_m": 105.1,
-          "barrier_causes": [
-            "ancho_insuficiente",
-            "sin_rampa"
-          ],
-          "unlocked_pois": [
-            "poi_horno_la_luz"
-          ],
-          "unlocked_pois_count": 1,
-          "unlocked_local_business_count": 1,
-          "unlocked_zones": [
-            "barrio_la_luz"
-          ]
-        },
         {
           "segment_id": "seg_analco_calle7ote_s",
           "zone": "barrio_analco",
@@ -136,6 +136,25 @@
           ]
         },
         {
+          "segment_id": "seg_xane_mirador",
+          "zone": "barrio_xanenetla",
+          "length_m": 152.4,
+          "barrier_causes": [
+            "pendiente_excesiva",
+            "escalon",
+            "sin_rampa",
+            "superficie_bloqueada"
+          ],
+          "unlocked_pois": [
+            "poi_mirador_mural_xanenetla"
+          ],
+          "unlocked_pois_count": 1,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": [
+            "barrio_xanenetla"
+          ]
+        },
+        {
           "segment_id": "seg_xane_callejuela_empedrada",
           "zone": "barrio_xanenetla",
           "length_m": 59.4,
@@ -145,6 +164,33 @@
             "escalon",
             "sin_rampa",
             "superficie_bloqueada"
+          ],
+          "unlocked_pois": [],
+          "unlocked_pois_count": 0,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": []
+        },
+        {
+          "segment_id": "seg_luz_horno_acceso",
+          "zone": "barrio_la_luz",
+          "length_m": 92.2,
+          "barrier_causes": [
+            "escalon",
+            "sin_rampa",
+            "superficie_bloqueada"
+          ],
+          "unlocked_pois": [],
+          "unlocked_pois_count": 0,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": []
+        },
+        {
+          "segment_id": "seg_luz_palafox_s",
+          "zone": "barrio_la_luz",
+          "length_m": 105.1,
+          "barrier_causes": [
+            "ancho_insuficiente",
+            "sin_rampa"
           ],
           "unlocked_pois": [],
           "unlocked_pois_count": 0,

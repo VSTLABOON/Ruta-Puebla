@@ -218,7 +218,18 @@ def main():
         "n_alto_mercado": [-98.1916, 19.0468],
         "n_xane_concordia": [-98.1910, 19.0480],
         "n_xane_calle4norte": [-98.1901, 19.0492],
-        "n_xane_antojeria": [-98.1908, 19.0485]
+        "n_xane_antojeria": [-98.1908, 19.0485],
+        # Nodos de expansion (10 POIs adicionales). Geometria aproximada, sin auditoria de campo.
+        "n_munecos_2norte": [-98.1972, 19.0439],
+        "n_dulces_6ote": [-98.1968, 19.0451],
+        "n_alfenique_4ote": [-98.1949, 19.0445],
+        "n_parian_6norte": [-98.1942, 19.0442],
+        "n_bubas_puente": [-98.1924, 19.0429],
+        "n_analco_vidrio": [-98.1922, 19.0406],
+        "n_analco_panaderia": [-98.1912, 19.0421],
+        "n_luz_cazuelas": [-98.1882, 19.0426],
+        "n_sanfco_templo": [-98.1895, 19.0449],
+        "n_xane_mirador": [-98.1894, 19.0504]
     }
 
     # Asociar cada POI a su nodo de acceso mas cercano
@@ -236,7 +247,17 @@ def main():
         "poi_mercado_el_alto": "n_alto_mercado",
         "poi_casa_aguada": "n_san_francisco_jardin",
         "poi_ciudad_mural": "n_xane_calle4norte",
-        "poi_antojeria_xanenetla": "n_xane_antojeria"
+        "poi_antojeria_xanenetla": "n_xane_antojeria",
+        "poi_casa_munecos": "n_munecos_2norte",
+        "poi_calle_dulces": "n_dulces_6ote",
+        "poi_casa_alfenique": "n_alfenique_4ote",
+        "poi_mercado_parian": "n_parian_6norte",
+        "poi_puente_bubas": "n_bubas_puente",
+        "poi_taller_vidrio_analco": "n_analco_vidrio",
+        "poi_panaderia_horno_analco": "n_analco_panaderia",
+        "poi_alfareria_cazuelas_luz": "n_luz_cazuelas",
+        "poi_templo_san_francisco": "n_sanfco_templo",
+        "poi_mirador_mural_xanenetla": "n_xane_mirador"
     }
 
     # Definir conexiones viales (con tramos por lado y cruces)
@@ -278,7 +299,21 @@ def main():
         # Barrio de Xanenetla
         ("seg_xane_concordia_norte", "n_xane_concordia", "n_xane_calle4norte", "right", "barrio_xanenetla", 1.30, 3.8, "concreto", True, False),
         ("seg_xane_calle4norte_w", "n_xane_calle4norte", "n_xane_antojeria", "left", "barrio_xanenetla", 1.15, 4.2, "adoquin", True, False),
-        ("seg_xane_callejuela_empedrada", "n_xane_concordia", "n_xane_antojeria", "right", "barrio_xanenetla", 0.80, 6.5, "empedrado_desprendido", False, True) # Barrera
+        ("seg_xane_callejuela_empedrada", "n_xane_concordia", "n_xane_antojeria", "right", "barrio_xanenetla", 0.80, 6.5, "empedrado_desprendido", False, True), # Barrera
+        # Expansion: tramos estimados (sin auditoria de campo; confianza base hasta verificarse)
+        ("seg_munecos_2norte", "n_zocalo_ne", "n_munecos_2norte", "right", "zocalo_centro_nucleo", 1.80, 1.0, "laja_colonial_nivelada", True, False),
+        ("seg_dulces_6ote", "n_munecos_2norte", "n_dulces_6ote", "left", "zocalo_centro_nucleo", 1.50, 1.2, "laja_colonial", True, False),
+        ("seg_dulces_rosario", "n_rosario_5mayo", "n_dulces_6ote", "crossing", "zocalo_centro_nucleo", 1.60, 1.0, "adoquin_asentado", True, False),
+        ("seg_alfenique_4ote", "n_munecos_2norte", "n_alfenique_4ote", "right", "zocalo_centro_nucleo", 1.40, 1.5, "laja_colonial", True, False),
+        ("seg_parian_6norte", "n_alfenique_4ote", "n_parian_6norte", "crossing", "zocalo_centro_nucleo", 1.70, 1.0, "adoquin_asentado", True, False),
+        ("seg_parian_bubas", "n_parian_6norte", "n_bubas_puente", "crossing", "barrio_analco", 1.40, 2.5, "laja_colonial", True, False),
+        ("seg_bubas_analco", "n_bubas_puente", "n_analco_5ote", "crossing", "barrio_analco", 1.30, 3.0, "laja_colonial", True, False),
+        ("seg_analco_vidrio", "n_analco_parque_w", "n_analco_vidrio", "left", "barrio_analco", 1.20, 2.0, "adoquin_asentado", True, False),
+        ("seg_analco_panaderia", "n_analco_parque_e", "n_analco_panaderia", "right", "barrio_analco", 1.25, 1.8, "adoquin_asentado", True, False),
+        ("seg_luz_cazuelas", "n_luz_horno", "n_luz_cazuelas", "right", "barrio_la_luz", 1.10, 3.0, "concreto", True, False),
+        ("seg_luz_cazuelas_templo", "n_luz_templo", "n_luz_cazuelas", "left", "barrio_la_luz", 1.30, 2.5, "concreto", True, False),
+        ("seg_sanfco_templo", "n_san_francisco_jardin", "n_sanfco_templo", "crossing", "barrio_el_alto", 1.80, 1.0, "adoquin_asentado", True, False),
+        ("seg_xane_mirador", "n_xane_calle4norte", "n_xane_mirador", "right", "barrio_xanenetla", 1.00, 7.5, "empedrado", False, True) # Barrera: subida con escalones
     ]
 
     segments = []

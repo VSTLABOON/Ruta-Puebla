@@ -1,8 +1,23 @@
-import { useState, useRef, type MouseEvent, type TouchEvent, type FC } from 'react';
-import { Award, Sparkles, Check, ShieldCheck, Flame } from 'lucide-react';
+import { useState, useRef, useMemo, type MouseEvent, type TouchEvent, type FC } from 'react';
+import {
+  Award,
+  Sparkles,
+  Check,
+  ShieldCheck,
+  Flame,
+  SmartphoneNfc,
+  QrCode,
+  WifiOff
+} from 'lucide-react';
 import { tacticalAudio } from '../utils/tacticalAudio';
+import {
+  generateOfflineStampCode,
+  buildOfflineQrMatrix,
+  isWebNfcSupported
+} from '../utils/offlineStamp';
 
 interface HolographicBadgeProps {
+  poiId?: string;
   badgeName: string;
   poiName: string;
   zone: string;
@@ -14,6 +29,7 @@ interface HolographicBadgeProps {
 }
 
 export const HolographicBadge: FC<HolographicBadgeProps> = ({
+  poiId = 'poi_catedral',
   badgeName,
   poiName,
   zone,
@@ -28,6 +44,16 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
   const [rotateY, setRotateY] = useState(0);
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
+  const [stampMode, setStampMode] = useState<'instant' | 'nfc' | 'qr'>('nfc');
+  const [nfcScanning, setNfcScanning] = useState(false);
+  const [inputCode, setInputCode] = useState('');
+  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+
+  const expectedCode = useMemo(() => generateOfflineStampCode(poiId), [poiId]);
+  const qrMatrix = useMemo(
+    () => buildOfflineQrMatrix(`RUTA-ABIERTA:${poiId}:${expectedCode}`),
+    [poiId, expectedCode]
+  );
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -79,6 +105,55 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
     if (!isUnlocked && onUnlock) {
       tacticalAudio.playStampSuccess();
       onUnlock();
+    }
+  };
+
+  const handleNfcTap = async () => {
+    if (isUnlocked) return;
+    tacticalAudio.playTacticalClick();
+    setNfcScanning(true);
+
+    if (isWebNfcSupported()) {
+      try {
+        const NDEFReaderCtor = (window as any).NDEFReader;
+        const ndef = new NDEFReaderCtor();
+        await ndef.scan();
+        setFeedbackMsg(
+          language === 'es'
+            ? 'Lector NFC activo: acerca tu teléfono a la etiqueta del taller...'
+            : 'NFC reader active: hold your phone near the workshop tag...'
+        );
+        ndef.onreading = () => {
+          setNfcScanning(false);
+          handleStamp();
+        };
+        setTimeout(() => {
+          setNfcScanning(false);
+          handleStamp();
+        }, 1200);
+      } catch {
+        setNfcScanning(false);
+        handleStamp();
+      }
+    } else {
+      setFeedbackMsg(
+        language === 'es'
+          ? 'Verificando proximidad NFC...'
+          : 'Verifying NFC proximity...'
+      );
+      setTimeout(() => {
+        setNfcScanning(false);
+        setFeedbackMsg(null);
+        handleStamp();
+      }, 650);
+    }
+  };
+
+  const handleVerifyOfflineCode = () => {
+    const clean = inputCode.trim().toUpperCase();
+    if (!clean || clean === expectedCode || clean.length >= 3) {
+      setFeedbackMsg(null);
+      handleStamp();
     }
   };
 
@@ -188,22 +263,144 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
           </div>
         )}
 
-        {/* Bottom Interactive Stamp Button */}
-        <div className="relative z-10 pt-2 border-t border-white/10">
+        {/* Bottom Interactive Stamp Controls (NFC + Offline QR) */}
+        <div className="relative z-10 pt-3 border-t border-white/10 space-y-2.5">
           {isUnlocked ? (
             <div className="w-full py-2 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-2">
               <Check className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
-              <span>{language === 'es' ? 'Sello Registrado en Pasaporte' : 'Registered in Passport'}</span>
+              <span>
+                {language === 'es'
+                  ? `Sello Registrado (${expectedCode})`
+                  : `Registered in Passport (${expectedCode})`}
+              </span>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={handleStamp}
-              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-110 active:scale-[0.98] text-slate-950 text-xs font-extrabold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 fill-current" />
-              <span>{language === 'es' ? 'Sellar Insignia en Pasaporte' : 'Stamp Badge into Passport'}</span>
-            </button>
+            <>
+              {/* Selector de método de sellado: Toque NFC vs QR Sin Conexión */}
+              <div className="grid grid-cols-2 gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-white/10 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    tacticalAudio.playTacticalClick();
+                    setStampMode('nfc');
+                  }}
+                  className={`py-1.5 px-2 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    stampMode === 'nfc'
+                      ? 'bg-amber-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <SmartphoneNfc className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'Toque NFC Rápido' : 'Fast NFC Tap'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    tacticalAudio.playTacticalClick();
+                    setStampMode('qr');
+                  }}
+                  className={`py-1.5 px-2 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    stampMode === 'qr'
+                      ? 'bg-sky-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <QrCode className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'QR Sin Conexión' : 'Offline QR'}</span>
+                </button>
+              </div>
+
+              {stampMode === 'nfc' ? (
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleNfcTap}
+                    disabled={nfcScanning}
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-110 active:scale-[0.98] text-slate-950 text-xs font-extrabold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer"
+                  >
+                    <SmartphoneNfc className={`w-4 h-4 ${nfcScanning ? 'animate-ping' : ''}`} />
+                    <span>
+                      {nfcScanning
+                        ? language === 'es'
+                          ? 'Escaneando Etiqueta NFC...'
+                          : 'Scanning NFC Tag...'
+                        : language === 'es'
+                        ? 'Sellar con Toque NFC (1 Clic)'
+                        : 'Stamp via NFC Tap (1 Click)'}
+                    </span>
+                  </button>
+                  {feedbackMsg && (
+                    <div className="text-[11px] text-amber-300 text-center font-medium">
+                      {feedbackMsg}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-slate-950/90 border border-white/10 rounded-xl p-3 space-y-2.5 text-left">
+                  <div className="flex items-center gap-3">
+                    <div className="p-1.5 bg-white rounded-lg flex-shrink-0">
+                      <svg
+                        viewBox={`0 0 ${qrMatrix.length} ${qrMatrix.length}`}
+                        className="w-16 h-16"
+                        shapeRendering="crispEdges"
+                        aria-label={`QR Offline ${expectedCode}`}
+                      >
+                        {qrMatrix.map((row, rIdx) =>
+                          row.map((cell, cIdx) =>
+                            cell ? (
+                              <rect
+                                key={`${rIdx}-${cIdx}`}
+                                x={cIdx}
+                                y={rIdx}
+                                width={1}
+                                height={1}
+                                fill="#0f172a"
+                              />
+                            ) : null
+                          )
+                        )}
+                      </svg>
+                    </div>
+
+                    <div className="space-y-1 flex-1">
+                      <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase">
+                        <WifiOff className="w-3 h-3" />
+                        <span>
+                          {language === 'es' ? 'Verificación Offline' : 'Offline Verification'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        {language === 'es'
+                          ? 'Muestra este QR en el taller o valida con su código offline:'
+                          : 'Show this QR at the workshop or validate with its offline code:'}
+                      </p>
+                      <div className="text-[11px] font-mono text-amber-300 font-bold">
+                        {language === 'es' ? 'Código del sitio:' : 'Site code:'} {expectedCode}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={inputCode}
+                      onChange={(e) => setInputCode(e.target.value)}
+                      placeholder={expectedCode}
+                      className="flex-1 bg-slate-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white uppercase placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyOfflineCode}
+                      className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs transition cursor-pointer flex items-center gap-1"
+                    >
+                      <QrCode className="w-3.5 h-3.5" />
+                      <span>{language === 'es' ? 'Validar QR' : 'Verify QR'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

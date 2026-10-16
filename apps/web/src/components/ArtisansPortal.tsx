@@ -1,6 +1,23 @@
-import { useState, type FC } from 'react';
+import { useState, useMemo, type FC } from 'react';
 import { POI, Language } from '@ruta-abierta/shared-types';
-import { Store, Hammer, Clock, Award, Users, DollarSign, CheckCircle2 } from 'lucide-react';
+import {
+  Store,
+  Hammer,
+  Clock,
+  Award,
+  Users,
+  DollarSign,
+  CheckCircle2,
+  QrCode,
+  SmartphoneNfc,
+  WifiOff
+} from 'lucide-react';
+import {
+  generateOfflineStampCode,
+  buildOfflineQrMatrix,
+  isWebNfcSupported
+} from '../utils/offlineStamp';
+import { tacticalAudio } from '../utils/tacticalAudio';
 
 interface ArtisansPortalProps {
   pois: POI[];
@@ -11,14 +28,76 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({ pois, language }) => {
   const localBusinesses = pois.filter((p) => p.is_local_business && p.artisan_profile);
   const [selectedPoiId, setSelectedPoiId] = useState<string>(localBusinesses[0]?.id || '');
   const [stampedSuccess, setStampedSuccess] = useState<string | null>(null);
+  const [nfcStatus, setNfcStatus] = useState<string | null>(null);
+  const [showQrPanel, setShowQrPanel] = useState<boolean>(true);
 
   const selectedPoi = localBusinesses.find((p) => p.id === selectedPoiId) || localBusinesses[0];
   const profile = selectedPoi?.artisan_profile;
 
+  const stampCode = useMemo(
+    () => (selectedPoi ? generateOfflineStampCode(selectedPoi.id) : 'PUE-2026'),
+    [selectedPoi]
+  );
+
+  const qrMatrix = useMemo(
+    () =>
+      selectedPoi
+        ? buildOfflineQrMatrix(`RUTA-ABIERTA:${selectedPoi.id}:${stampCode}`)
+        : [],
+    [selectedPoi, stampCode]
+  );
+
   const handleIssueStamp = () => {
     if (!profile) return;
-    setStampedSuccess(profile.sello_artesanal);
-    setTimeout(() => setStampedSuccess(null), 4000);
+    tacticalAudio.playStampSuccess();
+    setStampedSuccess(
+      `${profile.sello_artesanal} • Código Offline: ${stampCode}`
+    );
+    setTimeout(() => setStampedSuccess(null), 5000);
+  };
+
+  const handleWriteNfcTag = async () => {
+    if (!selectedPoi || !profile) return;
+    tacticalAudio.playTacticalClick();
+
+    if (isWebNfcSupported()) {
+      try {
+        const NDEFReaderCtor = (window as any).NDEFReader;
+        const ndef = new NDEFReaderCtor();
+        setNfcStatus(
+          language === 'es'
+            ? 'Acerca la etiqueta o teléfono del visitante al lector NFC...'
+            : 'Hold visitor phone or NFC tag near the device...'
+        );
+        await ndef.write({
+          records: [
+            {
+              recordType: 'text',
+              data: `RUTA-ABIERTA:${selectedPoi.id}:${stampCode}`
+            }
+          ]
+        });
+        tacticalAudio.playStampSuccess();
+        setNfcStatus(
+          language === 'es'
+            ? `Sello NFC transmitido con éxito (${stampCode})`
+            : `NFC stamp transmitted (${stampCode})`
+        );
+      } catch {
+        setNfcStatus(
+          language === 'es'
+            ? `Modo NFC listo: usa el QR Offline o código ${stampCode} en este navegador`
+            : `NFC ready: use Offline QR or code ${stampCode} on this browser`
+        );
+      }
+    } else {
+      tacticalAudio.playStampSuccess();
+      setNfcStatus(
+        language === 'es'
+          ? `Señal NFC simulada emitida (${stampCode}). Para dispositivos sin NFC, muestra el QR Offline de abajo.`
+          : `Simulated NFC beacon active (${stampCode}). For non-NFC devices, show the Offline QR below.`
+      );
+    }
   };
 
   return (
@@ -47,7 +126,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({ pois, language }) => {
             <div className="text-[10px] text-slate-400 uppercase font-semibold">
               {language === 'es' ? 'Derrama Directa Estimada' : 'Estimated Direct Impact'}
             </div>
-            <div className="text-sm font-bold text-emerald-300">+59.4% en comercio local</div>
+            <div className="text-sm font-bold text-emerald-300">+61.4% en comercio local</div>
           </div>
         </div>
       </div>
@@ -65,8 +144,11 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({ pois, language }) => {
               <button
                 key={b.id}
                 type="button"
-                onClick={() => setSelectedPoiId(b.id)}
-                className={`text-left p-3 rounded-lg border text-xs transition flex flex-col justify-between ${
+                onClick={() => {
+                  setSelectedPoiId(b.id);
+                  setNfcStatus(null);
+                }}
+                className={`text-left p-3 rounded-lg border text-xs transition flex flex-col justify-between cursor-pointer ${
                   isSelected
                     ? 'border-amber-500 bg-amber-50/40 ring-2 ring-amber-400/20'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
@@ -134,31 +216,118 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({ pois, language }) => {
               </div>
             </div>
 
-            {/* Sello de Taller y Validacion de Visita */}
-            <div className="bg-amber-50/50 border border-amber-200/80 p-4 rounded-xl flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-amber-600" />
-                  {language === 'es' ? 'Sello Artesanal Oficial:' : 'Official Artisan Stamp:'}
+            {/* Sello de Taller: NFC + QR Offline sin conexión */}
+            <div className="bg-amber-50/60 border border-amber-200/80 p-4 rounded-xl space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-amber-600" />
+                    {language === 'es' ? 'Estación de Sellado Rápido (NFC + QR Offline):' : 'Fast Stamp Station (NFC + Offline QR):'}
+                  </div>
+                  <div className="text-sm font-extrabold text-amber-900 mt-0.5">
+                    "{profile.sello_artesanal}"
+                  </div>
+                  <div className="text-[11px] text-slate-600 mt-1">
+                    {language === 'es'
+                      ? 'Sella al instante por contacto NFC o mostrando tu QR Offline cuando el visitante no tenga señal.'
+                      : 'Stamp instantly via NFC tap or by showing your Offline QR when visitors have no connection.'}
+                  </div>
                 </div>
-                <div className="text-sm font-extrabold text-amber-900 mt-0.5">
-                  "{profile.sello_artesanal}"
-                </div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  {language === 'es'
-                    ? 'Otorga este sello a los turistas con movilidad accesible que asistan a tu taller para validar su pasaporte cultural.'
-                    : 'Issue this stamp to visitors attending your workshop to validate their cultural passport.'}
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleWriteNfcTag}
+                    className="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs px-3.5 py-2 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <SmartphoneNfc className="w-4 h-4" />
+                    {language === 'es' ? 'Activar Toque NFC' : 'Trigger NFC Tap'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowQrPanel((v) => !v)}
+                    className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <QrCode className="w-4 h-4 text-sky-600" />
+                    {showQrPanel
+                      ? language === 'es'
+                        ? 'Ocultar QR Offline'
+                        : 'Hide Offline QR'
+                      : language === 'es'
+                      ? 'Mostrar QR Offline'
+                      : 'Show Offline QR'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleIssueStamp}
+                    className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {language === 'es' ? 'Emitir Sello Directo' : 'Direct Stamp'}
+                  </button>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleIssueStamp}
-                className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-lg shadow transition flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                {language === 'es' ? 'Emitir Sello a Visitante' : 'Stamp Visitor Passport'}
-              </button>
+              {nfcStatus && (
+                <div className="bg-slate-900 text-amber-300 text-xs p-3 rounded-lg flex items-center gap-2 border border-amber-500/30">
+                  <SmartphoneNfc className="w-4 h-4 text-amber-400 flex-shrink-0 animate-pulse" />
+                  <span>{nfcStatus}</span>
+                </div>
+              )}
+
+              {showQrPanel && qrMatrix.length > 0 && (
+                <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
+                  <div className="p-2.5 bg-white border-2 border-slate-900 rounded-xl flex-shrink-0">
+                    <svg
+                      viewBox={`0 0 ${qrMatrix.length} ${qrMatrix.length}`}
+                      className="w-28 h-28"
+                      shapeRendering="crispEdges"
+                      aria-label={`QR Offline ${stampCode}`}
+                    >
+                      {qrMatrix.map((row, rIdx) =>
+                        row.map((cell, cIdx) =>
+                          cell ? (
+                            <rect
+                              key={`${rIdx}-${cIdx}`}
+                              x={cIdx}
+                              y={rIdx}
+                              width={1}
+                              height={1}
+                              fill="#0f172a"
+                            />
+                          ) : null
+                        )
+                      )}
+                    </svg>
+                  </div>
+
+                  <div className="space-y-1.5 text-center sm:text-left">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wide">
+                      <WifiOff className="w-3 h-3" />
+                      <span>
+                        {language === 'es'
+                          ? 'Funciona 100% Sin Conexión'
+                          : 'Works 100% Offline'}
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-slate-900">
+                      {language === 'es'
+                        ? 'Código Verificador del Taller:'
+                        : 'Workshop Verification Code:'}{' '}
+                      <span className="font-mono text-sm bg-slate-100 px-2 py-0.5 rounded border border-slate-300 text-slate-950">
+                        {stampCode}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed max-w-md">
+                      {language === 'es'
+                        ? 'Para teléfonos no compatibles con NFC (o sin datos móviles), el visitante puede escanear este código QR en su Pasaporte Cultural o ingresar el código corto del taller.'
+                        : 'For devices without NFC (or without mobile data), visitors can scan this QR code in their Cultural Passport or enter the short workshop code.'}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {stampedSuccess && (

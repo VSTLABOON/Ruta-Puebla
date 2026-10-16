@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react';
+import { useState, useEffect, type FC } from 'react';
 import { X, BookOpen, Scale, Database, Filter, CheckCircle2 } from 'lucide-react';
 
 interface DataInfoModalProps {
@@ -13,10 +13,19 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
   language
 }) => {
   const [activeTab, setActiveTab] = useState<'funnel' | 'norms' | 'sources'>('funnel');
+  const [funnelData, setFunnelData] = useState<any>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    fetch('/data/data_cleaning_funnel.json?v=3')
+      .then((r) => r.json())
+      .then((data) => setFunnelData(data))
+      .catch(() => {});
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const funnelSteps = [
+  const defaultSteps = [
     { etapa: 1, nombre: 'Universo Total Estatal', desc: 'Archivo censal INEGI del Estado de Puebla', reg: '410,693', pct: '100.0%' },
     { etapa: 2, nombre: 'Municipio de Puebla', desc: 'Clave municipal cve_mun == 114 (Capital)', reg: '107,087', pct: '26.07%' },
     { etapa: 3, nombre: 'Polígono Piloto Centro y Barrios', desc: 'BBOX Centro, Analco, La Luz, El Alto, Xanenetla', reg: '4,456', pct: '1.08%' },
@@ -24,6 +33,24 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
     { etapa: 5, nombre: 'Microescala Económica Local', desc: 'Estratos de 0 a 5 y 6 a 10 empleados', reg: '676', pct: '0.16%' },
     { etapa: 6, nombre: 'Depuración de Cadenas Masivas', desc: 'Exclusión por palabras corporativas (OXXO, cadenas de comida rápida)', reg: '676', pct: '0.16%' }
   ];
+
+  const funnelSteps = funnelData?.funnel_steps
+    ? funnelData.funnel_steps.map((s: any) => ({
+        etapa: s.stage,
+        nombre: s.name,
+        desc: s.criterion,
+        reg: Number(s.records_remaining).toLocaleString('en-US'),
+        pct: `${s.pct_of_total}%`
+      }))
+    : defaultSteps;
+
+  const zonalDist = funnelData?.zonal_distribution || {
+    barrio_analco: 389,
+    zocalo_centro_nucleo: 236,
+    barrio_la_luz: 34,
+    barrio_el_alto: 14,
+    barrio_xanenetla: 3
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -113,7 +140,7 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700 text-[11px]">
-                  {funnelSteps.map((s) => (
+                  {funnelSteps.map((s: { etapa: number; nombre: string; desc: string; reg: string; pct: string }) => (
                     <tr key={s.etapa} className="hover:bg-slate-50/80">
                       <td className="p-2.5 font-bold text-slate-900">#{s.etapa}</td>
                       <td className="p-2.5 font-semibold text-slate-900">{s.nombre}</td>
@@ -128,26 +155,26 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
 
             {/* Distribucion Zonal */}
             <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-100 space-y-2 text-xs">
-              <span className="font-bold text-slate-900">Distribución de las 676 unidades culturales en polígono piloto:</span>
+              <span className="font-bold text-slate-900">Distribución de las unidades culturales en polígono piloto:</span>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-[11px]">
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-slate-900 text-sm">389</div>
+                  <div className="font-bold text-slate-900 text-sm">{zonalDist.barrio_analco ?? 389}</div>
                   <div className="text-slate-500">Barrio de Analco</div>
                 </div>
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-slate-900 text-sm">236</div>
+                  <div className="font-bold text-slate-900 text-sm">{zonalDist.zocalo_centro_nucleo ?? 236}</div>
                   <div className="text-slate-500">Centro Núcleo</div>
                 </div>
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-slate-900 text-sm">34</div>
+                  <div className="font-bold text-slate-900 text-sm">{zonalDist.barrio_la_luz ?? 34}</div>
                   <div className="text-slate-500">Barrio de La Luz</div>
                 </div>
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-slate-900 text-sm">14</div>
+                  <div className="font-bold text-slate-900 text-sm">{zonalDist.barrio_el_alto ?? 14}</div>
                   <div className="text-slate-500">Barrio de El Alto</div>
                 </div>
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-slate-900 text-sm">3</div>
+                  <div className="font-bold text-slate-900 text-sm">{zonalDist.barrio_xanenetla ?? 3}</div>
                   <div className="text-slate-500">Barrio Xanenetla</div>
                 </div>
               </div>

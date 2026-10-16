@@ -18,14 +18,14 @@ if (typeof window !== 'undefined' && 'caches' in window) {
 }
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .getRegistrations()
-    .then((registrations) => {
-      for (const reg of registrations) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((reg) => {
         reg.update().catch(() => {});
-      }
-    })
-    .catch(() => {});
+      })
+      .catch(() => {});
+  });
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

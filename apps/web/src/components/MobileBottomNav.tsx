@@ -14,9 +14,11 @@ import {
   KeyRound,
   X,
   Smartphone,
-  Monitor
+  Monitor,
+  Trophy
 } from 'lucide-react';
 import { tacticalAudio } from '../utils/tacticalAudio';
+import { UserProfile } from '../types/userRecord';
 
 export type CommandTab = 'explore' | 'itinerary' | 'passport' | 'artisans';
 
@@ -27,10 +29,12 @@ interface MobileBottomNavProps {
   isPulseActive: boolean;
   unlockedCount: number;
   language: 'es' | 'en';
+  currentUser?: UserProfile | null;
   onOpenTuneRoute?: () => void;
   onOpenArtisansDirectory?: () => void;
   onExportRoute?: () => void;
   onOpenAuth?: () => void;
+  onOpenRecord?: () => void;
   onOpenDataInfo?: () => void;
   onToggleLanguage?: () => void;
   onToggleViewport?: () => void;
@@ -44,10 +48,12 @@ export const MobileBottomNav: FC<MobileBottomNavProps> = ({
   isPulseActive,
   unlockedCount,
   language,
+  currentUser,
   onOpenTuneRoute,
   onOpenArtisansDirectory,
   onExportRoute,
   onOpenAuth,
+  onOpenRecord,
   onOpenDataInfo,
   onToggleLanguage,
   onToggleViewport,
@@ -173,6 +179,32 @@ export const MobileBottomNav: FC<MobileBottomNavProps> = ({
               </button>
             )}
 
+            {onOpenRecord && (
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setIsMenuOpen(false);
+                  onOpenRecord();
+                }}
+                className="p-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 flex flex-col items-start gap-1.5 transition text-left cursor-pointer"
+              >
+                <div className="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                  <Trophy className="w-4 h-4" />
+                </div>
+                <span className="font-bold text-amber-300 text-[11px]">
+                  {language === 'es' ? 'Mi Récord & Bitácora' : 'My Records & Log'}
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  {currentUser
+                    ? `${currentUser.nickname} • Nv.${currentUser.level}`
+                    : language === 'es'
+                    ? 'Estadísticas y grabador de ruta'
+                    : 'Live tracker & personal bests'}
+                </span>
+              </button>
+            )}
+
             {onOpenAuth && (
               <button
                 type="button"
@@ -181,16 +213,20 @@ export const MobileBottomNav: FC<MobileBottomNavProps> = ({
                   setIsMenuOpen(false);
                   onOpenAuth();
                 }}
-                className="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-amber-500/30 flex flex-col items-start gap-1.5 transition text-left cursor-pointer"
+                className="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-white/10 flex flex-col items-start gap-1.5 transition text-left cursor-pointer"
               >
-                <div className="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center">
                   <KeyRound className="w-4 h-4" />
                 </div>
-                <span className="font-bold text-amber-300 text-[11px]">
-                  {language === 'es' ? 'Acceso / Login' : 'Login / Roles'}
+                <span className="font-bold text-white text-[11px]">
+                  {currentUser
+                    ? language === 'es' ? 'Cuenta / Perfil' : 'Account / Profile'
+                    : language === 'es' ? 'Acceso / Login' : 'Login / Register'}
                 </span>
                 <span className="text-[10px] text-slate-400">
-                  {language === 'es' ? 'Maestro artesano o gobierno' : 'Artisans & government'}
+                  {currentUser
+                    ? language === 'es' ? 'Gestionar sesión' : 'Manage session'
+                    : language === 'es' ? 'Explorador, artesano o gobierno' : 'Explorer, artisan or admin'}
                 </span>
               </button>
             )}
