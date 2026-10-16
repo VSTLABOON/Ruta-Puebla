@@ -17,6 +17,7 @@ import {
   X,
   Hand
 } from 'lucide-react';
+import { createAvatar3D, Avatar3DController } from '../utils/avatar3d';
 
 interface MapViewerProps {
   segments: Segment[];
@@ -86,6 +87,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const userMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const avatarCtrlRef = useRef<Avatar3DController | null>(null);
   const watchPositionIdRef = useRef<number | null>(null);
 
   const [activeStyle, setActiveStyle] = useState<MapStyleKey>('dark');
@@ -349,27 +351,33 @@ export const MapViewer: FC<MapViewerProps> = ({
     if (!map || !isLoaded) return;
 
     if (!userMarkerRef.current) {
-      const el = document.createElement('div');
-      el.className = 'relative flex flex-col items-center justify-center pointer-events-none z-40';
-      el.innerHTML = `
-        <div class="px-2 py-0.5 mb-1 rounded-full bg-sky-500 text-slate-950 font-extrabold text-[10px] shadow-lg border border-white whitespace-nowrap">
-          ${language === 'es' ? 'Estás aquí' : 'You are here'}
-        </div>
-        <div class="relative flex items-center justify-center">
-          <div class="absolute w-14 h-14 rounded-full bg-sky-400/30 radar-wave"></div>
-          <div class="relative w-5 h-5 rounded-full bg-sky-500 border-[2.5px] border-white shadow-[0_0_16px_rgba(14,165,233,0.9)] flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-          </div>
-        </div>
-      `;
-      userMarkerRef.current = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      const avatarCtrl = createAvatar3D('/models/explorer.glb', 72, 96);
+      avatarCtrlRef.current = avatarCtrl;
+
+      const markerWrapper = document.createElement('div');
+      markerWrapper.className = 'relative flex flex-col items-center justify-center pointer-events-none z-40';
+
+      const label = document.createElement('div');
+      label.className = 'px-2 py-0.5 mb-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] shadow-lg border border-white whitespace-nowrap tracking-wider uppercase';
+      label.textContent = language === 'es' ? 'Explorador' : 'Explorer';
+      markerWrapper.appendChild(label);
+      markerWrapper.appendChild(avatarCtrl.container);
+
+      userMarkerRef.current = new maplibregl.Marker({ element: markerWrapper, anchor: 'bottom' })
         .setLngLat(userLocation)
         .addTo(map);
+
+      const handleOrientation = (e: DeviceOrientationEvent) => {
+        if (e.alpha !== null && avatarCtrlRef.current) {
+          avatarCtrlRef.current.setHeading(e.alpha);
+        }
+      };
+      window.addEventListener('deviceorientation', handleOrientation);
     } else {
       userMarkerRef.current.setLngLat(userLocation);
       const labelEl = userMarkerRef.current.getElement().querySelector('div');
       if (labelEl) {
-        labelEl.textContent = language === 'es' ? 'Estás aquí' : 'You are here';
+        labelEl.textContent = language === 'es' ? 'Explorador' : 'Explorer';
       }
     }
 
