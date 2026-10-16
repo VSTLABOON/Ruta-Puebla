@@ -124,6 +124,21 @@ fastify.get('/v1/choice/weights', async (_request, reply) => {
   }
 });
 
+fastify.post('/v1/cultural/query', async (request, reply) => {
+  try {
+    const res = await fetch(`${RECOMMEND_SVC_URL}/v1/cultural/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request.body)
+    });
+    const data = await res.json();
+    return reply.status(res.status).send(data);
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.status(502).send({ error: 'Fallo de comunicacion con recommend-service' });
+  }
+});
+
 fastify.get('/v1/zones/caps', async (_request, reply) => {
   try {
     const res = await fetch(`${RECOMMEND_SVC_URL}/v1/zones/caps`);

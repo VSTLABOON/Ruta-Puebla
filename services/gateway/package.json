@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@ruta-abierta/shared-types": "workspace:*",

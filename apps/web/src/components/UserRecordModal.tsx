@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { UserProfile, WalkRecord, ExplorerStats } from '../types/userRecord';
 import { tacticalAudio } from '../utils/tacticalAudio';
+import { dbSync } from '../services/dbSync';
 
 interface UserRecordModalProps {
   isOpen: boolean;
@@ -176,6 +177,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
     };
 
     setWalks((prev) => [newWalk, ...prev]);
+    dbSync.saveWalkRecord(newWalk, currentUser?.id || 'tourist_local');
     setIsRecording(false);
     setIsPaused(false);
     setNewlyUnlockedNotice(

@@ -131,6 +131,8 @@ def generate_route(req: RouteRequestModel):
     # Filtrar candidatos viables
     candidates = []
     for p in pois_data:
+        if p["id"] not in poi_idx_map:
+            continue
         p_idx = poi_idx_map[p["id"]]
         if p_idx == start_idx:
             continue

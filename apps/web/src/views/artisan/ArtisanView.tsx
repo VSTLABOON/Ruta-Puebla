@@ -17,9 +17,10 @@ import { tacticalAudio } from '../../utils/tacticalAudio';
 interface ArtisanViewProps {
   pois: POI[];
   language: Language;
+  onSessionChange?: () => void;
 }
 
-export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language }) => {
+export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionChange }) => {
   const { navigate } = useRouter();
 
   const [session, setSession] = useState<{
@@ -65,6 +66,7 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language }) => {
     localStorage.setItem('ruta_abierta_artisan_user', JSON.stringify(newSession));
     setSession(newSession);
     setErrorMsg(null);
+    if (onSessionChange) onSessionChange();
   };
 
   const handleQuickDemo = () => {
@@ -80,12 +82,14 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language }) => {
     localStorage.setItem('ruta_abierta_artisan_user', JSON.stringify(newSession));
     setSession(newSession);
     setErrorMsg(null);
+    if (onSessionChange) onSessionChange();
   };
 
   const handleLogout = () => {
     tacticalAudio.playTacticalClick();
     localStorage.removeItem('ruta_abierta_artisan_user');
     setSession(null);
+    if (onSessionChange) onSessionChange();
   };
 
   return (

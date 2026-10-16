@@ -31,6 +31,7 @@ interface AdminViewProps {
   matrices: TimeMatrices | null;
   weights: any;
   language: Language;
+  onSessionChange?: () => void;
 }
 
 export const AdminView: FC<AdminViewProps> = ({
@@ -38,7 +39,8 @@ export const AdminView: FC<AdminViewProps> = ({
   graph,
   matrices,
   weights,
-  language
+  language,
+  onSessionChange
 }) => {
   const { navigate } = useRouter();
 
@@ -131,6 +133,7 @@ export const AdminView: FC<AdminViewProps> = ({
     localStorage.setItem('ruta_abierta_admin_user', JSON.stringify(newSession));
     setSession(newSession);
     setErrorMsg(null);
+    if (onSessionChange) onSessionChange();
   };
 
   const handleQuickDemo = () => {
@@ -143,12 +146,14 @@ export const AdminView: FC<AdminViewProps> = ({
     localStorage.setItem('ruta_abierta_admin_user', JSON.stringify(newSession));
     setSession(newSession);
     setErrorMsg(null);
+    if (onSessionChange) onSessionChange();
   };
 
   const handleLogout = () => {
     tacticalAudio.playTacticalClick();
     localStorage.removeItem('ruta_abierta_admin_user');
     setSession(null);
+    if (onSessionChange) onSessionChange();
   };
 
   return (

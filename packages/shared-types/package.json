@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",

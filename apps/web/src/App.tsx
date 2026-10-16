@@ -11,6 +11,8 @@ import { AuthModal } from './components/AuthModal';
 import { UserRecordModal } from './components/UserRecordModal';
 import { UserProfile } from './types/userRecord';
 import { USER_ROLES, UserRole } from './types/roles';
+import { LoginGateView } from './views/auth/LoginGateView';
+import { dbSync, SyncStatus } from './services/dbSync';
 import {
   Languages,
   Filter,
@@ -23,9 +25,10 @@ import {
   Monitor,
   X,
   Radio,
-  Lock,
   Trophy,
-  User
+  LogOut,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
@@ -64,10 +67,42 @@ function MainApp() {
     }
   });
 
+  // Sesión del artesano activo
+  const [artisanUser, setArtisanUser] = useState<{
+    poiId: string;
+    workshopName: string;
+    artisanName: string;
+  } | null>(() => {
+    try {
+      const saved = localStorage.getItem('ruta_abierta_artisan_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Sesión del administrador gubernamental activo
+  const [adminUser, setAdminUser] = useState<{
+    role: string;
+    institution: string;
+    user: string;
+  } | null>(() => {
+    try {
+      const saved = localStorage.getItem('ruta_abierta_admin_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const syncCurrentUser = () => {
     try {
-      const saved = localStorage.getItem('ruta_abierta_tourist_user');
-      setCurrentUser(saved ? JSON.parse(saved) : null);
+      const savedTourist = localStorage.getItem('ruta_abierta_tourist_user');
+      setCurrentUser(savedTourist ? JSON.parse(savedTourist) : null);
+      const savedArtisan = localStorage.getItem('ruta_abierta_artisan_user');
+      setArtisanUser(savedArtisan ? JSON.parse(savedArtisan) : null);
+      const savedAdmin = localStorage.getItem('ruta_abierta_admin_user');
+      setAdminUser(savedAdmin ? JSON.parse(savedAdmin) : null);
     } catch {
       setCurrentUser(null);
     }
@@ -115,6 +150,7 @@ function MainApp() {
       try {
         localStorage.setItem('ruta_abierta_passport', JSON.stringify(next));
       } catch {}
+      dbSync.savePassportState(next, currentUser?.id);
       return next;
     });
 
@@ -155,6 +191,51 @@ function MainApp() {
     loadStaticData();
   }, []);
 
+  // Estado de sincronización en vivo para demostraciones con/sin conexión
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(dbSync.getStatus());
+
+  useEffect(() => {
+    return dbSync.subscribe((st) => setSyncStatus(st));
+  }, []);
+
+  const handleAuthenticated = (
+    role: 'tourist' | 'artisan' | 'government',
+    sessionData: any
+  ) => {
+    tacticalAudio.playStampSuccess();
+    if (role === 'tourist') {
+      setCurrentUser(sessionData);
+      navigate('/');
+    } else if (role === 'artisan') {
+      setArtisanUser(sessionData);
+      navigate('/taller');
+    } else if (role === 'government') {
+      setAdminUser(sessionData);
+      navigate('/admin');
+    }
+  };
+
+  const handleLogout = () => {
+    tacticalAudio.playTacticalClick();
+    if (activeRoute === '/') {
+      localStorage.removeItem('ruta_abierta_tourist_user');
+      setCurrentUser(null);
+    } else if (activeRoute === '/taller') {
+      localStorage.removeItem('ruta_abierta_artisan_user');
+      setArtisanUser(null);
+    } else if (activeRoute === '/admin') {
+      localStorage.removeItem('ruta_abierta_admin_user');
+      setAdminUser(null);
+    }
+  };
+
+  // Verificación estricta de sesión requerida antes de abrir la aplicación
+  const isCurrentRouteAuthenticated = useMemo(() => {
+    if (activeRoute === '/taller') return !!artisanUser;
+    if (activeRoute === '/admin') return !!adminUser;
+    return !!currentUser;
+  }, [activeRoute, currentUser, artisanUser, adminUser]);
+
   const handleSelectRole = (newRole: UserRole) => {
     tacticalAudio.playTacticalClick();
     if (newRole === 'tourist') {
@@ -176,6 +257,17 @@ function MainApp() {
           </p>
         </div>
       </div>
+    );
+  }
+
+  // Pantalla de login obligatoria antes de siquiera abrir la aplicación
+  if (!isCurrentRouteAuthenticated) {
+    return (
+      <LoginGateView
+        pois={pois}
+        language={language}
+        onAuthenticated={handleAuthenticated}
+      />
     );
   }
 
@@ -209,9 +301,10 @@ function MainApp() {
             </div>
           </div>
 
-          {/* Botón de Acceso / Login / Mi Récord (Visible en Móvil y Escritorio) */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {currentUser ? (
+          {/* Controles de Cabecera: Perfil Activo, Estado de Red en Vivo y Cerrar Sesión */}
+          <div className="flex items-center gap-2">
+            {/* 1. Indicador del Rol y Perfil Autenticado */}
+            {activeRoute === '/' && currentUser && (
               <button
                 type="button"
                 onClick={() => setIsRecordModalOpen(true)}
@@ -219,129 +312,114 @@ function MainApp() {
                 title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                <span className="max-w-[70px] sm:max-w-[110px] truncate">{currentUser.nickname}</span>
+                <span className="max-w-[70px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
                 <span className="text-[10px] bg-amber-500 text-slate-950 px-1.5 py-0.2 rounded-full font-mono font-black">
                   Nv.{currentUser.level}
                 </span>
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsAuthModalOpen(true)}
-                className="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
-                title={language === 'es' ? 'Iniciar sesión o registrarse' : 'Login / Register'}
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Login' : 'Login'}</span>
-              </button>
             )}
 
-            {/* En Escritorio: Barra completa con Roles, Simulador e Idioma */}
-            <div className="hidden sm:flex items-center gap-2">
-              {/* Píldoras de Roles con Enrutamiento Directo en Desktop */}
-              <div className="flex bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
-                <button
-                  type="button"
-                  onClick={() => navigate('/')}
-                  className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
-                    activeRoute === '/'
-                      ? 'bg-amber-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Compass className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Visitante' : 'Visitor'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => navigate('/taller')}
-                  className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
-                    activeRoute === '/taller'
-                      ? 'bg-sky-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Store className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Local' : 'Local'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => navigate('/admin')}
-                  className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
-                    activeRoute === '/admin'
-                      ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <BarChart3 className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Admin' : 'Admin'}</span>
-                </button>
+            {activeRoute === '/taller' && artisanUser && (
+              <div className="px-2.5 py-1.5 rounded-xl bg-sky-500/20 border border-sky-500/40 text-sky-300 text-xs font-bold flex items-center gap-1.5 select-none">
+                <Store className="w-3.5 h-3.5 text-sky-400" />
+                <span className="max-w-[110px] sm:max-w-[150px] truncate">{artisanUser.workshopName}</span>
               </div>
+            )}
 
-              {/* Botón Mi Récord en Desktop */}
-              <button
-                type="button"
-                onClick={() => setIsRecordModalOpen(true)}
-                className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-                title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
-              >
-                <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                <span>{language === 'es' ? 'Récord' : 'Records'}</span>
-              </button>
+            {activeRoute === '/admin' && adminUser && (
+              <div className="px-2.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 select-none">
+                <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="hidden sm:inline">SECIHTI • Planificación</span>
+                <span className="sm:hidden">SECIHTI</span>
+              </div>
+            )}
 
-              {/* Botón Gestión / Roles en Desktop */}
-              <button
-                type="button"
-                onClick={() => setIsRoleModalOpen(true)}
-                className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-                title={language === 'es' ? 'Cambiar perfil de vista' : 'Switch profile'}
-              >
-                <Lock className="w-3.5 h-3.5 text-amber-400" />
-                <span>{language === 'es' ? 'Perfiles' : 'Profiles'}</span>
-              </button>
+            {/* 2. Indicador de Red / Sincronización Nube Híbrida (Conexión / Sin Conexión) */}
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                dbSync.toggleSimulatedOffline();
+              }}
+              className={`p-1.5 px-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+                syncStatus.isOnline
+                  ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
+                  : 'bg-amber-950/40 border-amber-500/30 text-amber-300'
+              }`}
+              title={
+                language === 'es'
+                  ? 'Demostración de Red: Toca para alternar Modo Offline / Conectado'
+                  : 'Tap to toggle simulated Offline / Online'
+              }
+            >
+              {syncStatus.isOnline ? (
+                <>
+                  <Wifi className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="hidden md:inline">{language === 'es' ? 'En Línea' : 'Online'}</span>
+                </>
+              ) : (
+                <>
+                  <WifiOff className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden md:inline">{language === 'es' ? 'Offline' : 'Offline'}</span>
+                </>
+              )}
+              {syncStatus.pendingQueueCount > 0 && (
+                <span className="text-[10px] px-1 rounded-full bg-amber-500 text-slate-950 font-bold">
+                  +{syncStatus.pendingQueueCount}
+                </span>
+              )}
+            </button>
 
-              {/* Simulador móvil vs Pantalla Completa */}
-              <button
-                type="button"
-                onClick={() => {
-                  tacticalAudio.playTacticalClick();
-                  setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
-                }}
-                className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-white/10 transition cursor-pointer"
-                title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Vista Teléfono'}
-              >
-                {viewportMode === 'mobile' ? (
-                  <Monitor className="w-3.5 h-3.5" />
-                ) : (
-                  <Smartphone className="w-3.5 h-3.5" />
-                )}
-              </button>
+            {/* 3. Selector de Idioma */}
+            <button
+              type="button"
+              onClick={() => {
+                const nextLang = language === 'es' ? 'en' : 'es';
+                setLanguage(nextLang);
+              }}
+              className="p-1.5 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+            >
+              <Languages className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? 'EN' : 'ES'}</span>
+            </button>
 
-              {/* Información DENUE y Auditorías */}
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(true)}
-                className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs flex items-center border border-white/10 transition cursor-pointer"
-                title={language === 'es' ? 'Acerca de los datos' : 'About data'}
-              >
-                <Filter className="w-3.5 h-3.5" />
-              </button>
+            {/* 4. Simulador móvil vs Pantalla Completa (Visible en desktop) */}
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
+              }}
+              className="hidden sm:flex p-1.5 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold items-center gap-1 border border-white/10 transition cursor-pointer"
+              title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Vista Teléfono'}
+            >
+              {viewportMode === 'mobile' ? (
+                <Monitor className="w-3.5 h-3.5" />
+              ) : (
+                <Smartphone className="w-3.5 h-3.5" />
+              )}
+            </button>
 
-              {/* Selector de Idioma en Desktop */}
-              <button
-                type="button"
-                onClick={() => {
-                  const nextLang = language === 'es' ? 'en' : 'es';
-                  setLanguage(nextLang);
-                }}
-                className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
-              >
-                <Languages className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'EN' : 'ES'}</span>
-              </button>
-            </div>
+            {/* 5. Información DENUE */}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="hidden sm:flex p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs items-center border border-white/10 transition cursor-pointer"
+              title={language === 'es' ? 'Acerca de los datos' : 'About data'}
+            >
+              <Filter className="w-3.5 h-3.5" />
+            </button>
+
+            {/* 6. Botón Cerrar Sesión / Salir al Login */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="p-1.5 px-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              title={language === 'es' ? 'Cerrar sesión actual y cambiar de rol' : 'Sign out & switch role'}
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              <span className="hidden sm:inline">{language === 'es' ? 'Salir' : 'Sign Out'}</span>
+            </button>
           </div>
         </div>
       </header>
@@ -403,7 +481,11 @@ function MainApp() {
             )}
 
             {activeRoute === '/taller' && (
-              <ArtisanView pois={pois} language={language} />
+              <ArtisanView
+                pois={pois}
+                language={language}
+                onSessionChange={syncCurrentUser}
+              />
             )}
 
             {activeRoute === '/admin' && (
@@ -413,6 +495,7 @@ function MainApp() {
                 matrices={matrices}
                 weights={weights}
                 language={language}
+                onSessionChange={syncCurrentUser}
               />
             )}
           </Suspense>
