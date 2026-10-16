@@ -50,37 +50,40 @@ A continuacion se desglosa el cumplimiento de cada apartado estipulado en las ba
 ## 3. Estructura del Monorepo
 
 ```
-chicheniol/
+ruta-abierta-puebla/
 ├── apps/
-│   └── web/                     # Aplicacion web cliente (React 19, Vite 6, Tailwind CSS, PWA)
+│   └── web/                     # Aplicacion web cliente (React 19, Vite 6, Tailwind CSS, MapLibre GL 3D, PWA)
 │       ├── public/data/         # Artefactos estaticos procesados (GeoJSON, grafos, matrices)
-│       └── src/                 # Componentes de usuario, mapa SVG y evaluador OPTW offline
+│       └── src/                 # Componentes tacticos, vistas por rol, visualizador MapLibre y evaluador OPTW offline
 ├── config/
 │   ├── accessibility_thresholds.json # Umbrales normativos y funcionales centralizados
 │   └── choice_model_weights.json     # Coeficientes beta calibrados e intervalos de confianza
 ├── data/
+│   ├── knowledge_base/          # Corpus documental indexado para motor RAG (INAH, UNESCO, cronistas)
 │   ├── raw/                     # Datos fuente (auditorias de campo CSV, entrevistas A/B CSV, POIs)
-│   └── processed/               # Subproducto procesado de grafos, matrices y GeoJSON
+│   └── processed/               # Subproducto procesado de grafos, matrices y GeoJSON (24 POIs)
 ├── docs/                        # Documentacion formal de entrega Tech-Capital 2026
+│   ├── data_cleaning_and_quality.md  # Justificacion metodologica del Data Funnel DENUE 2026
 │   ├── data_inventory.md        # Inventario de fuentes, licencias y transformaciones
 │   ├── model_card.md            # Ficha tecnica de algoritmos y modelos econometricos
-│   ├── pitch_and_demo_guide.md  # Libreto de pitch (5 min), respuestas a jurado y modo stand
+│   ├── pitch_and_demo_guide.md  # Libreto de pitch (5 min), respuestas a jurado y guia de stand
 │   ├── project_dossier.md       # Dossier tecnico integral del proyecto
-│   └── simulation_report.md     # Reporte de simulacion masiva (150 agentes sinteticos)
+│   ├── simulation_report.md     # Reporte de simulacion masiva (150 agentes sinteticos)
+│   └── technical_audit_and_improvements.md # Diagnostico de integridad, errores detectados y hoja de ruta
 ├── infra/                       # Contenerizacion y despliegue
-│   ├── Dockerfile.*             # Imagenes multi-etapa optimizadas
+│   ├── Dockerfile.*             # Imagenes multi-etapa optimizadas (web, gateway, python-svc)
 │   ├── docker-compose.yml       # Orquestacion de 6 servicios (PostGIS, microservicios, gateway, web)
 │   ├── init_db.sql              # Esquema relacional y espacial PostgreSQL 16 + PostGIS
 │   └── nginx.conf               # Servidor web reverso de produccion
 ├── packages/
 │   └── shared-types/            # Tipos TypeScript compartidos y motor heuristico OPTW (Vitest)
 ├── pipelines/                   # Pipelines de procesamiento y ciencia de datos (Python 3.12+)
-│   ├── src/                     # Graph builder, calibracion logistica y simulacion masiva
+│   ├── src/                     # Graph builder, calibracion logistica, RAG cultural y simulacion masiva
 │   └── tests/                   # Pruebas unitarias de pipelines y endpoints FastAPI (pytest)
 ├── services/                    # Microservicios modulares desacoplados
 │   ├── accessibility/           # Servicio FastAPI de accesibilidad y ranking de barreras
 │   ├── gateway/                 # API Gateway Fastify en TypeScript con validacion Zod
-│   ├── recommend/               # Servicio FastAPI de emparejamiento tematico y cupos zonales
+│   ├── recommend/               # Servicio FastAPI de emparejamiento tematico, RAG cultural y cupos zonales
 │   └── route/                   # Servicio FastAPI de planificacion de rutas OPTW
 ├── package.json                 # Configuracion raiz monorepo (pnpm@11.1.1)
 └── pnpm-workspace.yaml          # Declaracion de espacios de trabajo del monorepo
@@ -177,3 +180,44 @@ Todos los umbrales fisicos y normativos se concentran en [config/accessibility_t
   1. *Cumplimiento normativo*: Evalua el apego formal a la NOM-001-SEDATU-2021 y NOM-004-SEDATU-2023. Las cifras de franja peatonal (1.80 m / 1.50 m en zonas patrimoniales) se registran explicitamente como *por verificar contra texto integro DOF*.
   2. *Transitabilidad funcional*: Criterio empirico para el motor de ruteo que permite transitar banquetas consolidadas si ofrecen paso util continuo (ej. 0.90 m para silla de ruedas), evitando declarar intransitables zonas virreinales consolidadas.
 * **Jerarquia juridica en Centro Historico**: La Norma Tecnica de Diseno e Imagen Urbana (NTDIU) del Municipio de Puebla es de aplicacion local pero subordinada tecnicamente a las disposiciones del INAH y la Gerencia del Centro Historico.
+
+---
+
+## 8. Arquitectura por Roles y Vistas SPA
+
+La aplicacion cliente (`apps/web`) implementa una navegacion declarativa ligera sin dependencias pesadas de enrutamiento externo, con carga diferida (*code-splitting* via `React.lazy`) para optimizar el tiempo de carga en redes moviles:
+
+| Ruta | Rol de Usuario | Proposito Operativo | Componente Principal |
+| :--- | :--- | :--- | :--- |
+| `/` | **Modo Visitante / Turista** | Generador de itinerarios OPTW, seleccion de perfiles de accesibilidad, radar GPS de proximidad, vista tactica 3D MapLibre y simulador de lienzo movil (390x844 px). | `VisitorView.tsx` |
+| `/taller` | **Modo Artesano y Comercio Local** | Gestion de fichas de oficio tradicional en barrios catalogados en DENUE, afluencia proyectada, horarios de demostraciones en vivo y sellado oficial. | `ArtisanView.tsx` |
+| `/admin` | **Modo SECIHTI / Sostenibilidad** | Tablero de analitica urbana para tomadores de decisiones: metricas de 150 agentes sinteticos (IC 95%), regulacion de cupos zonales por barrio y ranking de intervencion en banquetas. | `AdminView.tsx` |
+
+---
+
+## 9. Catalogo de 24 Lugares y Pasaporte de Patrimonio Vivo
+
+La plataforma amplió su cuadrante piloto de 14 a **24 puntos de interes patrimoniales y tradicionales**, abarcando Centro Núcleo, Los Sapos, Analco, La Luz, El Alto y Xanenetla:
+
+1. **Zócalo y Centro Histórico**: Catedral de Puebla, Biblioteca Palafoxiana, Museo Amparo, Capilla del Rosario, Mercado El Parián, Calle de los Dulces (6 Oriente), Casa de Alfeñique, Puente de Bubas y Casa de los Muñecos.
+2. **Barrio de Los Sapos**: Callejón y Bazar de Antigüedades de Los Sapos.
+3. **Barrio de Analco**: Templo del Santo Ángel de Analco, Parque de Analco, Taller Tradicional de Talavera, Taller de Vidrio Soplado y Panadería Colonial La Guadalupana.
+4. **Barrio de La Luz**: Horno de Alfarería Tradicional de La Luz, Templo de La Luz y Taller de Cazuelas y Loza de Barro Vidriado.
+5. **Barrio de El Alto**: Mercado de El Alto (Plaza Garibaldi Poblana), Jardín de San Francisco y Templo de San Francisco de Asís.
+6. **Barrio de Xanenetla (Ciudad Mural)**: Ciudad Mural Xanenetla, Antojería Típica y Mirador Mural de Xanenetla.
+
+### Mecánicas de Exploración y Gamificación
+* **Secretos Culturales Ocultos**: Cada POI incluye una pista de observación presencial y un secreto histórico que se desbloquea al sellar el pasaporte.
+* **Insignias Holográficas**: Recompensas visuales coleccionables con efectos CSS 3D (ej. *Custodio Angelopolitano*, *Fuego de La Luz*, *Maestro del Barro*).
+* **Galería "Quiénes estuvieron aquí"**: Despliega semblanzas de cronistas virreinales y personajes históricos novohispanos combinados con un muro de memorias y testimonios de visitantes reales.
+
+---
+
+## 10. Auditoría Técnica y Diagnóstico de Integridad
+
+El repositorio fue sometido a una auditoria tecnica exhaustiva documentada detalladamente en [docs/technical_audit_and_improvements.md](file:///docs/technical_audit_and_improvements.md):
+
+* **Estado de Suites**: Vitest (5/5 pruebas passing en `packages/shared-types`), compilación TypeScript limpia (`apps/web` y `services/gateway`).
+* **Sincronización de Matrices**: Se documenta la discrepancia entre el catálogo ampliado de 24 POIs y las matrices topológicas generadas por `graph_builder.py` (14 POIs), así como la solución implementada para prevenir caídas de `simulation.py` y `route-service`.
+* **Resiliencia PWA**: Diagnóstico de instalación del Service Worker en `main.tsx` y provisión de activos manifest para funcionamiento offline pleno.
+* **API Gateway & RAG**: Integración del proxy para el motor de recuperación documental semántica en `/v1/cultural/query`.
