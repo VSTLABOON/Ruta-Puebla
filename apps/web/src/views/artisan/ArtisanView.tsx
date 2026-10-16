@@ -7,7 +7,8 @@ import {
   KeyRound,
   Sparkles,
   Lock,
-  Store
+  Store,
+  LogOut
 } from 'lucide-react';
 import { useRouter } from '../../router/Router';
 import { tacticalAudio } from '../../utils/tacticalAudio';
@@ -120,15 +121,34 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <Compass className="w-3.5 h-3.5 text-amber-400" />
-            <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {session && (
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  localStorage.removeItem('ruta_abierta_artisan_user');
+                  setSession(null);
+                  if (onSessionChange) onSessionChange();
+                }}
+                className="px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                title={language === 'es' ? 'Cerrar sesión de taller' : 'Sign out'}
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                <span>{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <Compass className="w-3.5 h-3.5 text-amber-400" />
+              <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Tarjeta de Inicio de Sesión si no hay sesión activa */}

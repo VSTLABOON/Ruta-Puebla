@@ -327,27 +327,27 @@ function MainApp() {
     <div className="h-screen w-screen overflow-hidden bg-[#07154E] text-[#EFF1F8] flex flex-col font-sans antialiased selection:bg-[#EDE28E] selection:text-[#0E2C9C]">
       {/* Cabecera Principal PopoGo */}
       <header className="bg-[#0B228A]/95 backdrop-blur-xl border-b border-[#9597C1]/25 text-[#EFF1F8] z-40 flex-shrink-0">
-        <div className="w-full px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
+        <div className="w-full px-3 sm:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3">
           {/* Logo y Nombre PopoGo */}
           <div
             onClick={() => navigate('/')}
-            className="flex items-center gap-2.5 cursor-pointer select-none group"
+            className="flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none group min-w-0"
           >
             <img
               src="/popogo-logo.png"
               alt="PopoGo Logo"
-              className="w-9 h-9 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-cover bg-white flex-shrink-0 group-hover:scale-105 transition-transform"
+              className="w-9 h-9 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-contain bg-[#EFF1F8] flex-shrink-0 group-hover:scale-105 transition-transform p-0.5"
             />
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-black tracking-wider text-white uppercase font-serif">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h1 className="text-sm sm:text-base font-black tracking-wider text-white uppercase font-serif whitespace-nowrap">
                   PopoGo
                 </h1>
-                <span className="text-[10px] font-sans font-bold px-1.5 py-0.2 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase">
+                <span className="text-[10px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase leading-none flex-shrink-0">
                   Puebla
                 </span>
               </div>
-              <p className="text-[10px] text-[#9597C1] hidden sm:block font-medium">
+              <p className="text-[10px] text-[#9597C1] hidden md:block font-medium truncate">
                 {activeRoute === '/taller'
                   ? (language === 'es' ? 'Terminal de Mostrador para Talleres' : 'Workshop Counter Terminal')
                   : activeRoute === '/admin'
@@ -358,34 +358,34 @@ function MainApp() {
           </div>
 
           {/* Controles de Cabecera: Perfil Activo, Intro Splash, Idioma y Cerrar Sesión */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
             {/* Indicador del Rol y Perfil Autenticado */}
             {activeRoute === '/' && currentUser && (
               <button
                 type="button"
                 onClick={() => setIsRecordModalOpen(true)}
-                className="px-2.5 py-1.5 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer select-none shadow-sm"
+                className="px-2.5 py-1.5 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer select-none shadow-sm flex-shrink-0"
                 title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
               >
-                <Trophy className="w-3.5 h-3.5 text-[#EDE28E]" />
-                <span className="max-w-[80px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
-                <span className="text-[10px] bg-[#EDE28E] text-[#0E2C9C] px-1.5 py-0.2 rounded-full font-mono font-black">
+                <Trophy className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+                <span className="max-w-[70px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
+                <span className="text-[10px] bg-[#EDE28E] text-[#0E2C9C] px-1.5 py-0.5 rounded-full font-mono font-black flex-shrink-0 leading-none">
                   Nv.{currentUser.level}
                 </span>
               </button>
             )}
 
             {activeRoute === '/taller' && artisanUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-[#9597C1]/20 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none">
-                <Store className="w-3.5 h-3.5 text-[#9597C1]" />
-                <span className="max-w-[120px] sm:max-w-[180px] truncate">{artisanUser.workshopName}</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+              <div className="px-2.5 py-1.5 rounded-xl bg-[#9597C1]/20 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
+                <Store className="w-3.5 h-3.5 text-[#9597C1] flex-shrink-0" />
+                <span className="max-w-[100px] sm:max-w-[180px] truncate">{artisanUser.workshopName}</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5 flex-shrink-0" />
               </div>
             )}
 
             {activeRoute === '/admin' && adminUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-[#7B5E86]/25 border border-[#7B5E86]/50 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none">
-                <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E]" />
+              <div className="px-2.5 py-1.5 rounded-xl bg-[#7B5E86]/25 border border-[#7B5E86]/50 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
+                <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
                 <span className="hidden sm:inline">SECIHTI • Gobierno de Puebla</span>
                 <span className="sm:hidden">SECIHTI</span>
               </div>
@@ -395,11 +395,11 @@ function MainApp() {
             <button
               type="button"
               onClick={() => setShowSplash(true)}
-              className="p-1.5 px-2.5 rounded-xl bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#EDE28E]/40 shadow-sm transition cursor-pointer"
+              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#EDE28E]/40 shadow-sm transition cursor-pointer flex-shrink-0"
               title={language === 'es' ? 'Ver video splash de PopoGo' : 'Watch PopoGo Splash Video'}
             >
-              <PlayCircle className="w-3.5 h-3.5 text-[#EDE28E]" />
-              <span className="hidden md:inline">{language === 'es' ? 'Intro' : 'Intro'}</span>
+              <PlayCircle className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+              <span className="hidden sm:inline">{language === 'es' ? 'Intro' : 'Intro'}</span>
             </button>
 
             {/* Selector de Idioma */}
@@ -409,21 +409,21 @@ function MainApp() {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
               }}
-              className="p-1.5 px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer flex-shrink-0"
             >
-              <Languages className="w-3.5 h-3.5 text-[#EDE28E]" />
+              <Languages className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
               <span>{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
-            {/* Botón Salir / Cambiar de Rol */}
+            {/* Botón Cerrar Sesión (Siempre visible y prominente) */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-1.5 px-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              className="p-1.5 px-2.5 sm:px-3 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer flex-shrink-0 shadow-md"
               title={language === 'es' ? 'Cerrar sesión actual' : 'Sign out'}
             >
-              <LogOut className="w-3.5 h-3.5 text-rose-400" />
-              <span className="hidden sm:inline">{language === 'es' ? 'Salir' : 'Sign Out'}</span>
+              <LogOut className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+              <span className="font-bold text-xs whitespace-nowrap">{language === 'es' ? 'Cerrar Sesión' : 'Log Out'}</span>
             </button>
           </div>
         </div>

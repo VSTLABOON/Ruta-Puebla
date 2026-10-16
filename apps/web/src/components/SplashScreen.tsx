@@ -84,7 +84,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           <img
             src="/popogo-logo.png"
             alt="PopoGo Logo"
-            className="w-10 h-10 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-cover bg-white"
+            className="w-10 h-10 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-contain bg-[#EFF1F8] p-0.5"
           />
           <div>
             <h1 className="text-xl font-black tracking-wider text-white font-serif flex items-center gap-1.5 drop-shadow">

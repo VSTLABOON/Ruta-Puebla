@@ -225,7 +225,7 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
           <img
             src="/popogo-logo.png"
             alt="PopoGo Logo"
-            className="w-12 h-12 rounded-full border-2 border-[#EDE28E] shadow-[0_0_20px_rgba(237,226,142,0.4)] object-cover bg-white"
+            className="w-12 h-12 rounded-full border-2 border-[#EDE28E] shadow-[0_0_20px_rgba(237,226,142,0.4)] object-contain bg-[#EFF1F8] p-0.5"
           />
           <div>
             <div className="flex items-center gap-2">

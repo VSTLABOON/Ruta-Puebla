@@ -25,7 +25,8 @@ import {
   Award,
   SlidersHorizontal,
   MapPin,
-  CheckCircle2
+  CheckCircle2,
+  LogOut
 } from 'lucide-react';
 import { useRouter } from '../../router/Router';
 import { tacticalAudio } from '../../utils/tacticalAudio';
@@ -309,17 +310,34 @@ export const AdminView: FC<AdminViewProps> = ({
 
           <div className="flex items-center gap-2">
             {session && (
-              <button
-                type="button"
-                onClick={handleExportReport}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                title={language === 'es' ? 'Descargar informe técnico' : 'Export report'}
-              >
-                <Download className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden sm:inline">
-                  {language === 'es' ? 'Exportar Dictamen' : 'Export Report'}
-                </span>
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    tacticalAudio.playTacticalClick();
+                    localStorage.removeItem('ruta_abierta_admin_user');
+                    setSession(null);
+                    if (onSessionChange) onSessionChange();
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  title={language === 'es' ? 'Cerrar sesión institucional' : 'Sign out'}
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                  <span>{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleExportReport}
+                  className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  title={language === 'es' ? 'Descargar informe técnico' : 'Export report'}
+                >
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">
+                    {language === 'es' ? 'Exportar Dictamen' : 'Export Report'}
+                  </span>
+                </button>
+              </>
             )}
 
             <button
