@@ -856,5 +856,482 @@
       "tecnica_ancestral": "Salsa cocida en molcajete de piedra y fritura rapida en manteca sobre comal caliente",
       "sello_artesanal": "Chalupas Xanenetla 1974"
     }
+  },
+  {
+    "id": "poi_mercado_parian",
+    "name": "Mercado de Artesanias El Parian",
+    "category": "artesania",
+    "coordinates": [
+      -98.1942,
+      19.0442
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "20:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 40,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_601",
+    "is_local_business": true,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "artesania",
+      "talavera",
+      "textiles",
+      "comercio_local"
+    ],
+    "description": {
+      "es": "Primer mercado artesanal de Puebla levantado en 1801 sobre la antigua plazuela de San Roque, con 112 locales de talavera, palma, cobre y bordados.",
+      "en": "Puebla's historic craft market built in 1801, featuring 112 stalls with traditional Talavera pottery, copperware, and regional textiles."
+    },
+    "address": "Calle 6 Norte y 2 Oriente, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "La Ruta de la Nao de China en El Parian",
+      "descripcion": "Su nombre proviene del mercado de Manila en Filipinas; aqui llegaban las recuas de mulas cargadas con sedas, especias y porcelanas orientales desde Acapulco hacia Veracruz.",
+      "pista": "Observa los detalles de ladrillo rojo combinados con azulejos de talavera en sus arcadas.",
+      "insignia_nombre": "Mercader del Galeón"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Arrieros del Camino Real Veracruz-Puebla",
+        "rol": "Gremio de transporte virreinal",
+        "epoca": "1801",
+        "relato": "Establecieron en esta plazuela la parada obligada del comercio interoceanico entre Asia, la Nueva Espana y Europa."
+      }
+    ],
+    "artisan_profile": {
+      "nombre_taller": "Union de Locatarios Artesanos de El Parian",
+      "maestro_artesano": "Maestra Carmen Vazquez",
+      "oficio": "Bordado tradicional de blusas de Cuetzalan y Tehuacan",
+      "fundacion_anio": 1961,
+      "demostracion_en_vivo": "Bordado a mano en punto de cruz y pepenado tradicional sobre manta",
+      "horario_demostracion": "Todos los dias 11:00 a 18:00",
+      "tecnica_ancestral": "Tejido en telar de cintura e hilos teñidos con grana cochinilla y añil",
+      "sello_artesanal": "El Parian Tradicion 1801"
+    }
+  },
+  {
+    "id": "poi_calle_dulces",
+    "name": "Calle de los Dulces Tipicos de Santa Clara",
+    "category": "gastronomia",
+    "coordinates": [
+      -98.1968,
+      19.0451
+    ],
+    "hours": {
+      "open": "09:30",
+      "close": "20:30"
+    },
+    "cost_mxn": 60,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_dul_01",
+    "is_local_business": true,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "gastronomia",
+      "dulces",
+      "convento",
+      "comercio_local"
+    ],
+    "description": {
+      "es": "Corredor historico frente al antiguo Convento de Santa Clara donde las familias dulceras elaboran tortitas de Santa Clara, camotes, borrachitos y jamoncillos.",
+      "en": "Historic sweet street outside the former Santa Clara Convent where family confectioners craft pumpkin-seed cookies, sweet potato candies, and traditional treats."
+    },
+    "address": "Av. 6 Oriente entre 5 de Mayo y 4 Norte, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "El Glaseado Secreto de Pepita del Siglo XVII",
+      "descripcion": "Las monjas clarisas crearon la Tortita de Santa Clara mezclando pepita de calabaza molida en metate con jarabe de azucar perfumado con azahar en hornos de leña.",
+      "pista": "Mira las vitrinas antiguas de madera donde reposan las charolas recién horneadas.",
+      "insignia_nombre": "Maestro Confitero"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Dulceria Conventual La Gran Fama de Santa Clara",
+      "maestro_artesano": "Familia Ortiz Sarmiento",
+      "oficio": "Dulceria conventual poblana en cazo de cobre",
+      "fundacion_anio": 1892,
+      "demostracion_en_vivo": "Vaciado de crema de pepita sobre galleta horneada al momento",
+      "horario_demostracion": "Lunes a Domingo 10:30 a 19:00",
+      "tecnica_ancestral": "Punteo de jarabe en cazo de cobre martillado y molienda fina de semilla criolla",
+      "sello_artesanal": "Confiteria Real Santa Clara"
+    }
+  },
+  {
+    "id": "poi_casa_alfenique",
+    "name": "Museo Casa del Alfenique",
+    "category": "museo",
+    "coordinates": [
+      -98.1949,
+      19.0445
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 45,
+    "visit_duration_min": 45,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_603",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "museo",
+      "arquitectura",
+      "barroco",
+      "patrimonio"
+    ],
+    "description": {
+      "es": "Joya de la arquitectura barroca poblana de 1790 cuya fachada está decorada con argamasa blanca que semeja el dulce de azucar llamado alfenique.",
+      "en": "1790 baroque architectural gem adorned with intricate white mortar scrollwork resembling traditional spun sugar candy."
+    },
+    "address": "Av. 4 Oriente 416, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "La Mezcla de Clara de Huevo y Azucar en la Fachada",
+      "descripcion": "El maestro Antonio de Santa Maria Inchaurregui encargo esta casona para su prometida; los artesanos moldearon la argamasa a mano como si fuera merengue real.",
+      "pista": "Observa los doseles blancos que coronan los balcones de esquina.",
+      "insignia_nombre": "Arquitecto del Alfeñique"
+    }
+  },
+  {
+    "id": "poi_puente_bubas",
+    "name": "Puente de Bubas y Pasaje Historico Subterraneo",
+    "category": "historico",
+    "coordinates": [
+      -98.1924,
+      19.0429
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "17:00"
+    },
+    "cost_mxn": 30,
+    "visit_duration_min": 40,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": false,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_604",
+    "is_local_business": false,
+    "zone": "barrio_analco",
+    "tags": [
+      "historia",
+      "subterraneo",
+      "patrimonio",
+      "puente_colonial"
+    ],
+    "description": {
+      "es": "Antiguo puente virreinal de 1682 que cruzaba el rio San Francisco hacia Analco y permanecio oculto bajo el pavimento durante mas de medio siglo.",
+      "en": "1682 viceregal stone bridge that once spanned the San Francisco River toward Analco and remained buried underground for over half a century."
+    },
+    "address": "Av. 2 Oriente 1003, Esquina Blvd. 5 de Mayo, Analco",
+    "secret_to_unlock": {
+      "titulo": "El Rio Oculto Bajo el Bulevar",
+      "descripcion": "El puente conectaba la ciudad espanola con el Hospital de las Bubas en el barrio indigena de Analco antes de que el rio fuera entubado en 1964.",
+      "pista": "Asomate al mirador de cristal a nivel de banqueta para ver los arcos de piedra sumergidos.",
+      "insignia_nombre": "Explorador Subterráneo"
+    }
+  },
+  {
+    "id": "poi_casa_munecos",
+    "name": "Museo Universitario Casa de los Munecos",
+    "category": "museo",
+    "coordinates": [
+      -98.1972,
+      19.0439
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 40,
+    "visit_duration_min": 45,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_605",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "museo",
+      "talavera",
+      "patrimonio",
+      "ciencia"
+    ],
+    "description": {
+      "es": "Casona del siglo XVIII famosa por sus dieciseis tableros de azulejo de talavera con figuras humanas grotescas que satirizan a los regidores de la epoca.",
+      "en": "18th-century mansion famous for its 16 life-size Talavera tile panels depicting whimsical human figures."
+    },
+    "address": "Calle 2 Norte 2, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "La Burla en Talavera contra el Cabildo",
+      "descripcion": "Don Agustin de Ovando mando colocar las 16 caricaturas en azulejo haciendo reverencia en señal de burla hacia sus rivales del Ayuntamiento que le prohibian levantar tres pisos.",
+      "pista": "Cuenta los 16 personajes de talavera entre los balcones del primer y segundo nivel.",
+      "insignia_nombre": "Cronista de los Muñecos"
+    }
+  },
+  {
+    "id": "poi_taller_vidrio_analco",
+    "name": "Taller de Vidrio Soplado y Vitrales Analco",
+    "category": "artesania",
+    "coordinates": [
+      -98.1922,
+      19.0406
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "17:30"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 35,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "denue",
+    "denue_id": "denue_vid_01",
+    "is_local_business": true,
+    "zone": "barrio_analco",
+    "tags": [
+      "artesania",
+      "vidrio",
+      "comercio_local",
+      "taller"
+    ],
+    "description": {
+      "es": "Taller familiar donde el vidrio reciclado se funde a mas de 1,200 grados para soplar vasos, esferas y jarras con cana metalica.",
+      "en": "Family glassblowing workshop melting recycled glass at over 1,200°C to hand-blow tumblers, pitchers, and stained-glass art."
+    },
+    "address": "Calle 9 Oriente 1012, Barrio de Analco",
+    "secret_to_unlock": {
+      "titulo": "El Aliento que Transforma la Arena en Cristal",
+      "descripcion": "Puebla fue la primera ciudad de America en tener hornos de vidrio en 1542, fundados por el artesano Rodrigo de Espinosa junto al rio.",
+      "pista": "Observa el resplandor naranja del crisol y el giro constante de la caña de hierro.",
+      "insignia_nombre": "Soplador de Cristal"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Cristaleria Artesanal El Crisol de Analco",
+      "maestro_artesano": "Maestro Ernesto Tellez",
+      "oficio": "Soplado de vidrio artesanal a pulmon",
+      "fundacion_anio": 1958,
+      "demostracion_en_vivo": "Soplado de jarras de vidrio azul cobalto y recocido en mufla",
+      "horario_demostracion": "Martes a Sabado 11:00 a 15:00",
+      "tecnica_ancestral": "Fundicion de vidrio reciclado con oxidos minerales de cobalto y cobre",
+      "sello_artesanal": "Vidrio Soplado Analco 1958"
+    }
+  },
+  {
+    "id": "poi_panaderia_horno_analco",
+    "name": "Horno Tradicional de Pan de Agua y Cemitas Analco",
+    "category": "gastronomia",
+    "coordinates": [
+      -98.1912,
+      19.0421
+    ],
+    "hours": {
+      "open": "08:30",
+      "close": "19:30"
+    },
+    "cost_mxn": 35,
+    "visit_duration_min": 25,
+    "languages": [
+      "es"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_pan_03",
+    "is_local_business": true,
+    "zone": "barrio_analco",
+    "tags": [
+      "gastronomia",
+      "panaderia",
+      "comercio_local",
+      "barrio_tradicional"
+    ],
+    "description": {
+      "es": "Panaderia centenaria con horno de boveda de ladrillo alimentado con leña donde se hornean cemitas poblanas con ajonjoli y pan de agua.",
+      "en": "Century-old brick-vaulted wood-fired bakery famous for crispy Puebla sesame cemita rolls and traditional water bread."
+    },
+    "address": "Calle 5 Oriente 1210, Barrio de Analco",
+    "secret_to_unlock": {
+      "titulo": "El Secreto del Piso de Piedra volcanica",
+      "descripcion": "La corteza crujiente de la cemita poblana se logra al hornear la masa directamente sobre losas calientes de piedra recinto sin usar charolas metalicas.",
+      "pista": "Siente el aroma a leña y ajonjoli tostado desde la entrada.",
+      "insignia_nombre": "Panadero de Analco"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Antiguo Horno de Leña San Angel de Analco",
+      "maestro_artesano": "Maestro Tomas Rojas",
+      "oficio": "Maestro Tahonero en horno de boveda",
+      "fundacion_anio": 1938,
+      "demostracion_en_vivo": "Paleado de cemitas y colorados al interior del horno de ladrillo",
+      "horario_demostracion": "Lunes a Sabado 09:30 y 16:30",
+      "tecnica_ancestral": "Fermentacion con masa madre natural y coccion sobre piso de piedra recinto",
+      "sello_artesanal": "Tahona Tradicional Analco"
+    }
+  },
+  {
+    "id": "poi_templo_san_francisco",
+    "name": "Templo Conventual de las Llagas de San Francisco",
+    "category": "iglesia",
+    "coordinates": [
+      -98.1895,
+      19.0449
+    ],
+    "hours": {
+      "open": "08:00",
+      "close": "19:30"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 35,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_608",
+    "is_local_business": false,
+    "zone": "barrio_el_alto",
+    "tags": [
+      "patrimonio",
+      "arte_sacro",
+      "arquitectura",
+      "fundacion_puebla"
+    ],
+    "description": {
+      "es": "Primer convento establecido en la ciudad en 1535, famoso por su monumental fachada de cantera, ladrillo y tableros de azulejo de talavera.",
+      "en": "The first convent founded in Puebla in 1535, renowned for its monumental facade combining quarry stone, red brick, and large Talavera panels."
+    },
+    "address": "Blvd. 5 de Mayo y 14 Oriente, Paseo de San Francisco",
+    "secret_to_unlock": {
+      "titulo": "El Caminante que Abrio las Rutas de Carretas",
+      "descripcion": "Aqui reposa Sebastian de Aparicio, quien en el siglo XVI domestico novillos y trazo los primeros caminos carreteros entre Puebla, Veracruz y Zacatecas.",
+      "pista": "Observa los grandes florones de talavera azul y blanca en la portada exterior.",
+      "insignia_nombre": "Pionero de los Caminos"
+    }
+  },
+  {
+    "id": "poi_alfareria_cazuelas_luz",
+    "name": "Taller de Cazuelas de Mole del Barrio de La Luz",
+    "category": "artesania",
+    "coordinates": [
+      -98.1882,
+      19.0426
+    ],
+    "hours": {
+      "open": "09:30",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 40,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "denue",
+    "denue_id": "denue_luz_04",
+    "is_local_business": true,
+    "zone": "barrio_la_luz",
+    "tags": [
+      "artesania",
+      "alfareria",
+      "barro",
+      "comercio_local"
+    ],
+    "description": {
+      "es": "Patio alfarero tradicional donde se moldean a mano las grandes cazuelas de barro rojo vidriado indispensables para cocinar el mole poblano.",
+      "en": "Traditional potter's courtyard where artisans hand-mold the iconic glazed red-clay cazuelas used to simmer authentic Mole Poblano."
+    },
+    "address": "Av. Juan de Palafox y Mendoza 1416, Barrio de La Luz",
+    "secret_to_unlock": {
+      "titulo": "El Sonido de Campana del Barro Bien Cocido",
+      "descripcion": "Los alfareros de La Luz golpean suavemente el borde de cada cazuela con los nudillos: si suena limpio como campana, la pieza no tiene fisuras y resistira el fuego.",
+      "pista": "Mira las hileras de cazuelas secándose al sol en el patio central.",
+      "insignia_nombre": "Alfarero de La Luz"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Alfareria Tradicional Los Hornos de La Luz",
+      "maestro_artesano": "Maestro Aurelio Castillo",
+      "oficio": "Alfareria de barro rojo bruñido y vidriado",
+      "fundacion_anio": 1910,
+      "demostracion_en_vivo": "Torneado de cazuelas moleras y decorado con pastillaje de barro",
+      "horario_demostracion": "Lunes a Sabado 10:00 a 17:00",
+      "tecnica_ancestral": "Amasado de barro con los pies y quema comunitaria en horno abierto de ladrillo",
+      "sello_artesanal": "Barro Vivo de La Luz"
+    }
+  },
+  {
+    "id": "poi_mirador_mural_xanenetla",
+    "name": "Mirador de las Cupulas y Plaza de Xanenetla",
+    "category": "espacio_publico",
+    "coordinates": [
+      -98.1894,
+      19.0504
+    ],
+    "hours": {
+      "open": "07:00",
+      "close": "20:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_610",
+    "is_local_business": false,
+    "zone": "barrio_xanenetla",
+    "tags": [
+      "mirador",
+      "espacio_publico",
+      "muralismo",
+      "patrimonio"
+    ],
+    "description": {
+      "es": "Punto elevado en las faldas del Cerro de Loreto desde donde se aprecia el perfil de cupulas del Centro Historico enmarcado por murales comunitarios.",
+      "en": "Scenic viewpoint on the slopes of Loreto Hill offering panoramic views of Puebla's historic domes framed by vibrant community murals."
+    },
+    "address": "Calle 6 Norte y 30 Oriente, Barrio de Xanenetla",
+    "secret_to_unlock": {
+      "titulo": "El Horizonte de las 70 Cupulas de Talavera",
+      "descripcion": "Desde esta loma de piedra volcanica o xalnene se observan alineadas las cupulas de la Catedral, la Compañia y San Francisco brillando al atardecer.",
+      "pista": "Ubica la banca pintada con mosaicos frente a la explanada del templo.",
+      "insignia_nombre": "Vigía de los Fuertes"
+    }
   }
 ]

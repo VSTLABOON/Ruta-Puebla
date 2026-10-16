@@ -5,6 +5,14 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    host: true
+    host: true,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate'
+    }
+  },
+  preview: {
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate'
+    }
   }
 });

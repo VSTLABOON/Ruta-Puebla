@@ -1,5 +1,5 @@
 import { useState, useRef, type TouchEvent, type FC } from 'react';
-import { RouteStop, Language, PassportState } from '@ruta-abierta/shared-types';
+import { RouteStop, POI, Language, PassportState } from '@ruta-abierta/shared-types';
 import {
   ChevronUp,
   ChevronDown,
@@ -9,19 +9,22 @@ import {
   ShieldCheck,
   AlertTriangle,
   Sparkles,
-  BarChart3,
   Award,
   ChevronLeft,
   ChevronRight,
   Accessibility,
   Store,
-  MessageSquare
+  MessageSquare,
+  Navigation,
+  Ticket,
+  Flame
 } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
 
 interface TacticalBottomSheetProps {
   stops: RouteStop[];
+  pois: POI[];
   selectedStopPoiId: string | null;
   onSelectStop: (poiId: string) => void;
   isOpen: boolean;
@@ -29,36 +32,42 @@ interface TacticalBottomSheetProps {
   language: Language;
   passportState: PassportState;
   onUnlockSecret: (poiId: string, badgeName: string) => void;
+  onMoveUserHere?: (coords: [number, number]) => void;
 }
 
 export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
   stops,
+  pois,
   selectedStopPoiId,
   onSelectStop,
   isOpen,
   onClose,
   language,
   passportState,
-  onUnlockSecret
+  onUnlockSecret,
+  onMoveUserHere
 }) => {
   const [sheetState, setSheetState] = useState<'peek' | 'half' | 'full'>('half');
-  const [activeTab, setActiveTab] = useState<'telemetry' | 'accessibility' | 'badge' | 'memories'>('telemetry');
-  
+  const [activeTab, setActiveTab] = useState<'info' | 'accessibility' | 'badge' | 'memories'>('info');
+
   const touchStartY = useRef<number | null>(null);
 
-  if (!isOpen || stops.length === 0) return null;
+  if (stops.length === 0 && pois.length === 0) return null;
 
-  // Find currently selected stop or default to first
-  const currentIndex = Math.max(
-    0,
-    stops.findIndex((s) => s.poi.id === selectedStopPoiId)
-  );
-  const currentStop = stops[currentIndex] || stops[0];
-  const { poi, score_breakdown: sb } = currentStop;
+  // Buscar si el lugar seleccionado es parte de las paradas de la ruta o cualquier otro POI del mapa
+  const stopIndex = stops.findIndex((s) => s.poi.id === selectedStopPoiId);
+  const currentStop = stopIndex >= 0 ? stops[stopIndex] : stops[0] || null;
+  const standalonePoi =
+    stopIndex < 0 && selectedStopPoiId
+      ? pois.find((p) => p.id === selectedStopPoiId) || null
+      : null;
 
+  const poi = standalonePoi || currentStop?.poi || pois[0];
+  if (!poi) return null;
+
+  const currentIndex = stopIndex >= 0 ? stopIndex : 0;
   const isSecretUnlocked = passportState.unlocked_secrets.includes(poi.id);
 
-  // Time formatters
   const formatTime = (min: number) => {
     const h = Math.floor(min / 60);
     const m = min % 60;
@@ -75,11 +84,11 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
     const deltaY = endY - touchStartY.current;
     touchStartY.current = null;
 
-    if (deltaY < -50) {
+    if (deltaY < -45) {
       tacticalAudio.playTacticalClick();
       if (sheetState === 'peek') setSheetState('half');
       else if (sheetState === 'half') setSheetState('full');
-    } else if (deltaY > 50) {
+    } else if (deltaY > 45) {
       tacticalAudio.playTacticalClick();
       if (sheetState === 'full') setSheetState('half');
       else if (sheetState === 'half') setSheetState('peek');
@@ -95,52 +104,76 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
   };
 
   const handlePrev = () => {
-    if (currentIndex > 0) {
+    if (stops.length > 0 && currentIndex > 0) {
       tacticalAudio.playTacticalClick();
       onSelectStop(stops[currentIndex - 1].poi.id);
     }
   };
 
   const handleNext = () => {
-    if (currentIndex < stops.length - 1) {
+    if (stops.length > 0 && currentIndex < stops.length - 1) {
       tacticalAudio.playTacticalClick();
       onSelectStop(stops[currentIndex + 1].poi.id);
     }
   };
 
   const heightClasses = {
-    peek: 'h-28',
-    half: 'h-[52vh] sm:h-[480px]',
-    full: 'h-[85vh] sm:h-[700px]'
+    peek: 'h-32',
+    half: 'h-[56vh] sm:h-[500px]',
+    full: 'h-[84vh] sm:h-[700px]'
   }[sheetState];
 
   return (
     <div
-      className={`fixed inset-x-0 bottom-0 z-40 transition-all duration-300 ease-out flex flex-col justify-end pointer-events-none pb-20 sm:pb-24`}
+      aria-hidden={!isOpen}
+      className={`fixed inset-x-0 bottom-0 z-40 flex flex-col justify-end pb-20 sm:pb-24 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        isOpen
+          ? 'translate-y-0 opacity-100 pointer-events-none'
+          : 'translate-y-full opacity-0 pointer-events-none'
+      }`}
     >
       <div
-        className={`w-full max-w-lg mx-auto pointer-events-auto bg-slate-950/95 backdrop-blur-2xl border-t border-x border-white/10 rounded-t-3xl shadow-[0_-15px_40px_rgba(0,0,0,0.85)] flex flex-col transition-all duration-300 ${heightClasses}`}
+        className={`w-full max-w-lg mx-auto bg-slate-950/95 backdrop-blur-2xl border-t border-x border-white/15 rounded-t-3xl shadow-[0_-15px_45px_rgba(0,0,0,0.9)] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isOpen ? 'pointer-events-auto' : 'pointer-events-none'
+        } ${heightClasses}`}
       >
-        {/* Grab Handle for Touch Gestures */}
+        {/* Barra superior deslizable */}
         <div
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onClick={toggleExpand}
-          className="w-full pt-3 pb-2 flex flex-col items-center justify-center cursor-pointer select-none group"
+          className="w-full pt-3 pb-1.5 flex flex-col items-center justify-center cursor-pointer select-none group"
         >
-          <div className="w-12 h-1.5 rounded-full bg-slate-700 group-hover:bg-amber-400 transition-colors" />
-          <div className="flex items-center gap-1 text-[10px] uppercase font-mono tracking-widest text-slate-400 mt-1">
-            <span>{sheetState === 'full' ? 'Deslizar para compactar' : 'Itinerario Táctico'}</span>
-            {sheetState === 'full' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+          <div className="w-12 h-1.5 rounded-full bg-slate-700 group-hover:bg-amber-400 transition-colors duration-300" />
+          <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-slate-400 mt-1">
+            <span>
+              {sheetState === 'full'
+                ? language === 'es'
+                  ? 'Toca o desliza para reducir'
+                  : 'Swipe down to compact'
+                : language === 'es'
+                ? 'Toca o desliza para ver más detalles'
+                : 'Swipe up for more details'}
+            </span>
+            {sheetState === 'full' ? (
+              <ChevronDown className="w-3 h-3" />
+            ) : (
+              <ChevronUp className="w-3 h-3" />
+            )}
           </div>
         </div>
 
-        {/* Header: Stop Identity & Stepper */}
-        <div className="px-4 py-2 border-b border-white/10 flex items-center justify-between gap-3 flex-shrink-0">
+        {/* Cabecera del lugar */}
+        <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between gap-3 flex-shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
-            {/* Step Order Badge */}
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-slate-950 font-black text-sm flex items-center justify-center shadow-md flex-shrink-0">
-              {currentStop.stop_order}
+            <div
+              className={`w-9 h-9 rounded-xl font-black text-sm flex items-center justify-center shadow-md flex-shrink-0 ${
+                standalonePoi
+                  ? 'bg-gradient-to-br from-sky-400 to-cyan-600 text-slate-950'
+                  : 'bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950'
+              }`}
+            >
+              {standalonePoi ? <MapPin className="w-4 h-4" /> : currentStop?.stop_order || 1}
             </div>
 
             <div className="min-w-0">
@@ -148,70 +181,78 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                 <h3 className="font-extrabold text-sm text-white truncate tracking-tight">
                   {poi.name}
                 </h3>
-                <span className="font-mono text-[9px] uppercase px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">
                   {poi.zone.replace(/_/g, ' ')}
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono">
-                <span className="flex items-center gap-1 text-amber-400">
+              <div className="flex items-center gap-2.5 text-[11px] text-slate-400 mt-0.5">
+                <span className="flex items-center gap-1 text-amber-400 font-medium">
                   <Clock className="w-3 h-3" />
-                  {formatTime(currentStop.arrival_time_min)} - {formatTime(currentStop.departure_time_min)}
+                  {standalonePoi || !currentStop
+                    ? `${poi.hours.open} - ${poi.hours.close}`
+                    : `${formatTime(currentStop.arrival_time_min)} - ${formatTime(
+                        currentStop.departure_time_min
+                      )}`}
                 </span>
                 <span className="truncate">{poi.address}</span>
               </div>
             </div>
           </div>
 
-          {/* Stepper & Close Controls */}
+          {/* Controles de navegación entre paradas y cerrar */}
           <div className="flex items-center gap-1 flex-shrink-0">
-            <button
-              type="button"
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
-              className="p-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 disabled:opacity-30 hover:bg-slate-800 cursor-pointer"
-              title="Parada anterior"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="text-[10px] font-mono font-bold text-slate-400 px-1">
-              {currentIndex + 1}/{stops.length}
-            </span>
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={currentIndex === stops.length - 1}
-              className="p-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 disabled:opacity-30 hover:bg-slate-800 cursor-pointer"
-              title="Siguiente parada"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            {stops.length > 0 && (
+              <>
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={currentIndex === 0}
+                  className="p-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 disabled:opacity-30 hover:bg-slate-800 transition cursor-pointer"
+                  title={language === 'es' ? 'Parada anterior' : 'Previous stop'}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-[11px] font-bold text-slate-400 px-1">
+                  {stopIndex >= 0 ? `${currentIndex + 1}/${stops.length}` : 'Mapa'}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={currentIndex === stops.length - 1}
+                  className="p-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 disabled:opacity-30 hover:bg-slate-800 transition cursor-pointer"
+                  title={language === 'es' ? 'Siguiente parada' : 'Next stop'}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 ml-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
-              title="Cerrar ficha"
+              className="p-1.5 ml-1 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+              title={language === 'es' ? 'Cerrar' : 'Close'}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Tab Pills */}
+        {/* Pestañas claras y amigables para el visitante (Cero jerga matemática) */}
         <div className="px-4 py-2 border-b border-white/5 flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
           <button
             type="button"
             onClick={() => {
               tacticalAudio.playTacticalClick();
-              setActiveTab('telemetry');
+              setActiveTab('info');
             }}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'telemetry'
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
+              activeTab === 'info'
                 ? 'bg-amber-500 text-slate-950 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>{language === 'es' ? 'Utilidad Algorítmica' : 'Algorithmic Utility'}</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{language === 'es' ? 'Sobre el Lugar' : 'About'}</span>
           </button>
 
           <button
@@ -220,14 +261,14 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
               tacticalAudio.playTacticalClick();
               setActiveTab('accessibility');
             }}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               activeTab === 'accessibility'
                 ? 'bg-emerald-500 text-slate-950 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
             }`}
           >
             <Accessibility className="w-3.5 h-3.5" />
-            <span>{language === 'es' ? 'Accesibilidad Física' : 'Accessibility Sheet'}</span>
+            <span>{language === 'es' ? 'Paso Peatonal' : 'Accessibility'}</span>
           </button>
 
           <button
@@ -236,215 +277,207 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
               tacticalAudio.playTacticalClick();
               setActiveTab('badge');
             }}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               activeTab === 'badge'
                 ? 'bg-sky-500 text-slate-950 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
             }`}
           >
             <Award className="w-3.5 h-3.5" />
-            <span>
-              {language === 'es' ? 'Insignia Holográfica' : 'Holographic Badge'}
-              {isSecretUnlocked && ' *'}
-            </span>
+            <span>{language === 'es' ? 'Sello y Secreto' : 'Badge & Secret'}</span>
           </button>
 
-          {poi.community_memories && poi.community_memories.length > 0 && (
+          {((poi.community_memories && poi.community_memories.length > 0) ||
+            (poi.historical_figures && poi.historical_figures.length > 0)) && (
             <button
               type="button"
               onClick={() => {
                 tacticalAudio.playTacticalClick();
                 setActiveTab('memories');
               }}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
                 activeTab === 'memories'
                   ? 'bg-violet-500 text-white shadow-sm'
                   : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>{language === 'es' ? 'Memoria Barrial' : 'Neighborhood Memory'}</span>
+              <span>{language === 'es' ? 'Historias' : 'Stories'}</span>
             </button>
           )}
         </div>
 
-        {/* Scrollable Tab Content */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* TAB 1: DESCOMPOSICIÓN DE UTILIDAD ALGORÍTMICA */}
-          {activeTab === 'telemetry' && (
-            <div className="space-y-3">
-              <div className="bg-slate-900/80 rounded-2xl p-3.5 border border-white/5 space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-200 uppercase tracking-wider text-[11px] font-mono">
-                    {language === 'es' ? 'Puntaje Multicriterio S_i' : 'Multicriteria Score S_i'}
+        {/* Contenido principal con scroll suave */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
+          {/* PESTAÑA 1: INFORMACIÓN PRÁCTICA DEL LUGAR */}
+          {activeTab === 'info' && (
+            <div className="space-y-3 animate-fade-slide">
+              {/* Descripción principal */}
+              <div className="bg-slate-900/80 rounded-2xl p-3.5 border border-white/10 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                {poi.description[language] || poi.description.es}
+              </div>
+
+              {/* Datos prácticos para el visitante */}
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="bg-slate-900/70 p-2.5 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-slate-400 block">
+                    {language === 'es' ? 'Horario' : 'Hours'}
                   </span>
-                  <span className="font-mono text-amber-400 font-extrabold text-sm">
-                    {sb ? sb.total_s_i.toFixed(2) : '1.00'} pts
+                  <span className="font-bold text-slate-100 mt-0.5 block">
+                    {poi.hours.open} - {poi.hours.close}
                   </span>
                 </div>
 
-                {/* Telemetry Progress Bars */}
-                {sb && (
-                  <div className="space-y-2.5 text-xs font-mono">
-                    {/* Interés Temático */}
-                    <div>
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span className="text-slate-400 flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-amber-400" />
-                          {language === 'es' ? 'Afinidad de Interés' : 'Interest Affinity'}
-                        </span>
-                        <span className="text-amber-400 font-bold">{(sb.interest_similarity * 100).toFixed(0)}%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-amber-600 to-amber-400 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, sb.interest_similarity * 100)}%` }}
-                        />
-                      </div>
-                    </div>
+                <div className="bg-slate-900/70 p-2.5 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                    <Ticket className="w-3 h-3 text-amber-400" />
+                    {language === 'es' ? 'Entrada' : 'Admission'}
+                  </span>
+                  <span className="font-bold text-amber-300 mt-0.5 block">
+                    {poi.cost_mxn === 0
+                      ? language === 'es'
+                        ? 'Entrada libre'
+                        : 'Free entry'
+                      : `$${poi.cost_mxn} MXN`}
+                  </span>
+                </div>
 
-                    {/* Presupuesto Accesible */}
-                    <div>
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span className="text-slate-400 flex items-center gap-1">
-                          <BarChart3 className="w-3 h-3 text-sky-400" />
-                          {language === 'es' ? 'Eficiencia Presupuestal' : 'Budget Efficiency'}
-                        </span>
-                        <span className="text-sky-400 font-bold">{(sb.budget_fit * 100).toFixed(0)}%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-sky-600 to-sky-400 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, sb.budget_fit * 100)}%` }}
-                        />
-                      </div>
-                    </div>
+                <div className="bg-slate-900/70 p-2.5 rounded-xl border border-white/5">
+                  <span className="text-[10px] text-slate-400 block">
+                    {language === 'es' ? 'Estancia sugerida' : 'Suggested stay'}
+                  </span>
+                  <span className="font-bold text-slate-100 mt-0.5 block">
+                    {poi.visit_duration_min} min
+                  </span>
+                </div>
+              </div>
 
-                    {/* Dispersión Territorial fuera del zócalo */}
-                    <div>
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span className="text-slate-400 flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-emerald-400" />
-                          {language === 'es' ? 'Dispersión Territorial' : 'Territorial Dispersion'}
-                        </span>
-                        <span className="text-emerald-400 font-bold">{(sb.dispersion_bonus * 100).toFixed(0)}%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, sb.dispersion_bonus * 100)}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Comercio Local y Artesanal */}
-                    <div>
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span className="text-slate-400 flex items-center gap-1">
-                          <Store className="w-3 h-3 text-violet-400" />
-                          {language === 'es' ? 'Comercio Local (DENUE)' : 'Local Commerce (DENUE)'}
-                        </span>
-                        <span className="text-violet-400 font-bold">{(sb.local_business_bonus * 100).toFixed(0)}%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-violet-600 to-violet-400 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, sb.local_business_bonus * 100)}%` }}
-                        />
-                      </div>
-                    </div>
+              {/* Si es taller artesanal, mostrar ficha del maestro artesano */}
+              {poi.artisan_profile && (
+                <div className="bg-sky-950/40 rounded-2xl p-3.5 border border-sky-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                      <Store className="w-3.5 h-3.5" />
+                      {language === 'es' ? 'Taller Tradicional de Barrio' : 'Neighborhood Workshop'}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 font-semibold">
+                      {poi.artisan_profile.oficio}
+                    </span>
                   </div>
-                )}
-              </div>
+                  <div className="text-xs text-slate-200">
+                    <strong>{poi.artisan_profile.maestro_artesano}</strong> •{' '}
+                    {language === 'es' ? 'Fundado en' : 'Founded in'}{' '}
+                    {poi.artisan_profile.fundacion_anio}
+                  </div>
+                  <div className="text-xs text-amber-300 flex items-center gap-1.5">
+                    <Flame className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{poi.artisan_profile.demostracion_en_vivo}</span>
+                  </div>
+                </div>
+              )}
 
-              {/* Description */}
-              <div className="bg-slate-900/60 rounded-xl p-3 border border-white/5 text-xs text-slate-300 leading-relaxed font-sans">
-                {poi.description[language] || poi.description.es}
-              </div>
+              {/* Botón para simular/moverse a este punto */}
+              {onMoveUserHere && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    tacticalAudio.playTacticalClick();
+                    onMoveUserHere(poi.coordinates);
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>
+                    {language === 'es'
+                      ? 'Marcar que estoy aquí en el mapa'
+                      : 'Set my current location here'}
+                  </span>
+                </button>
+              )}
             </div>
           )}
 
-          {/* TAB 2: FICHA DE ACCESIBILIDAD FÍSICA VERIFICADA */}
+          {/* PESTAÑA 2: ACCESIBILIDAD EN LENGUAJE CLARO (CERO PORCENTAJES) */}
           {activeTab === 'accessibility' && (
-            <div className="space-y-3 font-sans">
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {/* Entrada accesible */}
-                <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5 space-y-1">
-                  <span className="text-[10px] uppercase font-mono text-slate-400">
-                    {language === 'es' ? 'Entrada al Establecimiento' : 'Entrance Access'}
+            <div className="space-y-3 animate-fade-slide">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                <div className="bg-slate-900/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                  <span className="text-[11px] text-slate-400">
+                    {language === 'es' ? 'Acceso en la entrada' : 'Entrance access'}
                   </span>
-                  <div className="flex items-center gap-1.5 font-bold">
+                  <div className="font-bold text-sm">
                     {poi.entrance_accessible ? (
-                      <span className="text-emerald-400 flex items-center gap-1">
-                        <ShieldCheck className="w-4 h-4" />
-                        {language === 'es' ? 'A Nivel de Banqueta' : 'At Grade Level'}
+                      <span className="text-emerald-400 flex items-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+                        {language === 'es'
+                          ? 'Entrada plana sin escalones'
+                          : 'Flat step-free entrance'}
                       </span>
                     ) : (
-                      <span className="text-rose-400 flex items-center gap-1">
-                        <AlertTriangle className="w-4 h-4" />
-                        {language === 'es' ? 'Escalón sin Rampa' : 'Step / Barrier'}
+                      <span className="text-rose-400 flex items-center gap-1.5">
+                        <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                        {language === 'es'
+                          ? 'Cuenta con escalón en la entrada'
+                          : 'Has entrance step'}
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Ancho útil de acera normativo */}
-                <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5 space-y-1">
-                  <span className="text-[10px] uppercase font-mono text-slate-400">
-                    {language === 'es' ? 'Ancho Útil de Acera' : 'Clear Sidewalk Width'}
+                <div className="bg-slate-900/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                  <span className="text-[11px] text-slate-400">
+                    {language === 'es' ? 'Sanitario para visitantes' : 'Visitor restroom'}
                   </span>
-                  <div className="text-slate-100 font-mono font-bold text-sm">
-                    1.80 m
-                    <span className="text-[10px] text-emerald-400 font-normal ml-1">(&gt; 1.20m norma)</span>
-                  </div>
-                </div>
-
-                {/* Baño Adaptado */}
-                <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5 space-y-1">
-                  <span className="text-[10px] uppercase font-mono text-slate-400">
-                    {language === 'es' ? 'Sanitario Accesible' : 'Adapted Restroom'}
-                  </span>
-                  <div className="text-slate-200 font-semibold flex items-center gap-1">
+                  <div className="font-bold text-sm">
                     {poi.restroom_accessible ? (
-                      <span className="text-emerald-400 flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        {language === 'es' ? 'Verificado' : 'Verified'}
+                      <span className="text-emerald-400 flex items-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+                        {language === 'es' ? 'Baño accesible disponible' : 'Accessible restroom'}
                       </span>
                     ) : (
-                      <span className="text-slate-400">
-                        {language === 'es' ? 'No disponible' : 'Not available'}
+                      <span className="text-slate-300 flex items-center gap-1.5">
+                        {language === 'es'
+                          ? 'Sin sanitario adaptado'
+                          : 'No adapted restroom'}
                       </span>
                     )}
-                  </div>
-                </div>
-
-                {/* Auditoría en campo */}
-                <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5 space-y-1">
-                  <span className="text-[10px] uppercase font-mono text-slate-400">
-                    {language === 'es' ? 'Certeza en Campo' : 'Field Confidence'}
-                  </span>
-                  <div className="text-amber-400 font-mono font-bold text-sm">
-                    96%
-                    <span className="text-[10px] text-slate-400 font-normal ml-1">CC BY 4.0</span>
                   </div>
                 </div>
               </div>
 
-              {/* Notas de accesibilidad de la parada */}
-              <div className="bg-slate-900/60 p-3 rounded-xl border border-white/5 text-xs text-slate-300 space-y-1">
-                <span className="font-bold text-amber-400 block text-[11px]">
-                  {language === 'es' ? 'Condiciones de Movilidad Auditadas:' : 'Audited Mobility Notes:'}
+              <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-white/10 text-xs text-slate-200 space-y-1">
+                <span className="font-bold text-emerald-400 block">
+                  {language === 'es'
+                    ? 'Recomendación para tu caminata:'
+                    : 'Walking recommendation:'}
                 </span>
-                <p className="text-[11px] leading-relaxed">
-                  {currentStop.accessibility_notes[language] || currentStop.accessibility_notes.es}
+                <p className="leading-relaxed text-slate-300">
+                  {currentStop
+                    ? currentStop.accessibility_notes[language] ||
+                      currentStop.accessibility_notes.es
+                    : poi.entrance_accessible
+                    ? language === 'es'
+                      ? 'Acceso cómodo a nivel de banqueta. Ideal para recorrer a pie o con silla de ruedas.'
+                      : 'Comfortable street-level access suitable for wheelchairs and strollers.'
+                    : language === 'es'
+                    ? 'Este inmueble histórico tiene escalón en su acceso principal; puedes solicitar apoyo del personal.'
+                    : 'This historic building has a step at the main entrance.'}
                 </p>
               </div>
             </div>
           )}
 
-          {/* TAB 3: INSIGNIA HOLOGRÁFICA REFLECTANTE */}
+          {/* PESTAÑA 3: INSIGNIA HOLOGRÁFICA Y SECRETO */}
           {activeTab === 'badge' && (
-            <div className="space-y-3">
+            <div className="space-y-3 animate-fade-slide">
+              {poi.secret_to_unlock?.pista && !isSecretUnlocked && (
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3 text-xs text-amber-200">
+                  <strong className="block text-amber-400 mb-0.5">
+                    {language === 'es' ? 'Pista para descubrir el secreto:' : 'Clue to unlock:'}
+                  </strong>
+                  {poi.secret_to_unlock.pista}
+                </div>
+              )}
               <HolographicBadge
                 badgeName={poi.secret_to_unlock?.insignia_nombre || `Medallón ${poi.name}`}
                 poiName={poi.name}
@@ -461,24 +494,25 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             </div>
           )}
 
-          {/* TAB 4: MEMORIA BARRIAL Y FIGURAS HISTÓRICAS */}
+          {/* PESTAÑA 4: HISTORIAS Y PERSONAJES */}
           {activeTab === 'memories' && (
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3 text-xs animate-fade-slide">
               {poi.historical_figures && poi.historical_figures.length > 0 && (
                 <div className="space-y-2">
-                  <span className="font-bold text-amber-400 uppercase text-[10px] tracking-wider block font-mono">
-                    {language === 'es' ? 'Personajes Históricos Ligados al Lugar' : 'Historical Figures'}
+                  <span className="font-bold text-amber-400 uppercase text-[11px] tracking-wider block">
+                    {language === 'es' ? 'Personajes Históricos' : 'Historical Figures'}
                   </span>
                   {poi.historical_figures.map((hf, idx) => (
-                    <div key={idx} className="bg-slate-900/80 p-2.5 rounded-xl border border-white/5 space-y-0.5">
+                    <div
+                      key={idx}
+                      className="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1"
+                    >
                       <div className="flex items-center justify-between">
-                        <strong className="text-white">{hf.nombre}</strong>
-                        <span className="text-[10px] font-mono text-slate-400">{hf.epoca}</span>
+                        <strong className="text-white text-sm">{hf.nombre}</strong>
+                        <span className="text-[11px] text-slate-400">{hf.epoca}</span>
                       </div>
-                      <div className="text-[10px] text-amber-400 font-semibold">{hf.rol}</div>
-                      <p className="text-[11px] text-slate-300 leading-relaxed">
-                        {hf.relato}
-                      </p>
+                      <div className="text-[11px] text-amber-400 font-semibold">{hf.rol}</div>
+                      <p className="text-xs text-slate-300 leading-relaxed">{hf.relato}</p>
                     </div>
                   ))}
                 </div>
@@ -486,17 +520,19 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
 
               {poi.community_memories && poi.community_memories.length > 0 && (
                 <div className="space-y-2">
-                  <span className="font-bold text-sky-400 uppercase text-[10px] tracking-wider block font-mono">
-                    {language === 'es' ? 'Voces y Testimonios de la Comunidad' : 'Community Voices'}
+                  <span className="font-bold text-sky-400 uppercase text-[11px] tracking-wider block">
+                    {language === 'es' ? 'Experiencias de Visitantes' : 'Visitor Stories'}
                   </span>
                   {poi.community_memories.map((cm, idx) => (
-                    <div key={idx} className="bg-slate-900/80 p-2.5 rounded-xl border border-white/5 space-y-0.5">
+                    <div
+                      key={idx}
+                      className="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1"
+                    >
                       <div className="flex items-center justify-between">
                         <strong className="text-sky-300">{cm.autor}</strong>
-                        <span className="text-[10px] font-mono text-slate-400">{cm.fecha}</span>
+                        <span className="text-[11px] text-slate-400">{cm.procedencia}</span>
                       </div>
-                      <div className="text-[10px] text-slate-400">{cm.procedencia}</div>
-                      <p className="text-[11px] text-slate-300 italic leading-relaxed">
+                      <p className="text-xs text-slate-200 italic leading-relaxed">
                         &quot;{cm.testimonio}&quot;
                       </p>
                     </div>

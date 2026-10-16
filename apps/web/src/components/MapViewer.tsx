@@ -9,13 +9,13 @@ import {
   Layers,
   Maximize2,
   Box,
-  Compass,
   Palette,
   Moon,
   Sun,
-  Crosshair,
+  Navigation,
   Sparkles,
-  X
+  X,
+  Hand
 } from 'lucide-react';
 
 interface MapViewerProps {
@@ -28,26 +28,28 @@ interface MapViewerProps {
   language: 'es' | 'en';
   isPulseActive?: boolean;
   onInspectStop?: (poiId: string) => void;
+  userLocation: [number, number];
+  onUserLocationChange: (coords: [number, number]) => void;
 }
 
-type MapStyleKey = 'voyager' | 'dark' | 'positron';
+type MapStyleKey = 'dark' | 'voyager' | 'positron';
 
 const MAP_STYLES: Record<
   MapStyleKey,
   { name: { es: string; en: string }; url: string; iconType: 'palette' | 'moon' | 'sun' }
 > = {
   dark: {
-    name: { es: 'Noche Neón', en: 'Dark Neon' },
+    name: { es: 'Oscuro', en: 'Dark' },
     url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
     iconType: 'moon'
   },
   voyager: {
-    name: { es: 'Turismo Voyager', en: 'Voyager Tourism' },
+    name: { es: 'Callejero', en: 'Streets' },
     url: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
     iconType: 'palette'
   },
   positron: {
-    name: { es: 'Luz Arquitectónica', en: 'Positron Clean' },
+    name: { es: 'Claro', en: 'Light' },
     url: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
     iconType: 'sun'
   }
@@ -76,33 +78,31 @@ export const MapViewer: FC<MapViewerProps> = ({
   onSelectPoi,
   language,
   isPulseActive = false,
-  onInspectStop
+  onInspectStop,
+  userLocation,
+  onUserLocationChange
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const userMarkerRef = useRef<maplibregl.Marker | null>(null);
-  const popupRef = useRef<maplibregl.Popup | null>(null);
   const watchPositionIdRef = useRef<number | null>(null);
 
   const [activeStyle, setActiveStyle] = useState<MapStyleKey>('dark');
   const [is3D, setIs3D] = useState(true);
-  const [hoveredSegment, setHoveredSegment] = useState<Segment | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [showLegend, setShowLegend] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth >= 640 : true
-  );
+  const [showLegend, setShowLegend] = useState(false);
+  const [showAllLocations, setShowAllLocations] = useState(true);
 
-  // Estados de geolocalización y radar GPS
-  const [isGpsActive, setIsGpsActive] = useState(false);
-  const [, setUserLocation] = useState<[number, number] | null>(null);
+  // Estados de geolocalización y radar de proximidad
+  const [isGpsTracking, setIsGpsTracking] = useState(false);
   const [proximityAlert, setProximityAlert] = useState<{ poi: POI; distanceM: number } | null>(null);
 
   // Cálculo dinámico de límites espaciales
   const { dynamicCenter, dynamicBounds } = useMemo(() => {
     if (pois.length === 0 && segments.length === 0) {
       return {
-        dynamicCenter: [-98.1965, 19.0435] as [number, number],
+        dynamicCenter: [-98.198, 19.0431] as [number, number],
         dynamicBounds: undefined
       };
     }
@@ -130,7 +130,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
     const centerLng = (minLng + maxLng) / 2;
     const centerLat = (minLat + maxLat) / 2;
-    const pad = 0.025;
+    const pad = 0.035;
 
     return {
       dynamicCenter: [centerLng, centerLat] as [number, number],
@@ -141,7 +141,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     };
   }, [pois, segments]);
 
-  // Inicialización de MapLibre GL
+  // Inicialización de MapLibre GL con navegación de 1 solo dedo (cooperativeGestures: false)
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
@@ -149,48 +149,44 @@ export const MapViewer: FC<MapViewerProps> = ({
       container: mapContainerRef.current,
       style: MAP_STYLES[activeStyle].url,
       center: dynamicCenter,
-      zoom: 15.3,
-      pitch: 45,
-      bearing: -15,
+      zoom: 15.2,
+      pitch: 42,
+      bearing: -12,
       maxBounds: dynamicBounds,
-      cooperativeGestures: true
+      cooperativeGestures: false,
+      dragPan: true,
+      touchZoomRotate: true,
+      touchPitch: true,
+      fadeDuration: 300
     });
-
-    map.addControl(
-      new maplibregl.NavigationControl({
-        visualizePitch: true,
-        showCompass: true,
-        showZoom: true
-      }),
-      'top-right'
-    );
 
     map.on('load', () => {
       setIsLoaded(true);
+      map.resize();
     });
 
     mapRef.current = map;
 
+    // ResizeObserver para compatibilidad total con Brave, Safari y contenedores dinámicos
+    const ro = new ResizeObserver(() => {
+      map.resize();
+    });
+    ro.observe(mapContainerRef.current);
+
     return () => {
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
     };
   }, [dynamicCenter, dynamicBounds]);
 
-  // Cambio de estilo
+  // Cambio de estilo de mapa
   useEffect(() => {
     if (!mapRef.current || !isLoaded) return;
     mapRef.current.setStyle(MAP_STYLES[activeStyle].url);
   }, [activeStyle, isLoaded]);
 
-  // Redimensionamiento
-  useEffect(() => {
-    const handleResize = () => mapRef.current?.resize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Conversión GeoJSON
+  // Conversión GeoJSON de aceras
   const segmentsGeoJSON = useMemo(() => {
     return {
       type: 'FeatureCollection',
@@ -200,13 +196,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         properties: {
           id: seg.id,
           is_verified: seg.is_verified,
-          transitable: seg.transitable[activeProfile],
-          slope_pct: seg.slope_pct,
-          width_m: seg.width_m,
-          length_m: seg.length_m,
-          surface: seg.surface,
-          zone: seg.zone,
-          confidence: seg.confidence
+          transitable: seg.transitable[activeProfile]
         },
         geometry: seg.geometry
       }))
@@ -249,7 +239,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     } as any;
   }, [selectedRoute, segments]);
 
-  // Actualización de capas
+  // Actualización de capas vectoriales
   const updateMapLayers = useCallback(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
@@ -268,9 +258,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
           'line-color': '#f43f5e',
-          'line-width': 3.5,
+          'line-width': 3,
           'line-dasharray': [2, 2],
-          'line-opacity': 0.95
+          'line-opacity': 0.85
         }
       });
 
@@ -282,42 +272,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
           'line-color': '#10b981',
-          'line-width': 2.8,
-          'line-opacity': 0.85
+          'line-width': 2.5,
+          'line-opacity': 0.75
         }
-      });
-
-      map.addLayer({
-        id: 'sidewalk-inferred',
-        type: 'line',
-        source: 'sidewalk-segments',
-        filter: ['all', ['!', ['get', 'is_verified']], ['get', 'transitable']],
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': '#94a3b8',
-          'line-width': 2.0,
-          'line-dasharray': [3, 3],
-          'line-opacity': 0.7
-        }
-      });
-
-      const handleSegmentHover = (e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
-        if (e.features && e.features[0]) {
-          map.getCanvas().style.cursor = 'pointer';
-          const props = e.features[0].properties;
-          const found = segments.find((s) => s.id === props.id);
-          if (found) setHoveredSegment(found);
-        }
-      };
-
-      const handleSegmentLeave = () => {
-        map.getCanvas().style.cursor = '';
-        setHoveredSegment(null);
-      };
-
-      ['sidewalk-verified', 'sidewalk-barriers', 'sidewalk-inferred'].forEach((layerId) => {
-        map.on('mouseenter', layerId, handleSegmentHover);
-        map.on('mouseleave', layerId, handleSegmentLeave);
       });
     } else {
       const source = map.getSource('sidewalk-segments') as maplibregl.GeoJSONSource;
@@ -337,9 +294,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
           'line-color': '#fde68a',
-          'line-width': 12,
-          'line-blur': 4,
-          'line-opacity': 0.4
+          'line-width': 13,
+          'line-blur': 5,
+          'line-opacity': 0.45
         }
       });
 
@@ -370,7 +327,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       const source = map.getSource('active-route') as maplibregl.GeoJSONSource;
       source.setData(routeGeoJSON);
     }
-  }, [segments, segmentsGeoJSON, routeGeoJSON]);
+  }, [segmentsGeoJSON, routeGeoJSON]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -383,10 +340,53 @@ export const MapViewer: FC<MapViewerProps> = ({
     }
   }, [updateMapLayers, activeStyle]);
 
-  // Marcadores estilo Fotodisco de Patrimonio con animación de levitación
+  // Punto permanente "Dónde estoy" (Ubicación del usuario en el mapa)
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || !isLoaded) return;
+
+    if (!userMarkerRef.current) {
+      const el = document.createElement('div');
+      el.className = 'relative flex flex-col items-center justify-center pointer-events-none z-40';
+      el.innerHTML = `
+        <div class="px-2 py-0.5 mb-1 rounded-full bg-sky-500 text-slate-950 font-extrabold text-[10px] shadow-lg border border-white whitespace-nowrap">
+          ${language === 'es' ? 'Estás aquí' : 'You are here'}
+        </div>
+        <div class="relative flex items-center justify-center">
+          <div class="absolute w-14 h-14 rounded-full bg-sky-400/30 radar-wave"></div>
+          <div class="relative w-5 h-5 rounded-full bg-sky-500 border-[2.5px] border-white shadow-[0_0_16px_rgba(14,165,233,0.9)] flex items-center justify-center">
+            <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+          </div>
+        </div>
+      `;
+      userMarkerRef.current = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat(userLocation)
+        .addTo(map);
+    } else {
+      userMarkerRef.current.setLngLat(userLocation);
+      const labelEl = userMarkerRef.current.getElement().querySelector('div');
+      if (labelEl) {
+        labelEl.textContent = language === 'es' ? 'Estás aquí' : 'You are here';
+      }
+    }
+
+    // Evaluar proximidad a lugares cercanos (< 85m)
+    let closest: { poi: POI; distanceM: number } | null = null;
+    pois.forEach((poi) => {
+      const dist = getDistanceMeters(userLocation, poi.coordinates);
+      if (dist <= 85) {
+        if (!closest || dist < closest.distanceM) {
+          closest = { poi, distanceM: dist };
+        }
+      }
+    });
+    setProximityAlert(closest);
+  }, [userLocation, isLoaded, language, pois]);
+
+  // Marcadores interactivos para las paradas de la ruta y todas las locaciones disponibles
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isLoaded) return;
 
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
@@ -395,14 +395,14 @@ export const MapViewer: FC<MapViewerProps> = ({
       (selectedRoute?.stops || []).map((stop) => [stop.poi.id, stop])
     );
 
-    // 1. Marcadores de paradas ordenadas (Medallones flotantes)
+    // 1. Paradas activas del recorrido (Medallones numerados dorados)
     if (selectedRoute) {
       selectedRoute.stops.forEach((stop) => {
         const isSelected = stop.poi.id === selectedStopPoiId;
         const isNearby = proximityAlert?.poi.id === stop.poi.id;
 
         const el = document.createElement('div');
-        el.className = `flex flex-col items-center cursor-pointer transition-transform duration-300 ${
+        el.className = `flex flex-col items-center cursor-pointer transition-transform duration-500 ease-out ${
           isSelected || isNearby ? 'scale-125 z-30' : 'hover:scale-110 z-20'
         }`;
 
@@ -410,61 +410,27 @@ export const MapViewer: FC<MapViewerProps> = ({
           <div class="relative flex items-center justify-center animate-pokestop-float">
             ${
               isSelected || isNearby
-                ? '<div class="absolute -inset-1.5 rounded-full bg-amber-400/40 animate-ping"></div>'
+                ? '<div class="absolute -inset-2 rounded-full bg-amber-400/45 animate-ping"></div>'
                 : ''
             }
-            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 p-0.5 shadow-2xl flex items-center justify-center border border-white">
-              <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center font-black text-xs text-white">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 p-0.5 shadow-2xl flex items-center justify-center border-2 border-white">
+              <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center font-black text-xs text-amber-300">
                 <span>${stop.stop_order}</span>
               </div>
             </div>
           </div>
-          <div class="mt-0.5 px-1.5 py-0.5 rounded-md bg-slate-900/90 border border-slate-700 text-[9px] font-bold text-amber-300 shadow whitespace-nowrap">
-            ${stop.poi.name.length > 14 ? stop.poi.name.substring(0, 14) + '...' : stop.poi.name}
+          <div class="mt-0.5 px-2 py-0.5 rounded-full bg-slate-950/90 border border-amber-400/50 text-[10px] font-bold text-amber-200 shadow-lg whitespace-nowrap">
+            ${stop.poi.name.length > 18 ? stop.poi.name.substring(0, 18) + '…' : stop.poi.name}
           </div>
         `;
 
-        const handleClick = (e: Event) => {
+        const handleSelect = (e: Event) => {
           e.stopPropagation();
           onSelectPoi(stop.poi.id);
           if (onInspectStop) onInspectStop(stop.poi.id);
-
-          if (popupRef.current) popupRef.current.remove();
-
-          const popupContent = `
-            <div class="bg-slate-900 text-white p-3.5 rounded-xl border border-slate-700 min-w-[220px] max-w-xs shadow-2xl font-sans">
-              <div class="flex items-center justify-between pb-1.5 border-b border-slate-800">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">
-                  Parada #${stop.stop_order} • ${stop.poi.zone.replace(/_/g, ' ')}
-                </span>
-              </div>
-              <h4 class="font-bold text-sm text-slate-100 mt-1">${stop.poi.name}</h4>
-              <p class="text-xs text-slate-400 mt-0.5 capitalize">${stop.poi.category}</p>
-              ${
-                stop.poi.is_local_business
-                  ? '<div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800 text-[10px] font-semibold">[Taller Tradicional de Barrio]</div>'
-                  : ''
-              }
-              <div class="mt-2 pt-2 border-t border-slate-800 text-[11px] text-emerald-400 flex items-center gap-1">
-                ✓ ${stop.accessibility_notes[language]}
-              </div>
-            </div>
-          `;
-
-          const popup = new maplibregl.Popup({
-            offset: 25,
-            closeButton: false,
-            className: 'custom-map-popup'
-          })
-            .setLngLat(stop.poi.coordinates)
-            .setHTML(popupContent)
-            .addTo(map);
-
-          popupRef.current = popup;
         };
 
-        el.addEventListener('click', handleClick);
-        el.addEventListener('touchend', handleClick);
+        el.addEventListener('click', handleSelect);
 
         const marker = new maplibregl.Marker({ element: el })
           .setLngLat(stop.poi.coordinates)
@@ -474,148 +440,92 @@ export const MapViewer: FC<MapViewerProps> = ({
       });
     }
 
-    // 2. Nodos de cristales para otros POIs
-    pois.forEach((poi) => {
-      if (stopsByPoiId.has(poi.id)) return;
+    // 2. Todas las demás locaciones en el mapa (Pines claros y fáciles de tocar)
+    if (showAllLocations) {
+      pois.forEach((poi) => {
+        if (stopsByPoiId.has(poi.id)) return;
 
-      const isSelected = poi.id === selectedStopPoiId;
-      const isNearby = proximityAlert?.poi.id === poi.id;
+        const isSelected = poi.id === selectedStopPoiId;
+        const isNearby = proximityAlert?.poi.id === poi.id;
+        const isWorkshop = poi.is_local_business;
 
-      const el = document.createElement('div');
-      el.className = `cursor-pointer transition-transform duration-200 hover:scale-150 ${
-        isSelected ? 'scale-150 z-20' : 'z-10'
-      }`;
+        const el = document.createElement('div');
+        el.className = `flex flex-col items-center cursor-pointer transition-transform duration-300 ease-out ${
+          isSelected ? 'scale-125 z-30' : 'hover:scale-110 z-10'
+        }`;
 
-      el.innerHTML = `
-        <div class="w-3.5 h-3.5 rounded-sm rotate-45 ${
-          poi.is_local_business
-            ? 'bg-sky-400 border border-white shadow-[0_0_8px_rgba(56,189,248,0.8)]'
-            : 'bg-slate-400 border border-slate-800 shadow'
-        } ${isNearby ? 'ring-4 ring-amber-400 animate-ping' : ''}"></div>
-      `;
+        const badgeBg = isWorkshop
+          ? 'from-sky-500 to-cyan-300 border-white shadow-[0_0_12px_rgba(56,189,248,0.65)]'
+          : 'from-emerald-500 to-teal-300 border-white shadow-[0_0_12px_rgba(16,185,129,0.55)]';
 
-      el.title = poi.name;
+        const dotInner = isWorkshop ? 'bg-sky-950' : 'bg-emerald-950';
+        const textTint = isWorkshop ? 'text-sky-200 border-sky-500/40' : 'text-emerald-200 border-emerald-500/40';
 
-      const handleClick = (e: Event) => {
-        e.stopPropagation();
-        onSelectPoi(poi.id);
-
-        if (popupRef.current) popupRef.current.remove();
-
-        const popupContent = `
-          <div class="bg-slate-900 text-white p-3 rounded-xl border border-slate-700 min-w-[200px] shadow-2xl font-sans">
-            <h4 class="font-bold text-xs text-slate-100">${poi.name}</h4>
-            <p class="text-[11px] text-amber-400 capitalize">${poi.category}</p>
+        el.innerHTML = `
+          <div class="relative flex items-center justify-center">
             ${
-              poi.is_local_business
-                ? '<span class="inline-block mt-1.5 text-[10px] bg-sky-900/60 text-sky-300 px-1.5 py-0.5 rounded border border-sky-700">[Comercio Tradicional]</span>'
+              isSelected || isNearby
+                ? '<div class="absolute -inset-2 rounded-full bg-sky-400/40 animate-ping"></div>'
                 : ''
             }
+            <div class="w-6 h-6 rounded-full bg-gradient-to-tr ${badgeBg} p-0.5 border flex items-center justify-center">
+              <div class="w-2.5 h-2.5 rounded-full ${dotInner}"></div>
+            </div>
+          </div>
+          <div class="mt-0.5 px-1.5 py-0.5 rounded-md bg-slate-950/85 border ${textTint} text-[9px] font-semibold shadow whitespace-nowrap">
+            ${poi.name.length > 16 ? poi.name.substring(0, 16) + '…' : poi.name}
           </div>
         `;
 
-        const popup = new maplibregl.Popup({
-          offset: 15,
-          closeButton: false,
-          className: 'custom-map-popup'
-        })
+        const handleSelect = (e: Event) => {
+          e.stopPropagation();
+          onSelectPoi(poi.id);
+          if (onInspectStop) onInspectStop(poi.id);
+        };
+
+        el.addEventListener('click', handleSelect);
+
+        const marker = new maplibregl.Marker({ element: el })
           .setLngLat(poi.coordinates)
-          .setHTML(popupContent)
           .addTo(map);
 
-        popupRef.current = popup;
-      };
+        markersRef.current.push(marker);
+      });
+    }
+  }, [pois, selectedRoute, selectedStopPoiId, proximityAlert, isLoaded, showAllLocations, onSelectPoi, onInspectStop]);
 
-      el.addEventListener('click', handleClick);
-      el.addEventListener('touchend', handleClick);
+  // Botón "¿Dónde estoy?" — Centra la cámara en la ubicación del usuario e intenta GPS real si está en Puebla
+  const handleWhereAmI = useCallback(() => {
+    const map = mapRef.current;
+    if (map) {
+      map.flyTo({
+        center: userLocation,
+        zoom: 16.4,
+        pitch: is3D ? 48 : 0,
+        duration: 1100,
+        essential: true
+      });
+    }
 
-      const marker = new maplibregl.Marker({ element: el })
-        .setLngLat(poi.coordinates)
-        .addTo(map);
-
-      markersRef.current.push(marker);
-    });
-  }, [pois, selectedRoute, selectedStopPoiId, proximityAlert, language, onSelectPoi]);
-
-  // Gestión de Radar GPS en Vivo
-  const toggleGps = useCallback(() => {
-    if (isGpsActive) {
-      if (watchPositionIdRef.current !== null) {
-        navigator.geolocation.clearWatch(watchPositionIdRef.current);
-        watchPositionIdRef.current = null;
-      }
-      userMarkerRef.current?.remove();
-      userMarkerRef.current = null;
-      setIsGpsActive(false);
-      setUserLocation(null);
-      setProximityAlert(null);
-    } else {
-      if (!('geolocation' in navigator)) {
-        alert(
-          language === 'es'
-            ? 'Geolocalización no soportada en este navegador'
-            : 'Geolocation not supported in this browser'
-        );
-        return;
-      }
-
-      setIsGpsActive(true);
-
+    if ('geolocation' in navigator && !isGpsTracking) {
+      setIsGpsTracking(true);
       const id = navigator.geolocation.watchPosition(
         (pos) => {
           const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
-          setUserLocation(coords);
-
-          const map = mapRef.current;
-          if (!map) return;
-
-          // Dibujar o actualizar avatar del usuario con ondas de radar
-          if (!userMarkerRef.current) {
-            const el = document.createElement('div');
-            el.className = 'relative flex items-center justify-center';
-            el.innerHTML = `
-              <div class="absolute w-16 h-16 rounded-full bg-sky-500/25 radar-wave"></div>
-              <div class="relative w-5 h-5 rounded-full bg-sky-500 border-2 border-white shadow-xl flex items-center justify-center">
-                <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-              </div>
-            `;
-            const marker = new maplibregl.Marker({ element: el }).setLngLat(coords).addTo(map);
-            userMarkerRef.current = marker;
-          } else {
-            userMarkerRef.current.setLngLat(coords);
+          // Verificar si el usuario está físicamente dentro de la zona metropolitana de Puebla
+          const distFromCenter = getDistanceMeters(coords, [-98.198, 19.0431]);
+          if (distFromCenter < 15000) {
+            onUserLocationChange(coords);
           }
-
-          // Detección de proximidad (< 50 metros a cualquier POI)
-          let closest: { poi: POI; distanceM: number } | null = null;
-          pois.forEach((poi) => {
-            const dist = getDistanceMeters(coords, poi.coordinates);
-            if (dist <= 50) {
-              if (!closest || dist < closest.distanceM) {
-                closest = { poi, distanceM: dist };
-              }
-            }
-          });
-
-          if (closest && (!proximityAlert || proximityAlert.poi.id !== (closest as any).poi.id)) {
-            // Vibración táctil háptica
-            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-              try {
-                navigator.vibrate([100, 50, 100]);
-              } catch {}
-            }
-          }
-          setProximityAlert(closest);
         },
-        (err) => {
-          console.error('Error GPS:', err);
-          setIsGpsActive(false);
+        () => {
+          setIsGpsTracking(false);
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 2000 }
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 5000 }
       );
-
       watchPositionIdRef.current = id;
     }
-  }, [isGpsActive, language, pois, proximityAlert]);
+  }, [userLocation, is3D, isGpsTracking, onUserLocationChange]);
 
   useEffect(() => {
     return () => {
@@ -625,39 +535,43 @@ export const MapViewer: FC<MapViewerProps> = ({
     };
   }, []);
 
-  // Centrar en POI seleccionado
+  // Transición suave de cámara al seleccionar una locación
   useEffect(() => {
     if (!mapRef.current || !selectedStopPoiId) return;
     const target = pois.find((p) => p.id === selectedStopPoiId);
     if (target) {
       mapRef.current.flyTo({
         center: target.coordinates,
-        zoom: 16.5,
-        pitch: is3D ? 50 : 0,
-        speed: 1.2,
-        curve: 1.4
+        zoom: 16.4,
+        pitch: is3D ? 48 : 0,
+        duration: 1100,
+        essential: true
       });
     }
   }, [selectedStopPoiId, pois, is3D]);
 
-  // Ajustar a la ruta
+  // Encuadrar toda la ruta con transición suave
   const fitToRoute = useCallback(() => {
     const map = mapRef.current;
     if (!map || !selectedRoute || selectedRoute.stops.length === 0) return;
 
     const bounds = new maplibregl.LngLatBounds();
     selectedRoute.stops.forEach((stop) => bounds.extend(stop.poi.coordinates));
+    bounds.extend(userLocation);
 
     map.fitBounds(bounds, {
-      padding: { top: 50, bottom: 50, left: 40, right: 40 },
-      maxZoom: 16.5,
-      duration: 1200
+      padding: { top: 80, bottom: 130, left: 50, right: 50 },
+      maxZoom: 16.2,
+      duration: 1200,
+      essential: true
     });
-  }, [selectedRoute]);
+  }, [selectedRoute, userLocation]);
 
   useEffect(() => {
-    if (selectedRoute && mapRef.current) fitToRoute();
-  }, [selectedRoute, fitToRoute]);
+    if (selectedRoute && mapRef.current && isLoaded) {
+      fitToRoute();
+    }
+  }, [selectedRoute, isLoaded]);
 
   const toggle3D = useCallback(() => {
     const map = mapRef.current;
@@ -665,222 +579,226 @@ export const MapViewer: FC<MapViewerProps> = ({
     const nextState = !is3D;
     setIs3D(nextState);
     map.easeTo({
-      pitch: nextState ? 50 : 0,
-      bearing: nextState ? -15 : 0,
-      duration: 800
+      pitch: nextState ? 48 : 0,
+      bearing: nextState ? -12 : 0,
+      duration: 900,
+      essential: true
     });
   }, [is3D]);
 
+  // Pulso Urbano: busca el lugar más cercano al usuario o al centro de la pantalla
   useEffect(() => {
     if (!isPulseActive) return;
-    const map = mapRef.current;
-    if (!map) return;
-
-    const center = map.getCenter();
-    const centerCoords: [number, number] = [center.lng, center.lat];
-
     let closest: { poi: POI; distanceM: number } | null = null;
     pois.forEach((poi) => {
-      const dist = getDistanceMeters(centerCoords, poi.coordinates);
-      if (dist <= 300) {
-        if (!closest || dist < closest.distanceM) {
-          closest = { poi, distanceM: dist };
-        }
+      const dist = getDistanceMeters(userLocation, poi.coordinates);
+      if (!closest || dist < closest.distanceM) {
+        closest = { poi, distanceM: dist };
       }
     });
 
     if (closest) {
       setProximityAlert(closest);
     }
-  }, [isPulseActive, pois]);
+  }, [isPulseActive, pois, userLocation]);
 
   return (
-    <div className="relative w-full h-full min-h-[380px] sm:min-h-[480px] md:min-h-[560px] lg:min-h-[640px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 select-none">
-      <div ref={mapContainerRef} className="w-full h-full" />
+    <div className="relative w-full h-full overflow-hidden bg-slate-950 select-none">
+      {/* Lienzo de mapa de pantalla completa con soporte de 1 solo dedo (touch-none) */}
+      <div ref={mapContainerRef} className="w-full h-full touch-none" />
 
-      {/* Banner de Proximidad Radar en tiempo real */}
-      {proximityAlert && (
-        <div className="absolute top-14 left-3 right-3 sm:left-auto sm:right-14 z-20 bg-amber-500/95 backdrop-blur-md text-slate-950 p-2.5 px-3.5 rounded-xl border border-white shadow-2xl flex items-center justify-between gap-3 animate-bounce">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-slate-950 flex-shrink-0" />
-            <div className="text-xs">
-              <span className="font-black uppercase tracking-wider text-[10px]">
-                {language === 'es' ? 'Radar de Proximidad:' : 'Proximity Radar:'}
-              </span>{' '}
-              <span className="font-bold">{proximityAlert.poi.name}</span>{' '}
-              <span className="text-slate-800 text-[11px]">({proximityAlert.distanceM}m)</span>
+      {/* Banner de Proximidad Inteligente con transición suave */}
+      <div
+        className={`absolute top-16 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-sm z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          proximityAlert
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 -translate-y-4 pointer-events-none'
+        }`}
+      >
+        {proximityAlert && (
+          <div className="bg-amber-500/95 backdrop-blur-md text-slate-950 p-3 rounded-2xl border border-white/40 shadow-2xl flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div className="text-xs min-w-0">
+                <span className="font-black uppercase tracking-wider text-[10px] block text-slate-900">
+                  {language === 'es' ? 'Lugar cercano a ti' : 'Nearby location'}
+                </span>
+                <span className="font-extrabold text-sm truncate block">
+                  {proximityAlert.poi.name}
+                </span>
+                <span className="text-slate-900 font-semibold text-[11px]">
+                  {language === 'es'
+                    ? `A ${proximityAlert.distanceM} metros de tu ubicación`
+                    : `${proximityAlert.distanceM}m away`}
+                </span>
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={() => {
+                onSelectPoi(proximityAlert.poi.id);
+                if (onInspectStop) onInspectStop(proximityAlert.poi.id);
+              }}
+              className="px-3 py-1.5 bg-slate-950 text-amber-400 font-bold rounded-xl text-xs shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
+            >
+              {language === 'es' ? 'Ver lugar' : 'Open'}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              onSelectPoi(proximityAlert.poi.id);
-              if (onInspectStop) onInspectStop(proximityAlert.poi.id);
-            }}
-            className="px-2.5 py-1 bg-slate-950 text-amber-400 font-bold rounded-lg text-[10px] uppercase shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
-          >
-            {language === 'es' ? 'Explorar' : 'Explore'}
-          </button>
-        </div>
-      )}
-
-      {/* Barra superior de herramientas adaptativa */}
-      <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-1.5 sm:gap-2 max-w-[calc(100vw-80px)]">
-        {/* Selector de estilos visuales sin emojis */}
-        <div className="flex bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-slate-700 shadow-lg">
-          {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((key) => {
-            const style = MAP_STYLES[key];
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveStyle(key)}
-                className={`px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
-                  activeStyle === key
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
-                }`}
-                title={style.name[language]}
-              >
-                {style.iconType === 'palette' && <Palette className="w-3.5 h-3.5" />}
-                {style.iconType === 'moon' && <Moon className="w-3.5 h-3.5" />}
-                {style.iconType === 'sun' && <Sun className="w-3.5 h-3.5" />}
-                <span className="hidden md:inline">{style.name[language]}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Botón Radar GPS */}
-        <button
-          onClick={toggleGps}
-          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 backdrop-blur-md border shadow-lg transition-all ${
-            isGpsActive
-              ? 'bg-sky-500 text-white border-sky-400 shadow-[0_0_15px_rgba(14,165,233,0.5)]'
-              : 'bg-slate-900/90 text-slate-300 border-slate-700 hover:bg-slate-800'
-          }`}
-          title={isGpsActive ? 'Desactivar GPS' : 'Activar Radar GPS en Vivo'}
-        >
-          <Crosshair className={`w-3.5 h-3.5 ${isGpsActive ? 'animate-spin' : ''}`} />
-          <span className="hidden sm:inline">
-            {isGpsActive ? (language === 'es' ? 'GPS Activo' : 'GPS Live') : 'GPS'}
-          </span>
-        </button>
-
-        {/* Botón 3D / 2D */}
-        <button
-          onClick={toggle3D}
-          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md border shadow-lg transition-all ${
-            is3D
-              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
-              : 'bg-slate-900/90 text-slate-300 border-slate-700 hover:bg-slate-800'
-          }`}
-          title={is3D ? 'Cambiar a 2D' : 'Cambiar a 3D'}
-        >
-          <Box className="w-3.5 h-3.5" />
-          <span>{is3D ? '3D' : '2D'}</span>
-        </button>
-
-        {/* Botón encuadrar ruta */}
-        {selectedRoute && (
-          <button
-            onClick={fitToRoute}
-            className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 bg-slate-900/90 text-slate-200 border border-slate-700 hover:bg-slate-800 hover:text-white shadow-lg backdrop-blur-md transition-all"
-            title="Encuadrar ruta"
-          >
-            <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">{language === 'es' ? 'Encuadrar' : 'Fit'}</span>
-          </button>
         )}
       </div>
 
-      {/* HUD informativo de segmento */}
-      {hoveredSegment && (
-        <div className="absolute top-14 sm:top-16 left-3 z-10 bg-slate-900/95 backdrop-blur-md p-3 rounded-xl border border-slate-700 text-xs text-slate-200 shadow-2xl pointer-events-none max-w-[calc(100vw-32px)] sm:max-w-xs animate-in fade-in duration-200">
-          <div className="font-bold text-amber-400 flex items-center justify-between">
-            <span>{hoveredSegment.id}</span>
-            <span className="text-[10px] uppercase font-semibold text-slate-400">
-              {hoveredSegment.zone.replace(/_/g, ' ')}
-            </span>
-          </div>
-          <div className="mt-1 text-slate-300 flex items-center gap-2.5 text-[11px]">
-            <span>Long: <strong>{hoveredSegment.length_m}m</strong></span>
-            <span>Ancho: <strong>{hoveredSegment.width_m}m</strong></span>
-            <span>Pend: <strong>{hoveredSegment.slope_pct}%</strong></span>
-          </div>
-          <div className="mt-1 text-slate-400 text-[11px]">
-            Superficie: <strong className="text-slate-200 capitalize">{hoveredSegment.surface.replace(/_/g, ' ')}</strong>
-          </div>
-          <div className="mt-1.5 pt-1.5 border-t border-slate-800 flex items-center justify-between text-[11px]">
-            <span>Auditoría: <strong>{(hoveredSegment.confidence * 100).toFixed(0)}%</strong></span>
-            <span
-              className={`font-semibold flex items-center gap-1 ${
-                hoveredSegment.transitable[activeProfile] ? 'text-emerald-400' : 'text-rose-400'
-              }`}
-            >
-              {hoveredSegment.transitable[activeProfile] ? (
-                <>
-                  <ShieldCheck className="w-3 h-3" /> Transitable
-                </>
-              ) : (
-                <>
-                  <AlertTriangle className="w-3 h-3" /> Bloqueado
-                </>
-              )}
-            </span>
-          </div>
-        </div>
-      )}
+      {/* Controles flotantes superiores del mapa */}
+      <div className="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        <div className="flex flex-wrap items-center gap-1.5 pointer-events-auto">
+          {/* Botón principal: ¿Dónde estoy? */}
+          <button
+            type="button"
+            onClick={handleWhereAmI}
+            className="px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 border border-white/40 shadow-[0_0_20px_rgba(14,165,233,0.5)] transition-all duration-300 active:scale-95 cursor-pointer"
+            title={language === 'es' ? 'Ir a mi ubicación actual' : 'Center on my location'}
+          >
+            <Navigation className="w-3.5 h-3.5 fill-slate-950" />
+            <span>{language === 'es' ? 'Dónde estoy' : 'Where am I'}</span>
+          </button>
 
-      {/* Leyenda interactiva */}
-      <div className="absolute bottom-3 left-3 z-10">
+          {/* Botón mostrar/ocultar las 24 locaciones */}
+          <button
+            type="button"
+            onClick={() => setShowAllLocations((v) => !v)}
+            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 backdrop-blur-md border shadow-lg transition-all duration-300 cursor-pointer ${
+              showAllLocations
+                ? 'bg-slate-900/95 text-emerald-300 border-emerald-500/40'
+                : 'bg-slate-900/80 text-slate-400 border-white/10'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>
+              {showAllLocations
+                ? language === 'es'
+                  ? `Todos los lugares (${pois.length})`
+                  : `All places (${pois.length})`
+                : language === 'es'
+                ? 'Solo ruta'
+                : 'Route only'}
+            </span>
+          </button>
+
+          {/* Botón encuadrar ruta */}
+          {selectedRoute && (
+            <button
+              type="button"
+              onClick={fitToRoute}
+              className="px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 bg-slate-900/90 text-slate-200 border border-white/10 hover:bg-slate-800 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
+              title={language === 'es' ? 'Ver ruta completa' : 'Fit full route'}
+            >
+              <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">{language === 'es' ? 'Ver ruta' : 'Fit route'}</span>
+            </button>
+          )}
+        </div>
+
+        {/* Selector de estilo visual y vista 3D */}
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          <div className="flex bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
+            {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((key) => {
+              const style = MAP_STYLES[key];
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setActiveStyle(key)}
+                  className={`px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all duration-300 cursor-pointer ${
+                    activeStyle === key
+                      ? 'bg-amber-500 text-slate-950 shadow-sm'
+                      : 'text-slate-300 hover:text-white'
+                  }`}
+                  title={style.name[language]}
+                >
+                  {style.iconType === 'palette' && <Palette className="w-3.5 h-3.5" />}
+                  {style.iconType === 'moon' && <Moon className="w-3.5 h-3.5" />}
+                  {style.iconType === 'sun' && <Sun className="w-3.5 h-3.5" />}
+                  <span className="hidden md:inline">{style.name[language]}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={toggle3D}
+            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md border shadow-lg transition-all duration-300 cursor-pointer ${
+              is3D
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                : 'bg-slate-900/90 text-slate-300 border-white/10'
+            }`}
+          >
+            <Box className="w-3.5 h-3.5" />
+            <span>{is3D ? '3D' : '2D'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Indicador discreto de navegación con un dedo y simbología */}
+      <div className="absolute bottom-24 left-3 z-10 flex items-center gap-2">
         {showLegend ? (
-          <div className="bg-slate-900/95 backdrop-blur-md p-3 rounded-xl border border-slate-700 text-xs text-slate-200 shadow-2xl max-w-[calc(100vw-24px)] sm:max-w-xs space-y-1.5 animate-in fade-in">
-            <div className="flex items-center justify-between font-bold text-slate-100 uppercase tracking-wider text-[10px] pb-1 border-b border-slate-800">
-              <span>{language === 'es' ? 'Microcartografía' : 'Cartography'}</span>
+          <div className="bg-slate-900/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 text-xs text-slate-200 shadow-2xl space-y-2 transition-all duration-300">
+            <div className="flex items-center justify-between font-bold text-slate-100 uppercase tracking-wider text-[10px] pb-1 border-b border-slate-800 gap-4">
+              <span>{language === 'es' ? 'Guía del Mapa' : 'Map Guide'}</span>
               <button
+                type="button"
                 onClick={() => setShowLegend(false)}
-                className="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800"
-                title="Minimizar"
+                className="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-4 h-1.5 bg-gradient-to-r from-amber-500 to-amber-300 inline-block rounded-full"></span>
-              <span className="font-semibold text-amber-300 text-[11px]">
-                {language === 'es' ? 'Ruta Activa Optimizada' : 'Active Route'}
+              <span className="w-3 h-3 rounded-full bg-sky-500 border border-white inline-block"></span>
+              <span className="text-[11px] font-semibold text-sky-300">
+                {language === 'es' ? 'Tu ubicación actual' : 'Your location'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-amber-400 border border-white inline-block"></span>
+              <span className="text-[11px] font-semibold text-amber-300">
+                {language === 'es' ? 'Paradas de tu recorrido' : 'Route stops'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-cyan-400 border border-white inline-block"></span>
+              <span className="text-[11px] text-slate-200">
+                {language === 'es' ? 'Talleres y comercios locales' : 'Artisan workshops'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-1 bg-emerald-500 inline-block rounded"></span>
               <span className="flex items-center gap-1 text-[11px]">
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                {language === 'es' ? 'Acera Verificada' : 'Verified Sidewalk'}
+                {language === 'es' ? 'Banqueta accesible sin barreras' : 'Accessible sidewalk'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-1 bg-rose-500 inline-block rounded"></span>
               <span className="flex items-center gap-1 text-[11px]">
                 <AlertTriangle className="w-3 h-3 text-rose-400" />
-                {language === 'es' ? 'Barrera Arquitectónica' : 'Barrier'}
+                {language === 'es' ? 'Escalón o calle con obstáculo' : 'Step or obstacle'}
               </span>
             </div>
           </div>
         ) : (
           <button
+            type="button"
             onClick={() => setShowLegend(true)}
-            className="p-2 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700 text-slate-300 hover:text-white shadow-lg text-xs flex items-center gap-1.5"
-            title="Ver leyenda"
+            className="px-3 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-white/10 text-slate-200 hover:text-white shadow-lg text-xs flex items-center gap-1.5 transition-all duration-300 cursor-pointer"
           >
-            <Layers className="w-4 h-4 text-amber-400" />
-            <span className="text-[11px] font-semibold">{language === 'es' ? 'Simbología' : 'Legend'}</span>
+            <Hand className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[11px] font-medium">
+              {language === 'es' ? 'Mueve con 1 dedo • Guía' : '1-finger pan • Guide'}
+            </span>
           </button>
         )}
-      </div>
-
-      <div className="absolute bottom-3 right-12 z-10 hidden sm:flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700 text-[11px] text-slate-300 shadow-lg">
-        <Compass className="w-3 h-3 text-amber-400" />
-        <span className="capitalize">{activeProfile.replace(/_/g, ' ')}</span>
       </div>
     </div>
   );

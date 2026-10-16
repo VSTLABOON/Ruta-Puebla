@@ -1,6 +1,6 @@
 import { useState, type FC } from 'react';
 import { POI, Language, PassportState } from '@ruta-abierta/shared-types';
-import { Award, Check, Lock } from 'lucide-react';
+import { Award, Check, Lock, X } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 
 interface PassportGalleryProps {
@@ -70,7 +70,9 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
         <div>
           <div className="flex justify-between text-[10px] font-mono mb-1 text-slate-400">
             <span>{language === 'es' ? 'Progreso de Colección' : 'Collection Progress'}</span>
-            <span className="text-amber-400 font-bold">{progressPct}%</span>
+            <span className="text-amber-400 font-bold">
+              {unlockedCount} / {totalBadges} {language === 'es' ? 'sellos' : 'stamps'}
+            </span>
           </div>
           <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
             <div
@@ -108,9 +110,9 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
               </span>
               <button
                 onClick={() => setInspectingPoiId(null)}
-                className="text-slate-400 hover:text-white text-xs font-bold px-2 py-1 bg-slate-900 rounded-lg cursor-pointer"
+                className="text-slate-400 hover:text-white text-xs font-bold p-1.5 bg-slate-900 rounded-lg cursor-pointer"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
