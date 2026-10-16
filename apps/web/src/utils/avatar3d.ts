@@ -9,22 +9,22 @@ export interface Avatar3DController {
 
 export function createAvatar3D(
   modelUrl: string = '/models/explorer.glb',
-  width: number = 76,
-  height: number = 96
+  width: number = 44,
+  height: number = 58
 ): Avatar3DController {
   const container = document.createElement('div');
   container.className = 'relative flex flex-col items-center justify-center select-none pointer-events-none';
   container.style.width = `${width}px`;
   container.style.height = `${height}px`;
 
-  // Anillos de radar en la base del personaje
+  // Anillos de radar compactos en la base del personaje
   const radarEl = document.createElement('div');
-  radarEl.className = 'absolute bottom-1 w-14 h-14 rounded-full bg-sky-400/25 radar-wave';
+  radarEl.className = 'absolute bottom-0 w-8 h-8 rounded-full bg-sky-400/30 radar-wave';
   container.appendChild(radarEl);
 
   // Sombra proyectada en el suelo
   const shadowEl = document.createElement('div');
-  shadowEl.className = 'absolute bottom-2 w-8 h-3 rounded-full bg-slate-950/60 blur-[2px]';
+  shadowEl.className = 'absolute bottom-1 w-5 h-2 rounded-full bg-slate-950/60 blur-[1px]';
   container.appendChild(shadowEl);
 
   // Canvas WebGL para Three.js
@@ -36,11 +36,11 @@ export function createAvatar3D(
   canvas.className = 'relative z-10';
   container.appendChild(canvas);
 
-  // Configuracion Three.js
+  // Configuracion Three.js con camara ajustada
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-  camera.position.set(0, 1.3, 3.2);
-  camera.lookAt(0, 0.85, 0);
+  const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+  camera.position.set(0, 1.25, 3.4);
+  camera.lookAt(0, 0.75, 0);
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -51,7 +51,7 @@ export function createAvatar3D(
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
   // Iluminacion de alta definicion
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
   scene.add(ambientLight);
 
   const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.8);
@@ -131,7 +131,7 @@ export function createAvatar3D(
       const box = new THREE.Box3().setFromObject(model);
       const size = box.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 1.6 / (maxDim || 1);
+      const scale = 0.95 / (maxDim || 1);
       model.scale.set(scale, scale, scale);
 
       // Alinear base con el suelo

@@ -6,9 +6,7 @@ import { Segment, POI, RouteAlternative, MobilityProfile } from '@ruta-abierta/s
 import {
   ShieldCheck,
   AlertTriangle,
-  Layers,
   Maximize2,
-  Box,
   Palette,
   Moon,
   Sun,
@@ -94,7 +92,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   const [is3D, setIs3D] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
-  const [showAllLocations, setShowAllLocations] = useState(true);
+  const [showAllLocations, setShowAllLocations] = useState(false);
 
   // Estados de geolocalización y radar de proximidad
   const [isGpsTracking, setIsGpsTracking] = useState(false);
@@ -345,23 +343,30 @@ export const MapViewer: FC<MapViewerProps> = ({
     }
   }, [updateMapLayers, activeStyle]);
 
-  // Punto permanente "Dónde estoy" (Ubicación del usuario en el mapa)
+  // Punto permanente "Dónde estoy" (Ubicación del usuario con avatar 3D y escala vinculada al zoom)
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !isLoaded) return;
 
     if (!userMarkerRef.current) {
-      const avatarCtrl = createAvatar3D('/models/explorer.glb', 72, 96);
+      const avatarCtrl = createAvatar3D('/models/explorer.glb', 44, 58);
       avatarCtrlRef.current = avatarCtrl;
 
       const markerWrapper = document.createElement('div');
-      markerWrapper.className = 'relative flex flex-col items-center justify-center pointer-events-none z-40';
-
-      const label = document.createElement('div');
-      label.className = 'px-2 py-0.5 mb-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] shadow-lg border border-white whitespace-nowrap tracking-wider uppercase';
-      label.textContent = language === 'es' ? 'Explorador' : 'Explorer';
-      markerWrapper.appendChild(label);
+      markerWrapper.className = 'relative flex flex-col items-center justify-center pointer-events-none z-40 transition-transform duration-150 ease-out';
+      markerWrapper.style.transformOrigin = 'bottom center';
       markerWrapper.appendChild(avatarCtrl.container);
+
+      // Listener de escala dinámica vinculada al nivel de zoom del mapa
+      const updateZoomScale = () => {
+        if (!mapRef.current) return;
+        const currentZoom = mapRef.current.getZoom();
+        // Zoom 13: 0.65x, Zoom 15.5: 0.9x, Zoom 16.5: 1.05x, Zoom 18+: 1.3x
+        const factor = Math.max(0.65, Math.min(1.3, Math.pow(1.15, currentZoom - 15.5)));
+        markerWrapper.style.transform = `scale(${factor.toFixed(2)})`;
+      };
+      updateZoomScale();
+      map.on('zoom', updateZoomScale);
 
       userMarkerRef.current = new maplibregl.Marker({ element: markerWrapper, anchor: 'bottom' })
         .setLngLat(userLocation)
@@ -375,10 +380,6 @@ export const MapViewer: FC<MapViewerProps> = ({
       window.addEventListener('deviceorientation', handleOrientation);
     } else {
       userMarkerRef.current.setLngLat(userLocation);
-      const labelEl = userMarkerRef.current.getElement().querySelector('div');
-      if (labelEl) {
-        labelEl.textContent = language === 'es' ? 'Explorador' : 'Explorer';
-      }
     }
 
     // Evaluar proximidad a lugares cercanos (< 85m)
@@ -406,33 +407,39 @@ export const MapViewer: FC<MapViewerProps> = ({
       (selectedRoute?.stops || []).map((stop) => [stop.poi.id, stop])
     );
 
-    // 1. Paradas activas del recorrido (Medallones numerados dorados)
+    // 1. Paradas activas del recorrido (Medallones numerados dorados de alto contraste)
     if (selectedRoute) {
       selectedRoute.stops.forEach((stop) => {
         const isSelected = stop.poi.id === selectedStopPoiId;
         const isNearby = proximityAlert?.poi.id === stop.poi.id;
 
         const el = document.createElement('div');
-        el.className = `flex flex-col items-center cursor-pointer transition-transform duration-500 ease-out ${
-          isSelected || isNearby ? 'scale-125 z-30' : 'hover:scale-110 z-20'
+        el.className = `flex flex-col items-center cursor-pointer transition-transform duration-300 ease-out ${
+          isSelected || isNearby ? 'scale-115 z-30' : 'hover:scale-105 z-20'
         }`;
 
+        // El texto de la parada solo se despliega si está seleccionada o cerca,
+        // eliminando la saturación de etiquetas negras superpuestas en el mapa.
         el.innerHTML = `
           <div class="relative flex items-center justify-center animate-pokestop-float">
             ${
               isSelected || isNearby
-                ? '<div class="absolute -inset-2 rounded-full bg-amber-400/45 animate-ping"></div>'
+                ? '<div class="absolute -inset-2 rounded-full bg-amber-400/40 animate-ping"></div>'
                 : ''
             }
-            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 p-0.5 shadow-2xl flex items-center justify-center border-2 border-white">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 p-0.5 shadow-xl flex items-center justify-center border-2 border-white">
               <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center font-black text-xs text-amber-300">
                 <span>${stop.stop_order}</span>
               </div>
             </div>
           </div>
-          <div class="mt-0.5 px-2 py-0.5 rounded-full bg-slate-950/90 border border-amber-400/50 text-[10px] font-bold text-amber-200 shadow-lg whitespace-nowrap">
-            ${stop.poi.name.length > 18 ? stop.poi.name.substring(0, 18) + '…' : stop.poi.name}
-          </div>
+          ${
+            isSelected || isNearby
+              ? `<div class="mt-1 px-2.5 py-1 rounded-full bg-slate-950/95 border border-amber-400/80 text-[10px] font-bold text-amber-200 shadow-2xl whitespace-nowrap animate-fade-slide">
+                  ${stop.poi.name}
+                </div>`
+              : ''
+          }
         `;
 
         const handleSelect = (e: Event) => {
@@ -451,8 +458,9 @@ export const MapViewer: FC<MapViewerProps> = ({
       });
     }
 
-    // 2. Todas las demás locaciones en el mapa (Pines claros y fáciles de tocar)
-    if (showAllLocations) {
+    // 2. Todas las demás locaciones en el mapa (Gemas sutiles y elegantes sin etiquetas invasivas)
+    const shouldRenderAll = !selectedRoute || showAllLocations;
+    if (shouldRenderAll) {
       pois.forEach((poi) => {
         if (stopsByPoiId.has(poi.id)) return;
 
@@ -462,30 +470,33 @@ export const MapViewer: FC<MapViewerProps> = ({
 
         const el = document.createElement('div');
         el.className = `flex flex-col items-center cursor-pointer transition-transform duration-300 ease-out ${
-          isSelected ? 'scale-125 z-30' : 'hover:scale-110 z-10'
+          isSelected || isNearby ? 'scale-125 z-30' : 'hover:scale-110 z-10'
         }`;
 
-        const badgeBg = isWorkshop
-          ? 'from-sky-500 to-cyan-300 border-white shadow-[0_0_12px_rgba(56,189,248,0.65)]'
-          : 'from-emerald-500 to-teal-300 border-white shadow-[0_0_12px_rgba(16,185,129,0.55)]';
+        const gemBg = isWorkshop
+          ? 'bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.7)]'
+          : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.7)]';
 
-        const dotInner = isWorkshop ? 'bg-sky-950' : 'bg-emerald-950';
-        const textTint = isWorkshop ? 'text-sky-200 border-sky-500/40' : 'text-emerald-200 border-emerald-500/40';
+        const textTint = isWorkshop
+          ? 'text-sky-200 border-sky-400/50'
+          : 'text-emerald-200 border-emerald-400/50';
 
         el.innerHTML = `
-          <div class="relative flex items-center justify-center">
+          <div class="relative flex items-center justify-center p-1">
             ${
               isSelected || isNearby
-                ? '<div class="absolute -inset-2 rounded-full bg-sky-400/40 animate-ping"></div>'
+                ? '<div class="absolute -inset-1 rounded-full bg-sky-400/40 animate-ping"></div>'
                 : ''
             }
-            <div class="w-6 h-6 rounded-full bg-gradient-to-tr ${badgeBg} p-0.5 border flex items-center justify-center">
-              <div class="w-2.5 h-2.5 rounded-full ${dotInner}"></div>
-            </div>
+            <div class="w-3.5 h-3.5 rounded-full ${gemBg} border-2 border-white"></div>
           </div>
-          <div class="mt-0.5 px-1.5 py-0.5 rounded-md bg-slate-950/85 border ${textTint} text-[9px] font-semibold shadow whitespace-nowrap">
-            ${poi.name.length > 16 ? poi.name.substring(0, 16) + '…' : poi.name}
-          </div>
+          ${
+            isSelected || isNearby
+              ? `<div class="mt-0.5 px-2 py-0.5 rounded-md bg-slate-950/95 border ${textTint} text-[9px] font-bold shadow-xl whitespace-nowrap animate-fade-slide">
+                  ${poi.name}
+                </div>`
+              : ''
+          }
         `;
 
         const handleSelect = (e: Event) => {
@@ -597,6 +608,14 @@ export const MapViewer: FC<MapViewerProps> = ({
     });
   }, [is3D]);
 
+  const cycleMapStyle = useCallback(() => {
+    setActiveStyle((prev) => {
+      if (prev === 'dark') return 'voyager';
+      if (prev === 'voyager') return 'positron';
+      return 'dark';
+    });
+  }, []);
+
   // Pulso Urbano: busca el lugar más cercano al usuario o al centro de la pantalla
   useEffect(() => {
     if (!isPulseActive) return;
@@ -651,7 +670,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       {/* Banner de Proximidad Inteligente con minimización automática a burbuja */}
       <div
-        className={`absolute top-16 left-3 right-3 sm:left-auto sm:right-4 z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute top-16 left-3 right-16 sm:left-4 sm:right-auto sm:max-w-sm z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           proximityAlert
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-4 pointer-events-none'
@@ -725,94 +744,98 @@ export const MapViewer: FC<MapViewerProps> = ({
           ))}
       </div>
 
-      {/* Controles flotantes superiores del mapa */}
-      <div className="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        <div className="flex flex-wrap items-center gap-1.5 pointer-events-auto">
-          {/* Botón principal: ¿Dónde estoy? */}
+      {/* HUD Flotante Superior: Limpio, Ultra-Compacto y Diseñado para Móviles */}
+      <div className="absolute top-3 left-3 right-3 z-10 flex items-start justify-between pointer-events-none">
+        {/* Lado Izquierdo: Insignia de Estado y Selector de Enfoque */}
+        <div className="flex flex-col gap-1.5 pointer-events-auto max-w-[calc(100%-60px)]">
+          {selectedRoute ? (
+            <div className="flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-500/30 shadow-xl">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
+              <span className="text-xs font-bold text-amber-200 truncate">
+                {selectedRoute.name}
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowAllLocations((v) => !v)}
+                className={`ml-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                  showAllLocations
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                    : 'bg-slate-800 text-slate-400 border-white/10 hover:text-white'
+                }`}
+                title={
+                  showAllLocations
+                    ? (language === 'es' ? 'Ocultar otros lugares y enfocarse solo en la ruta' : 'Hide other places')
+                    : (language === 'es' ? 'Mostrar también todos los demás lugares' : 'Show all places')
+                }
+              >
+                {showAllLocations
+                  ? (language === 'es' ? 'Todos los puntos' : 'All POIs')
+                  : (language === 'es' ? 'Solo ruta' : 'Route only')}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-sky-500/30 shadow-xl">
+              <span className="w-2 h-2 rounded-full bg-sky-400 flex-shrink-0" />
+              <span className="text-xs font-bold text-sky-200">
+                {language === 'es' ? `Explorando Puebla (${pois.length})` : `Puebla Exploration (${pois.length})`}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Lado Derecho: Dock de Comandos Vertical (Dónde estoy, 3D/2D, Estilo, Encuadrar) */}
+        <div className="flex flex-col items-center gap-2 pointer-events-auto">
+          {/* Botón ¿Dónde estoy? */}
           <button
             type="button"
             onClick={handleWhereAmI}
-            className="px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 border border-white/40 shadow-[0_0_20px_rgba(14,165,233,0.5)] transition-all duration-300 active:scale-95 cursor-pointer"
-            title={language === 'es' ? 'Ir a mi ubicación actual' : 'Center on my location'}
+            className="w-10 h-10 rounded-2xl bg-sky-500 text-slate-950 shadow-[0_0_18px_rgba(14,165,233,0.55)] border border-white/40 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+            title={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
           >
-            <Navigation className="w-3.5 h-3.5 fill-slate-950" />
-            <span>{language === 'es' ? 'Dónde estoy' : 'Where am I'}</span>
+            <Navigation className="w-4 h-4 fill-slate-950" />
           </button>
 
-          {/* Botón mostrar/ocultar las 24 locaciones */}
+          {/* Botón 3D / 2D */}
           <button
             type="button"
-            onClick={() => setShowAllLocations((v) => !v)}
-            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 backdrop-blur-md border shadow-lg transition-all duration-300 cursor-pointer ${
-              showAllLocations
-                ? 'bg-slate-900/95 text-emerald-300 border-emerald-500/40'
-                : 'bg-slate-900/80 text-slate-400 border-white/10'
+            onClick={toggle3D}
+            className={`w-10 h-10 rounded-2xl backdrop-blur-md border shadow-lg flex items-center justify-center text-xs font-black transition-all cursor-pointer ${
+              is3D
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                : 'bg-slate-900/90 text-slate-300 border-white/15'
             }`}
+            title={language === 'es' ? 'Alternar perspectiva 3D / 2D' : 'Toggle 3D / 2D perspective'}
           >
-            <Layers className="w-3.5 h-3.5" />
-            <span>
-              {showAllLocations
-                ? language === 'es'
-                  ? `Todos los lugares (${pois.length})`
-                  : `All places (${pois.length})`
-                : language === 'es'
-                ? 'Solo ruta'
-                : 'Route only'}
-            </span>
+            <span>{is3D ? '3D' : '2D'}</span>
           </button>
 
-          {/* Botón encuadrar ruta */}
+          {/* Botón Cambio de Estilo de Mapa (Ciclo: Oscuro -> Callejero -> Claro) */}
+          <button
+            type="button"
+            onClick={cycleMapStyle}
+            className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg transition-all cursor-pointer"
+            title={
+              language === 'es'
+                ? `Estilo actual: ${MAP_STYLES[activeStyle].name.es} (Toca para cambiar)`
+                : `Current style: ${MAP_STYLES[activeStyle].name.en} (Tap to change)`
+            }
+          >
+            {activeStyle === 'dark' && <Moon className="w-4 h-4 text-indigo-300" />}
+            {activeStyle === 'voyager' && <Palette className="w-4 h-4 text-emerald-300" />}
+            {activeStyle === 'positron' && <Sun className="w-4 h-4 text-amber-300" />}
+          </button>
+
+          {/* Botón Encuadrar Ruta Completa (solo si hay ruta seleccionada) */}
           {selectedRoute && (
             <button
               type="button"
               onClick={fitToRoute}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 bg-slate-900/90 text-slate-200 border border-white/10 hover:bg-slate-800 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
+              className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg transition-all cursor-pointer"
               title={language === 'es' ? 'Ver ruta completa' : 'Fit full route'}
             >
-              <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">{language === 'es' ? 'Ver ruta' : 'Fit route'}</span>
+              <Maximize2 className="w-4 h-4" />
             </button>
           )}
-        </div>
-
-        {/* Selector de estilo visual y vista 3D */}
-        <div className="flex items-center gap-1.5 pointer-events-auto">
-          <div className="flex bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
-            {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((key) => {
-              const style = MAP_STYLES[key];
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setActiveStyle(key)}
-                  className={`px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all duration-300 cursor-pointer ${
-                    activeStyle === key
-                      ? 'bg-amber-500 text-slate-950 shadow-sm'
-                      : 'text-slate-300 hover:text-white'
-                  }`}
-                  title={style.name[language]}
-                >
-                  {style.iconType === 'palette' && <Palette className="w-3.5 h-3.5" />}
-                  {style.iconType === 'moon' && <Moon className="w-3.5 h-3.5" />}
-                  {style.iconType === 'sun' && <Sun className="w-3.5 h-3.5" />}
-                  <span className="hidden md:inline">{style.name[language]}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <button
-            type="button"
-            onClick={toggle3D}
-            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md border shadow-lg transition-all duration-300 cursor-pointer ${
-              is3D
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                : 'bg-slate-900/90 text-slate-300 border-white/10'
-            }`}
-          >
-            <Box className="w-3.5 h-3.5" />
-            <span>{is3D ? '3D' : '2D'}</span>
-          </button>
         </div>
       </div>
 
