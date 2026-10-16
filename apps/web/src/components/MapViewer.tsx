@@ -29,6 +29,8 @@ interface MapViewerProps {
   onInspectStop?: (poiId: string) => void;
   userLocation: [number, number];
   onUserLocationChange: (coords: [number, number]) => void;
+  onClearRoute?: () => void;
+  onOpenCustomizer?: () => void;
 }
 
 type MapStyleKey = 'dark' | 'voyager' | 'positron';
@@ -79,7 +81,9 @@ export const MapViewer: FC<MapViewerProps> = ({
   isPulseActive = false,
   onInspectStop,
   userLocation,
-  onUserLocationChange
+  onUserLocationChange,
+  onClearRoute,
+  onOpenCustomizer
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -92,7 +96,6 @@ export const MapViewer: FC<MapViewerProps> = ({
   const [is3D, setIs3D] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
-  const [showAllLocations, setShowAllLocations] = useState(false);
 
   // Estados de geolocalización y radar de proximidad
   const [isGpsTracking, setIsGpsTracking] = useState(false);
@@ -407,39 +410,54 @@ export const MapViewer: FC<MapViewerProps> = ({
       (selectedRoute?.stops || []).map((stop) => [stop.poi.id, stop])
     );
 
-    // 1. Paradas activas del recorrido (Medallones numerados dorados de alto contraste)
+    // 1. Paradas activas del recorrido (Destacados en 3D: Baliza vertical elevada + Medallón Volumétrico)
     if (selectedRoute) {
       selectedRoute.stops.forEach((stop) => {
         const isSelected = stop.poi.id === selectedStopPoiId;
         const isNearby = proximityAlert?.poi.id === stop.poi.id;
 
         const el = document.createElement('div');
-        el.className = `flex flex-col items-center cursor-pointer transition-transform duration-300 ease-out ${
-          isSelected || isNearby ? 'scale-115 z-30' : 'hover:scale-105 z-20'
+        el.className = `flex flex-col items-center cursor-pointer select-none transition-all duration-300 ease-out ${
+          isSelected || isNearby ? 'scale-115 z-40' : 'hover:scale-105 z-30'
         }`;
 
-        // El texto de la parada solo se despliega si está seleccionada o cerca,
-        // eliminando la saturación de etiquetas negras superpuestas en el mapa.
+        // Arquitectura de Baliza 3D Elevada (Anchor Bottom):
+        // 1. Ficha flotante con nombre (si está seleccionada o cerca)
+        // 2. Medallón dorado 3D volumétrico con el número de orden
+        // 3. Columna de luz vertical (proyecta la baliza sobre las construcciones 3D)
+        // 4. Base georreferenciada en la banqueta con halo expansivo
         el.innerHTML = `
-          <div class="relative flex items-center justify-center animate-pokestop-float">
-            ${
-              isSelected || isNearby
-                ? '<div class="absolute -inset-2 rounded-full bg-amber-400/40 animate-ping"></div>'
-                : ''
-            }
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-300 p-0.5 shadow-xl flex items-center justify-center border-2 border-white">
-              <div class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center font-black text-xs text-amber-300">
-                <span>${stop.stop_order}</span>
-              </div>
-            </div>
-          </div>
           ${
             isSelected || isNearby
-              ? `<div class="mt-1 px-2.5 py-1 rounded-full bg-slate-950/95 border border-amber-400/80 text-[10px] font-bold text-amber-200 shadow-2xl whitespace-nowrap animate-fade-slide">
+              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-slate-950/95 border border-amber-400 text-[10px] font-black text-amber-200 shadow-[0_4px_16px_rgba(0,0,0,0.8)] whitespace-nowrap animate-bounce">
                   ${stop.poi.name}
                 </div>`
               : ''
           }
+          <div class="relative flex flex-col items-center">
+            <!-- Medallón Volumétrico Dorado 3D -->
+            <div class="relative flex items-center justify-center">
+              <div class="absolute -inset-1.5 rounded-2xl bg-amber-400/40 blur-sm ${
+                isSelected || isNearby ? 'animate-pulse' : ''
+              }"></div>
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-0.5 shadow-[0_6px_16px_rgba(0,0,0,0.65)] flex items-center justify-center border-2 border-white transform transition-transform ${
+                isSelected ? 'scale-110' : ''
+              }">
+                <div class="w-full h-full rounded-[14px] bg-slate-950 flex items-center justify-center font-black text-sm text-amber-300 shadow-inner">
+                  <span>${stop.stop_order}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Baliza de luz vertical (Elevación física sobre el plano 3D) -->
+            <div class="w-1 h-6 bg-gradient-to-b from-amber-300 via-amber-400/70 to-amber-500/20 shadow-[0_0_8px_rgba(251,191,36,0.9)]"></div>
+
+            <!-- Base geodésica anclada a nivel de calle -->
+            <div class="relative w-4 h-4 flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full bg-amber-400/40 animate-ping"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-amber-400 border border-white shadow-[0_0_6px_rgba(251,191,36,1)]"></div>
+            </div>
+          </div>
         `;
 
         const handleSelect = (e: Event) => {
@@ -450,7 +468,8 @@ export const MapViewer: FC<MapViewerProps> = ({
 
         el.addEventListener('click', handleSelect);
 
-        const marker = new maplibregl.Marker({ element: el })
+        // anchor: 'bottom' para que la base de la baliza toque la calle y el medallón flote en el aire 3D
+        const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
           .setLngLat(stop.poi.coordinates)
           .addTo(map);
 
@@ -458,8 +477,8 @@ export const MapViewer: FC<MapViewerProps> = ({
       });
     }
 
-    // 2. Todas las demás locaciones en el mapa (Gemas sutiles y elegantes sin etiquetas invasivas)
-    const shouldRenderAll = !selectedRoute || showAllLocations;
+    // 2. Todas las demás locaciones en el mapa (Siempre visibles como gemas elegantes sin saturar)
+    const shouldRenderAll = true;
     if (shouldRenderAll) {
       pois.forEach((poi) => {
         if (stopsByPoiId.has(poi.id)) return;
@@ -514,7 +533,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         markersRef.current.push(marker);
       });
     }
-  }, [pois, selectedRoute, selectedStopPoiId, proximityAlert, isLoaded, showAllLocations, onSelectPoi, onInspectStop]);
+  }, [pois, selectedRoute, selectedStopPoiId, proximityAlert, isLoaded, onSelectPoi, onInspectStop]);
 
   // Botón "¿Dónde estoy?" — Centra la cámara en la ubicación del usuario e intenta GPS real si está en Puebla
   const handleWhereAmI = useCallback(() => {
@@ -749,36 +768,45 @@ export const MapViewer: FC<MapViewerProps> = ({
         {/* Lado Izquierdo: Insignia de Estado y Selector de Enfoque */}
         <div className="flex flex-col gap-1.5 pointer-events-auto max-w-[calc(100%-60px)]">
           {selectedRoute ? (
-            <div className="flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-500/30 shadow-xl">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
-              <span className="text-xs font-bold text-amber-200 truncate">
-                {selectedRoute.name}
-              </span>
-              <button
-                type="button"
-                onClick={() => setShowAllLocations((v) => !v)}
-                className={`ml-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border transition cursor-pointer whitespace-nowrap ${
-                  showAllLocations
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                    : 'bg-slate-800 text-slate-400 border-white/10 hover:text-white'
-                }`}
-                title={
-                  showAllLocations
-                    ? (language === 'es' ? 'Ocultar otros lugares y enfocarse solo en la ruta' : 'Hide other places')
-                    : (language === 'es' ? 'Mostrar también todos los demás lugares' : 'Show all places')
-                }
-              >
-                {showAllLocations
-                  ? (language === 'es' ? 'Todos los puntos' : 'All POIs')
-                  : (language === 'es' ? 'Solo ruta' : 'Route only')}
-              </button>
+            <div className="flex items-center gap-2 bg-slate-900/95 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-500/40 shadow-xl">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse flex-shrink-0 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[9px] font-bold tracking-wider uppercase text-amber-400/90 leading-none">
+                  {language === 'es' ? 'Ruta Activa' : 'Active Route'}
+                </span>
+                <span className="text-xs font-black text-slate-100 truncate leading-tight mt-0.5">
+                  {selectedRoute.name}
+                </span>
+              </div>
+              {onClearRoute && (
+                <button
+                  type="button"
+                  onClick={onClearRoute}
+                  className="ml-1 p-1 rounded-lg bg-white/10 hover:bg-rose-500/25 text-slate-300 hover:text-rose-200 transition cursor-pointer"
+                  title={language === 'es' ? 'Salir de la ruta y volver a exploración libre' : 'Exit route'}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-sky-500/30 shadow-xl">
-              <span className="w-2 h-2 rounded-full bg-sky-400 flex-shrink-0" />
-              <span className="text-xs font-bold text-sky-200">
-                {language === 'es' ? `Explorando Puebla (${pois.length})` : `Puebla Exploration (${pois.length})`}
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-slate-900/95 backdrop-blur-md px-3 py-2 rounded-2xl border border-sky-500/30 shadow-xl">
+                <span className="w-2 h-2 rounded-full bg-sky-400 flex-shrink-0 shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+                <span className="text-xs font-black text-slate-100">
+                  {language === 'es' ? `Puebla (${pois.length} lugares)` : `Puebla (${pois.length} places)`}
+                </span>
+              </div>
+              {onOpenCustomizer && (
+                <button
+                  type="button"
+                  onClick={onOpenCustomizer}
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs px-3.5 py-2 rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-300/40 transition active:scale-95 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'Personalizar' : 'Customize'}</span>
+                </button>
+              )}
             </div>
           )}
         </div>

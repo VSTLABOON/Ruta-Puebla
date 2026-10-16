@@ -11,6 +11,7 @@ import {
 } from '@ruta-abierta/shared-types';
 import { MapViewer } from '../../components/MapViewer';
 import { RouteForm } from '../../components/RouteForm';
+import { RouteExperienceWizard } from '../../components/RouteExperienceWizard';
 import { MobileBottomNav, CommandTab } from '../../components/MobileBottomNav';
 import { TacticalBottomSheet } from '../../components/TacticalBottomSheet';
 import { TacticalDesktopPanel } from '../../components/TacticalDesktopPanel';
@@ -92,20 +93,25 @@ export const VisitorView: FC<VisitorViewProps> = ({
       : undefined;
   }, [weights]);
 
-  const activeRoute: RouteAlternative | null = useMemo(() => {
-    if (!graph || !matrices || pois.length === 0) return null;
-    const sol = solveOPTW(request, pois, matrices, graph, { weights: optWeights });
-    return sol.main_route;
-  }, [request, pois, matrices, graph, optWeights]);
+  const [activeRoute, setActiveRoute] = useState<RouteAlternative | null>(null);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   const handleUpdateReq = (updated: Partial<RouteRequest>) => {
     setRequest((prev) => ({ ...prev, ...updated }));
   };
 
   const handleGenerate = useCallback(() => {
+    if (!graph || !matrices || pois.length === 0) return;
+    const sol = solveOPTW(request, pois, matrices, graph, { weights: optWeights });
+    setActiveRoute(sol.main_route);
     setSelectedStopPoiId(null);
     setIsFilterDrawerOpen(false);
     setCommandTab('explore');
+  }, [graph, matrices, pois, request, optWeights]);
+
+  const handleClearRoute = useCallback(() => {
+    setActiveRoute(null);
+    setSelectedStopPoiId(null);
   }, []);
 
   const handleTriggerUrbanPulse = () => {
@@ -213,12 +219,14 @@ export const VisitorView: FC<VisitorViewProps> = ({
             language={language}
             userLocation={userLocation}
             onUserLocationChange={onUserLocationChange}
+            onClearRoute={handleClearRoute}
+            onOpenCustomizer={() => setIsWizardOpen(true)}
           />
         </div>
       )}
 
       {/* Panel Lateral Flotante para Escritorio con transición suave */}
-      {activeRoute && (
+      {(activeRoute || selectedStopPoiId) && (
         <>
           <div
             className={`hidden lg:block absolute top-16 left-4 bottom-24 w-[390px] z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -228,7 +236,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
             }`}
           >
             <TacticalDesktopPanel
-              stops={activeRoute.stops}
+              stops={activeRoute?.stops || []}
               pois={pois}
               selectedStopPoiId={selectedStopPoiId}
               onSelectStop={(id) => setSelectedStopPoiId(id)}
@@ -302,10 +310,10 @@ export const VisitorView: FC<VisitorViewProps> = ({
       </div>
 
       {/* Bottom Sheet Deslizable (Móvil y Tablets) */}
-      {activeRoute && (
+      {(activeRoute || selectedStopPoiId) && (
         <div className="lg:hidden">
           <TacticalBottomSheet
-            stops={activeRoute.stops}
+            stops={activeRoute?.stops || []}
             pois={pois}
             selectedStopPoiId={selectedStopPoiId}
             onSelectStop={(id) => setSelectedStopPoiId(id)}
@@ -328,7 +336,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
         unlockedCount={passportState.unlocked_secrets.length}
         language={language}
         currentUser={currentUser}
-        onOpenTuneRoute={() => setIsFilterDrawerOpen(true)}
+        onOpenTuneRoute={() => setIsWizardOpen(true)}
         onOpenArtisansDirectory={() => setCommandTab('artisans')}
         onExportRoute={handleExportRoute}
         onOpenAuth={onOpenAuth}
@@ -337,6 +345,21 @@ export const VisitorView: FC<VisitorViewProps> = ({
         onToggleLanguage={onToggleLanguage}
         onToggleViewport={onToggleViewport}
         viewportMode={viewportMode}
+      />
+
+      {/* Asistente Intuitivo de Experiencia Peatonal con Sugerencias y "El Por Qué" */}
+      <RouteExperienceWizard
+        pois={pois}
+        graph={graph}
+        matrices={matrices}
+        language={language}
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onSelectRoute={(route) => {
+          setActiveRoute(route);
+          setSelectedStopPoiId(null);
+          setIsWizardOpen(false);
+        }}
       />
 
       {/* Drawer Deslizable de Filtros de Ruta */}

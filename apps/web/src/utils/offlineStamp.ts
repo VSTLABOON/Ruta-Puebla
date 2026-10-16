@@ -584,3 +584,36 @@ export function buildOfflineQrMatrix(payload: string): boolean[][] {
   return matrix;
 }
 
+/**
+ * Generador y decodificador de código QR de Turista (Offline Passport Token)
+ * Permite que el turista muestre su código QR sin datos móviles y el artesano lo escanee.
+ */
+export function getOrCreateTouristId(): string {
+  if (typeof window === 'undefined') return 'TUR-7701';
+  try {
+    const existing = localStorage.getItem('ruta_abierta_tourist_id');
+    if (existing) return existing;
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const newId = `TUR-${randomSuffix}`;
+    localStorage.setItem('ruta_abierta_tourist_id', newId);
+    return newId;
+  } catch {
+    return 'TUR-7701';
+  }
+}
+
+export function buildTouristQrPayload(touristId: string): string {
+  return `POPOGO:TURISTA:${touristId}`;
+}
+
+export function parseTouristQrPayload(payload: string): { valid: boolean; touristId: string | null } {
+  const clean = (payload || '').trim();
+  if (clean.startsWith('POPOGO:TURISTA:')) {
+    const id = clean.replace('POPOGO:TURISTA:', '').trim();
+    return { valid: Boolean(id), touristId: id || null };
+  }
+  if (clean.startsWith('TUR-') && clean.length >= 7) {
+    return { valid: true, touristId: clean };
+  }
+  return { valid: false, touristId: null };
+}

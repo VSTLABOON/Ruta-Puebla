@@ -1333,5 +1333,459 @@
       "pista": "Ubica la banca pintada con mosaicos frente a la explanada del templo.",
       "insignia_nombre": "Vigía de los Fuertes"
     }
+  },
+  {
+    "id": "poi_barrio_artistas",
+    "name": "Plaza y Barrio del Artista",
+    "category": "plaza_historica",
+    "coordinates": [
+      -98.1945,
+      19.0435
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "20:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_701",
+    "is_local_business": true,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "arte",
+      "artesania",
+      "pintura",
+      "patrimonio",
+      "bohemio"
+    ],
+    "description": {
+      "es": "Plaza virreinal bohemia con estudios de caballete abiertos donde maestros poblanos pintan y esculpen en vivo frente a fuentes de cantera.",
+      "en": "Historic bohemian plaza with open-air studios where Puebla masters paint and sculpt live alongside colonial stone fountains."
+    },
+    "address": "Calle 8 Norte entre 4 y 6 Oriente, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "El Secreto de los Pigmentos de Cochinilla",
+      "descripcion": "En 1941 los hermanos Marquez fundaron este rincon bohemio rescatando la tradicion colonial de preparar tinturas con grana cochinilla y tierra de Tecali.",
+      "pista": "Observa la fuente central de cantera gris rodeada de caballetes de pintura.",
+      "insignia_nombre": "Pincel Angelopolitano"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Estudio y Galeria Tradicional del Barrio del Artista",
+      "maestro_artesano": "Maestro Rafael Mendez",
+      "oficio": "Pintura al Oleo y Grabado Virreinal",
+      "tecnica_ancestral": "Preparacion de oleos tradicionales con tierras minerales y aglutinantes de resina de copal",
+      "sello_artesanal": "Sello Barrio del Artista 1941",
+      "horario_demostracion": "Lunes a Domingo 11:00 a 18:00"
+    }
+  },
+  {
+    "id": "poi_callejon_sapos",
+    "name": "Callejon de los Sapos y Plazuela de Antiguedades",
+    "category": "plaza_historica",
+    "coordinates": [
+      -98.1965,
+      19.0405
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "19:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 35,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_702",
+    "is_local_business": true,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "antiguedades",
+      "patrimonio",
+      "virreinal",
+      "fotografia",
+      "artesania"
+    ],
+    "description": {
+      "es": "Iconica calle adoquinada de casonas virreinales en tonos pastel, repleta de talleres de anticuarios, cristal antiguo y muebles de epoca.",
+      "en": "Iconic cobblestone corridor flanked by pastel-colored viceregal mansions, antique restorer workshops and historic trade stalls."
+    },
+    "address": "Calle 6 Sur entre 3 y 7 Oriente, Los Sapos",
+    "secret_to_unlock": {
+      "titulo": "La Crecida del Rio y los Sapos de Bronce",
+      "descripcion": "Las aguas del rio San Francisco se estancaban en esta plazuela virreinal, convirtiendola en hogar de miles de sapos de rio cuyo canto inspiraba a los alfareros.",
+      "pista": "Busca el sapo tallado en bronce que corona la fuente tradicional de la plazuela.",
+      "insignia_nombre": "Sapo de Bronce"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Antiguedades y Restauracion Virreinal Los Sapos",
+      "maestro_artesano": "Don Agustin Morales",
+      "oficio": "Restauracion de Muebles Antiguos y Relojeria",
+      "tecnica_ancestral": "Pulido con cera de abeja natural, ensambles de espiga y recuperacion de herrajes forjados",
+      "sello_artesanal": "Sello Los Sapos 1968",
+      "horario_demostracion": "Martes a Domingo 11:30 a 17:30"
+    }
+  },
+  {
+    "id": "poi_teatro_principal",
+    "name": "Teatro Principal de Puebla",
+    "category": "teatro_historico",
+    "coordinates": [
+      -98.194,
+      19.0448
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 25,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_703",
+    "is_local_business": false,
+    "zone": "barrio_el_alto",
+    "tags": [
+      "teatro",
+      "arquitectura",
+      "patrimonio",
+      "virreinal"
+    ],
+    "description": {
+      "es": "Inaugurado en 1760 como Antiguo Corral de Comedias, es el coliseo teatral en activo mas antiguo del continente americano.",
+      "en": "Opened in 1760 as an Old Comedy Corral, it is the oldest continually active theatrical venue in the entire American continent."
+    },
+    "address": "Calle 8 Oriente y 6 Norte, Barrio de El Alto",
+    "secret_to_unlock": {
+      "titulo": "El Corral de Comedias de la Nueva España",
+      "descripcion": "En su foso original los espectadores virreinales depositaban candiles de cebo de toro para iluminar las comedias de Lope de Vega.",
+      "pista": "Contempla la fachada de cantera estilo toscano frente al Parque de las Ninfas.",
+      "insignia_nombre": "Mascara Virreinal"
+    }
+  },
+  {
+    "id": "poi_san_pedro_museo",
+    "name": "San Pedro Museo de Arte (Antiguo Hospital Real)",
+    "category": "museo",
+    "coordinates": [
+      -98.1952,
+      19.044
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "17:00"
+    },
+    "cost_mxn": 45,
+    "visit_duration_min": 40,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_704",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "museo",
+      "patrimonio",
+      "virreinal",
+      "medicina_tradicional"
+    ],
+    "description": {
+      "es": "Monumento del siglo XVI con el claustro mayor de cantera sin pilastras intermedias mas imponente de Puebla y una botica virreinal intacta.",
+      "en": "16th century monumental hospital courtyard featuring the largest pillar-free cloister in New Spain and an intact colonial apothecary."
+    },
+    "address": "Calle 4 Norte 203, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "Los Frascos de Talavera de la Botica Real",
+      "descripcion": "Los boticarios poblanos guardaban unguentos de corteza de quina y copal en vasijas de talavera azul cobalto para protegerlos de la humedad.",
+      "pista": "Admira las arcadas gigantescas del patio mayor que permitian circular el aire fresco.",
+      "insignia_nombre": "Boticario Real"
+    }
+  },
+  {
+    "id": "poi_santa_monica",
+    "name": "Museo de Arte Religioso Ex-Convento de Santa Monica",
+    "category": "museo_convento",
+    "coordinates": [
+      -98.1989,
+      19.049
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "17:00"
+    },
+    "cost_mxn": 65,
+    "visit_duration_min": 45,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": true,
+    "source": "curated",
+    "osm_id": "way_705",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "convento",
+      "patrimonio",
+      "gastronomia",
+      "chile_en_nogada"
+    ],
+    "description": {
+      "es": "Cuna historica donde monjas agustinas recoletas concibieron la receta tradicional del Chile en Nogada para celebrar la independencia de Mexico.",
+      "en": "Historic convent where Augustinian nuns created the iconic Chile en Nogada recipe to celebrate Mexican independence in 1821."
+    },
+    "address": "Calle 18 Poniente 103, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "El Fogon de la Autentica Nogada Agustina",
+      "descripcion": "Nuez de Castilla pelada a mano, granada roja y perejil conformaron por primera vez los tres colores patrios en las cocinas de este claustro barroco.",
+      "pista": "Visita el patio de los azulejos y las celdas de clausura secretas del siglo XIX.",
+      "insignia_nombre": "Nogada Agustina"
+    }
+  },
+  {
+    "id": "poi_parroquia_san_jose",
+    "name": "Parroquia y Plazuela de San Jose",
+    "category": "iglesia",
+    "coordinates": [
+      -98.195,
+      19.0485
+    ],
+    "hours": {
+      "open": "08:00",
+      "close": "19:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_706",
+    "is_local_business": false,
+    "zone": "barrio_el_alto",
+    "tags": [
+      "iglesia",
+      "arte_sacro",
+      "barroco",
+      "gremio_carpinteros"
+    ],
+    "description": {
+      "es": "Templo del siglo XVI con cupula forrada en talavera poblana que fue sede de las antiguas cofradias de artesanos ebanistas y carpinteros.",
+      "en": "16th century church with a dome encrusted in Talavera tiles, historically serving as the guild center for colonial master carpenters."
+    },
+    "address": "Calle 2 Norte y 18 Oriente, Barrio de El Alto",
+    "secret_to_unlock": {
+      "titulo": "El Rayo de 1595 y la Cupula de Talavera",
+      "descripcion": "Tras caer un rayo sobre el campanario en 1595, los vecinos cubrieron la cupula con azulejos de talavera esmaltada para reflejar las tormentas.",
+      "pista": "Dirige tu vista hacia el tambor octagonal de la cupula para ver la fecha en talavera.",
+      "insignia_nombre": "Patrono Artesano"
+    }
+  },
+  {
+    "id": "poi_fuente_san_miguel",
+    "name": "Fuente de San Miguel Arcangel (Zocalo)",
+    "category": "monumento",
+    "coordinates": [
+      -98.1978,
+      19.0433
+    ],
+    "hours": {
+      "open": "00:00",
+      "close": "23:59"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 15,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_707",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "monumento",
+      "escultura",
+      "agua",
+      "zocalo"
+    ],
+    "description": {
+      "es": "Monumento central del Zocalo erigido en 1777 en cantera gris por Anselmo Martinez; representaba el corazon comunal de agua dulce de la ciudad.",
+      "en": "Central Zocalo landmark sculpted in 1777 in grey stone by Anselmo Martinez, once the main freshwater gathering basin for colonial residents."
+    },
+    "address": "Plaza Mayor (Zocalo), Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "El Custodio de los 4 Manantiales",
+      "descripcion": "Cuatro querubines de cantera en la base vertian el agua que bajaba por gravedad desde los manantiales de Almoloya hasta el centro de la traza urbana.",
+      "pista": "Observa la espada flamigera del arcangel apuntando al cerro de Loreto.",
+      "insignia_nombre": "Espada de San Miguel"
+    }
+  },
+  {
+    "id": "poi_mesonde_san_roque",
+    "name": "Antiguo Meson y Hospital de San Roque",
+    "category": "edificio_historico",
+    "coordinates": [
+      -98.1955,
+      19.0455
+    ],
+    "hours": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 0,
+    "visit_duration_min": 20,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_708",
+    "is_local_business": false,
+    "zone": "zocalo_centro_nucleo",
+    "tags": [
+      "historia",
+      "arquitectura",
+      "hospital_virreinal",
+      "patrimonio"
+    ],
+    "description": {
+      "es": "Casona y hospital novohispano edificado en 1592 para socorrer a caminantes y arrieros que transitaban el Camino Real de Veracruz.",
+      "en": "1592 viceregal hospice founded to welcome travellers and muleteers walking the Camino Real between Veracruz and Mexico City."
+    },
+    "address": "Avenida Juan de Palafox y Mendoza 605, Centro Historico",
+    "secret_to_unlock": {
+      "titulo": "La Campana de los Peregrinos Extenuados",
+      "descripcion": "Cada medianoche sonaba una campanilla de bronce para indicar a los viajeros perdidos en la garita oriente que las puertas de San Roque estaban abiertas.",
+      "pista": "Observa la hornacina de cantera sobre la puerta principal con la efigie de San Roque y su perro fiel.",
+      "insignia_nombre": "Caminante de San Roque"
+    }
+  },
+  {
+    "id": "poi_taller_hojalata_analco",
+    "name": "Taller Tradicional de Hojalata y Faroles de Analco",
+    "category": "taller_artesanal",
+    "coordinates": [
+      -98.1925,
+      19.0418
+    ],
+    "hours": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "cost_mxn": 40,
+    "visit_duration_min": 30,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_709",
+    "is_local_business": true,
+    "zone": "barrio_analco",
+    "tags": [
+      "artesania",
+      "hojalateria",
+      "faroles",
+      "oficio_vivo"
+    ],
+    "description": {
+      "es": "Taller vivo centenario donde maestros artesanos cortan, repujan y ensamblan faroles virreinales de hojalata y vidrio de colores.",
+      "en": "Centuries-old living workshop where master smiths cut, emboss and assemble classic viceregal tin and colored glass lanterns."
+    },
+    "address": "Calle 10 Sur 308, Barrio de Analco",
+    "secret_to_unlock": {
+      "titulo": "El Farol de Candil y Vidrio Ambar",
+      "descripcion": "Antes del gas, los serenos de Puebla patrullaban las esquinas oscuras con faroles de Analco fabricados con vidrios tenidos con cobalto y oxido de hierro.",
+      "pista": "Escucha el tintineo ritmico del martillo de repujado en el zaguan del taller.",
+      "insignia_nombre": "Llama de Analco"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Hojalateria y Faroles Coloniales de Analco",
+      "maestro_artesano": "Maestro Pedro Tenorio",
+      "oficio": "Hojalateria Artistica y Repujado en Lamina",
+      "tecnica_ancestral": "Corte manual con cizalla, estirado en yunque y soldadura tradicional con cautin de cobre al carbon",
+      "sello_artesanal": "Sello Farol Analco 1935",
+      "horario_demostracion": "Lunes a Sabado 11:00 a 16:00"
+    }
+  },
+  {
+    "id": "poi_horno_pan_xanenetla",
+    "name": "Panaderia Tradicional de Horno de Boveda Xanenetla",
+    "category": "gastronomia_local",
+    "coordinates": [
+      -98.1932,
+      19.0475
+    ],
+    "hours": {
+      "open": "08:00",
+      "close": "14:00"
+    },
+    "cost_mxn": 35,
+    "visit_duration_min": 25,
+    "languages": [
+      "es",
+      "en"
+    ],
+    "entrance_accessible": true,
+    "restroom_accessible": false,
+    "source": "curated",
+    "osm_id": "way_710",
+    "is_local_business": true,
+    "zone": "barrio_xanenetla",
+    "tags": [
+      "panaderia",
+      "gastronomia",
+      "horno_leña",
+      "tradicion"
+    ],
+    "description": {
+      "es": "Panaderia de barrio con horno abovedado de ladrillo rojo alimentado con lena de encino, famosa por sus conchas de piloncillo y polvorones de canela.",
+      "en": "Neighborhood bakery featuring a domed red brick oven fueled by oak wood, renowned for piloncillo conchas and traditional cinnamon sweets."
+    },
+    "address": "Calle 4 Norte 2802, Barrio de Xanenetla",
+    "secret_to_unlock": {
+      "titulo": "La Masa Madre de Boveda Caliente",
+      "descripcion": "El barro termico de Xanenetla conserva el calor durante 12 horas, dando al pan poblano una corteza crujiente y un aroma inconfundible a madera de monte.",
+      "pista": "Sigue el aroma a canela y piloncillo recien horneado junto al mural del tlatoani.",
+      "insignia_nombre": "Trigo de Xanenetla"
+    },
+    "artisan_profile": {
+      "nombre_taller": "Panaderia y Bizcocheria Tradicional El Ladrillo",
+      "maestro_artesano": "Dona Carmen Tlatelpa",
+      "oficio": "Panaderia Tradicional en Horno de Boveda",
+      "tecnica_ancestral": "Fermentacion natural lenta con masa madre y coccion en boveda de ladrillo con lenas aromaticas",
+      "sello_artesanal": "Sello Concha Xanenetla 1952",
+      "horario_demostracion": "Martes a Domingo 09:00 a 13:00"
+    }
   }
 ]

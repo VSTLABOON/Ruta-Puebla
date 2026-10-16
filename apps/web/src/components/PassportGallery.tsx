@@ -1,13 +1,16 @@
-import { useState, useRef, useEffect, type FC } from 'react';
+import { useState, useRef, useEffect, useMemo, type FC } from 'react';
 import { POI, Language, PassportState } from '@ruta-abierta/shared-types';
-import { Award, Check, Lock, X, SmartphoneNfc, QrCode, AlertCircle } from 'lucide-react';
+import { Award, Check, Lock, X, SmartphoneNfc, QrCode, AlertCircle, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 import {
   isWebNfcSupported,
   verifyOfflineStampPayload,
   startPhysicalNfcScan,
   subscribeToLiveCounterStamps,
-  recordStampInLedger
+  recordStampInLedger,
+  getOrCreateTouristId,
+  buildTouristQrPayload,
+  buildOfflineQrMatrix
 } from '../utils/offlineStamp';
 import { tacticalAudio } from '../utils/tacticalAudio';
 
@@ -39,6 +42,11 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
   const [globalNfcScanning, setGlobalNfcScanning] = useState(false);
   const [scannerStatus, setScannerStatus] = useState<string | null>(null);
   const [scannerError, setScannerError] = useState<string | null>(null);
+
+  const touristId = useMemo(() => getOrCreateTouristId(), []);
+  const touristQrPayload = useMemo(() => buildTouristQrPayload(touristId), [touristId]);
+  const touristQrMatrix = useMemo(() => buildOfflineQrMatrix(touristQrPayload), [touristQrPayload]);
+  const [showTouristQr, setShowTouristQr] = useState(true);
 
   const abortRef = useRef<AbortController | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
@@ -168,6 +176,88 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
 
   return (
     <div className="space-y-4 pb-28 pt-2">
+      {/* Tarjeta de Código QR Offline del Turista (Sellado Invertido) */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/80 border border-amber-500/40 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-300 shadow-md">
+              <QrCode className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30">
+                  {language === 'es' ? '100% Sin Conexión' : '100% Offline'}
+                </span>
+                <span className="text-xs font-mono font-bold text-slate-300">
+                  {touristId}
+                </span>
+              </div>
+              <h2 className="text-base sm:text-lg font-black text-white font-serif tracking-tight mt-0.5">
+                {language === 'es' ? 'Tu Código QR de Visitante' : 'Your Visitor QR Code'}
+              </h2>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowTouristQr((v) => !v)}
+            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer"
+            title={showTouristQr ? (language === 'es' ? 'Ocultar QR' : 'Hide QR') : (language === 'es' ? 'Mostrar QR' : 'Show QR')}
+          >
+            {showTouristQr ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {showTouristQr && (
+          <div className="flex flex-col sm:flex-row items-center gap-5 pt-2 animate-in fade-in duration-200">
+            {/* Código QR Generado Offline */}
+            <div className="p-3 bg-white rounded-2xl flex-shrink-0 shadow-[0_0_25px_rgba(251,191,36,0.25)] border-2 border-amber-400/80">
+              <svg
+                viewBox={`0 0 ${touristQrMatrix.length} ${touristQrMatrix.length}`}
+                className="w-32 h-32 sm:w-36 sm:h-36"
+                shapeRendering="crispEdges"
+                aria-label={`QR ${touristId}`}
+              >
+                {touristQrMatrix.map((row, rIdx) =>
+                  row.map((cell, cIdx) =>
+                    cell ? (
+                      <rect
+                        key={`${rIdx}-${cIdx}`}
+                        x={cIdx}
+                        y={rIdx}
+                        width={1}
+                        height={1}
+                        fill="#020617"
+                      />
+                    ) : null
+                  )
+                )}
+              </svg>
+            </div>
+
+            <div className="space-y-2.5 text-center sm:text-left flex-1">
+              <p className="text-xs text-slate-200 leading-relaxed font-medium">
+                {language === 'es'
+                  ? 'Muestra este código al maestro artesano en su mostrador. Él lo escaneará con su teléfono para otorgarte el sello oficial sin que tú gastes tus datos móviles.'
+                  : 'Show this code to the artisan at the counter. They will scan it with their device to grant you the official badge without using your mobile roaming data.'}
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                <div className="text-[11px] font-mono bg-slate-950/80 border border-white/10 px-3 py-1.5 rounded-xl text-amber-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{unlockedCount} / {totalBadges} {language === 'es' ? 'sellos acumulados' : 'stamps earned'}</span>
+                </div>
+
+                <div className="text-[11px] font-mono bg-slate-950/80 border border-white/10 px-3 py-1.5 rounded-xl text-sky-300 flex items-center gap-1.5">
+                  <SmartphoneNfc className="w-3.5 h-3.5 text-sky-400" />
+                  <span>{language === 'es' ? 'NFC Tap-to-phone habilitado' : 'Tap-to-phone NFC ready'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Header Telemetry Card */}
       <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="flex items-center justify-between">

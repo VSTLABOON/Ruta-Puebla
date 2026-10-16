@@ -17,12 +17,11 @@ import {
   X,
   Radio,
   QrCode,
-  ExternalLink
+  ExternalLink,
+  Camera
 } from 'lucide-react';
 import {
   generateOfflineStampCode,
-  buildNfcDeepLinkUrl,
-  buildOfflineQrMatrix,
   isWebNfcSupported,
   writePhysicalNfcTag,
   startPhysicalNfcScan,
@@ -30,6 +29,7 @@ import {
   getStampLedger,
   getWorkshopLiveStates,
   saveWorkshopLiveState,
+  parseTouristQrPayload,
   StampLedgerEntry,
   WorkshopLiveState
 } from '../utils/offlineStamp';
@@ -81,6 +81,9 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
   const [isTestingNfc, setIsTestingNfc] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [ledger, setLedger] = useState<StampLedgerEntry[]>([]);
+  const [isScanningTouristQr, setIsScanningTouristQr] = useState(false);
+  const [touristInputCode, setTouristInputCode] = useState('');
+  const [touristScanResult, setTouristScanResult] = useState<string | null>(null);
 
   // Estado operativo en vivo del taller (Abierto / Demostración Activa / Pausa)
   const [liveStatus, setLiveStatus] = useState<'open' | 'live_demo' | 'closed'>('open');
@@ -124,16 +127,6 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
   const stampCode = useMemo(
     () => (selectedPoi ? generateOfflineStampCode(selectedPoi.id) : 'PUE-ALF'),
     [selectedPoi]
-  );
-
-  const deepLinkUrl = useMemo(
-    () => (selectedPoi ? buildNfcDeepLinkUrl(selectedPoi.id) : ''),
-    [selectedPoi]
-  );
-
-  const qrMatrix = useMemo(
-    () => (deepLinkUrl ? buildOfflineQrMatrix(deepLinkUrl) : []),
-    [deepLinkUrl]
   );
 
   const webNfcAvailable = useMemo(() => isWebNfcSupported(), []);
@@ -180,6 +173,25 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
         : `Stamp issued! Visitor passport awarded "${profile.sello_artesanal}" (${entry.code}).`
     );
     setTimeout(() => setStampedSuccess(null), 4500);
+  };
+
+  const handleScanTouristSuccess = (rawOrParsedId?: string) => {
+    if (!selectedPoi || !profile) return;
+    const candidate = rawOrParsedId || touristInputCode;
+    const parsed = parseTouristQrPayload(candidate);
+    const touristId = parsed.valid && parsed.touristId ? parsed.touristId : candidate.trim() || 'TUR-7701';
+
+    const entry = emitLiveCounterStamp(selectedPoi.id, selectedPoi.name);
+    setLedger(getStampLedger(selectedPoi.id));
+    tacticalAudio.playStampSuccess();
+    setTouristScanResult(
+      language === 'es'
+        ? `¡QR de Turista (${touristId}) verificado con éxito! Sello oficial "${profile.sello_artesanal}" (${entry.code}) otorgado.`
+        : `Tourist QR (${touristId}) verified! Official badge "${profile.sello_artesanal}" (${entry.code}) granted.`
+    );
+    setIsScanningTouristQr(false);
+    setTouristInputCode('');
+    setTimeout(() => setTouristScanResult(null), 5000);
   };
 
   // Programar etiqueta física NFC del mostrador
@@ -491,18 +503,62 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
               </span>
             </div>
 
+            {/* Acciones Principales de Mostrador: Escanear Turista (Invertido) + Tap-to-phone NFC */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setIsScanningTouristQr(true);
+                }}
+                className="py-4 px-4 rounded-2xl bg-gradient-to-r from-[#EDE28E] via-[#F4ECA6] to-[#EDE28E] hover:brightness-105 active:scale-[0.99] text-[#0E2C9C] font-black text-sm flex items-center justify-center gap-2.5 shadow-[0_0_20px_rgba(237,226,142,0.35)] border border-[#EDE28E] transition cursor-pointer select-none"
+              >
+                <Camera className="w-5 h-5 stroke-[2.5]" />
+                <span>
+                  {language === 'es'
+                    ? 'ESCANEAR QR DEL TURISTA'
+                    : 'SCAN TOURIST QR CODE'}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleVerifyPhysicalTag}
+                className={`py-4 px-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 border transition cursor-pointer select-none active:scale-[0.99] ${
+                  isTestingNfc
+                    ? 'bg-rose-500/25 border-rose-500/50 text-rose-200 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
+                    : 'bg-[#0E2C9C] hover:bg-[#1638b5] text-[#EDE28E] border-[#EDE28E]/40 shadow-lg'
+                }`}
+              >
+                <SmartphoneNfc className={`w-5 h-5 ${isTestingNfc ? 'animate-pulse' : ''}`} />
+                <span>
+                  {isTestingNfc
+                    ? (language === 'es' ? 'ESPERANDO CONTACTO NFC...' : 'WAITING FOR NFC TAP...')
+                    : (language === 'es' ? 'NFC TELÉFONO A TELÉFONO' : 'PHONE-TO-PHONE NFC')}
+                </span>
+              </button>
+            </div>
+
+            {/* Sello Directo de 1 Toque para Visitantes Presenciales */}
             <button
               type="button"
               onClick={handleIssueCounterStamp}
-              className="w-full py-4 sm:py-5 px-5 rounded-2xl bg-gradient-to-r from-[#EDE28E] via-[#F4ECA6] to-[#EDE28E] hover:brightness-105 active:scale-[0.99] text-[#0E2C9C] font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(237,226,142,0.35)] border border-[#EDE28E] transition cursor-pointer select-none"
+              className="w-full py-2.5 px-3 rounded-xl bg-[#07154E] hover:bg-[#0b1c61] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
             >
-              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+              <CheckCircle2 className="w-4 h-4 text-[#EDE28E]" />
               <span>
                 {language === 'es'
-                  ? 'SELLAR PASAPORTE DEL VISITANTE (1 TOQUE)'
-                  : 'STAMP VISITOR PASSPORT (1 TAP)'}
+                  ? 'O registrar visita presencial rápida (1 Toque)'
+                  : 'Or record quick in-person visit (1 Tap)'}
               </span>
             </button>
+
+            {touristScanResult && (
+              <div className="bg-emerald-950/80 border border-emerald-400/60 text-emerald-100 text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide shadow-lg">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span className="font-bold">{touristScanResult}</span>
+              </div>
+            )}
 
             {stampedSuccess && (
               <div className="bg-[#07154E] border border-[#EDE28E]/40 text-[#EFF1F8] text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide">
@@ -511,63 +567,114 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
               </div>
             )}
 
-            {/* Pantalla para Compartir con el Visitante (QR y Código) */}
-            <div className="bg-[#07154E] border border-[#9597C1]/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4">
-              <div className="p-3 bg-white rounded-2xl flex-shrink-0 shadow-lg border-2 border-[#EDE28E]/50">
-                <svg
-                  viewBox={`0 0 ${qrMatrix.length} ${qrMatrix.length}`}
-                  className="w-28 h-28 sm:w-32 sm:h-32"
-                  shapeRendering="crispEdges"
-                  aria-label={`QR ${stampCode}`}
+            {nfcStatus && (
+              <div className="bg-slate-950/90 border border-amber-500/40 text-amber-300 text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide">
+                <SmartphoneNfc className="w-4 h-4 text-amber-400 flex-shrink-0 animate-pulse" />
+                <span>{nfcStatus}</span>
+              </div>
+            )}
+
+            {nfcError && (
+              <div className="bg-rose-950/80 border border-rose-500/40 text-rose-200 text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide">
+                <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                <span>{nfcError}</span>
+              </div>
+            )}
+
+            {/* Modal de Escáner de QR del Turista */}
+            {isScanningTouristQr && (
+              <div
+                role="dialog"
+                aria-modal="true"
+                className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4"
+                onClick={() => setIsScanningTouristQr(false)}
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full max-w-md bg-[#0B228A] border border-[#EDE28E]/40 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200"
                 >
-                  {qrMatrix.map((row, rIdx) =>
-                    row.map((cell, cIdx) =>
-                      cell ? (
-                        <rect
-                          key={`${rIdx}-${cIdx}`}
-                          x={cIdx}
-                          y={rIdx}
-                          width={1}
-                          height={1}
-                          fill="#0E2C9C"
-                        />
-                      ) : null
-                    )
-                  )}
-                </svg>
-              </div>
+                  <div className="flex items-center justify-between pb-2 border-b border-[#9597C1]/20">
+                    <div className="flex items-center gap-2">
+                      <Camera className="w-5 h-5 text-[#EDE28E]" />
+                      <h3 className="font-black text-base text-white font-serif">
+                        {language === 'es' ? 'Escanear QR del Visitante' : 'Scan Visitor QR'}
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsScanningTouristQr(false)}
+                      className="p-1.5 rounded-xl bg-[#07154E] text-[#9597C1] hover:text-white cursor-pointer"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
 
-              <div className="flex-1 space-y-2.5 text-center sm:text-left">
-                <span className="text-xs text-[#9597C1] block font-medium">
-                  {language === 'es'
-                    ? 'Muestra este código al visitante o díctale el código de verificación:'
-                    : 'Show this code to visitor or share this short key:'}
-                </span>
+                  <p className="text-xs text-[#9597C1] leading-relaxed">
+                    {language === 'es'
+                      ? 'Apunta tu cámara al código QR que el turista tiene abierto en su pantalla. Funciona 100% sin que el turista requiera internet o datos móviles.'
+                      : 'Point your camera at the QR code on the tourist’s phone screen. Works completely offline without mobile data for the tourist.'}
+                  </p>
 
-                <div className="flex items-center justify-center sm:justify-start gap-2.5">
-                  <span className="font-mono text-2xl sm:text-3xl font-black tracking-widest text-[#EDE28E] bg-[#0B228A] px-4 py-1.5 rounded-xl border border-[#EDE28E]/40 shadow-inner">
-                    {stampCode}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleCopyCode}
-                    className="p-2.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] transition cursor-pointer active:scale-95"
-                    title={language === 'es' ? 'Copiar código' : 'Copy code'}
-                  >
-                    {copiedCode ? (
-                      <Check className="w-4 h-4 text-[#EDE28E]" />
-                    ) : (
-                      <Copy className="w-4 h-4 text-[#EDE28E]" />
-                    )}
-                  </button>
+                  {/* Visor simulado de cámara con cuadro de enfoque */}
+                  <div className="relative aspect-square max-w-[240px] mx-auto rounded-2xl bg-[#07154E] border-2 border-dashed border-[#EDE28E]/60 flex flex-col items-center justify-center p-4 overflow-hidden">
+                    <div className="absolute inset-4 border-2 border-[#EDE28E] rounded-xl pointer-events-none animate-pulse"></div>
+                    <QrCode className="w-16 h-16 text-[#EDE28E]/40" />
+                    <span className="text-[10px] text-[#EDE28E] font-bold mt-2 font-mono">
+                      {language === 'es' ? 'ENFOCAR CÓDIGO QR' : 'FOCUS QR CODE'}
+                    </span>
+                  </div>
+
+                  {/* Campo de entrada rápida o simulación de lectura inmediata */}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        value={touristInputCode}
+                        onChange={(e) => setTouristInputCode(e.target.value)}
+                        placeholder="POPOGO:TURISTA:TUR-7701..."
+                        className="flex-1 bg-[#07154E] border border-[#9597C1]/30 rounded-xl px-3 py-2 text-xs font-mono text-white placeholder:text-[#9597C1]/40 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleScanTouristSuccess()}
+                        className="px-4 py-2 rounded-xl bg-[#EDE28E] text-[#0E2C9C] font-black text-xs transition cursor-pointer hover:brightness-105 active:scale-95"
+                      >
+                        {language === 'es' ? 'Validar' : 'Validate'}
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleScanTouristSuccess(`POPOGO:TURISTA:TUR-${Math.floor(1000 + Math.random() * 9000)}`)}
+                      className="w-full py-2.5 px-3 rounded-xl bg-[#0E2C9C] hover:bg-[#1b3ea8] border border-[#EDE28E]/40 text-xs font-extrabold text-[#EDE28E] flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{language === 'es' ? 'Simular Lectura de Turista Actual' : 'Simulate Scanning Current Tourist'}</span>
+                    </button>
+                  </div>
                 </div>
-
-                <p className="text-[11px] text-[#9597C1] leading-relaxed">
-                  {language === 'es'
-                    ? 'El visitante puede escanear este QR con la cámara de su teléfono o ingresar este código en su pasaporte PopoGo.'
-                    : 'Visitors can scan with their camera or enter this short code directly in their PopoGo passport.'}
-                </p>
               </div>
+            )}
+
+            {/* Código de Respaldo del Taller (Mostrado de forma compacta para emergencias) */}
+            <div className="bg-[#07154E] border border-[#9597C1]/20 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <span className="text-[10px] uppercase font-bold text-[#9597C1] block">
+                  {language === 'es' ? 'Código de Respaldo del Mostrador' : 'Counter Backup Code'}
+                </span>
+                <span className="font-mono text-base font-black text-[#EDE28E]">
+                  {stampCode}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyCode}
+                className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] flex items-center gap-1.5 transition cursor-pointer active:scale-95"
+              >
+                {copiedCode ? <Check className="w-3.5 h-3.5 text-[#EDE28E]" /> : <Copy className="w-3.5 h-3.5 text-[#EDE28E]" />}
+                <span>{copiedCode ? (language === 'es' ? 'Copiado' : 'Copied') : (language === 'es' ? 'Copiar' : 'Copy')}</span>
+              </button>
             </div>
           </div>
         </div>
