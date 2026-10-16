@@ -695,7 +695,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   }, [isPulseActive, pois]);
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[480px] md:h-[560px] lg:h-[620px] rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950 select-none">
+    <div className="relative w-full h-full min-h-[380px] sm:min-h-[480px] md:min-h-[560px] lg:min-h-[640px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 select-none">
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Banner de Proximidad Radar en tiempo real */}

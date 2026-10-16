@@ -17,6 +17,7 @@ import { ArtisansPortal } from './components/ArtisansPortal';
 import { SustainabilityDashboard } from './components/SustainabilityDashboard';
 import { MobileBottomNav, CommandTab } from './components/MobileBottomNav';
 import { TacticalBottomSheet } from './components/TacticalBottomSheet';
+import { TacticalDesktopPanel } from './components/TacticalDesktopPanel';
 import { PassportGallery } from './components/PassportGallery';
 import { ArtisanDirectory } from './components/ArtisanDirectory';
 import { USER_ROLES, UserRole, AppMode } from './types/roles';
@@ -418,13 +419,13 @@ export default function App() {
         </div>
       </header>
 
-      {/* Contenido Principal con Contenedor Opcional Móvil 390x844 */}
-      <main className="flex-1 w-full flex flex-col items-center justify-center p-0 sm:py-4">
+      {/* Contenido Principal con Adaptabilidad Responsiva */}
+      <main className="flex-1 w-full flex flex-col items-center justify-center p-0 sm:py-3 lg:px-4">
         <div
           className={
             viewportMode === 'mobile'
               ? 'w-full max-w-[390px] min-h-[844px] h-[844px] bg-slate-950 border-[5px] border-slate-800 rounded-[44px] shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden relative flex flex-col'
-              : 'w-full max-w-7xl mx-auto px-3 sm:px-4 py-2 flex-1 flex flex-col relative'
+              : 'w-full max-w-7xl mx-auto px-2 sm:px-4 py-2 flex-1 flex flex-col relative min-h-[680px] h-[calc(100vh-105px)]'
           }
         >
           {/* Muesca Superior en Modo Móvil Simulado */}
@@ -445,61 +446,99 @@ export default function App() {
           {currentMode === 'visitor' && (
             <div className="flex-1 flex flex-col relative overflow-hidden">
               {/* Barra Rápida Superior de Controles de Ruta */}
-              <div className="px-3 py-2 bg-slate-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between gap-2 z-20 flex-shrink-0">
+              <div className="px-3 sm:px-4 py-2 bg-slate-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between gap-2 z-20 flex-shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase font-bold text-amber-400">
+                  <span className="font-mono text-[10px] sm:text-xs uppercase font-bold text-amber-400">
                     {request.profile.replace(/_/g, ' ')}
                   </span>
                   {activeRoute && (
-                    <span className="text-[11px] font-mono text-slate-400">
+                    <span className="text-[11px] sm:text-xs font-mono text-slate-400">
                       • {activeRoute.stops.length} {language === 'es' ? 'paradas' : 'stops'} • {activeRoute.metrics.total_time_min}m
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <button
                     type="button"
                     onClick={() => setIsFilterDrawerOpen(true)}
-                    className="px-2 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
-                    <SlidersHorizontal className="w-3 h-3 text-amber-400" />
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
                     <span>{language === 'es' ? 'Filtros' : 'Tune'}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={handleExportRoute}
-                    className="p-1 rounded-lg bg-slate-900 border border-white/10 text-slate-300 hover:text-white cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 cursor-pointer shadow-sm"
                     title="Exportar Itinerario"
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <Download className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="hidden sm:inline">{language === 'es' ? 'Exportar' : 'Export'}</span>
                   </button>
                 </div>
               </div>
 
               {/* Vistas según la pestaña activa del Centro de Mando */}
               <div className="flex-1 relative overflow-y-auto">
-                {/* PESTAÑA EXPLORAR: MAPA 3D VECTORIAL */}
+                {/* PESTAÑA EXPLORAR: MAPA 3D VECTORIAL + SPLIT VIEW EN DESKTOP */}
                 {commandTab === 'explore' && graph && (
-                  <div className="w-full h-full min-h-[500px] relative">
-                    <MapViewer
-                      segments={graph.edges}
-                      pois={pois}
-                      selectedRoute={activeRoute}
-                      activeProfile={request.profile}
-                      selectedStopPoiId={selectedStopPoiId}
-                      onSelectPoi={(id) => setSelectedStopPoiId(id)}
-                      onInspectStop={handleInspectStop}
-                      isPulseActive={isPulseActive}
-                      language={language}
-                    />
+                  <div className="w-full h-full min-h-[500px] flex-1 relative">
+                    {viewportMode === 'full' ? (
+                      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch relative">
+                        {/* Panel Táctico Lateral Desktop (Oculto en pantallas pequeñas) */}
+                        <div className="hidden lg:block lg:col-span-5 xl:col-span-4 h-full min-h-[600px] pb-24">
+                          {activeRoute && (
+                            <TacticalDesktopPanel
+                              stops={activeRoute.stops}
+                              selectedStopPoiId={selectedStopPoiId}
+                              onSelectStop={(id) => setSelectedStopPoiId(id)}
+                              language={language}
+                              passportState={passportState}
+                              onUnlockSecret={handleUnlockSecret}
+                              explanation={solution ? solution.explanation : undefined}
+                            />
+                          )}
+                        </div>
+
+                        {/* Visor de Mapa WebGL 3D (Adaptable: ancho total en móvil, 7/8 columnas en desktop) */}
+                        <div className="col-span-1 lg:col-span-7 xl:col-span-8 h-full min-h-[480px] lg:min-h-[600px] pb-24 lg:pb-24 relative">
+                          <MapViewer
+                            segments={graph.edges}
+                            pois={pois}
+                            selectedRoute={activeRoute}
+                            activeProfile={request.profile}
+                            selectedStopPoiId={selectedStopPoiId}
+                            onSelectPoi={(id) => setSelectedStopPoiId(id)}
+                            onInspectStop={handleInspectStop}
+                            isPulseActive={isPulseActive}
+                            language={language}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      /* Modo Móvil Simulado 390x844 */
+                      <div className="w-full h-full min-h-[500px] pb-24 relative">
+                        <MapViewer
+                          segments={graph.edges}
+                          pois={pois}
+                          selectedRoute={activeRoute}
+                          activeProfile={request.profile}
+                          selectedStopPoiId={selectedStopPoiId}
+                          onSelectPoi={(id) => setSelectedStopPoiId(id)}
+                          onInspectStop={handleInspectStop}
+                          isPulseActive={isPulseActive}
+                          language={language}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* PESTAÑA PASAPORTE: GALERÍA DE INSIGNIAS HOLOGRÁFICAS */}
                 {commandTab === 'passport' && (
-                  <div className="p-3">
+                  <div className="p-3 sm:p-5 max-w-7xl mx-auto w-full">
                     <PassportGallery
                       pois={pois}
                       passportState={passportState}
@@ -511,7 +550,7 @@ export default function App() {
 
                 {/* PESTAÑA TALLERES: DIRECTORIO DE ARTESANOS EN VIVO */}
                 {commandTab === 'artisans' && (
-                  <div className="p-3">
+                  <div className="p-3 sm:p-5 max-w-7xl mx-auto w-full">
                     <ArtisanDirectory
                       pois={pois}
                       onSelectArtisan={(poiId) => {
@@ -525,18 +564,20 @@ export default function App() {
                 )}
               </div>
 
-              {/* BOTTOM SHEET DESLIZABLE TÁCTICO */}
+              {/* BOTTOM SHEET DESLIZABLE TÁCTICO (En móvil o modo simulado) */}
               {activeRoute && (
-                <TacticalBottomSheet
-                  stops={activeRoute.stops}
-                  selectedStopPoiId={selectedStopPoiId}
-                  onSelectStop={(id) => setSelectedStopPoiId(id)}
-                  isOpen={isBottomSheetOpen}
-                  onClose={() => setIsBottomSheetOpen(false)}
-                  language={language}
-                  passportState={passportState}
-                  onUnlockSecret={handleUnlockSecret}
-                />
+                <div className={viewportMode === 'full' ? 'lg:hidden' : 'block'}>
+                  <TacticalBottomSheet
+                    stops={activeRoute.stops}
+                    selectedStopPoiId={selectedStopPoiId}
+                    onSelectStop={(id) => setSelectedStopPoiId(id)}
+                    isOpen={isBottomSheetOpen}
+                    onClose={() => setIsBottomSheetOpen(false)}
+                    language={language}
+                    passportState={passportState}
+                    onUnlockSecret={handleUnlockSecret}
+                  />
+                </div>
               )}
 
               {/* CENTRO DE MANDO INFERIOR (Mobile Bottom Command Center) */}

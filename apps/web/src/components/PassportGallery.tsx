@@ -131,8 +131,8 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
         </div>
       )}
 
-      {/* Badges Grid */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Badges Grid Responsivo */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {filteredPois.map((p) => {
           const isUnlocked = passportState.unlocked_secrets.includes(p.id);
           const badgeName = p.secret_to_unlock?.insignia_nombre || `Sello ${p.name}`;
