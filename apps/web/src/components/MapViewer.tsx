@@ -688,7 +688,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   }, []);
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-slate-950 select-none">
+    <div className="relative w-full h-full overflow-hidden bg-[var(--surface-solid)] select-none">
       {/* Lienzo de mapa de pantalla completa con soporte de 1 solo dedo (touch-none) */}
       <div ref={mapContainerRef} className="w-full h-full touch-none" />
 

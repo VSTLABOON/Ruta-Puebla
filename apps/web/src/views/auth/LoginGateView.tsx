@@ -1,4 +1,5 @@
 import { useState, useEffect, type FC } from 'react';
+import { applyPaper, readPaper, type Paper } from '../../utils/paperTheme';
 import { POI, Language } from '@ruta-abierta/shared-types';
 import {
   Compass,
@@ -10,6 +11,8 @@ import {
   User,
   UserPlus,
   Mail,
+  Moon,
+  Sun,
   Wifi,
   WifiOff,
   ArrowRight
@@ -32,6 +35,18 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'tourist' | 'artisan' | 'government'>('tourist');
   const [touristMode, setTouristMode] = useState<'login' | 'register'>('login');
+
+  // Papel de talavera: claro / oscuro (tema global de la app)
+  const [paper, setPaper] = useState<Paper>(() => readPaper());
+  useEffect(() => {
+    applyPaper(paper);
+  }, [paper]);
+  const darkPaper = paper === 'dark';
+
+  const handleTogglePaper = () => {
+    tacticalAudio.playTacticalClick();
+    setPaper((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Formulario Turista
   const [touristEmail, setTouristEmail] = useState('');

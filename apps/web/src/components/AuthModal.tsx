@@ -274,7 +274,7 @@ export const AuthModal: FC<AuthModalProps> = ({
     <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-slide">
       <div className="bg-[#FAF6EE] border-4 border-[#0F3078] text-[#162035] rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto p-5 shadow-2xl space-y-4">
         {/* Cabecera */}
-        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
           <div className="flex items-center gap-2">
             <Lock className="w-5 h-5 text-amber-400" />
             <h3 className="font-extrabold text-sm text-[#0F3078] uppercase tracking-wide font-serif font-black">
@@ -354,8 +354,8 @@ export const AuthModal: FC<AuthModalProps> = ({
         )}
 
         {successMsg && (
-          <div className="text-xs text-emerald-300 bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-500/30 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <div className="text-xs text-[var(--ok-ink)] bg-emerald-950/40 p-2.5 rounded-xl border border-[var(--line)] flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[var(--ok-ink)] flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
         )}
@@ -366,27 +366,27 @@ export const AuthModal: FC<AuthModalProps> = ({
         {authRole === 'tourist' && (
           <div className="space-y-3.5 animate-fade-slide">
             {activeTouristUser ? (
-              <div className="bg-amber-950/30 p-4 rounded-2xl border border-amber-500/30 space-y-3">
-                <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+              <div className="bg-amber-950/30 p-4 rounded-2xl border border-[var(--line)] space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-[var(--brand)]">
                   <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <ShieldCheck className="w-4 h-4 text-[var(--ok-ink)]" />
                     <span>{language === 'es' ? 'Sesión de Explorador Activa' : 'Active Explorer Session'}</span>
                   </div>
-                  <span className="font-mono bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full text-[10px]">
+                  <span className="font-mono bg-[var(--accent)] text-[var(--accent-ink)] px-2 py-0.5 rounded-full text-[10px]">
                     Nivel {activeTouristUser.level}
                   </span>
                 </div>
 
-                <div className="text-xs text-slate-200">
-                  <div className="font-extrabold text-sm text-white">
+                <div className="text-xs text-[var(--ink)]">
+                  <div className="font-extrabold text-sm text-[var(--ink)]">
                     {activeTouristUser.name}
                   </div>
-                  <div className="text-slate-400 mt-0.5">
+                  <div className="text-[var(--muted)] mt-0.5">
                     @{activeTouristUser.nickname} • {activeTouristUser.email || 'Turista Verificado'}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                <div className="flex items-center gap-2 pt-2 border-t border-[var(--line)]">
                   {onOpenRecord && (
                     <button
                       type="button"
@@ -394,7 +394,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                         onClose();
                         onOpenRecord();
                       }}
-                      className="flex-1 py-2 px-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="flex-1 py-2 px-3 bg-[var(--accent)] hover:bg-[var(--accent-soft)] text-[var(--accent-ink)] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
                     >
                       <Trophy className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Ver Mi Récord' : 'My Records'}</span>
@@ -404,7 +404,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleLogout('tourist')}
-                    className="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl flex items-center gap-1 transition cursor-pointer"
+                    className="py-2 px-3 bg-[var(--well)] hover:bg-[var(--well)] text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl flex items-center gap-1 transition cursor-pointer"
                     title={language === 'es' ? 'Cerrar sesión' : 'Log out'}
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -415,7 +415,7 @@ export const AuthModal: FC<AuthModalProps> = ({
             ) : (
               <>
                 {/* Sub-selector Iniciar Sesión vs Registro */}
-                <div className="flex rounded-xl bg-slate-950 p-1 border border-white/10 text-xs">
+                <div className="flex rounded-xl bg-[var(--surface-solid)] p-1 border border-[var(--line)] text-xs">
                   <button
                     type="button"
                     onClick={() => {
@@ -453,7 +453,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                   /* Formulario de Login */
                   <form onSubmit={handleTouristLogin} className="space-y-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                         {language === 'es' ? 'Correo o Nombre de Usuario:' : 'Email or Username:'}
                       </label>
                       <div className="relative">
@@ -462,14 +462,14 @@ export const AuthModal: FC<AuthModalProps> = ({
                           value={touristEmail}
                           onChange={(e) => setTouristEmail(e.target.value)}
                           placeholder="elena.exploradora@puebla.mx"
-                          className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          className="w-full border border-[var(--line)] rounded-xl p-2.5 pl-8 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
                         />
-                        <Mail className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
+                        <Mail className="w-3.5 h-3.5 text-[var(--ink)]0 absolute left-2.5 top-3" />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                         {language === 'es' ? 'PIN o Contraseña:' : 'PIN or Password:'}
                       </label>
                       <div className="relative">
@@ -478,25 +478,25 @@ export const AuthModal: FC<AuthModalProps> = ({
                           value={touristPin}
                           onChange={(e) => setTouristPin(e.target.value)}
                           placeholder="••••"
-                          className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          className="w-full border border-[var(--line)] rounded-xl p-2.5 pl-8 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
                         />
-                        <KeyRound className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
+                        <KeyRound className="w-3.5 h-3.5 text-[var(--ink)]0 absolute left-2.5 top-3" />
                       </div>
                     </div>
 
-                    <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
+                    <label className="flex items-center gap-2 text-xs text-[var(--muted)] cursor-pointer select-none">
                       <input
                         type="checkbox"
                         checked={touristRememberMe}
                         onChange={(e) => setTouristRememberMe(e.target.checked)}
-                        className="rounded border-slate-700 text-amber-500 focus:ring-amber-400 bg-slate-950"
+                        className="rounded border-[var(--line)] text-[var(--brand)] focus:ring-[var(--line-strong)] bg-[var(--surface-solid)]"
                       />
                       <span>{language === 'es' ? 'Recordar sesión en este dispositivo' : 'Remember me on this device'}</span>
                     </label>
 
                     <button
                       type="submit"
-                      className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-soft)] text-[var(--accent-ink)] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-[var(--shadow)]"
                     >
                       <Compass className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Entrar como Explorador' : 'Sign In as Explorer'}</span>
@@ -505,9 +505,9 @@ export const AuthModal: FC<AuthModalProps> = ({
                     <button
                       type="button"
                       onClick={handleQuickDemoTourist}
-                      className="w-full py-2 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="w-full py-2 px-3 rounded-xl bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" />
                       <span>{language === 'es' ? 'Acceso Rápido Demo (1 Clic • Elena)' : 'Quick 1-Click Demo (Elena)'}</span>
                     </button>
                   </form>
@@ -515,7 +515,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                   /* Formulario de Registro / Record */
                   <form onSubmit={handleTouristRegister} className="space-y-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                         {language === 'es' ? 'Nombre Completo:' : 'Full Name:'}
                       </label>
                       <input
@@ -523,13 +523,13 @@ export const AuthModal: FC<AuthModalProps> = ({
                         value={regName}
                         onChange={(e) => setRegName(e.target.value)}
                         placeholder="Carlos Mendoza"
-                        className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                           {language === 'es' ? 'Apodo / Alias:' : 'Explorer Nickname:'}
                         </label>
                         <input
@@ -537,12 +537,12 @@ export const AuthModal: FC<AuthModalProps> = ({
                           value={regNickname}
                           onChange={(e) => setRegNickname(e.target.value)}
                           placeholder="Caminante"
-                          className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                           {language === 'es' ? 'PIN (4 dígitos):' : 'PIN (4 digits):'}
                         </label>
                         <input
@@ -551,13 +551,13 @@ export const AuthModal: FC<AuthModalProps> = ({
                           onChange={(e) => setRegPin(e.target.value)}
                           placeholder="1234"
                           maxLength={8}
-                          className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
+                          className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)] font-mono"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                         {language === 'es' ? 'Correo Electrónico (Opcional):' : 'Email (Optional):'}
                       </label>
                       <input
@@ -565,18 +565,18 @@ export const AuthModal: FC<AuthModalProps> = ({
                         value={regEmail}
                         onChange={(e) => setRegEmail(e.target.value)}
                         placeholder="carlos@ejemplo.com"
-                        className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                         {language === 'es' ? 'Preferencia de Movilidad:' : 'Mobility Preference:'}
                       </label>
                       <select
                         value={regMobility}
                         onChange={(e) => setRegMobility(e.target.value as any)}
-                        className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
                       >
                         <option value="sin_restriccion">
                           {language === 'es' ? 'Estándar (Sin restricción)' : 'Standard (No restriction)'}
@@ -592,7 +592,7 @@ export const AuthModal: FC<AuthModalProps> = ({
 
                     <button
                       type="submit"
-                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg mt-2"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[var(--accent)] hover:brightness-110 text-[var(--accent-ink)] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-[var(--shadow)] mt-2"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Crear Cuenta y Guardar Récord' : 'Create Account & Save Records'}</span>
@@ -610,28 +610,28 @@ export const AuthModal: FC<AuthModalProps> = ({
         {authRole === 'artisan' && (
           <div className="space-y-3.5 animate-fade-slide">
             {activeArtisanUser ? (
-              <div className="bg-sky-950/40 p-4 rounded-2xl border border-sky-500/30 space-y-3">
-                <div className="flex items-center gap-2 text-sky-300 text-xs font-bold">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <div className="bg-sky-950/40 p-4 rounded-2xl border border-[var(--line)] space-y-3">
+                <div className="flex items-center gap-2 text-[var(--brand)] text-xs font-bold">
+                  <ShieldCheck className="w-4 h-4 text-[var(--ok-ink)]" />
                   <span>{language === 'es' ? 'Sesión de Taller Activa' : 'Active Workshop Session'}</span>
                 </div>
-                <div className="text-xs text-slate-200">
-                  <div className="font-extrabold text-sm text-white">
+                <div className="text-xs text-[var(--ink)]">
+                  <div className="font-extrabold text-sm text-[var(--ink)]">
                     {JSON.parse(activeArtisanUser).workshopName}
                   </div>
-                  <div className="text-slate-400 mt-0.5">
+                  <div className="text-[var(--muted)] mt-0.5">
                     {JSON.parse(activeArtisanUser).artisanName} • {JSON.parse(activeArtisanUser).oficio}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                <div className="flex items-center gap-2 pt-2 border-t border-[var(--line)]">
                   <button
                     type="button"
                     onClick={() => {
                       onClose();
                       navigate('/taller');
                     }}
-                    className="flex-1 py-2 px-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
+                    className="flex-1 py-2 px-3 bg-[var(--primary)] hover:bg-sky-400 text-[var(--on-primary)] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
                   >
                     <span>{language === 'es' ? 'Ir al Portal' : 'Open Portal'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -639,7 +639,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleLogout('artisan')}
-                    className="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl flex items-center gap-1 transition cursor-pointer"
+                    className="py-2 px-3 bg-[var(--well)] hover:bg-[var(--well)] text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl flex items-center gap-1 transition cursor-pointer"
                     title={language === 'es' ? 'Cerrar sesión' : 'Log out'}
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -649,13 +649,13 @@ export const AuthModal: FC<AuthModalProps> = ({
             ) : (
               <form onSubmit={handleArtisanLogin} className="space-y-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                     {language === 'es' ? 'Selecciona tu Taller:' : 'Select Workshop:'}
                   </label>
                   <select
                     value={selectedWorkshopId}
                     onChange={(e) => setSelectedWorkshopId(e.target.value)}
-                    className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                    className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-sky-500"
                   >
                     {artisanPois.map((poi) => (
                       <option key={poi.id} value={poi.id}>
@@ -666,7 +666,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                     {language === 'es' ? 'PIN del Maestro Artesano:' : 'Artisan PIN:'}
                   </label>
                   <div className="relative">
@@ -675,25 +675,25 @@ export const AuthModal: FC<AuthModalProps> = ({
                       value={artisanPin}
                       onChange={(e) => setArtisanPin(e.target.value)}
                       placeholder="1234"
-                      className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 font-mono tracking-widest placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                      className="w-full border border-[var(--line)] rounded-xl p-2.5 pl-8 text-xs text-[var(--ink)] bg-[var(--surface-solid)] font-mono tracking-widest placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-sky-500"
                     />
-                    <KeyRound className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
+                    <KeyRound className="w-3.5 h-3.5 text-[var(--ink)]0 absolute left-2.5 top-3" />
                   </div>
                 </div>
 
-                <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
+                <label className="flex items-center gap-2 text-xs text-[var(--muted)] cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={artisanRememberMe}
                     onChange={(e) => setArtisanRememberMe(e.target.checked)}
-                    className="rounded border-slate-700 text-sky-500 focus:ring-sky-400 bg-slate-950"
+                    className="rounded border-[var(--line)] text-sky-500 focus:ring-sky-400 bg-[var(--surface-solid)]"
                   />
                   <span>{language === 'es' ? 'Recordar sesión del taller' : 'Remember workshop session'}</span>
                 </label>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
+                  className="w-full py-2.5 px-4 rounded-xl bg-[var(--primary)] hover:bg-sky-400 text-[var(--on-primary)] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-[var(--shadow)]"
                 >
                   <Store className="w-3.5 h-3.5" />
                   <span>{language === 'es' ? 'Ingresar al Portal del Artesano' : 'Access Workshop Portal'}</span>
@@ -702,9 +702,9 @@ export const AuthModal: FC<AuthModalProps> = ({
                 <button
                   type="button"
                   onClick={handleQuickDemoArtisan}
-                  className="w-full py-2 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  className="w-full py-2 px-3 rounded-xl bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" />
                   <span>{language === 'es' ? 'Acceso Demostración Rápido (1 Clic)' : 'Quick 1-Click Demo'}</span>
                 </button>
               </form>
@@ -718,28 +718,28 @@ export const AuthModal: FC<AuthModalProps> = ({
         {authRole === 'admin' && (
           <div className="space-y-3.5 animate-fade-slide">
             {activeAdminUser ? (
-              <div className="bg-emerald-950/40 p-4 rounded-2xl border border-emerald-500/30 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-300 text-xs font-bold">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <div className="bg-emerald-950/40 p-4 rounded-2xl border border-[var(--line)] space-y-3">
+                <div className="flex items-center gap-2 text-[var(--ok-ink)] text-xs font-bold">
+                  <ShieldCheck className="w-4 h-4 text-[var(--ok-ink)]" />
                   <span>{language === 'es' ? 'Sesión de Planificador Activa' : 'Active Planner Session'}</span>
                 </div>
-                <div className="text-xs text-slate-200">
-                  <div className="font-extrabold text-sm text-white">
+                <div className="text-xs text-[var(--ink)]">
+                  <div className="font-extrabold text-sm text-[var(--ink)]">
                     {JSON.parse(activeAdminUser).institution}
                   </div>
-                  <div className="text-slate-400 mt-0.5">
+                  <div className="text-[var(--muted)] mt-0.5">
                     {JSON.parse(activeAdminUser).user}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                <div className="flex items-center gap-2 pt-2 border-t border-[var(--line)]">
                   <button
                     type="button"
                     onClick={() => {
                       onClose();
                       navigate('/admin');
                     }}
-                    className="flex-1 py-2 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
+                    className="flex-1 py-2 px-3 bg-emerald-500 hover:bg-emerald-400 text-[var(--ink)] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
                   >
                     <span>{language === 'es' ? 'Ir al Panel SECIHTI' : 'Open Analytics'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -747,7 +747,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleLogout('admin')}
-                    className="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl flex items-center gap-1 transition cursor-pointer"
+                    className="py-2 px-3 bg-[var(--well)] hover:bg-[var(--well)] text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl flex items-center gap-1 transition cursor-pointer"
                     title={language === 'es' ? 'Cerrar sesión' : 'Log out'}
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -757,7 +757,7 @@ export const AuthModal: FC<AuthModalProps> = ({
             ) : (
               <form onSubmit={handleAdminLogin} className="space-y-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
                     {language === 'es' ? 'Clave Institucional SECIHTI:' : 'Institutional Key:'}
                   </label>
                   <div className="relative">
@@ -766,25 +766,25 @@ export const AuthModal: FC<AuthModalProps> = ({
                       value={adminKey}
                       onChange={(e) => setAdminKey(e.target.value)}
                       placeholder="SECIHTI-PUEBLA-2026"
-                      className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 font-mono tracking-wider placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full border border-[var(--line)] rounded-xl p-2.5 pl-8 text-xs text-[var(--ink)] bg-[var(--surface-solid)] font-mono tracking-wider placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
-                    <KeyRound className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
+                    <KeyRound className="w-3.5 h-3.5 text-[var(--ink)]0 absolute left-2.5 top-3" />
                   </div>
                 </div>
 
-                <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
+                <label className="flex items-center gap-2 text-xs text-[var(--muted)] cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={adminRememberMe}
                     onChange={(e) => setAdminRememberMe(e.target.checked)}
-                    className="rounded border-slate-700 text-emerald-500 focus:ring-emerald-400 bg-slate-950"
+                    className="rounded border-[var(--line)] text-emerald-500 focus:ring-emerald-400 bg-[var(--surface-solid)]"
                   />
                   <span>{language === 'es' ? 'Recordar sesión de planificador' : 'Remember planner session'}</span>
                 </label>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
+                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[var(--ink)] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-[var(--shadow)]"
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
                   <span>{language === 'es' ? 'Acceder al Panel Analítico' : 'Access Analytics Portal'}</span>
@@ -793,9 +793,9 @@ export const AuthModal: FC<AuthModalProps> = ({
                 <button
                   type="button"
                   onClick={handleQuickDemoAdmin}
-                  className="w-full py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  className="w-full py-2 px-3 rounded-xl bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] text-[var(--ok-ink)] border border-[var(--line)] font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" />
                   <span>{language === 'es' ? 'Acceso Demostración SECIHTI (1 Clic)' : 'Quick 1-Click Demo'}</span>
                 </button>
               </form>

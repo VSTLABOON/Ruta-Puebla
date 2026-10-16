@@ -64,7 +64,7 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
+            className="p-1.5 text-[var(--muted)] hover:text-[var(--muted)] rounded-lg hover:bg-[var(--well)]"
             aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />
@@ -91,8 +91,8 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
             onClick={() => setActiveTab('norms')}
             className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition ${
               activeTab === 'norms'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[var(--well)] text-[var(--ink)] shadow-sm'
+                : 'text-[var(--muted)] hover:bg-[var(--well)]'
             }`}
           >
             <Scale className="w-3.5 h-3.5" />
@@ -104,8 +104,8 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
             onClick={() => setActiveTab('sources')}
             className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition ${
               activeTab === 'sources'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[var(--well)] text-[var(--ink)] shadow-sm'
+                : 'text-[var(--muted)] hover:bg-[var(--well)]'
             }`}
           >
             <Database className="w-3.5 h-3.5" />
@@ -116,12 +116,12 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
         {/* PESTAÑA 1: EMBUDO DE PURGA Y LIMPIEZA */}
         {activeTab === 'funnel' && (
           <div className="space-y-4">
-            <div className="bg-amber-50/70 border border-amber-200 p-3.5 rounded-lg text-xs text-amber-950 space-y-1">
+            <div className="bg-[var(--accent-soft)] border border-[var(--line)] p-3.5 rounded-lg text-xs text-[var(--ink)] space-y-1">
               <div className="font-bold flex items-center gap-1.5">
-                <Filter className="w-4 h-4 text-amber-700" />
+                <Filter className="w-4 h-4 text-[var(--brand)]" />
                 {language === 'es' ? 'Embudo Cuantitativo de Selección de Datos (Data Funnel)' : 'Data Selection Funnel'}
               </div>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-[var(--muted)]">
                 {language === 'es'
                   ? 'Filtro metodológico reproducible a partir del DENUE oficial de INEGI (edición 2026). Garantiza que las rutas derramen a talleres auténticos y no a franquicias.'
                   : 'Reproducible methodological filter from official INEGI DENUE (2026). Ensures spending targets traditional workshops rather than corporate chains.'}
@@ -129,8 +129,8 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border border-slate-200 rounded-lg">
-                <thead className="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+              <table className="w-full text-left text-xs border border-[var(--line)] rounded-lg">
+                <thead className="bg-[var(--well)] text-[var(--ink)] font-bold border-b border-[var(--line)]">
                   <tr>
                     <th className="p-2.5">Etapa</th>
                     <th className="p-2.5">Criterio de Filtrado</th>
@@ -139,7 +139,7 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
                     <th className="p-2.5 text-right">% Retenido</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700 text-[11px]">
+                <tbody className="divide-y divide-slate-100 text-[var(--muted)] text-[11px]">
                   {funnelSteps.map((s: { etapa: number; nombre: string; desc: string; reg: string; pct: string }) => (
                     <tr key={s.etapa} className="hover:bg-slate-50/80">
                       <td className="p-2.5 font-bold text-[#0F3078] font-serif">#{s.etapa}</td>
@@ -196,25 +196,25 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
         {/* PESTAÑA 2: ESTATUS NORMATIVO */}
         {activeTab === 'norms' && (
           <div className="space-y-4">
-            <div className="bg-slate-50 border border-slate-200 p-4 rounded-lg text-xs text-slate-800 space-y-2">
+            <div className="bg-[var(--well)] border border-[var(--line)] p-4 rounded-lg text-xs text-[var(--ink)] space-y-2">
               <div className="font-bold flex items-center gap-1.5">
-                <Scale className="w-4 h-4 text-slate-700" />
+                <Scale className="w-4 h-4 text-[var(--muted)]" />
                 {language === 'es'
                   ? 'Distinción Conceptual: Cumplimiento Normativo vs Transitabilidad Funcional'
                   : 'Conceptual Distinction: Regulatory Compliance vs Functional Transitability'}
               </div>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-[var(--muted)]">
                 Las normas técnicas regulan diseño y rehabilitación; no dictan por sí solas si una banqueta virreinal consolidada es transitable. El sistema separa dos niveles:
               </p>
-              <ul className="list-disc list-inside space-y-1 pl-1 text-[11px] text-slate-600">
+              <ul className="list-disc list-inside space-y-1 pl-1 text-[11px] text-[var(--muted)]">
                 <li><strong>Nivel 1 (Cumplimiento normativo):</strong> Apego documental a NOM-001, NOM-004 y NTDIU Puebla.</li>
                 <li><strong>Nivel 2 (Transitabilidad funcional):</strong> Criterio físico real evaluado por el motor de ruteo (ancho continuo, ausencia de escalones, rampas obligatorias en silla de ruedas).</li>
               </ul>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border border-slate-200 rounded-lg">
-                <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+              <table className="w-full text-left text-xs border border-[var(--line)] rounded-lg">
+                <thead className="bg-[var(--well)] text-[var(--muted)] font-semibold border-b border-[var(--line)]">
                   <tr>
                     <th className="p-2">Norma</th>
                     <th className="p-2">Parámetro</th>
@@ -222,36 +222,36 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
                     <th className="p-2">Estatus</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-600 text-[11px]">
+                <tbody className="divide-y divide-slate-100 text-[var(--muted)] text-[11px]">
                   <tr>
-                    <td className="p-2 font-medium text-slate-800">NOM-001-SEDATU-2021</td>
+                    <td className="p-2 font-medium text-[var(--ink)]">NOM-001-SEDATU-2021</td>
                     <td className="p-2">Altura libre de paso</td>
                     <td className="p-2">2.10 m</td>
-                    <td className="p-2 text-amber-700 font-semibold">Por verificar contra texto íntegro DOF</td>
+                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
                   </tr>
                   <tr>
-                    <td className="p-2 font-medium text-slate-800">NOM-004-SEDATU-2023</td>
+                    <td className="p-2 font-medium text-[var(--ink)]">NOM-004-SEDATU-2023</td>
                     <td className="p-2">Franja peatonal general</td>
                     <td className="p-2">1.80 m</td>
-                    <td className="p-2 text-amber-700 font-semibold">Por verificar contra texto íntegro DOF</td>
+                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
                   </tr>
                   <tr>
-                    <td className="p-2 font-medium text-slate-800">NOM-004-SEDATU-2023</td>
+                    <td className="p-2 font-medium text-[var(--ink)]">NOM-004-SEDATU-2023</td>
                     <td className="p-2">Franja peatonal en zonas históricas</td>
                     <td className="p-2">1.50 m</td>
-                    <td className="p-2 text-amber-700 font-semibold">Por verificar contra texto íntegro DOF</td>
+                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
                   </tr>
                   <tr>
-                    <td className="p-2 font-medium text-slate-800">NOM-004-SEDATU-2023</td>
+                    <td className="p-2 font-medium text-[var(--ink)]">NOM-004-SEDATU-2023</td>
                     <td className="p-2">Pendiente de rampas</td>
                     <td className="p-2">5% a 8%</td>
-                    <td className="p-2 text-amber-700 font-semibold">Por verificar contra texto íntegro DOF</td>
+                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
                   </tr>
                   <tr>
-                    <td className="p-2 font-medium text-slate-800">NTDIU Puebla</td>
+                    <td className="p-2 font-medium text-[var(--ink)]">NTDIU Puebla</td>
                     <td className="p-2">Zona de Monumentos Históricos</td>
                     <td className="p-2">Directriz municipal</td>
-                    <td className="p-2 text-slate-600">Supeditada a INAH y Gerencia del Centro Histórico</td>
+                    <td className="p-2 text-[var(--muted)]">Supeditada a INAH y Gerencia del Centro Histórico</td>
                   </tr>
                 </tbody>
               </table>
@@ -261,23 +261,23 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
 
         {/* PESTAÑA 3: FUENTES */}
         {activeTab === 'sources' && (
-          <div className="space-y-3 text-xs text-slate-600">
-            <div className="p-2.5 rounded border border-slate-100 bg-slate-50">
-              <span className="font-bold text-slate-800">INEGI DENUE:</span> Directorio Nacional de Unidades Económicas 2026 (cve_mun: 114). Uso público oficial.
+          <div className="space-y-3 text-xs text-[var(--muted)]">
+            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
+              <span className="font-bold text-[var(--ink)]">INEGI DENUE:</span> Directorio Nacional de Unidades Económicas 2026 (cve_mun: 114). Uso público oficial.
             </div>
-            <div className="p-2.5 rounded border border-slate-100 bg-slate-50">
-              <span className="font-bold text-slate-800">OpenStreetMap (OSM):</span> Red vial y geometría base. Licencia ODbL 1.0. Atribución: (c) Colaboradores de OpenStreetMap.
+            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
+              <span className="font-bold text-[var(--ink)]">OpenStreetMap (OSM):</span> Red vial y geometría base. Licencia ODbL 1.0. Atribución: (c) Colaboradores de OpenStreetMap.
             </div>
-            <div className="p-2.5 rounded border border-slate-100 bg-slate-50">
-              <span className="font-bold text-slate-800">Corpus de Patrimonio Cultural:</span> Textos e inventarios históricos verificados de INAH, UNESCO y relatos orales de maestros artesanos de La Luz y Analco.
+            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
+              <span className="font-bold text-[var(--ink)]">Corpus de Patrimonio Cultural:</span> Textos e inventarios históricos verificados de INAH, UNESCO y relatos orales de maestros artesanos de La Luz y Analco.
             </div>
-            <div className="p-2.5 rounded border border-slate-100 bg-slate-50">
-              <span className="font-bold text-slate-800">Auditoría de Accesibilidad en Campo:</span> Mediciones directas en tramos piloto con control de concordancia inter-auditor. Licencia abierta CC BY 4.0.
+            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
+              <span className="font-bold text-[var(--ink)]">Auditoría de Accesibilidad en Campo:</span> Mediciones directas en tramos piloto con control de concordancia inter-auditor. Licencia abierta CC BY 4.0.
             </div>
           </div>
         )}
 
-        <div className="text-[11px] text-slate-400 text-center border-t border-slate-100 pt-3">
+        <div className="text-[11px] text-[var(--muted)] text-center border-t border-slate-100 pt-3">
           Todos los umbrales funcionales y coeficientes econométricos son ajustables tras las pruebas de campo.
         </div>
       </div>

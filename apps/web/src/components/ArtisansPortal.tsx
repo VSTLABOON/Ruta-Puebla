@@ -765,7 +765,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full bg-[#EDE28E]" />
                       <div>
-                        <span className="font-bold text-white block">
+                        <span className="font-bold text-[var(--ink)] block">
                           {language === 'es' ? 'Pasaporte Sellado' : 'Passport Stamped'}
                         </span>
                         <span className="text-[10px] text-[#0F3078]/70 font-mono">

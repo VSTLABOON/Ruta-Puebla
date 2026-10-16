@@ -20,13 +20,13 @@ export const RouteComparison: FC<RouteComparisonProps> = ({
   const allRoutes = [mainRoute, ...alternativeRoutes];
 
   return (
-    <div className="bg-slate-900 rounded-2xl border border-white/10 p-5 shadow-lg space-y-4">
-      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+    <div className="bg-[var(--well)] rounded-2xl border border-[var(--line)] p-5 shadow-[var(--shadow)] space-y-4">
+      <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
         <div>
-          <h2 className="text-sm sm:text-base font-extrabold text-white">
+          <h2 className="text-sm sm:text-base font-extrabold text-[var(--ink)]">
             {language === 'es' ? 'Comparador Multicriterio de Rutas (En Vivo)' : 'Live Multicriteria Route Comparison'}
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[var(--muted)]">
             {language === 'es'
               ? 'Contraste instantáneo entre el itinerario clásico del Zócalo y las alternativas desconcentradas'
               : 'Instant comparison between the classic Zócalo path and decentralized alternatives'}
@@ -45,76 +45,76 @@ export const RouteComparison: FC<RouteComparisonProps> = ({
               onClick={() => onSelectRoute(route)}
               className={`rounded-xl border p-4 transition flex flex-col justify-between cursor-pointer ${
                 isSelected
-                  ? 'border-amber-500/70 bg-amber-500/10 ring-1 ring-amber-400/30 shadow-md'
-                  : 'border-white/10 hover:border-white/25 bg-slate-950/70'
+                  ? 'border-[var(--line)] bg-[var(--accent-soft)] ring-1 ring-[var(--line-strong)] shadow-md'
+                  : 'border-[var(--line)] hover:border-[var(--line)] bg-[var(--surface)]'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-1 gap-2">
-                  <span className="text-xs font-extrabold text-white">{route.name}</span>
+                  <span className="text-xs font-extrabold text-[var(--ink)]">{route.name}</span>
                   {isMain && (
-                    <span className="text-[10px] bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full flex-shrink-0">
+                    <span className="text-[10px] bg-[var(--accent)] text-[var(--accent-ink)] font-black px-2 py-0.5 rounded-full flex-shrink-0">
                       {language === 'es' ? 'Óptima OPTW' : 'OPTW Optimal'}
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] font-mono text-amber-400 font-bold mb-3">
+                <div className="text-[11px] font-mono text-[var(--brand)] font-bold mb-3">
                   {route.stops.length} {language === 'es' ? 'paradas activas' : 'active stops'}
                 </div>
 
                 {/* Lista de métricas clave */}
                 <div className="space-y-2 text-xs">
-                  <div className="flex items-center justify-between text-slate-200">
-                    <span className="flex items-center gap-1.5 text-slate-400">
+                  <div className="flex items-center justify-between text-[var(--ink)]">
+                    <span className="flex items-center gap-1.5 text-[var(--muted)]">
                       <Clock className="w-3.5 h-3.5" />
                       {language === 'es' ? 'Tiempo total:' : 'Total time:'}
                     </span>
                     <span className="font-mono font-semibold">{route.metrics.total_time_min} min</span>
                   </div>
 
-                  <div className="flex items-center justify-between text-slate-200">
-                    <span className="flex items-center gap-1.5 text-slate-400">
+                  <div className="flex items-center justify-between text-[var(--ink)]">
+                    <span className="flex items-center gap-1.5 text-[var(--muted)]">
                       <Footprints className="w-3.5 h-3.5" />
                       {language === 'es' ? 'Caminata:' : 'Walk distance:'}
                     </span>
                     <span className="font-mono font-semibold">{route.metrics.distance_meters} m</span>
                   </div>
 
-                  <div className="flex items-center justify-between text-slate-200">
-                    <span className="flex items-center gap-1.5 text-slate-400">
+                  <div className="flex items-center justify-between text-[var(--ink)]">
+                    <span className="flex items-center gap-1.5 text-[var(--muted)]">
                       <DollarSign className="w-3.5 h-3.5" />
                       {language === 'es' ? 'Gasto estimado:' : 'Estimated cost:'}
                     </span>
                     <span className="font-mono font-semibold">${route.metrics.total_cost_mxn} MXN</span>
                   </div>
 
-                  <div className="pt-2 border-t border-white/10 space-y-1.5">
+                  <div className="pt-2 border-t border-[var(--line)] space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-slate-400">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="flex items-center gap-1.5 text-[var(--muted)]">
+                        <ShieldCheck className="w-3.5 h-3.5 text-[var(--ok-ink)]" />
                         {language === 'es' ? 'Verificación en campo:' : 'Field verified:'}
                       </span>
-                      <span className="font-mono font-bold text-emerald-400">
+                      <span className="font-mono font-bold text-[var(--ok-ink)]">
                         {route.metrics.pct_verified}%
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-slate-400">
-                        <Store className="w-3.5 h-3.5 text-sky-400" />
+                      <span className="flex items-center gap-1.5 text-[var(--muted)]">
+                        <Store className="w-3.5 h-3.5 text-[var(--brand)]" />
                         {language === 'es' ? 'Comercios locales:' : 'Local business:'}
                       </span>
-                      <span className="font-mono font-bold text-sky-400">
+                      <span className="font-mono font-bold text-[var(--brand)]">
                         {route.metrics.pct_local_stops}%
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-slate-400">
+                      <span className="flex items-center gap-1.5 text-[var(--muted)]">
                         <MapPin className="w-3.5 h-3.5 text-indigo-400" />
                         {language === 'es' ? 'Fuera del Zócalo:' : 'Outside core:'}
                       </span>
-                      <span className="font-mono font-bold text-indigo-300">
+                      <span className="font-mono font-bold text-[var(--brand)]">
                         {route.metrics.pct_outside_core}%
                       </span>
                     </div>
@@ -130,8 +130,8 @@ export const RouteComparison: FC<RouteComparisonProps> = ({
                 }}
                 className={`mt-4 w-full py-2 px-3 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                   isSelected
-                    ? 'bg-amber-500 text-slate-950 shadow'
-                    : 'bg-slate-900 border border-white/15 text-slate-300 hover:text-white hover:bg-slate-800'
+                    ? 'bg-[var(--accent)] text-[var(--accent-ink)] shadow'
+                    : 'bg-[var(--well)] border border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--well)]'
                 }`}
               >
                 {isSelected ? (

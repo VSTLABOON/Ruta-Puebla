@@ -25,6 +25,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
+import { applyPaper, readPaper, type Paper } from './utils/paperTheme';
 import { RouterProvider, useRouter } from './router/Router';
 import { verifyOfflineStampPayload, recordStampInLedger } from './utils/offlineStamp';
 import { SplashScreen } from './components/SplashScreen';
@@ -47,6 +48,12 @@ function MainApp() {
 
   // Modo de visualización: Marco Móvil 390x844 o Pantalla Completa
   const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
+
+  // Papel talavera: claro / oscuro (misma clave que el login)
+  const [paper, setPaper] = useState<Paper>(() => readPaper());
+  useEffect(() => {
+    applyPaper(paper);
+  }, [paper]);
 
   // Modales
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);

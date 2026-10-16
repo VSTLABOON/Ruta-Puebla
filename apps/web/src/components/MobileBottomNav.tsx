@@ -90,7 +90,7 @@ export const MobileBottomNav: FC<MobileBottomNavProps> = ({
         {/* Fondo táctil para cerrar */}
         <div
           onClick={() => setIsMenuOpen(false)}
-          className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm -z-10"
+          className="fixed inset-0 bg-[var(--primary)]/20 backdrop-blur-sm -z-10"
         />
 
         <div className="w-full max-w-sm mx-auto bg-[#FAF6EE]/98 backdrop-blur-2xl border-2 border-[#0F3078] rounded-3xl p-4 shadow-[0_-15px_45px_rgba(15,48,120,0.3)] space-y-3.5">

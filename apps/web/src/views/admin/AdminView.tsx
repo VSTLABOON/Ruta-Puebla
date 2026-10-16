@@ -221,7 +221,7 @@ export const AdminView: FC<AdminViewProps> = ({
               <div className="w-12 h-12 rounded-2xl bg-[#0F3078]/15 text-[#B84A2C] border border-[#B84A2C]/30 flex items-center justify-center mx-auto mb-2">
                 <Lock className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-base text-white">
+              <h3 className="font-extrabold text-base text-[var(--on-primary)]">
                 {language === 'es' ? 'Acceso Planificadores SECIHTI' : 'SECIHTI Planner Access'}
               </h3>
               <p className="text-xs text-[#0F3078]/70">
@@ -232,7 +232,7 @@ export const AdminView: FC<AdminViewProps> = ({
             </div>
 
             {errorMsg && (
-              <div className="text-xs text-rose-300 bg-rose-950/60 p-2.5 rounded-xl border border-rose-500/40">
+              <div className="text-xs text-[var(--danger-ink)] bg-rose-950/60 p-2.5 rounded-xl border border-rose-500/40">
                 {errorMsg}
               </div>
             )}
@@ -399,7 +399,7 @@ export const AdminView: FC<AdminViewProps> = ({
                 <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
                   <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
                     <div>
-                      <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-serif">
+                      <h3 className="text-sm font-extrabold text-[var(--on-primary)] uppercase tracking-wider font-serif">
                         {language === 'es'
                           ? 'Monitoreo de Carga y Afluencia Barrial en Tiempo Real'
                           : 'Real-Time Neighborhood Influx & Carrying Load'}
