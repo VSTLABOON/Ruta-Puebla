@@ -1,7 +1,15 @@
-import { useState, type FC } from 'react';
+import { useState, useRef, useEffect, type FC } from 'react';
 import { POI, Language, PassportState } from '@ruta-abierta/shared-types';
-import { Award, Check, Lock, X } from 'lucide-react';
+import { Award, Check, Lock, X, SmartphoneNfc, QrCode, AlertCircle } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
+import {
+  isWebNfcSupported,
+  verifyOfflineStampPayload,
+  startPhysicalNfcScan,
+  subscribeToLiveCounterStamps,
+  recordStampInLedger
+} from '../utils/offlineStamp';
+import { tacticalAudio } from '../utils/tacticalAudio';
 
 interface PassportGalleryProps {
   pois: POI[];
@@ -27,9 +35,126 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
 }) => {
   const [selectedBarrio, setSelectedBarrio] = useState('all');
   const [inspectingPoiId, setInspectingPoiId] = useState<string | null>(null);
+  const [quickCode, setQuickCode] = useState('');
+  const [globalNfcScanning, setGlobalNfcScanning] = useState(false);
+  const [scannerStatus, setScannerStatus] = useState<string | null>(null);
+  const [scannerError, setScannerError] = useState<string | null>(null);
+
+  const abortRef = useRef<AbortController | null>(null);
+  const unsubRef = useRef<(() => void) | null>(null);
 
   // Filter POIs that have secrets or badges
   const badgePois = pois.filter((p) => p.secret_to_unlock || p.artisan_profile);
+  const badgePoiIds = badgePois.map((p) => p.id);
+
+  const stopGlobalScanner = () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    if (unsubRef.current) {
+      unsubRef.current();
+      unsubRef.current = null;
+    }
+    setGlobalNfcScanning(false);
+  };
+
+  useEffect(() => {
+    return () => stopGlobalScanner();
+  }, []);
+
+  const unlockByPoiId = (
+    targetPoiId: string,
+    method: 'web-nfc' | 'deep-link' | 'manual-code' | 'live-counter',
+    serialNumber?: string
+  ) => {
+    const targetPoi = pois.find((p) => p.id === targetPoiId);
+    if (!targetPoi) return;
+    stopGlobalScanner();
+    setScannerError(null);
+    setScannerStatus(
+      language === 'es'
+        ? `¡Sello verificado en ${targetPoi.name}!`
+        : `Verified stamp at ${targetPoi.name}!`
+    );
+    const badge = targetPoi.secret_to_unlock?.insignia_nombre || `Medallón ${targetPoi.name}`;
+    recordStampInLedger({
+      poiId: targetPoi.id,
+      poiName: targetPoi.name,
+      code: '',
+      method,
+      serialNumber
+    });
+    tacticalAudio.playStampSuccess();
+    onUnlockSecret(targetPoi.id, badge);
+    setInspectingPoiId(targetPoi.id);
+    setQuickCode('');
+  };
+
+  const handleGlobalNfcScan = async () => {
+    tacticalAudio.playTacticalClick();
+    if (globalNfcScanning) {
+      stopGlobalScanner();
+      setScannerStatus(null);
+      return;
+    }
+
+    setScannerError(null);
+    setGlobalNfcScanning(true);
+
+    unsubRef.current = subscribeToLiveCounterStamps(undefined, (verified) => {
+      if (verified.poiId) {
+        unlockByPoiId(verified.poiId, 'live-counter', verified.serialNumber);
+      }
+    });
+
+    if (isWebNfcSupported()) {
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+      setScannerStatus(
+        language === 'es'
+          ? 'Lector NFC universal activo: acerca tu teléfono a cualquier etiqueta NTAG de taller...'
+          : 'Universal NFC reader active: hold your phone near any workshop NTAG...'
+      );
+      await startPhysicalNfcScan({
+        allPoiIds: badgePoiIds,
+        signal: ctrl.signal,
+        onValidRead: (res) => {
+          if (res.poiId) {
+            unlockByPoiId(res.poiId, 'web-nfc', res.serialNumber);
+          }
+        },
+        onInvalidRead: () => {
+          setScannerError(
+            language === 'es'
+              ? 'Etiqueta NFC detectada pero sin firma válida de Ruta Abierta.'
+              : 'NFC tag detected without a valid Ruta Abierta signature.'
+          );
+        }
+      });
+    } else {
+      setScannerStatus(
+        language === 'es'
+          ? 'Escuchando pulso en vivo de cualquier taller... (O ingresa el código del mostrador a la derecha).'
+          : 'Listening for live counter pulse from any workshop... (Or enter the counter code).'
+      );
+    }
+  };
+
+  const handleQuickCodeVerify = () => {
+    setScannerError(null);
+    const verified = verifyOfflineStampPayload(quickCode, undefined, badgePoiIds);
+    if (verified.valid && verified.poiId) {
+      unlockByPoiId(verified.poiId, verified.source, verified.serialNumber);
+    } else {
+      tacticalAudio.playTacticalClick();
+      setScannerError(
+        language === 'es'
+          ? 'Código no reconocido. Verifica el código de 3 letras y 4 números en el mostrador del taller.'
+          : 'Unrecognized code. Check the 3-letter, 4-digit code at the workshop counter.'
+      );
+    }
+  };
 
   const filteredPois = selectedBarrio === 'all'
     ? badgePois
@@ -82,6 +207,75 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
           </div>
         </div>
 
+        {/* Barra Rápida Universal: Escáner NFC Directo + Validador de Código de Mostrador */}
+        <div className="pt-2 border-t border-white/10 flex flex-col sm:flex-row gap-2">
+          <button
+            type="button"
+            onClick={handleGlobalNfcScan}
+            className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition cursor-pointer ${
+              globalNfcScanning
+                ? 'bg-rose-500/20 border border-rose-500/40 text-rose-300'
+                : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md'
+            }`}
+          >
+            <SmartphoneNfc className={`w-4 h-4 ${globalNfcScanning ? 'animate-ping' : ''}`} />
+            <span>
+              {globalNfcScanning
+                ? language === 'es'
+                  ? 'Detener Lector NFC'
+                  : 'Stop NFC Reader'
+                : language === 'es'
+                ? 'Escanear Etiqueta NFC / Recibir Pulso'
+                : 'Scan NFC Tag / Receive Pulse'}
+            </span>
+          </button>
+
+          <div className="flex-1 flex items-center gap-1.5">
+            <input
+              type="text"
+              value={quickCode}
+              onChange={(e) => {
+                setQuickCode(e.target.value);
+                setScannerError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleQuickCodeVerify();
+                }
+              }}
+              placeholder={
+                language === 'es'
+                  ? 'Código de taller (ej. HOR-1234)...'
+                  : 'Workshop code (e.g. HOR-1234)...'
+              }
+              className="flex-1 bg-slate-950 border border-white/15 rounded-xl px-3 py-2 text-xs font-mono text-white uppercase placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+            <button
+              type="button"
+              onClick={handleQuickCodeVerify}
+              className="px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <QrCode className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? 'Canjear' : 'Redeem'}</span>
+            </button>
+          </div>
+        </div>
+
+        {scannerStatus && (
+          <div className="text-[11px] text-amber-300 bg-slate-950/90 border border-amber-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
+            <SmartphoneNfc className="w-4 h-4 text-amber-400 flex-shrink-0 animate-pulse" />
+            <span>{scannerStatus}</span>
+          </div>
+        )}
+
+        {scannerError && (
+          <div className="text-[11px] text-rose-300 bg-rose-950/60 border border-rose-500/40 rounded-xl px-3 py-2 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+            <span>{scannerError}</span>
+          </div>
+        )}
+
         {/* Barrio Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pt-1">
           {BARRIOS.map((barrio) => (
@@ -117,6 +311,7 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
             </div>
 
             <HolographicBadge
+              poiId={inspectingPoi.id}
               badgeName={inspectingPoi.secret_to_unlock?.insignia_nombre || `Medallón ${inspectingPoi.name}`}
               poiName={inspectingPoi.name}
               zone={inspectingPoi.zone}

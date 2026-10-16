@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
+import { verifyOfflineStampPayload, recordStampInLedger } from './utils/offlineStamp';
 
 // Carga diferida (code-splitting) de las 3 vistas por rol
 const VisitorView = React.lazy(() => import('./views/visitor/VisitorView'));
@@ -190,6 +191,58 @@ function MainApp() {
 
     loadStaticData();
   }, []);
+
+  // Intercepción de Deep-Link de Etiqueta NFC Física (NDEF URI para iPhone/iOS y Android)
+  useEffect(() => {
+    if (pois.length === 0 || typeof window === 'undefined') return;
+    const search = window.location.search;
+    if (!search || (!search.includes('nfc_stamp=') && !search.includes('code='))) return;
+
+    const verified = verifyOfflineStampPayload(
+      window.location.href,
+      undefined,
+      pois.map((p) => p.id)
+    );
+
+    if (verified.valid && verified.poiId) {
+      const targetPoi = pois.find((p) => p.id === verified.poiId);
+      if (targetPoi) {
+        // Si el visitante abrió el enlace con su teléfono sin sesión previa, iniciar sesión rápida de caminante
+        if (!currentUser) {
+          const autoTourist: UserProfile = {
+            id: `tourist_nfc_${Date.now()}`,
+            name: 'Explorador NFC',
+            nickname: 'Caminante NFC',
+            role: 'tourist',
+            mobilityProfile: 'sin_restriccion',
+            level: 1,
+            xp: 200,
+            createdAt: new Date().toISOString().slice(0, 10),
+            rememberMe: true
+          };
+          setCurrentUser(autoTourist);
+          dbSync.saveUserProfile(autoTourist);
+        }
+
+        const badge =
+          targetPoi.secret_to_unlock?.insignia_nombre ||
+          targetPoi.artisan_profile?.sello_artesanal ||
+          `Medallón ${targetPoi.name}`;
+
+        recordStampInLedger({
+          poiId: targetPoi.id,
+          poiName: targetPoi.name,
+          code: verified.code || '',
+          method: 'deep-link'
+        });
+
+        tacticalAudio.playStampSuccess();
+        handleUnlockSecret(targetPoi.id, badge);
+      }
+      // Limpiar parámetros de la URL tras procesar la etiqueta NFC
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [pois]);
 
   // Estado de sincronización en vivo para demostraciones con/sin conexión
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(dbSync.getStatus());

@@ -220,13 +220,13 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
           </div>
         ) : (
           <div className="space-y-4">
-            {/* Banner de Taller Activo */}
+            {/* Banner de Taller Activo con Selector Rápido de Sucursal */}
             <div className="bg-sky-950/40 border border-sky-500/30 p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0" />
                 <div>
                   <span className="text-[10px] uppercase font-mono text-sky-400 font-bold block">
-                    {language === 'es' ? 'Taller Autenticado:' : 'Logged In Workshop:'}
+                    {language === 'es' ? 'Terminal de Mostrador Autenticada:' : 'Authenticated Counter Terminal:'}
                   </span>
                   <span className="font-extrabold text-sm text-white">
                     {session.workshopName}
@@ -236,10 +236,44 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
                   </span>
                 </div>
               </div>
+
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] text-slate-400 font-semibold hidden sm:inline">
+                  {language === 'es' ? 'Cambiar local:' : 'Switch shop:'}
+                </label>
+                <select
+                  value={session.poiId}
+                  onChange={(e) => {
+                    const nextWorkshop = artisanPois.find((p) => p.id === e.target.value);
+                    if (!nextWorkshop) return;
+                    tacticalAudio.playTacticalClick();
+                    const updatedSession = {
+                      poiId: nextWorkshop.id,
+                      workshopName: nextWorkshop.name,
+                      artisanName: nextWorkshop.artisan_profile?.maestro_artesano || 'Maestro Artesano',
+                      oficio: nextWorkshop.artisan_profile?.oficio || 'Artesanía'
+                    };
+                    localStorage.setItem('ruta_abierta_artisan_user', JSON.stringify(updatedSession));
+                    setSession(updatedSession);
+                    if (onSessionChange) onSessionChange();
+                  }}
+                  className="bg-slate-950 border border-sky-500/30 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-sky-400 cursor-pointer"
+                >
+                  {artisanPois.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.zone.replace(/_/g, ' ')})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            {/* Panel Principal de Artesanos */}
-            <ArtisansPortal pois={pois} language={language} />
+            {/* Panel Operativo Principal de Artesanos (Sincronizado con el taller de la sesión) */}
+            <ArtisansPortal
+              pois={pois}
+              language={language}
+              activePoiId={session.poiId}
+            />
           </div>
         )}
       </div>
