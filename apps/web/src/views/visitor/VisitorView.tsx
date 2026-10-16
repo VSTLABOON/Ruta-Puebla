@@ -35,6 +35,11 @@ interface VisitorViewProps {
   onUnlockSecret: (poiId: string, badgeName: string) => void;
   userLocation: [number, number];
   onUserLocationChange: (coords: [number, number]) => void;
+  onOpenAuth: () => void;
+  onOpenDataInfo: () => void;
+  onToggleLanguage: () => void;
+  onToggleViewport?: () => void;
+  viewportMode?: 'mobile' | 'full';
 }
 
 export const VisitorView: FC<VisitorViewProps> = ({
@@ -46,7 +51,12 @@ export const VisitorView: FC<VisitorViewProps> = ({
   passportState,
   onUnlockSecret,
   userLocation,
-  onUserLocationChange
+  onUserLocationChange,
+  onOpenAuth,
+  onOpenDataInfo,
+  onToggleLanguage,
+  onToggleViewport,
+  viewportMode = 'full'
 }) => {
   const [commandTab, setCommandTab] = useState<CommandTab>('explore');
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -148,11 +158,11 @@ export const VisitorView: FC<VisitorViewProps> = ({
 
   return (
     <div className="relative w-full h-full overflow-hidden flex flex-col">
-      {/* Barra Rápida Superior de Controles Flotantes para el Visitante */}
-      <div className="absolute top-2 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
+      {/* Controles flotantes en pantalla grande (En móvil se eliminan por completo para dejar el mapa limpio) */}
+      <div className="hidden sm:flex absolute top-3 left-4 right-4 z-20 items-center justify-between pointer-events-none">
         <div className="flex items-center gap-2 pointer-events-auto">
           {activeRoute && (
-            <div className="bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-200 shadow-lg flex items-center gap-2">
+            <div className="bg-slate-950/85 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-200 shadow-lg flex items-center gap-2">
               <span className="font-bold text-amber-400">
                 {activeRoute.stops.length} {language === 'es' ? 'paradas' : 'stops'}
               </span>
@@ -168,17 +178,17 @@ export const VisitorView: FC<VisitorViewProps> = ({
             className="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-amber-300 border border-white/10 text-xs font-bold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>{language === 'es' ? 'Filtros de Ruta' : 'Tune Route'}</span>
+            <span>{language === 'es' ? 'Filtros' : 'Tune'}</span>
           </button>
 
           <button
             type="button"
             onClick={handleExportRoute}
-            className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
+            className="p-2 px-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
             title={language === 'es' ? 'Descargar guía' : 'Save route'}
           >
             <Download className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">{language === 'es' ? 'Guardar' : 'Save'}</span>
+            <span>{language === 'es' ? 'Guardar' : 'Save'}</span>
           </button>
         </div>
       </div>
@@ -304,7 +314,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
         </div>
       )}
 
-      {/* Barra Inferior de Navegación Táctica */}
+      {/* Barra Inferior de Navegación Táctica con Menú ClickUp integrado */}
       <MobileBottomNav
         activeTab={commandTab}
         onSelectTab={handleSelectTab}
@@ -312,6 +322,14 @@ export const VisitorView: FC<VisitorViewProps> = ({
         isPulseActive={isPulseActive}
         unlockedCount={passportState.unlocked_secrets.length}
         language={language}
+        onOpenTuneRoute={() => setIsFilterDrawerOpen(true)}
+        onOpenArtisansDirectory={() => setCommandTab('artisans')}
+        onExportRoute={handleExportRoute}
+        onOpenAuth={onOpenAuth}
+        onOpenDataInfo={onOpenDataInfo}
+        onToggleLanguage={onToggleLanguage}
+        onToggleViewport={onToggleViewport}
+        viewportMode={viewportMode}
       />
 
       {/* Drawer Deslizable de Filtros de Ruta */}

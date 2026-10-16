@@ -97,6 +97,9 @@ export const MapViewer: FC<MapViewerProps> = ({
   // Estados de geolocalización y radar de proximidad
   const [isGpsTracking, setIsGpsTracking] = useState(false);
   const [proximityAlert, setProximityAlert] = useState<{ poi: POI; distanceM: number } | null>(null);
+  const [isAlertMinimized, setIsAlertMinimized] = useState(false);
+  const alertTimerRef = useRef<number | null>(null);
+  const currentAlertPoiIdRef = useRef<string | null>(null);
 
   // Cálculo dinámico de límites espaciales
   const { dynamicCenter, dynamicBounds } = useMemo(() => {
@@ -602,51 +605,116 @@ export const MapViewer: FC<MapViewerProps> = ({
     }
   }, [isPulseActive, pois, userLocation]);
 
+  // Minimización automática del aviso de proximidad a burbuja después de 3.5 segundos
+  useEffect(() => {
+    if (proximityAlert) {
+      if (currentAlertPoiIdRef.current !== proximityAlert.poi.id) {
+        currentAlertPoiIdRef.current = proximityAlert.poi.id;
+        setIsAlertMinimized(false);
+        if (alertTimerRef.current !== null) {
+          window.clearTimeout(alertTimerRef.current);
+        }
+        alertTimerRef.current = window.setTimeout(() => {
+          setIsAlertMinimized(true);
+        }, 3500);
+      }
+    } else {
+      currentAlertPoiIdRef.current = null;
+      setIsAlertMinimized(false);
+      if (alertTimerRef.current !== null) {
+        window.clearTimeout(alertTimerRef.current);
+        alertTimerRef.current = null;
+      }
+    }
+  }, [proximityAlert]);
+
+  useEffect(() => {
+    return () => {
+      if (alertTimerRef.current !== null) {
+        window.clearTimeout(alertTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-950 select-none">
       {/* Lienzo de mapa de pantalla completa con soporte de 1 solo dedo (touch-none) */}
       <div ref={mapContainerRef} className="w-full h-full touch-none" />
 
-      {/* Banner de Proximidad Inteligente con transición suave */}
+      {/* Banner de Proximidad Inteligente con minimización automática a burbuja */}
       <div
-        className={`absolute top-16 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-sm z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute top-16 left-3 right-3 sm:left-auto sm:right-4 z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           proximityAlert
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-4 pointer-events-none'
         }`}
       >
-        {proximityAlert && (
-          <div className="bg-amber-500/95 backdrop-blur-md text-slate-950 p-3 rounded-2xl border border-white/40 shadow-2xl flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div className="text-xs min-w-0">
-                <span className="font-black uppercase tracking-wider text-[10px] block text-slate-900">
-                  {language === 'es' ? 'Lugar cercano a ti' : 'Nearby location'}
-                </span>
-                <span className="font-extrabold text-sm truncate block">
-                  {proximityAlert.poi.name}
-                </span>
-                <span className="text-slate-900 font-semibold text-[11px]">
-                  {language === 'es'
-                    ? `A ${proximityAlert.distanceM} metros de tu ubicación`
-                    : `${proximityAlert.distanceM}m away`}
-                </span>
-              </div>
-            </div>
-            <button
-              type="button"
+        {proximityAlert &&
+          (isAlertMinimized ? (
+            /* Burbuja minimizada flotante */
+            <div
               onClick={() => {
                 onSelectPoi(proximityAlert.poi.id);
                 if (onInspectStop) onInspectStop(proximityAlert.poi.id);
               }}
-              className="px-3 py-1.5 bg-slate-950 text-amber-400 font-bold rounded-xl text-xs shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
+              className="bg-slate-950/90 hover:bg-slate-900 text-white p-2 px-3.5 rounded-full border border-amber-400/60 shadow-[0_0_25px_rgba(245,158,11,0.45)] backdrop-blur-xl flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide"
+              title={language === 'es' ? 'Toca para abrir la ficha de este lugar' : 'Tap to open place details'}
             >
-              {language === 'es' ? 'Ver lugar' : 'Open'}
-            </button>
-          </div>
-        )}
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center flex-shrink-0 shadow">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="font-extrabold text-xs text-amber-200 truncate max-w-[140px] sm:max-w-[200px]">
+                  {proximityAlert.poi.name}
+                </span>
+                <span className="text-[10px] font-bold text-slate-400 bg-slate-800/80 px-1.5 py-0.5 rounded-full">
+                  {proximityAlert.distanceM}m
+                </span>
+              </div>
+            </div>
+          ) : (
+            /* Banner expandido completo (se minimiza automáticamente tras 3.5 segundos) */
+            <div className="bg-amber-500/95 backdrop-blur-md text-slate-950 p-3 rounded-2xl border border-white/40 shadow-2xl flex items-center justify-between gap-3 sm:max-w-sm animate-fade-slide">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div className="text-xs min-w-0">
+                  <span className="font-black uppercase tracking-wider text-[10px] block text-slate-900">
+                    {language === 'es' ? 'Lugar cercano a ti' : 'Nearby location'}
+                  </span>
+                  <span className="font-extrabold text-sm truncate block">
+                    {proximityAlert.poi.name}
+                  </span>
+                  <span className="text-slate-900 font-semibold text-[11px]">
+                    {language === 'es'
+                      ? `A ${proximityAlert.distanceM} metros de tu ubicación`
+                      : `${proximityAlert.distanceM}m away`}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSelectPoi(proximityAlert.poi.id);
+                    if (onInspectStop) onInspectStop(proximityAlert.poi.id);
+                  }}
+                  className="px-3 py-1.5 bg-slate-950 text-amber-400 font-bold rounded-xl text-xs shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
+                >
+                  {language === 'es' ? 'Ver lugar' : 'Open'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAlertMinimized(true)}
+                  className="p-1 rounded-lg bg-slate-950/20 hover:bg-slate-950/40 text-slate-950 cursor-pointer"
+                  title={language === 'es' ? 'Minimizar a burbuja' : 'Minimize to bubble'}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          ))}
       </div>
 
       {/* Controles flotantes superiores del mapa */}

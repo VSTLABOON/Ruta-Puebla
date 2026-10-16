@@ -8,6 +8,7 @@ import {
 } from '@ruta-abierta/shared-types';
 import { DataInfoModal } from './components/DataInfoModal';
 import { CelebrationModal } from './components/CelebrationModal';
+import { AuthModal } from './components/AuthModal';
 import { USER_ROLES, UserRole } from './types/roles';
 import {
   Languages,
@@ -16,12 +17,12 @@ import {
   Store,
   BarChart3,
   UserCheck,
-  ChevronDown,
   Check,
   Smartphone,
   Monitor,
   X,
-  Radio
+  Radio,
+  Lock
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
@@ -120,13 +121,12 @@ function MainApp() {
     return 'tourist';
   }, [activeRoute]);
 
-  const activeRoleDef = useMemo(() => USER_ROLES[currentRole], [currentRole]);
-
   // Modo de visualización: Marco Móvil 390x844 o Pantalla Completa
   const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
 
   // Modales
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{
     badgeName: string;
@@ -213,10 +213,13 @@ function MainApp() {
 
   const handleSelectRole = (newRole: UserRole) => {
     tacticalAudio.playTacticalClick();
-    if (newRole === 'tourist') navigate('/');
-    else if (newRole === 'artisan') navigate('/taller');
-    else if (newRole === 'government') navigate('/admin');
-    setIsRoleModalOpen(false);
+    if (newRole === 'tourist') {
+      navigate('/');
+      setIsRoleModalOpen(false);
+    } else {
+      setIsRoleModalOpen(false);
+      setIsAuthModalOpen(true);
+    }
   };
 
   if (isLoading) {
@@ -234,15 +237,15 @@ function MainApp() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
-      {/* Cabecera Principal */}
+      {/* Cabecera: En móvil es ultra limpia y discreta; en escritorio es completa */}
       <header className="bg-slate-950/90 backdrop-blur-xl border-b border-white/10 text-white z-40 flex-shrink-0">
         <div className="w-full px-3 sm:px-5 py-2 flex items-center justify-between gap-2">
-          {/* Logo y Enlace a Inicio */}
+          {/* Logo y Nombre (Siempre visible) */}
           <div
             onClick={() => navigate('/')}
             className="flex items-center gap-2.5 cursor-pointer select-none group"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)] flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-xs sm:text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)] flex-shrink-0 group-hover:scale-105 transition-transform">
               RA
             </div>
             <div>
@@ -262,10 +265,10 @@ function MainApp() {
             </div>
           </div>
 
-          {/* Selector de Rol y Acciones de Cabecera */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Píldoras de Roles con Enrutamiento Directo */}
-            <div className="hidden sm:flex bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
+          {/* En Móvil: Cero botones redundantes que ensucien la vista. En Escritorio: Barra completa */}
+          <div className="hidden sm:flex items-center gap-2">
+            {/* Píldoras de Roles con Enrutamiento Directo en Desktop */}
+            <div className="flex bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
               <button
                 type="button"
                 onClick={() => navigate('/')}
@@ -306,16 +309,15 @@ function MainApp() {
               </button>
             </div>
 
-            {/* Selector de Rol Móvil */}
+            {/* Botón Acceso / Login en Desktop */}
             <button
               type="button"
-              onClick={() => setIsRoleModalOpen(true)}
-              className={`sm:hidden px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all duration-300 ${activeRoleDef.theme.badgeBg} ${activeRoleDef.theme.badgeText} ${activeRoleDef.theme.badgeBorder} cursor-pointer`}
-              title={language === 'es' ? 'Cambiar rol' : 'Switch role'}
+              onClick={() => setIsAuthModalOpen(true)}
+              className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+              title={language === 'es' ? 'Acceso a gestión' : 'Login'}
             >
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>{activeRoleDef.shortTitle[language]}</span>
-              <ChevronDown className="w-3 h-3 opacity-70" />
+              <Lock className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? 'Login' : 'Login'}</span>
             </button>
 
             {/* Simulador móvil vs Pantalla Completa */}
@@ -325,7 +327,7 @@ function MainApp() {
                 tacticalAudio.playTacticalClick();
                 setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
               }}
-              className="hidden sm:flex p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold items-center gap-1 border border-white/10 transition-all duration-300 cursor-pointer"
+              className="p-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold flex items-center gap-1 border border-white/10 transition cursor-pointer"
               title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Vista Teléfono'}
             >
               {viewportMode === 'mobile' ? (
@@ -339,20 +341,20 @@ function MainApp() {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs flex items-center border border-white/10 transition-all duration-300 cursor-pointer"
+              className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs flex items-center border border-white/10 transition cursor-pointer"
               title={language === 'es' ? 'Acerca de los datos' : 'About data'}
             >
               <Filter className="w-3.5 h-3.5" />
             </button>
 
-            {/* Selector de Idioma */}
+            {/* Selector de Idioma en Desktop */}
             <button
               type="button"
               onClick={() => {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
               }}
-              className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition-all duration-300 cursor-pointer"
+              className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
             >
               <Languages className="w-3.5 h-3.5" />
               <span>{language === 'es' ? 'EN' : 'ES'}</span>
@@ -407,6 +409,11 @@ function MainApp() {
                 onUnlockSecret={handleUnlockSecret}
                 userLocation={userLocation}
                 onUserLocationChange={(coords) => setUserLocation(coords)}
+                onOpenAuth={() => setIsAuthModalOpen(true)}
+                onOpenDataInfo={() => setIsModalOpen(true)}
+                onToggleLanguage={() => setLanguage((l) => (l === 'es' ? 'en' : 'es'))}
+                onToggleViewport={() => setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'))}
+                viewportMode={viewportMode}
               />
             )}
 
@@ -483,6 +490,14 @@ function MainApp() {
           </div>
         </div>
       )}
+
+      {/* Modal de Autenticación y Login para Artesanos y Administradores */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        pois={pois}
+        language={language}
+      />
 
       {/* Modales de Transparencia y Celebración */}
       <DataInfoModal
