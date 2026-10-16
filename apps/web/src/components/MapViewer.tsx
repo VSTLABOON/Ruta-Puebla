@@ -789,7 +789,8 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={handleWhereAmI}
-            className="w-10 h-10 rounded-2xl bg-sky-500 text-slate-950 shadow-[0_0_18px_rgba(14,165,233,0.55)] border border-white/40 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-sky-500 text-slate-950 shadow-[0_0_18px_rgba(14,165,233,0.55)] border border-white/40 flex items-center justify-center active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-400 focus:outline-none transition-all cursor-pointer"
+            aria-label={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
             title={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
           >
             <Navigation className="w-4 h-4 fill-slate-950" />
@@ -799,11 +800,12 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={toggle3D}
-            className={`w-10 h-10 rounded-2xl backdrop-blur-md border shadow-lg flex items-center justify-center text-xs font-black transition-all cursor-pointer ${
+            className={`w-10 h-10 rounded-2xl backdrop-blur-md border shadow-lg flex items-center justify-center text-xs font-black focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer ${
               is3D
                 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                 : 'bg-slate-900/90 text-slate-300 border-white/15'
             }`}
+            aria-label={language === 'es' ? 'Alternar perspectiva 3D y 2D' : 'Toggle 3D and 2D perspective'}
             title={language === 'es' ? 'Alternar perspectiva 3D / 2D' : 'Toggle 3D / 2D perspective'}
           >
             <span>{is3D ? '3D' : '2D'}</span>
@@ -813,7 +815,12 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={cycleMapStyle}
-            className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg transition-all cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer"
+            aria-label={
+              language === 'es'
+                ? `Cambiar estilo de mapa. Actual: ${MAP_STYLES[activeStyle].name.es}`
+                : `Change map style. Current: ${MAP_STYLES[activeStyle].name.en}`
+            }
             title={
               language === 'es'
                 ? `Estilo actual: ${MAP_STYLES[activeStyle].name.es} (Toca para cambiar)`
@@ -830,7 +837,8 @@ export const MapViewer: FC<MapViewerProps> = ({
             <button
               type="button"
               onClick={fitToRoute}
-              className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg transition-all cursor-pointer"
+              className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer"
+              aria-label={language === 'es' ? 'Encuadrar y ver ruta completa en el mapa' : 'Fit full route on map'}
               title={language === 'es' ? 'Ver ruta completa' : 'Fit full route'}
             >
               <Maximize2 className="w-4 h-4" />

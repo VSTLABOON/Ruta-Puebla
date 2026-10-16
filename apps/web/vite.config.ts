@@ -14,5 +14,26 @@ export default defineConfig({
     headers: {
       'Cache-Control': 'no-store, no-cache, must-revalidate'
     }
+  },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('maplibre-gl')) {
+            return 'vendor-maplibre';
+          }
+          if (id.includes('@supabase/supabase-js')) {
+            return 'vendor-supabase';
+          }
+          if (id.includes('lucide-react')) {
+            return 'vendor-icons';
+          }
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor-react';
+          }
+        }
+      }
+    }
   }
 });
