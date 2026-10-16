@@ -22,9 +22,7 @@ import {
   Check,
   X,
   Radio,
-  Trophy,
-  LogOut,
-  PlayCircle
+  LogOut
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
@@ -123,7 +121,26 @@ function MainApp() {
   const [weights, setWeights] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
-  const [language, setLanguage] = useState<'es' | 'en'>('es');
+  const [language, setLanguage] = useState<'es' | 'en'>(() => {
+    try {
+      const saved = localStorage.getItem('ruta_abierta_lang');
+      if (saved === 'es' || saved === 'en') return saved;
+      if (typeof navigator !== 'undefined' && navigator.language) {
+        return navigator.language.toLowerCase().startsWith('en') ? 'en' : 'es';
+      }
+    } catch {}
+    return 'es';
+  });
+
+  const handleToggleLanguage = () => {
+    setLanguage((prev) => {
+      const next = prev === 'es' ? 'en' : 'es';
+      try {
+        localStorage.setItem('ruta_abierta_lang', next);
+      } catch {}
+      return next;
+    });
+  };
 
   // Pasaporte de Exploración dinámico
   const [passportState, setPassportState] = useState<PassportState>(() => {
@@ -357,73 +374,30 @@ function MainApp() {
             </div>
           </div>
 
-          {/* Controles de Cabecera: Perfil Activo, Intro Splash, Idioma y Cerrar Sesión */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-            {/* Indicador del Rol y Perfil Autenticado */}
-            {activeRoute === '/' && currentUser && (
-              <button
-                type="button"
-                onClick={() => setIsRecordModalOpen(true)}
-                className="px-2.5 py-1.5 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer select-none shadow-sm flex-shrink-0"
-                title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
-              >
-                <Trophy className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-                <span className="max-w-[70px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
-                <span className="text-[10px] bg-[#EDE28E] text-[#0E2C9C] px-1.5 py-0.5 rounded-full font-mono font-black flex-shrink-0 leading-none">
-                  Nv.{currentUser.level}
-                </span>
-              </button>
-            )}
-
-            {activeRoute === '/taller' && artisanUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-[#9597C1]/20 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
-                <Store className="w-3.5 h-3.5 text-[#9597C1] flex-shrink-0" />
-                <span className="max-w-[100px] sm:max-w-[180px] truncate">{artisanUser.workshopName}</span>
-                <span className="w-2 h-2 rounded-full bg-[#EDE28E] animate-pulse ml-0.5 flex-shrink-0" />
-              </div>
-            )}
-
-            {activeRoute === '/admin' && adminUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-[#7B5E86]/25 border border-[#7B5E86]/50 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
-                <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-                <span className="hidden sm:inline">SECIHTI • Gobierno de Puebla</span>
-                <span className="sm:hidden">SECIHTI</span>
-              </div>
-            )}
-
-            {/* Botón Ver Intro / Splash PopoGo */}
+          {/* Controles de Cabecera: Únicamente Idioma Dinámico y Cerrar Sesión */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            {/* Selector de Idioma Dinámico */}
             <button
               type="button"
-              onClick={() => setShowSplash(true)}
-              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#EDE28E]/40 shadow-sm transition cursor-pointer flex-shrink-0"
-              title={language === 'es' ? 'Ver video splash de PopoGo' : 'Watch PopoGo Splash Video'}
-            >
-              <PlayCircle className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-              <span className="hidden sm:inline">{language === 'es' ? 'Intro' : 'Intro'}</span>
-            </button>
-
-            {/* Selector de Idioma */}
-            <button
-              type="button"
-              onClick={() => {
-                const nextLang = language === 'es' ? 'en' : 'es';
-                setLanguage(nextLang);
-              }}
-              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-[#9597C1]/30 transition cursor-pointer flex-shrink-0"
+              onClick={handleToggleLanguage}
+              className="p-1.5 px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#9597C1]/30 transition cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
+              title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
+              aria-label={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
             >
               <Languages className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-              <span>{language === 'es' ? 'EN' : 'ES'}</span>
+              <span className="font-mono text-xs font-bold">{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
             {/* Botón Cerrar Sesión */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-2 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/45 transition cursor-pointer flex-shrink-0 shadow-md flex items-center justify-center"
+              className="p-1.5 px-2.5 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/45 transition cursor-pointer flex-shrink-0 active:scale-95 shadow-sm flex items-center justify-center gap-1.5"
               title={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
               aria-label={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
             >
-              <LogOut className="w-4 h-4 text-[#EDE28E] flex-shrink-0" />
+              <LogOut className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+              <span className="hidden sm:inline text-xs font-bold">{language === 'es' ? 'Salir' : 'Sign out'}</span>
             </button>
           </div>
         </div>

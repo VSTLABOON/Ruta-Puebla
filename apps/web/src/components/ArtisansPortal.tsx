@@ -15,10 +15,9 @@ import {
   Sparkles,
   AlertCircle,
   X,
-  ChevronDown,
-  ChevronUp,
   Radio,
-  QrCode
+  QrCode,
+  ExternalLink
 } from 'lucide-react';
 import {
   generateOfflineStampCode,
@@ -35,18 +34,25 @@ import {
   WorkshopLiveState
 } from '../utils/offlineStamp';
 import { tacticalAudio } from '../utils/tacticalAudio';
+import { useRouter } from '../router/Router';
+
+export type ArtisanSpaceTab = 'counter' | 'activity' | 'workshop';
 
 interface ArtisansPortalProps {
   pois: POI[];
   language: Language;
   activePoiId?: string;
+  onSelectWorkshop?: (poiId: string) => void;
 }
 
 export const ArtisansPortal: FC<ArtisansPortalProps> = ({
   pois,
   language,
-  activePoiId
+  activePoiId,
+  onSelectWorkshop
 }) => {
+  const { navigate } = useRouter();
+
   const localBusinesses = useMemo(
     () => pois.filter((p) => p.is_local_business && p.artisan_profile),
     [pois]
@@ -55,6 +61,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
   const [selectedPoiId, setSelectedPoiId] = useState<string>(
     activePoiId || localBusinesses[0]?.id || ''
   );
+
+  const [activeTab, setActiveTab] = useState<ArtisanSpaceTab>('counter');
 
   useEffect(() => {
     if (activePoiId) {
@@ -73,7 +81,6 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
   const [isTestingNfc, setIsTestingNfc] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [ledger, setLedger] = useState<StampLedgerEntry[]>([]);
-  const [showNfcTools, setShowNfcTools] = useState(false);
 
   // Estado operativo en vivo del taller (Abierto / Demostración Activa / Pausa)
   const [liveStatus, setLiveStatus] = useState<'open' | 'live_demo' | 'closed'>('open');
@@ -169,7 +176,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
     setLedger(getStampLedger(selectedPoi.id));
     setStampedSuccess(
       language === 'es'
-        ? `¡Visita sellada con éxito! Pasaporte actualizado con el sello "${profile.sello_artesanal}" (${entry.code}).`
+        ? `¡Visita sellada con éxito! Pasaporte acreditado con el sello "${profile.sello_artesanal}" (${entry.code}).`
         : `Stamp issued! Visitor passport awarded "${profile.sello_artesanal}" (${entry.code}).`
     );
     setTimeout(() => setStampedSuccess(null), 4500);
@@ -286,6 +293,13 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
     } catch {}
   };
 
+  const handleWorkshopSelection = (poiId: string) => {
+    setSelectedPoiId(poiId);
+    if (onSelectWorkshop) {
+      onSelectWorkshop(poiId);
+    }
+  };
+
   const stampsTodayCount = ledger.length;
   const unitTicketMxn = selectedPoi && selectedPoi.cost_mxn > 0 ? selectedPoi.cost_mxn : 85;
   const directSpendMxn = stampsTodayCount * unitTicketMxn;
@@ -294,105 +308,171 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* 1. FICHA SUPERIOR: IDENTIDAD Y ESTADO OPERATIVO EN VIVO */}
-      <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#EDE28E] font-bold px-2 py-0.5 rounded-full bg-[#EDE28E]/15 border border-[#EDE28E]/30">
-                {selectedPoi.zone.replace(/_/g, ' ')}
-              </span>
-              <span className="text-xs text-[#9597C1]">
-                {profile.maestro_artesano} • {profile.oficio}
-              </span>
+      {/* BARRA DE NAVEGACIÓN ENTRE ESPACIOS INDIVIDUALES DEL DUEÑO DE TALLER */}
+      <nav
+        aria-label={language === 'es' ? 'Navegación del taller' : 'Workshop navigation'}
+        className="bg-[#0B228A]/95 backdrop-blur-md border border-[#9597C1]/25 rounded-2xl p-1.5 flex items-center justify-between gap-1 sm:gap-2 shadow-lg sticky top-0 z-30"
+      >
+        <button
+          type="button"
+          onClick={() => {
+            tacticalAudio.playTacticalClick();
+            setActiveTab('counter');
+          }}
+          className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
+            activeTab === 'counter'
+              ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
+              : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+          }`}
+        >
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">{language === 'es' ? 'Mostrador' : 'Counter'}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            tacticalAudio.playTacticalClick();
+            setActiveTab('activity');
+          }}
+          className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none relative ${
+            activeTab === 'activity'
+              ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
+              : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+          }`}
+        >
+          <History className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">{language === 'es' ? 'Actividad' : 'Activity'}</span>
+          {ledger.length > 0 && (
+            <span
+              className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold flex-shrink-0 ${
+                activeTab === 'activity'
+                  ? 'bg-[#0E2C9C] text-[#EDE28E]'
+                  : 'bg-[#EDE28E] text-[#0E2C9C]'
+              }`}
+            >
+              {ledger.length}
+            </span>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            tacticalAudio.playTacticalClick();
+            setActiveTab('workshop');
+          }}
+          className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
+            activeTab === 'workshop'
+              ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
+              : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+          }`}
+        >
+          <Store className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">{language === 'es' ? 'Mi Taller' : 'My Workshop'}</span>
+        </button>
+      </nav>
+
+      {/* ============================================================== */}
+      {/* ESPACIO 1: MOSTRADOR Y SELLADO DIRECTO AL VISITANTE            */}
+      {/* ============================================================== */}
+      {activeTab === 'counter' && (
+        <div className="space-y-4 animate-fade-slide">
+          {/* Ficha Superior de Identidad y Estado Operativo */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#EDE28E] font-bold px-2 py-0.5 rounded-full bg-[#EDE28E]/15 border border-[#EDE28E]/30">
+                    {selectedPoi.zone.replace(/_/g, ' ')}
+                  </span>
+                  <span className="text-xs text-[#9597C1] truncate">
+                    {profile.maestro_artesano} • {profile.oficio}
+                  </span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-black text-white tracking-tight font-serif truncate">
+                  {profile.nombre_taller}
+                </h2>
+              </div>
+
+              {/* Selector de Estado Operativo de 1 toque */}
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-[#07154E] p-1.5 rounded-xl border border-[#9597C1]/20">
+                <button
+                  type="button"
+                  onClick={() => handleStatusChange('open')}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                    liveStatus === 'open'
+                      ? 'bg-[#0E2C9C] text-[#EFF1F8] border border-[#EDE28E]/60 shadow-md'
+                      : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>{language === 'es' ? 'Abierto' : 'Open'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleStatusChange('live_demo')}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                    liveStatus === 'live_demo'
+                      ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md font-black'
+                      : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                  }`}
+                >
+                  <Flame className="w-3.5 h-3.5 text-[#0E2C9C]" />
+                  <span>{language === 'es' ? 'Demostración Activa' : 'Live Demo'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleStatusChange('closed')}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                    liveStatus === 'closed'
+                      ? 'bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/70 shadow-md'
+                      : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                  }`}
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{language === 'es' ? 'Pausa' : 'Paused'}</span>
+                </button>
+              </div>
             </div>
-            <h2 className="text-lg sm:text-xl font-black text-white tracking-tight font-serif">
-              {profile.nombre_taller}
-            </h2>
+
+            {/* Aviso rápido para caminantes */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-[#9597C1]/20">
+              <div className="flex-1 flex items-center gap-2 bg-[#07154E] border border-[#9597C1]/20 rounded-xl px-3 py-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+                <input
+                  type="text"
+                  value={announcement}
+                  onChange={(e) => setAnnouncement(e.target.value)}
+                  placeholder={
+                    language === 'es'
+                      ? 'Aviso para visitantes hoy (ej. Torno abierto hasta las 14:00, esmaltado en vivo)...'
+                      : 'Notice for visitors today...'
+                  }
+                  className="w-full bg-transparent text-xs text-[#EFF1F8] focus:outline-none placeholder:text-[#9597C1]/50"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleSaveAnnouncement}
+                className="px-4 py-2 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 text-[#EDE28E] border border-[#EDE28E]/40 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5 flex-shrink-0 active:scale-95"
+              >
+                {savedNotice ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-[#EDE28E]" />
+                    <span>{language === 'es' ? 'Guardado' : 'Saved'}</span>
+                  </>
+                ) : (
+                  <span>{language === 'es' ? 'Actualizar Aviso' : 'Update Notice'}</span>
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* Selector de Estado Operativo de 1 toque (Paleta Talavera) */}
-          <div className="flex items-center gap-1.5 bg-[#07154E] p-1.5 rounded-xl border border-[#9597C1]/20">
-            <button
-              type="button"
-              onClick={() => handleStatusChange('open')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                liveStatus === 'open'
-                  ? 'bg-[#0E2C9C] text-[#EFF1F8] border border-[#EDE28E]/60 shadow-md'
-                  : 'text-[#9597C1] hover:text-[#EFF1F8]'
-              }`}
-            >
-              <span className="w-2 h-2 rounded-full bg-[#EDE28E]" />
-              <span>{language === 'es' ? 'Abierto' : 'Open'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleStatusChange('live_demo')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                liveStatus === 'live_demo'
-                  ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md font-black'
-                  : 'text-[#9597C1] hover:text-[#EFF1F8]'
-              }`}
-            >
-              <Flame className="w-3.5 h-3.5" />
-              <span>{language === 'es' ? 'Demostración Activa' : 'Live Demo'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleStatusChange('closed')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                liveStatus === 'closed'
-                  ? 'bg-[#7B5E86]/40 text-[#EFF1F8] border border-[#7B5E86]/60 shadow-md'
-                  : 'text-[#9597C1] hover:text-[#EFF1F8]'
-              }`}
-            >
-              <Clock className="w-3.5 h-3.5" />
-              <span>{language === 'es' ? 'Pausa' : 'Paused'}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Aviso rápido para caminantes */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-[#9597C1]/20">
-          <div className="flex-1 flex items-center gap-2 bg-[#07154E] border border-[#9597C1]/20 rounded-xl px-3 py-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-            <input
-              type="text"
-              value={announcement}
-              onChange={(e) => setAnnouncement(e.target.value)}
-              placeholder={
-                language === 'es'
-                  ? 'Aviso para visitantes hoy (ej. Torno abierto hasta las 14:00, esmaltado en vivo)...'
-                  : 'Notice for visitors today...'
-              }
-              className="w-full bg-transparent text-xs text-[#EFF1F8] focus:outline-none placeholder:text-[#9597C1]/50"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleSaveAnnouncement}
-            className="px-3.5 py-1.5 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 text-[#EDE28E] border border-[#EDE28E]/40 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5 flex-shrink-0"
-          >
-            {savedNotice ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-[#EDE28E]" />
-                <span>{language === 'es' ? 'Guardado' : 'Saved'}</span>
-              </>
-            ) : (
-              <span>{language === 'es' ? 'Actualizar Aviso' : 'Update Notice'}</span>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* 2. REJILLA DE TRABAJO: ATENCIÓN AL VISITANTE (IZQ) Y MÉTRICAS / HISTORIAL (DER) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-        {/* COLUMNA IZQUIERDA: MOSTRADOR DE ATENCIÓN Y SELLADO (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          {/* BOTÓN PRIMARIO DE MOSTRADOR: SELLAR VISITA */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-5 shadow-xl space-y-4">
+          {/* Botón Principal de Mostrador: Sellar Pasaporte */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-serif">
@@ -406,7 +486,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
               </div>
 
               <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-[#EDE28E]/15 border border-[#EDE28E]/30 text-[#EDE28E] font-bold flex items-center gap-1">
-                <Radio className="w-3 h-3 animate-pulse" />
+                <Radio className="w-3 h-3 text-[#EDE28E] animate-pulse" />
                 <span>{language === 'es' ? 'Listo para Sellar' : 'Ready to Stamp'}</span>
               </span>
             </div>
@@ -414,9 +494,9 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             <button
               type="button"
               onClick={handleIssueCounterStamp}
-              className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#EDE28E] via-[#F4ECA6] to-[#EDE28E] hover:brightness-105 active:scale-[0.99] text-[#0E2C9C] font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(237,226,142,0.35)] border border-[#EDE28E] transition cursor-pointer"
+              className="w-full py-4 sm:py-5 px-5 rounded-2xl bg-gradient-to-r from-[#EDE28E] via-[#F4ECA6] to-[#EDE28E] hover:brightness-105 active:scale-[0.99] text-[#0E2C9C] font-black text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(237,226,142,0.35)] border border-[#EDE28E] transition cursor-pointer select-none"
             >
-              <CheckCircle2 className="w-5 h-5 stroke-[2.5]" />
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               <span>
                 {language === 'es'
                   ? 'SELLAR PASAPORTE DEL VISITANTE (1 TOQUE)'
@@ -425,18 +505,18 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             </button>
 
             {stampedSuccess && (
-              <div className="bg-[#07154E] border border-[#EDE28E]/40 text-[#EFF1F8] text-xs p-3 rounded-xl flex items-center gap-2.5 animate-fade-slide">
+              <div className="bg-[#07154E] border border-[#EDE28E]/40 text-[#EFF1F8] text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide">
                 <CheckCircle2 className="w-4 h-4 text-[#EDE28E] flex-shrink-0" />
                 <span>{stampedSuccess}</span>
               </div>
             )}
 
-            {/* PANTALLA COMPARTIDA CON EL VISITANTE (QR Y CÓDIGO) */}
-            <div className="bg-[#07154E] border border-[#9597C1]/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
-              <div className="p-2.5 bg-white rounded-xl flex-shrink-0 shadow-md border-2 border-[#EDE28E]/40">
+            {/* Pantalla para Compartir con el Visitante (QR y Código) */}
+            <div className="bg-[#07154E] border border-[#9597C1]/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4">
+              <div className="p-3 bg-white rounded-2xl flex-shrink-0 shadow-lg border-2 border-[#EDE28E]/50">
                 <svg
                   viewBox={`0 0 ${qrMatrix.length} ${qrMatrix.length}`}
-                  className="w-24 h-24 sm:w-28 sm:h-28"
+                  className="w-28 h-28 sm:w-32 sm:h-32"
                   shapeRendering="crispEdges"
                   aria-label={`QR ${stampCode}`}
                 >
@@ -457,21 +537,21 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                 </svg>
               </div>
 
-              <div className="flex-1 space-y-2 text-center sm:text-left">
-                <span className="text-[11px] text-[#9597C1] block font-medium">
+              <div className="flex-1 space-y-2.5 text-center sm:text-left">
+                <span className="text-xs text-[#9597C1] block font-medium">
                   {language === 'es'
-                    ? 'Muestra este código al visitante o díctale el código corto:'
+                    ? 'Muestra este código al visitante o díctale el código de verificación:'
                     : 'Show this code to visitor or share this short key:'}
                 </span>
 
-                <div className="flex items-center justify-center sm:justify-start gap-2">
-                  <span className="font-mono text-2xl font-black tracking-widest text-[#EDE28E] bg-[#0B228A] px-3.5 py-1 rounded-xl border border-[#EDE28E]/40">
+                <div className="flex items-center justify-center sm:justify-start gap-2.5">
+                  <span className="font-mono text-2xl sm:text-3xl font-black tracking-widest text-[#EDE28E] bg-[#0B228A] px-4 py-1.5 rounded-xl border border-[#EDE28E]/40 shadow-inner">
                     {stampCode}
                   </span>
                   <button
                     type="button"
                     onClick={handleCopyCode}
-                    className="p-2 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] transition cursor-pointer"
+                    className="p-2.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] transition cursor-pointer active:scale-95"
                     title={language === 'es' ? 'Copiar código' : 'Copy code'}
                   >
                     {copiedCode ? (
@@ -482,175 +562,101 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                   </button>
                 </div>
 
-                <p className="text-[11px] text-[#9597C1] leading-snug">
+                <p className="text-[11px] text-[#9597C1] leading-relaxed">
                   {language === 'es'
-                    ? 'El visitante puede escanear con su cámara, tocar tu etiqueta física NFC o escribir este código en su pasaporte.'
-                    : 'Visitors can scan with their camera, tap physical NFC sticker, or enter this code in their passport.'}
+                    ? 'El visitante puede escanear este QR con la cámara de su teléfono o ingresar este código en su pasaporte PopoGo.'
+                    : 'Visitors can scan with their camera or enter this short code directly in their PopoGo passport.'}
                 </p>
               </div>
             </div>
-
-            {/* SECCIÓN DESPLEGABLE: VINCULAR ETIQUETA O STICKER NFC FÍSICO */}
-            <div className="border border-[#9597C1]/20 rounded-xl overflow-hidden bg-[#07154E]">
-              <button
-                type="button"
-                onClick={() => setShowNfcTools((v) => !v)}
-                className="w-full p-3 flex items-center justify-between text-xs font-bold text-[#9597C1] hover:text-[#EFF1F8] transition cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <SmartphoneNfc className="w-4 h-4 text-[#EDE28E]" />
-                  <span>
-                    {language === 'es'
-                      ? 'Configurar Sticker NFC Físico del Mostrador'
-                      : 'Physical Counter NFC Sticker Setup'}
-                  </span>
-                </span>
-                {showNfcTools ? (
-                  <ChevronUp className="w-4 h-4 text-[#9597C1]" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-[#9597C1]" />
-                )}
-              </button>
-
-              {showNfcTools && (
-                <div className="p-3.5 pt-0 space-y-3 border-t border-[#9597C1]/15">
-                  <p className="text-[11px] text-[#9597C1] leading-relaxed">
-                    {language === 'es'
-                      ? 'Si tienes un sticker o medallón NFC en tu barra o vitrina, puedes vincularlo con 1 toque para que los visitantes solo acerquen su teléfono.'
-                      : 'If you have a physical NFC sticker on your counter, tap below to program it so visitors can tap-and-go.'}
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={handleWriteNfcTag}
-                      className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer border ${
-                        isWritingNfc
-                          ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-                          : 'bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E]'
-                      }`}
-                    >
-                      {isWritingNfc ? (
-                        <>
-                          <X className="w-3.5 h-3.5" />
-                          <span>{language === 'es' ? 'Cancelar Grabación' : 'Cancel Write'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <SmartphoneNfc className="w-3.5 h-3.5" />
-                          <span>{language === 'es' ? 'Grabar Chip NFC' : 'Write NFC Sticker'}</span>
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleVerifyPhysicalTag}
-                      className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer border ${
-                        isTestingNfc
-                          ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-                          : 'bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-[#EFF1F8]'
-                      }`}
-                    >
-                      {isTestingNfc ? (
-                        <>
-                          <X className="w-3.5 h-3.5" />
-                          <span>{language === 'es' ? 'Detener Prueba' : 'Stop Test'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <QrCode className="w-3.5 h-3.5 text-[#EDE28E]" />
-                          <span>{language === 'es' ? 'Probar Etiqueta Grabada' : 'Test NFC Sticker'}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {nfcStatus && (
-                    <div className="bg-[#0B228A] text-[#EDE28E] text-xs p-2.5 rounded-xl flex items-center gap-2 border border-[#EDE28E]/30">
-                      <SmartphoneNfc className="w-4 h-4 text-[#EDE28E] flex-shrink-0 animate-pulse" />
-                      <span>{nfcStatus}</span>
-                    </div>
-                  )}
-
-                  {nfcError && (
-                    <div className="bg-rose-950/60 text-rose-300 text-xs p-2.5 rounded-xl flex items-start gap-2 border border-rose-500/40">
-                      <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
-                      <span>{nfcError}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
           </div>
         </div>
+      )}
 
-        {/* COLUMNA DERECHA: MÉTRICAS EN VIVO Y BITÁCORA DEL DÍA (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          {/* TARJETAS DE IMPACTO EN EL TALLER */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 space-y-1 shadow-md">
-              <div className="text-[11px] text-[#9597C1] font-semibold flex items-center gap-1">
-                <Users className="w-3.5 h-3.5 text-[#EDE28E]" />
+      {/* ============================================================== */}
+      {/* ESPACIO 2: ACTIVIDAD, MÉTRICAS Y BITÁCORA DEL DÍA             */}
+      {/* ============================================================== */}
+      {activeTab === 'activity' && (
+        <div className="space-y-4 animate-fade-slide">
+          {/* Tarjetas Ejecutivas de Impacto en el Taller */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
+              <div className="text-xs text-[#9597C1] font-semibold flex items-center justify-between">
                 <span>{language === 'es' ? 'Visitantes Hoy' : 'Visitors Today'}</span>
+                <Users className="w-4 h-4 text-[#EDE28E]" />
               </div>
-              <div className="text-2xl font-black text-[#EDE28E] font-mono">
+              <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
                 {stampsTodayCount}
               </div>
-              <p className="text-[10px] text-[#9597C1]">
-                {language === 'es' ? 'Sellos otorgados' : 'Verified stamps'}
+              <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                {language === 'es' ? 'Sellos otorgados en pasaportes' : 'Verified stamps today'}
               </p>
             </div>
 
-            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 space-y-1 shadow-md">
-              <div className="text-[11px] text-[#9597C1] font-semibold flex items-center gap-1">
-                <DollarSign className="w-3.5 h-3.5 text-[#EDE28E]" />
+            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
+              <div className="text-xs text-[#9597C1] font-semibold flex items-center justify-between">
                 <span>{language === 'es' ? 'Derrama Estimada' : 'Direct Spend'}</span>
+                <DollarSign className="w-4 h-4 text-[#EDE28E]" />
               </div>
-              <div className="text-2xl font-black text-[#EDE28E] font-mono">
-                ${directSpendMxn} <span className="text-xs font-normal">MXN</span>
+              <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
+                ${directSpendMxn} <span className="text-xs font-normal text-[#EFF1F8]">MXN</span>
               </div>
-              <p className="text-[10px] text-[#9597C1]">
-                {language === 'es' ? 'Consumo local directo' : 'Local commerce estimate'}
+              <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                {language === 'es' ? 'Consumo local directo en el taller' : 'Local commerce estimate'}
+              </p>
+            </div>
+
+            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
+              <div className="text-xs text-[#9597C1] font-semibold flex items-center justify-between">
+                <span>{language === 'es' ? 'Ticket Promedio' : 'Average Ticket'}</span>
+                <Award className="w-4 h-4 text-[#EDE28E]" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
+                ${unitTicketMxn} <span className="text-xs font-normal text-[#EFF1F8]">MXN</span>
+              </div>
+              <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                {language === 'es' ? 'Por visitante registrado' : 'Per verified visitor'}
               </p>
             </div>
           </div>
 
-          {/* BITÁCORA DE SELLOS EMITIDOS */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-lg space-y-3">
-            <div className="flex items-center justify-between border-b border-[#9597C1]/20 pb-2.5">
-              <span className="text-xs font-extrabold text-white flex items-center gap-1.5 uppercase tracking-wide font-serif">
-                <History className="w-3.5 h-3.5 text-[#EDE28E]" />
-                {language === 'es' ? 'Visitas Registradas Hoy' : 'Visits Registered Today'}
-              </span>
-              <span className="text-[10px] font-mono font-bold text-[#9597C1]">
-                {ledger.length} {language === 'es' ? 'sellos' : 'stamps'}
+          {/* Bitácora de Sellos Emitidos */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+            <div className="flex items-center justify-between border-b border-[#9597C1]/20 pb-3">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-[#EDE28E]" />
+                <h3 className="text-sm font-extrabold text-white uppercase tracking-wide font-serif">
+                  {language === 'es' ? 'Bitácora de Visitas de Hoy' : 'Today’s Stamped Visits'}
+                </h3>
+              </div>
+              <span className="text-xs font-mono font-bold text-[#EDE28E] bg-[#EDE28E]/15 border border-[#EDE28E]/30 px-2.5 py-0.5 rounded-full">
+                {ledger.length} {language === 'es' ? 'sellos emitidos' : 'stamps issued'}
               </span>
             </div>
 
             {ledger.length === 0 ? (
-              <div className="p-4 rounded-xl bg-[#07154E] border border-white/5 text-center text-xs text-[#9597C1] space-y-1">
-                <Award className="w-5 h-5 text-[#9597C1]/60 mx-auto" />
-                <p>
+              <div className="p-8 rounded-xl bg-[#07154E] border border-white/5 text-center text-xs text-[#9597C1] space-y-2">
+                <Award className="w-8 h-8 text-[#9597C1]/40 mx-auto" />
+                <p className="font-bold text-[#EFF1F8]">
                   {language === 'es'
-                    ? 'Aún no hay visitas selladas en esta sesión.'
+                    ? 'Aún no se han sellado visitas en esta jornada.'
                     : 'No stamps recorded in this session yet.'}
                 </p>
-                <p className="text-[10px] text-[#9597C1]/80">
+                <p className="text-[11px] text-[#9597C1]">
                   {language === 'es'
-                    ? 'Pulsa el botón de sellado al recibir a un visitante.'
-                    : 'Tap the stamp button when greeting a visitor.'}
+                    ? 'Ve a la pestaña de Mostrador y presiona el botón de sellar al recibir a un visitante.'
+                    : 'Switch to the Counter tab and tap the stamp button when greeting a visitor.'}
                 </p>
               </div>
             ) : (
-              <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
-                {ledger.slice(0, 10).map((item) => (
+              <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+                {ledger.map((item) => (
                   <div
                     key={item.id}
-                    className="p-2.5 rounded-xl bg-[#07154E] border border-[#9597C1]/20 flex items-center justify-between text-xs"
+                    className="p-3 rounded-xl bg-[#07154E] border border-[#9597C1]/20 flex items-center justify-between text-xs"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#EDE28E]" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#EDE28E]" />
                       <div>
                         <span className="font-bold text-white block">
                           {language === 'es' ? 'Pasaporte Sellado' : 'Passport Stamped'}
@@ -663,11 +669,13 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                             : item.method === 'deep-link'
                             ? 'Enlace QR'
                             : 'Código Verificador'}
+                          {' • '}
+                          <span className="text-[#EDE28E]">{item.code}</span>
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-mono text-[#9597C1]">
+                    <span className="text-xs font-mono text-[#9597C1] bg-[#0B228A] px-2 py-1 rounded-lg border border-[#9597C1]/20">
                       {new Date(item.timestamp).toLocaleTimeString([], {
                         hour: '2-digit',
                         minute: '2-digit'
@@ -678,33 +686,209 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
               </div>
             )}
           </div>
+        </div>
+      )}
 
-          {/* FICHA TÉCNICA DEL TALLER */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-2 text-xs">
-            <div className="flex items-center justify-between border-b border-[#9597C1]/20 pb-2">
-              <span className="font-extrabold text-[#EFF1F8] flex items-center gap-1.5 uppercase tracking-wide font-serif">
-                <Store className="w-3.5 h-3.5 text-[#EDE28E]" />
-                {language === 'es' ? 'Ficha Patrimonial del Taller' : 'Workshop Heritage Profile'}
-              </span>
-              <span className="text-[10px] font-mono text-[#9597C1]">
+      {/* ============================================================== */}
+      {/* ESPACIO 3: MI TALLER, HERRAMIENTAS NFC Y GESTIÓN               */}
+      {/* ============================================================== */}
+      {activeTab === 'workshop' && (
+        <div className="space-y-4 animate-fade-slide">
+          {/* Ficha Patrimonial Oficial */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+            <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
+              <div className="flex items-center gap-2">
+                <Store className="w-4 h-4 text-[#EDE28E]" />
+                <h3 className="text-sm font-extrabold text-white uppercase tracking-wide font-serif">
+                  {language === 'es' ? 'Ficha Patrimonial del Taller' : 'Workshop Heritage Profile'}
+                </h3>
+              </div>
+              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 font-bold">
                 {selectedPoi.entrance_accessible
-                  ? language === 'es' ? 'Acceso Nivelado' : 'Step-free'
-                  : language === 'es' ? 'Con Escalón' : 'Stepped'}
+                  ? language === 'es' ? '✓ Acceso Llano Sin Escalón' : '✓ Step-free Access'
+                  : language === 'es' ? '⚠ Cuenta con Escalón' : '⚠ Stepped Entrance'}
               </span>
             </div>
 
-            <p className="text-[11px] text-[#EFF1F8]/90 leading-relaxed">
-              <strong className="text-white">{language === 'es' ? 'Técnica:' : 'Craft:'}</strong>{' '}
-              {profile.tecnica_ancestral}
-            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="bg-[#07154E] p-3 rounded-xl border border-[#9597C1]/15 space-y-1">
+                <span className="text-[10px] text-[#9597C1] uppercase font-semibold block">
+                  {language === 'es' ? 'Maestro Artesano & Oficio' : 'Master Artisan & Craft'}
+                </span>
+                <p className="font-bold text-white text-sm">
+                  {profile.maestro_artesano}
+                </p>
+                <p className="text-[#EDE28E] text-xs">
+                  {profile.oficio}
+                </p>
+              </div>
 
-            <div className="text-[11px] text-[#EDE28E] font-medium">
-              <strong>{language === 'es' ? 'Demostración en vivo:' : 'Live demo:'}</strong>{' '}
-              {profile.horario_demostracion}
+              <div className="bg-[#07154E] p-3 rounded-xl border border-[#9597C1]/15 space-y-1">
+                <span className="text-[10px] text-[#9597C1] uppercase font-semibold block">
+                  {language === 'es' ? 'Sello Artesanal Oficial' : 'Official Artisan Stamp'}
+                </span>
+                <p className="font-bold text-white text-sm">
+                  "{profile.sello_artesanal}"
+                </p>
+                <p className="text-[#9597C1] text-xs">
+                  {selectedPoi.zone.replace(/_/g, ' ')}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#07154E] p-3.5 rounded-xl border border-[#9597C1]/15 space-y-2 text-xs">
+              <div>
+                <strong className="text-white block mb-0.5">
+                  {language === 'es' ? 'Técnica Ancestral y Materiales:' : 'Traditional Technique & Materials:'}
+                </strong>
+                <p className="text-[#EFF1F8]/90 leading-relaxed">
+                  {profile.tecnica_ancestral}
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+                <div>
+                  <strong className="text-[#EDE28E] block text-[11px]">
+                    {language === 'es' ? 'Horario de Demostración en Vivo:' : 'Live Demonstration Hours:'}
+                  </strong>
+                  <span className="text-white text-xs">
+                    {profile.horario_demostracion}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Selector de Taller Activo (para dueños con más de un taller) */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+                  {language === 'es' ? 'Gestionar o Cambiar de Taller' : 'Switch Active Workshop'}
+                </h4>
+                <p className="text-xs text-[#9597C1]">
+                  {language === 'es'
+                    ? 'Selecciona otro taller si administras múltiples sedes artesanales.'
+                    : 'Switch if you manage another artisan workshop.'}
+                </p>
+              </div>
+            </div>
+
+            <select
+              value={selectedPoi.id}
+              onChange={(e) => handleWorkshopSelection(e.target.value)}
+              className="w-full bg-[#07154E] border border-[#9597C1]/30 rounded-xl p-3 text-xs text-[#EFF1F8] focus:outline-none focus:ring-1 focus:ring-[#EDE28E] cursor-pointer"
+            >
+              {localBusinesses.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} — {p.artisan_profile?.oficio} ({p.zone.replace(/_/g, ' ')})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Configuración de Sticker o Medallón NFC Físico */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+            <div className="flex items-center justify-between border-b border-[#9597C1]/20 pb-3">
+              <div className="flex items-center gap-2">
+                <SmartphoneNfc className="w-4 h-4 text-[#EDE28E]" />
+                <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+                  {language === 'es' ? 'Sticker NFC Físico del Mostrador' : 'Physical Counter NFC Sticker'}
+                </h4>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#9597C1] leading-relaxed">
+              {language === 'es'
+                ? 'Si tienes un sticker o medallón NFC físico en tu mostrador o vitrina, puedes programarlo aquí para que los turistas solo acerquen su teléfono y reciban su sello al instante.'
+                : 'If you have a physical NFC sticker on your counter, program it here so visitors can tap-and-go.'}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={handleWriteNfcTag}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer border ${
+                  isWritingNfc
+                    ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
+                    : 'bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E]'
+                }`}
+              >
+                {isWritingNfc ? (
+                  <>
+                    <X className="w-4 h-4" />
+                    <span>{language === 'es' ? 'Cancelar Grabación' : 'Cancel Write'}</span>
+                  </>
+                ) : (
+                  <>
+                    <SmartphoneNfc className="w-4 h-4" />
+                    <span>{language === 'es' ? 'Grabar Chip NFC' : 'Write NFC Sticker'}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleVerifyPhysicalTag}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer border ${
+                  isTestingNfc
+                    ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
+                    : 'bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-[#EFF1F8]'
+                }`}
+              >
+                {isTestingNfc ? (
+                  <>
+                    <X className="w-4 h-4" />
+                    <span>{language === 'es' ? 'Detener Prueba' : 'Stop Test'}</span>
+                  </>
+                ) : (
+                  <>
+                    <QrCode className="w-4 h-4 text-[#EDE28E]" />
+                    <span>{language === 'es' ? 'Probar Etiqueta Grabada' : 'Test NFC Sticker'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {nfcStatus && (
+              <div className="bg-[#07154E] text-[#EDE28E] text-xs p-3 rounded-xl flex items-center gap-2 border border-[#EDE28E]/30 animate-fade-slide">
+                <SmartphoneNfc className="w-4 h-4 text-[#EDE28E] flex-shrink-0 animate-pulse" />
+                <span>{nfcStatus}</span>
+              </div>
+            )}
+
+            {nfcError && (
+              <div className="bg-rose-950/60 text-rose-300 text-xs p-3 rounded-xl flex items-start gap-2 border border-rose-500/40 animate-fade-slide">
+                <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <span>{nfcError}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Acceso Directo para ver cómo se ve en el mapa de visitantes */}
+          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg flex items-center justify-between gap-3">
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+                {language === 'es' ? 'Mapa Turístico de Visitantes' : 'Tourist Exploration Map'}
+              </h4>
+              <p className="text-xs text-[#9597C1]">
+                {language === 'es'
+                  ? 'Verifica cómo se muestra tu taller y tu horario de demostración para los caminantes.'
+                  : 'Check how your workshop and schedule appear to pedestrians.'}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="px-3.5 py-2 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] border border-[#EDE28E]/40 text-xs font-bold text-[#EDE28E] flex items-center gap-1.5 transition cursor-pointer flex-shrink-0"
+            >
+              <span>{language === 'es' ? 'Ver Mapa' : 'View Map'}</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

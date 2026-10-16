@@ -2,15 +2,11 @@ import { useState, useEffect, type FC } from 'react';
 import { POI, Language } from '@ruta-abierta/shared-types';
 import { ArtisansPortal } from '../../components/ArtisansPortal';
 import {
-  Compass,
-  ArrowLeft,
   KeyRound,
   Sparkles,
   Lock,
-  Store,
-  LogOut
+  Store
 } from 'lucide-react';
-import { useRouter } from '../../router/Router';
 import { tacticalAudio } from '../../utils/tacticalAudio';
 
 interface ArtisanViewProps {
@@ -20,7 +16,6 @@ interface ArtisanViewProps {
 }
 
 export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionChange }) => {
-  const { navigate } = useRouter();
 
   const [session, setSession] = useState<{
     poiId: string;
@@ -87,71 +82,6 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
   return (
     <div className="flex-1 w-full h-full overflow-y-auto bg-[#07154E] p-4 sm:p-6 pb-24 text-[#EFF1F8]">
       <div className="max-w-5xl mx-auto space-y-4">
-        {/* Barra de Navegación Compacta */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#9597C1]/20 gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[#9597C1]">
-              {language === 'es' ? 'Taller Seleccionado:' : 'Active Workshop:'}
-            </span>
-            {session && (
-              <select
-                value={session.poiId}
-                onChange={(e) => {
-                  const nextWorkshop = artisanPois.find((p) => p.id === e.target.value);
-                  if (!nextWorkshop) return;
-                  tacticalAudio.playTacticalClick();
-                  const updatedSession = {
-                    poiId: nextWorkshop.id,
-                    workshopName: nextWorkshop.name,
-                    artisanName: nextWorkshop.artisan_profile?.maestro_artesano || 'Maestro Artesano',
-                    oficio: nextWorkshop.artisan_profile?.oficio || 'Artesanía'
-                  };
-                  localStorage.setItem('ruta_abierta_artisan_user', JSON.stringify(updatedSession));
-                  setSession(updatedSession);
-                  if (onSessionChange) onSessionChange();
-                }}
-                className="bg-[#0B228A] border border-[#9597C1]/30 rounded-xl px-2.5 py-1 text-xs text-[#EFF1F8] focus:outline-none focus:ring-1 focus:ring-[#EDE28E] cursor-pointer"
-              >
-                {artisanPois.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({p.zone.replace(/_/g, ' ')})
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            {session && (
-              <button
-                type="button"
-                onClick={() => {
-                  tacticalAudio.playTacticalClick();
-                  localStorage.removeItem('ruta_abierta_artisan_user');
-                  setSession(null);
-                  if (onSessionChange) onSessionChange();
-                }}
-                className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                title={language === 'es' ? 'Cerrar sesión de taller' : 'Sign out'}
-                aria-label={language === 'es' ? 'Cerrar sesión de taller' : 'Sign out'}
-              >
-                <LogOut className="w-3.5 h-3.5 text-[#EDE28E]" />
-                <span className="hidden sm:inline">{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <Compass className="w-3.5 h-3.5 text-[#EDE28E]" />
-              <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
-            </button>
-          </div>
-        </div>
-
         {/* Tarjeta de Inicio de Sesión si no hay sesión activa */}
         {!session ? (
           <div className="max-w-md mx-auto my-12 bg-[#0B228A] border border-[#9597C1]/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
@@ -234,6 +164,20 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
             pois={pois}
             language={language}
             activePoiId={session.poiId}
+            onSelectWorkshop={(newPoiId) => {
+              const workshop = artisanPois.find((p) => p.id === newPoiId);
+              if (!workshop) return;
+              tacticalAudio.playTacticalClick();
+              const updatedSession = {
+                poiId: workshop.id,
+                workshopName: workshop.name,
+                artisanName: workshop.artisan_profile?.maestro_artesano || 'Maestro Artesano',
+                oficio: workshop.artisan_profile?.oficio || 'Artesanía'
+              };
+              localStorage.setItem('ruta_abierta_artisan_user', JSON.stringify(updatedSession));
+              setSession(updatedSession);
+              if (onSessionChange) onSessionChange();
+            }}
           />
         )}
       </div>

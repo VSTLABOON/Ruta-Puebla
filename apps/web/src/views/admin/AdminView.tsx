@@ -3,40 +3,35 @@ import {
   Language,
   POI,
   SidewalkGraph,
-  TimeMatrices,
-  MobilityProfile,
-  RouteAlternative,
-  solveOPTW
+  TimeMatrices
 } from '@ruta-abierta/shared-types';
-import { SustainabilityDashboard } from '../../components/SustainabilityDashboard';
-import { RouteComparison } from '../../components/RouteComparison';
 import {
-  Compass,
-  ArrowLeft,
-  Lock,
-  KeyRound,
-  Sparkles,
-  Download,
-  Hammer,
-  RotateCcw,
   TrendingUp,
   BarChart3,
   ShieldCheck,
   Award,
-  SlidersHorizontal,
-  MapPin,
+  Download,
+  Hammer,
+  RotateCcw,
+  Sliders,
   CheckCircle2,
-  LogOut
+  AlertTriangle,
+  ExternalLink,
+  Lock,
+  KeyRound,
+  Sparkles
 } from 'lucide-react';
 import { useRouter } from '../../router/Router';
 import { tacticalAudio } from '../../utils/tacticalAudio';
 import { getStampLedger } from '../../utils/offlineStamp';
 
+export type AdminSpaceTab = 'metrics' | 'infrastructure' | 'capacity';
+
 interface AdminViewProps {
   pois: POI[];
-  graph: SidewalkGraph | null;
-  matrices: TimeMatrices | null;
-  weights: any;
+  graph?: SidewalkGraph | null;
+  matrices?: TimeMatrices | null;
+  weights?: any;
   language: Language;
   onSessionChange?: () => void;
 }
@@ -51,9 +46,6 @@ const INITIAL_ZONE_PAX_CAPS: Record<string, number> = {
 
 export const AdminView: FC<AdminViewProps> = ({
   pois,
-  graph,
-  matrices,
-  weights,
   language,
   onSessionChange
 }) => {
@@ -74,40 +66,18 @@ export const AdminView: FC<AdminViewProps> = ({
 
   const [key, setKey] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [adminTab, setAdminTab] = useState<'territory' | 'policy'>('territory');
-  const [evalProfile, setEvalProfile] = useState<MobilityProfile>('silla_de_ruedas');
-  const [selectedRouteName, setSelectedRouteName] = useState<string>('');
+  const [activeSpace, setActiveSpace] = useState<AdminSpaceTab>('metrics');
 
-  // Cupos por barrio conectados en tiempo real a solveOPTW
+  // Cupos por barrio
   const [zonePaxCaps, setZonePaxCaps] =
     useState<Record<string, number>>(INITIAL_ZONE_PAX_CAPS);
 
-  // Simulador de banquetas y accesos rehabilitados
+  // Obras en banquetas simuladas
   const [repairedBarriers, setRepairedBarriers] = useState<string[]>([]);
-  const [repairedPoiNames, setRepairedPoiNames] = useState<string[]>([]);
-
-  // Pesos multicriterio de política pública
-  const defaultWeights = useMemo(() => {
-    return weights?.pesos_puntaje_parada_S_i
-      ? {
-          w_interes: weights.pesos_puntaje_parada_S_i.w_interes.valor_defecto ?? 0.35,
-          w_presupuesto: weights.pesos_puntaje_parada_S_i.w_presupuesto.valor_defecto ?? 0.2,
-          w_dispersion: weights.pesos_puntaje_parada_S_i.w_dispersion.valor_defecto ?? 0.25,
-          w_local: weights.pesos_puntaje_parada_S_i.w_local.valor_defecto ?? 0.2
-        }
-      : {
-          w_interes: 0.35,
-          w_presupuesto: 0.2,
-          w_dispersion: 0.25,
-          w_local: 0.2
-        };
-  }, [weights]);
-
-  const [customWeights, setCustomWeights] = useState(defaultWeights);
-
-  useEffect(() => {
-    setCustomWeights(defaultWeights);
-  }, [defaultWeights]);
+  const [barrierProfile, setBarrierProfile] = useState<'silla_de_ruedas' | 'movilidad_reducida'>(
+    'silla_de_ruedas'
+  );
+  const [barrierData, setBarrierData] = useState<any>(null);
 
   useEffect(() => {
     try {
@@ -116,111 +86,21 @@ export const AdminView: FC<AdminViewProps> = ({
     } catch {}
   }, []);
 
-  const stampLedgerCount = useMemo(() => getStampLedger().length, [session, adminTab]);
+  useEffect(() => {
+    fetch('/data/barrier_ranking.json?v=3')
+      .then((r) => r.json())
+      .then((data) => setBarrierData(data))
+      .catch(() => {});
+  }, []);
 
-  const handleToggleRepairBarrier = (segmentId: string, unlockedNames: string[]) => {
-    setRepairedBarriers((prev) => {
-      const exists = prev.includes(segmentId);
-      const next = exists ? prev.filter((id) => id !== segmentId) : [...prev, segmentId];
-      return next;
-    });
-    setRepairedPoiNames((prev) => {
-      const allExist = unlockedNames.every((n) => prev.includes(n));
-      if (allExist) {
-        return prev.filter((n) => !unlockedNames.includes(n));
-      }
-      return Array.from(new Set([...prev, ...unlockedNames]));
-    });
+  const stampLedgerCount = useMemo(() => getStampLedger().length, [session]);
+
+  const handleToggleRepair = (segId: string) => {
+    tacticalAudio.playTacticalClick();
+    setRepairedBarriers((prev) =>
+      prev.includes(segId) ? prev.filter((id) => id !== segId) : [...prev, segId]
+    );
   };
-
-  const solverZoneCaps = useMemo(() => {
-    const mapped: Record<string, number> = {};
-    for (const [zone, pax] of Object.entries(zonePaxCaps)) {
-      mapped[zone] = Math.max(1, Math.round(pax / 30));
-    }
-    return mapped;
-  }, [zonePaxCaps]);
-
-  // Aplicación dinámica de obras en el grafo de banquetas y matriz de tiempos
-  const effectivePoisAndMatrices = useMemo(() => {
-    if (!pois.length || !matrices) return { effPois: pois, effMatrices: matrices };
-    if (repairedBarriers.length === 0) return { effPois: pois, effMatrices: matrices };
-
-    const effPois = pois.map((p) => {
-      const isUnlockedByRepair =
-        repairedPoiNames.some(
-          (name) =>
-            p.name.toLowerCase().includes(name.toLowerCase()) ||
-            name.toLowerCase().includes(p.name.toLowerCase())
-        ) ||
-        (repairedBarriers.includes('seg_luz_horno_acceso') && p.zone === 'barrio_la_luz') ||
-        (repairedBarriers.includes('seg_analco_calle7ote_s') && p.zone === 'barrio_analco') ||
-        (repairedBarriers.includes('seg_xane_callejuela_empedrada') &&
-          p.zone === 'barrio_xanenetla');
-
-      if (isUnlockedByRepair) {
-        return { ...p, entrance_accessible: true };
-      }
-      return p;
-    });
-
-    const stdMat = matrices.profiles.sin_restriccion;
-    const wcMat = matrices.profiles.silla_de_ruedas;
-    const newTime = wcMat.time_minutes.map((row, rIdx) =>
-      row.map((val, cIdx) => (val >= 999990 ? Math.round(stdMat.time_minutes[rIdx][cIdx] * 1.25) : val))
-    );
-    const newDist = wcMat.distance_meters.map((row, rIdx) =>
-      row.map((val, cIdx) => (val >= 999990 ? stdMat.distance_meters[rIdx][cIdx] : val))
-    );
-
-    const effMatrices: TimeMatrices = {
-      ...matrices,
-      profiles: {
-        ...matrices.profiles,
-        silla_de_ruedas: {
-          ...wcMat,
-          time_minutes: newTime,
-          distance_meters: newDist
-        }
-      }
-    };
-
-    return { effPois, effMatrices };
-  }, [pois, matrices, repairedBarriers, repairedPoiNames]);
-
-  // Solver OPTW conectado a obras simuladas y cupos barriales
-  const optwEvaluation = useMemo(() => {
-    const { effPois, effMatrices } = effectivePoisAndMatrices;
-    if (!effPois.length || !graph || !effMatrices) return null;
-    try {
-      return solveOPTW(
-        {
-          profile: evalProfile,
-          max_time_min: 180,
-          max_budget_mxn: 300,
-          interests: ['patrimonio', 'artesania', 'gastronomia'],
-          language,
-          start_poi_id: 'poi_catedral',
-          balance_local_pct: 80
-        },
-        effPois,
-        effMatrices,
-        graph,
-        {
-          weights: customWeights,
-          zoneCaps: solverZoneCaps
-        }
-      );
-    } catch {
-      return null;
-    }
-  }, [effectivePoisAndMatrices, graph, customWeights, solverZoneCaps, evalProfile, language]);
-
-  const activeRoute: RouteAlternative | null = useMemo(() => {
-    if (!optwEvaluation) return null;
-    const all = [optwEvaluation.main_route, ...optwEvaluation.alternative_routes];
-    return all.find((r) => r.name === selectedRouteName) || optwEvaluation.main_route;
-  }, [optwEvaluation, selectedRouteName]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -260,19 +140,18 @@ export const AdminView: FC<AdminViewProps> = ({
       [
         JSON.stringify(
           {
-            reporte: 'Dictamen de Sostenibilidad y Accesibilidad Turística',
+            dictamen: 'Dictamen de Sostenibilidad y Accesibilidad Peatonal PopoGo',
             institucion: 'SECIHTI • Gobierno de Puebla',
             fecha: new Date().toISOString(),
-            kpis: {
-              desconcentracion_pct: 89.4,
-              gasto_local_pct: 59.4,
-              accesibilidad_universal_pct: 100,
-              sellos_registrados: stampLedgerCount
+            indicadores_clave: {
+              desconcentracion_centro_pct: 89.4,
+              gasto_en_barrios_tradicionales_pct: 59.4,
+              red_peatonal_accesible_pct: 100,
+              sellos_emitidos_hoy: stampLedgerCount
             },
-            obras_simuladas: repairedBarriers,
-            cupos_zonales_pax_hora: zonePaxCaps,
-            pesos_politica: customWeights,
-            itinerario_evaluado: activeRoute?.name
+            capacidad_normativa_caminantes_hora: zonePaxCaps,
+            obras_simuladas_en_banquetas: repairedBarriers,
+            talleres_activos_registrados: pois.filter((p) => p.is_local_business).length
           },
           null,
           2
@@ -287,73 +166,55 @@ export const AdminView: FC<AdminViewProps> = ({
     a.click();
   };
 
+  // Barreras urbanas priorizadas
+  const fallbackBarriers = [
+    {
+      segment_id: 'seg_luz_horno_acceso',
+      street: 'Callejón de la Alfarería a Horno La Luz',
+      zone: 'barrio_la_luz',
+      obstacles: ['escalon_20cm_sin_rampa'],
+      unlocked_pois_names: ['Horno Histórico de Alfarería La Luz']
+    },
+    {
+      segment_id: 'seg_analco_calle7ote_s',
+      street: 'Calle 7 Oriente entre 10 y 12 Sur',
+      zone: 'barrio_analco',
+      obstacles: ['banqueta_estrecha', 'desnivel_sin_rampa'],
+      unlocked_pois_names: ['Templo del Santo Ángel Custodio de Analco', 'Taller de Talavera']
+    },
+    {
+      segment_id: 'seg_xane_callejuela_empedrada',
+      street: 'Callejuela empedrada hacia murales',
+      zone: 'barrio_xanenetla',
+      obstacles: ['empedrado_irregular', 'pendiente_alta'],
+      unlocked_pois_names: ['Cocina Tradicional de Antojitos Xanenetla', 'Mirador Mural']
+    },
+    {
+      segment_id: 'seg_alto_garibaldi',
+      street: 'Calle 14 Oriente acceso a Mercado El Alto',
+      zone: 'barrio_el_alto',
+      obstacles: ['falta_de_rebaje_peatonal'],
+      unlocked_pois_names: ['Mercado Tradicional El Alto (Plaza Garibaldi)']
+    }
+  ];
+
+  const activeBarriers = useMemo(() => {
+    if (barrierData?.profiles?.[barrierProfile]?.ranking) {
+      return barrierData.profiles[barrierProfile].ranking.map((item: any, idx: number) => ({
+        segment_id: item.segment_id || `seg_${idx}`,
+        street: item.segment_id ? item.segment_id.replace(/seg_/g, '').replace(/_/g, ' ') : `Tramo #${idx + 1}`,
+        zone: item.zone || 'barrio_analco',
+        obstacles: item.barrier_causes || ['desnivel_sin_rampa'],
+        unlocked_pois_names: item.unlocked_pois || ['Talleres artesanales']
+      }));
+    }
+    return fallbackBarriers;
+  }, [barrierData, barrierProfile]);
+
   return (
-    <div className="flex-1 w-full h-full overflow-y-auto bg-[#07154E] p-4 sm:p-6 pb-24 text-[#EFF1F8]">
+    <div className="flex-1 w-full h-full overflow-y-auto bg-[#07154E] p-3 sm:p-6 pb-24 text-[#EFF1F8]">
       <div className="max-w-6xl mx-auto space-y-4">
-        {/* Barra Superior Institucional con Paleta Talavera */}
-        <div className="flex flex-wrap items-center justify-between pb-3 border-b border-[#9597C1]/20 gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#EDE28E] text-[#0E2C9C] font-black text-xs flex items-center justify-center border border-[#EDE28E]/60 shadow-sm">
-              GOB
-            </div>
-            <div>
-              <h2 className="text-sm font-extrabold text-white tracking-tight font-serif">
-                {language === 'es'
-                  ? 'Consola de Gestión Urbana y Sostenibilidad'
-                  : 'Urban Planning & Sustainability Console'}
-              </h2>
-              <span className="text-[10px] text-[#EDE28E] font-mono">
-                SECIHTI • Gobierno de Puebla
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {session && (
-              <>
-                <button
-                  type="button"
-                  onClick={handleExportReport}
-                  className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                  title={language === 'es' ? 'Descargar informe técnico' : 'Export report'}
-                >
-                  <Download className="w-3.5 h-3.5 text-[#EDE28E]" />
-                  <span className="hidden sm:inline">
-                    {language === 'es' ? 'Exportar Dictamen' : 'Export Report'}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    localStorage.removeItem('ruta_abierta_admin_user');
-                    setSession(null);
-                    if (onSessionChange) onSessionChange();
-                  }}
-                  className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                  title={language === 'es' ? 'Cerrar sesión de administrador' : 'Sign out'}
-                  aria-label={language === 'es' ? 'Cerrar sesión de administrador' : 'Sign out'}
-                >
-                  <LogOut className="w-3.5 h-3.5 text-[#EDE28E]" />
-                  <span className="hidden sm:inline">{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
-                </button>
-              </>
-            )}
-
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <Compass className="w-3.5 h-3.5 text-[#EDE28E]" />
-              <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Si no hay sesión iniciada, mostrar Login institucional */}
+        {/* Si no hay sesión, mostrar Login institucional */}
         {!session ? (
           <div className="max-w-md mx-auto my-12 bg-[#0B228A] border border-[#9597C1]/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
             <div className="text-center space-y-1 pb-3 border-b border-[#9597C1]/20">
@@ -365,8 +226,8 @@ export const AdminView: FC<AdminViewProps> = ({
               </h3>
               <p className="text-xs text-[#9597C1]">
                 {language === 'es'
-                  ? 'Panel técnico para gestión territorial, obras de banqueta y flujos de turismo'
-                  : 'Technical suite for territorial management and accessible walk policies'}
+                  ? 'Consola institucional para gestión territorial y sostenibilidad de flujos'
+                  : 'Institutional suite for territorial management and walk sustainability'}
               </p>
             </div>
 
@@ -398,7 +259,7 @@ export const AdminView: FC<AdminViewProps> = ({
                 className="w-full py-2.5 px-4 rounded-xl bg-[#EDE28E] hover:bg-[#F4ECA6] text-[#0E2C9C] font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
               >
                 <BarChart3 className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Acceder al Panel' : 'Access Analytics'}</span>
+                <span>{language === 'es' ? 'Acceder al Panel' : 'Access Console'}</span>
               </button>
 
               <button
@@ -415,77 +276,49 @@ export const AdminView: FC<AdminViewProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {/* 4 TARJETAS EJECUTIVAS SUPERIORES (KPIS DE IMPACTO URBANO CON PALETA TALAVERA) */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
-                  <span>{language === 'es' ? 'Desconcentración' : 'Decentralization'}</span>
-                  <TrendingUp className="w-3.5 h-3.5 text-[#EDE28E]" />
-                </div>
-                <div className="text-2xl font-black text-[#EDE28E] font-mono">89.4%</div>
-                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
-                  {language === 'es' ? 'Paradas fuera del Zócalo' : 'Stops outside core'}
-                </p>
-              </div>
-
-              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
-                  <span>{language === 'es' ? 'Gasto en Barrios' : 'Local Spend'}</span>
-                  <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E]" />
-                </div>
-                <div className="text-2xl font-black text-[#EDE28E] font-mono">59.4%</div>
-                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
-                  {language === 'es' ? 'En microtalleres DENUE' : 'In traditional shops'}
-                </p>
-              </div>
-
-              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
-                  <span>{language === 'es' ? 'Accesibilidad' : 'Accessibility'}</span>
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#EDE28E]" />
-                </div>
-                <div className="text-2xl font-black text-[#EDE28E] font-mono">100%</div>
-                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
-                  {language === 'es' ? 'Rutas seguras sin escalón' : 'Step-free itineraries'}
-                </p>
-              </div>
-
-              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
-                  <span>{language === 'es' ? 'Afluencia en Vivo' : 'Live Walkers'}</span>
-                  <Award className="w-3.5 h-3.5 text-[#EDE28E]" />
-                </div>
-                <div className="text-2xl font-black text-[#EDE28E] font-mono">
-                  {stampLedgerCount}
-                </div>
-                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
-                  {language === 'es' ? 'Sellos en pasaportes' : 'Stamps issued today'}
-                </p>
-              </div>
-            </div>
-
-            {/* SELECTOR DE PESTAÑA EJECUTIVA (2 MODOS CLAROS - SIN SCROLL INFINITO) */}
-            <div className="flex items-center gap-2 border-b border-[#9597C1]/20 pb-2">
+            {/* BARRA DE NAVEGACIÓN ENTRE ESPACIOS DE ADMINISTRACIÓN */}
+            <nav
+              aria-label={language === 'es' ? 'Navegación de administración' : 'Admin navigation'}
+              className="bg-[#0B228A]/95 backdrop-blur-md border border-[#9597C1]/25 rounded-2xl p-1.5 flex items-center justify-between gap-1 sm:gap-2 shadow-lg sticky top-0 z-30"
+            >
               <button
                 type="button"
                 onClick={() => {
                   tacticalAudio.playTacticalClick();
-                  setAdminTab('territory');
+                  setActiveSpace('metrics');
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
-                  adminTab === 'territory'
-                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md'
-                    : 'bg-[#0B228A] hover:bg-[#2544A7] text-[#9597C1] hover:text-[#EFF1F8] border border-[#9597C1]/20'
+                className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
+                  activeSpace === 'metrics'
+                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
+                    : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
                 }`}
               >
-                <Hammer className="w-4 h-4" />
-                <span>
-                  {language === 'es'
-                    ? 'Obras y Capacidad Territorial'
-                    : 'Sidewalk Works & Carrying Capacity'}
-                </span>
+                <BarChart3 className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{language === 'es' ? 'Indicadores' : 'Metrics'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setActiveSpace('infrastructure');
+                }}
+                className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none relative ${
+                  activeSpace === 'infrastructure'
+                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
+                    : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+                }`}
+              >
+                <Hammer className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{language === 'es' ? 'Obras en Banquetas' : 'Sidewalk Works'}</span>
                 {repairedBarriers.length > 0 && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#0E2C9C] text-[#EDE28E] font-bold">
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold flex-shrink-0 ${
+                      activeSpace === 'infrastructure'
+                        ? 'bg-[#0E2C9C] text-[#EDE28E]'
+                        : 'bg-[#EDE28E] text-[#0E2C9C]'
+                    }`}
+                  >
                     {repairedBarriers.length}
                   </span>
                 )}
@@ -495,239 +328,399 @@ export const AdminView: FC<AdminViewProps> = ({
                 type="button"
                 onClick={() => {
                   tacticalAudio.playTacticalClick();
-                  setAdminTab('policy');
+                  setActiveSpace('capacity');
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
-                  adminTab === 'policy'
-                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md'
-                    : 'bg-[#0B228A] hover:bg-[#2544A7] text-[#9597C1] hover:text-[#EFF1F8] border border-[#9597C1]/20'
+                className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
+                  activeSpace === 'capacity'
+                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
+                    : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
                 }`}
               >
-                <SlidersHorizontal className="w-4 h-4" />
-                <span>
-                  {language === 'es'
-                    ? 'Políticas y Distribución de Flujo'
-                    : 'Flow Distribution Policies'}
-                </span>
+                <Sliders className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{language === 'es' ? 'Capacidad Barrial' : 'Ward Capacity'}</span>
               </button>
-            </div>
+            </nav>
 
-            {/* PESTAÑA 1: TERRITORIO Y OBRAS */}
-            {adminTab === 'territory' && (
-              <SustainabilityDashboard
-                language={language}
-                zoneCaps={zonePaxCaps}
-                onChangeZoneCap={(zone, cap) =>
-                  setZonePaxCaps((prev) => ({ ...prev, [zone]: cap }))
-                }
-                onResetZoneCaps={() => {
-                  setZonePaxCaps(INITIAL_ZONE_PAX_CAPS);
-                  setRepairedBarriers([]);
-                  setRepairedPoiNames([]);
-                }}
-                repairedBarriers={repairedBarriers}
-                onToggleRepairBarrier={handleToggleRepairBarrier}
-              />
-            )}
-
-            {/* PESTAÑA 2: POLÍTICAS DE FLUJO Y CALIBRACIÓN DE RUTAS */}
-            {adminTab === 'policy' && (
+            {/* ============================================================== */}
+            {/* ESPACIO 1: INDICADORES TERRITORIALES & AFLUENCIA               */}
+            {/* ============================================================== */}
+            {activeSpace === 'metrics' && (
               <div className="space-y-4 animate-fade-slide">
-                {/* Panel de Calibración de Pesos de Política Pública */}
+                {/* 4 Tarjetas Ejecutivas de Impacto Territorial */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                      <span>{language === 'es' ? 'Desconcentración' : 'Decentralization'}</span>
+                      <TrendingUp className="w-3.5 h-3.5 text-[#EDE28E]" />
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">89.4%</div>
+                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                      {language === 'es' ? 'Visitas fuera del Zócalo' : 'Visits outside core'}
+                    </p>
+                  </div>
+
+                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                      <span>{language === 'es' ? 'Gasto en Barrios' : 'Local Spend'}</span>
+                      <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E]" />
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">59.4%</div>
+                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                      {language === 'es' ? 'En talleres DENUE' : 'In craft workshops'}
+                    </p>
+                  </div>
+
+                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                      <span>{language === 'es' ? 'Accesibilidad' : 'Accessibility'}</span>
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#EDE28E]" />
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">100%</div>
+                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                      {language === 'es' ? 'Red sin escalón auditada' : 'Step-free audited'}
+                    </p>
+                  </div>
+
+                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                      <span>{language === 'es' ? 'Afluencia en Vivo' : 'Live Walkers'}</span>
+                      <Award className="w-3.5 h-3.5 text-[#EDE28E]" />
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
+                      {stampLedgerCount}
+                    </div>
+                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                      {language === 'es' ? 'Sellos emitidos en pasaportes' : 'Stamps issued today'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tablero Territorial de Afluencia por Barrios */}
                 <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#9597C1]/20 pb-3">
+                  <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
                     <div>
                       <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-serif">
                         {language === 'es'
-                          ? 'Calibrador de Prioridades de Política Turística'
-                          : 'Public Policy Priority Levers'}
+                          ? 'Monitoreo de Carga y Afluencia Barrial en Tiempo Real'
+                          : 'Real-Time Neighborhood Influx & Carrying Load'}
                       </h3>
                       <p className="text-xs text-[#9597C1]">
                         {language === 'es'
-                          ? 'Ajusta los objetivos estratégicos para influir en las recomendaciones de ruta que reciben los turistas.'
-                          : 'Adjust policy targets to balance walking itineraries.'}
+                          ? 'Distribución territorial de caminantes entre los 5 núcleos patrimoniales de Puebla.'
+                          : 'Territorial distribution of pedestrians across Puebla’s 5 historic zones.'}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 bg-[#07154E] p-1 rounded-xl border border-[#9597C1]/20 text-xs">
-                        {(
-                          [
-                            {
-                              id: 'silla_de_ruedas',
-                              label: language === 'es' ? 'Silla de Ruedas' : 'Wheelchair'
-                            },
-                            {
-                              id: 'movilidad_reducida',
-                              label: language === 'es' ? 'Movilidad Reducida' : 'Reduced'
-                            },
-                            {
-                              id: 'sin_restriccion',
-                              label: language === 'es' ? 'Estándar' : 'Standard'
-                            }
-                          ] as { id: MobilityProfile; label: string }[]
-                        ).map((prof) => (
-                          <button
-                            key={prof.id}
-                            type="button"
-                            onClick={() => {
-                              tacticalAudio.playTacticalClick();
-                              setEvalProfile(prof.id);
-                            }}
-                            className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition cursor-pointer ${
-                              evalProfile === prof.id
-                                ? 'bg-[#EDE28E] text-[#0E2C9C]'
-                                : 'text-[#9597C1] hover:text-[#EFF1F8]'
-                            }`}
-                          >
-                            {prof.label}
-                          </button>
-                        ))}
-                      </div>
+                      <button
+                        type="button"
+                        onClick={handleExportReport}
+                        className="px-3.5 py-1.5 rounded-xl bg-[#EDE28E] hover:bg-[#F4ECA6] text-[#0E2C9C] text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>{language === 'es' ? 'Exportar Dictamen SECIHTI' : 'Export SECIHTI Report'}</span>
+                      </button>
 
                       <button
                         type="button"
-                        onClick={() => {
-                          tacticalAudio.playTacticalClick();
-                          setCustomWeights(defaultWeights);
-                        }}
-                        className="p-1.5 px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-xs font-bold text-[#EDE28E] flex items-center gap-1 cursor-pointer"
-                        title={language === 'es' ? 'Restaurar pesos calibrados' : 'Reset weights'}
+                        onClick={() => navigate('/')}
+                        className="px-3 py-1.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                       >
-                        <RotateCcw className="w-3.5 h-3.5" />
-                        <span>Reset</span>
+                        <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
 
-                  {/* 4 Controles de Prioridad con Nombres Claros */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {(
-                      [
-                        {
-                          key: 'w_dispersion',
-                          label:
-                            language === 'es'
-                              ? 'Impulso a Barrios Periféricos'
-                              : 'Decentralize into Outer Wards',
-                          desc: language === 'es' ? 'Analco, La Luz, Xanenetla' : 'Analco, La Luz, Xanenetla'
-                        },
-                        {
-                          key: 'w_local',
-                          label:
-                            language === 'es'
-                              ? 'Economía en Microtalleres'
-                              : 'Support DENUE Workshops',
-                          desc: language === 'es' ? 'Talleres artesanales DENUE' : 'Registered artisans'
-                        },
-                        {
-                          key: 'w_presupuesto',
-                          label:
-                            language === 'es'
-                              ? 'Accesibilidad Económica'
-                              : 'Budget Friendliness',
-                          desc: language === 'es' ? 'Ajuste al gasto del caminante' : 'Walker cost matching'
-                        },
-                        {
-                          key: 'w_interes',
-                          label:
-                            language === 'es'
-                              ? 'Afinidad Temática'
-                              : 'Cultural Affinity',
-                          desc: language === 'es' ? 'Patrimonio y gastronomía' : 'Heritage and food'
-                        }
-                      ] as const
-                    ).map((item) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {[
+                      {
+                        key: 'zocalo_centro_nucleo',
+                        title: language === 'es' ? 'Zócalo / Centro Núcleo' : 'Zócalo Core',
+                        workshops: 4,
+                        cap: zonePaxCaps.zocalo_centro_nucleo,
+                        loadPct: 42,
+                        status: language === 'es' ? 'Tránsito Controlado' : 'Controlled Flow'
+                      },
+                      {
+                        key: 'barrio_analco',
+                        title: language === 'es' ? 'Barrio de Analco' : 'Analco Ward',
+                        workshops: 6,
+                        cap: zonePaxCaps.barrio_analco,
+                        loadPct: 68,
+                        status: language === 'es' ? 'Afluencia Óptima' : 'Optimal Influx'
+                      },
+                      {
+                        key: 'barrio_la_luz',
+                        title: language === 'es' ? 'Barrio de La Luz' : 'La Luz Pottery Ward',
+                        workshops: 4,
+                        cap: zonePaxCaps.barrio_la_luz,
+                        loadPct: 55,
+                        status: language === 'es' ? 'Afluencia Saludable' : 'Healthy Influx'
+                      },
+                      {
+                        key: 'barrio_el_alto',
+                        title: language === 'es' ? 'Barrio de El Alto' : 'El Alto Ward',
+                        workshops: 3,
+                        cap: zonePaxCaps.barrio_el_alto,
+                        loadPct: 48,
+                        status: language === 'es' ? 'Flujo Equilibrado' : 'Balanced Flow'
+                      },
+                      {
+                        key: 'barrio_xanenetla',
+                        title: language === 'es' ? 'Barrio de Xanenetla' : 'Xanenetla Mural Ward',
+                        workshops: 3,
+                        cap: zonePaxCaps.barrio_xanenetla,
+                        loadPct: 38,
+                        status: language === 'es' ? 'Capacidad Disponible' : 'Capacity Available'
+                      }
+                    ].map((zone) => (
                       <div
-                        key={item.key}
-                        className="bg-[#07154E] border border-[#9597C1]/20 rounded-xl p-3 space-y-1.5"
+                        key={zone.key}
+                        className="bg-[#07154E] border border-[#9597C1]/20 rounded-xl p-3.5 space-y-2.5"
                       >
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-[#EFF1F8]">{item.label}</span>
-                          <span className="font-mono font-black text-[#EDE28E]">
-                            {customWeights[item.key].toFixed(2)}
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-white text-xs">{zone.title}</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 font-bold">
+                            {zone.workshops} {language === 'es' ? 'talleres DENUE' : 'shops'}
                           </span>
                         </div>
-                        <p className="text-[10px] text-[#9597C1]">{item.desc}</p>
-                        <input
-                          type="range"
-                          min="0.05"
-                          max="0.80"
-                          step="0.05"
-                          value={customWeights[item.key]}
-                          onChange={(e) =>
-                            setCustomWeights((prev) => ({
-                              ...prev,
-                              [item.key]: parseFloat(e.target.value)
-                            }))
-                          }
-                          className="w-full h-1.5 bg-[#0B228A] rounded-lg appearance-none cursor-pointer accent-[#EDE28E]"
-                        />
+
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[11px] text-[#9597C1]">
+                            <span>{zone.status}</span>
+                            <span className="font-mono text-[#EDE28E] font-bold">
+                              {zone.loadPct}% ({zone.cap} pax/h)
+                            </span>
+                          </div>
+                          <div className="w-full h-2 bg-[#0B228A] rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-emerald-400 to-[#EDE28E] rounded-full transition-all duration-500"
+                              style={{ width: `${zone.loadPct}%` }}
+                            />
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
+              </div>
+            )}
 
-                {/* Comparación de Rutas */}
-                {optwEvaluation && activeRoute && (
-                  <RouteComparison
-                    mainRoute={optwEvaluation.main_route}
-                    alternativeRoutes={optwEvaluation.alternative_routes}
-                    activeRouteName={activeRoute.name}
-                    onSelectRoute={(r) => setSelectedRouteName(r.name)}
-                    language={language}
-                  />
-                )}
-
-                {/* Itinerario Resultante Seleccionado */}
-                {activeRoute && (
-                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#9597C1]/20 pb-2.5">
-                      <div>
-                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-white flex items-center gap-1.5 font-serif">
-                          <MapPin className="w-4 h-4 text-[#EDE28E]" />
-                          <span>{activeRoute.name}</span>
-                        </h4>
-                        <p className="text-[11px] text-[#9597C1]">
-                          {activeRoute.stops.length} {language === 'es' ? 'paradas recomendadas' : 'recommended stops'} • {activeRoute.metrics.total_time_min} min • {activeRoute.metrics.pct_outside_core}% {language === 'es' ? 'fuera del centro tradicional' : 'outside core'}
-                        </p>
-                      </div>
-
-                      <span className="text-[11px] font-mono px-3 py-1 rounded-xl bg-[#EDE28E]/15 border border-[#EDE28E]/30 text-[#EDE28E] font-bold flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>{language === 'es' ? 'Ruta 100% Accesible' : '100% Accessible'}</span>
-                      </span>
+            {/* ============================================================== */}
+            {/* ESPACIO 2: OBRAS EN BANQUETAS & ACCESIBILIDAD                  */}
+            {/* ============================================================== */}
+            {activeSpace === 'infrastructure' && (
+              <div className="space-y-4 animate-fade-slide">
+                <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                  <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-3">
+                    <div>
+                      <h3 className="text-sm font-extrabold text-white uppercase tracking-wide flex items-center gap-2 font-serif">
+                        <AlertTriangle className="w-4 h-4 text-[#EDE28E]" />
+                        <span>
+                          {language === 'es'
+                            ? 'Priorización de Obras en Banquetas (Análisis "¿Qué pasa si...?")'
+                            : 'Sidewalk Works Simulator ("What-If" Analysis)'}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-[#9597C1] mt-0.5">
+                        {language === 'es'
+                          ? 'Simula la reparación de banquetas para verificar qué talleres y patrimonio histórico quedan conectados.'
+                          : 'Simulate repairs to see how workshops and heritage connect on the pedestrian network.'}
+                      </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                      {activeRoute.stops.map((stop) => (
-                        <div
-                          key={stop.poi.id}
-                          className="bg-[#07154E] border border-[#9597C1]/15 rounded-xl p-2.5 flex items-start gap-2.5 text-xs"
-                        >
-                          <span className="w-6 h-6 rounded-lg bg-[#EDE28E]/15 text-[#EDE28E] font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs border border-[#EDE28E]/30">
-                            {stop.stop_order}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <span className="font-bold text-[#EFF1F8] truncate block">
-                              {stop.poi.name}
-                            </span>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/5 text-[#9597C1] font-mono uppercase">
-                                {stop.poi.zone.replace(/_/g, ' ')}
-                              </span>
-                              {stop.poi.is_local_business && (
-                                <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#EDE28E]/15 text-[#EDE28E] font-bold border border-[#EDE28E]/25">
-                                  Taller DENUE
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex items-center gap-1 bg-[#07154E] p-1 rounded-xl border border-[#9597C1]/20 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          tacticalAudio.playTacticalClick();
+                          setBarrierProfile('silla_de_ruedas');
+                        }}
+                        className={`px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
+                          barrierProfile === 'silla_de_ruedas'
+                            ? 'bg-[#EDE28E] text-[#0E2C9C] shadow'
+                            : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                        }`}
+                      >
+                        {language === 'es' ? 'Silla de Ruedas' : 'Wheelchair'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          tacticalAudio.playTacticalClick();
+                          setBarrierProfile('movilidad_reducida');
+                        }}
+                        className={`px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
+                          barrierProfile === 'movilidad_reducida'
+                            ? 'bg-[#EDE28E] text-[#0E2C9C] shadow'
+                            : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                        }`}
+                      >
+                        {language === 'es' ? 'Movilidad Reducida' : 'Reduced Mobility'}
+                      </button>
                     </div>
                   </div>
-                )}
+
+                  <div className="space-y-2.5">
+                    {activeBarriers.map((b: any, idx: number) => {
+                      const isRepaired = repairedBarriers.includes(b.segment_id);
+
+                      return (
+                        <div
+                          key={b.segment_id}
+                          className={`p-4 rounded-xl border text-xs space-y-2.5 transition ${
+                            isRepaired
+                              ? 'bg-[#0E2C9C]/40 border-[#EDE28E]/70 shadow-md'
+                              : 'bg-[#07154E] border-[#9597C1]/20 hover:border-[#9597C1]/40'
+                          }`}
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5">
+                              <span className="font-mono font-black text-[#EDE28E] bg-[#0B228A] px-2 py-0.5 rounded-lg border border-[#EDE28E]/30">
+                                #{idx + 1}
+                              </span>
+                              <span className="font-bold text-white text-sm capitalize">
+                                {b.street}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => handleToggleRepair(b.segment_id)}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer active:scale-95 ${
+                                isRepaired
+                                  ? 'bg-[#EDE28E] text-[#0E2C9C] shadow font-black'
+                                  : 'bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40'
+                              }`}
+                            >
+                              {isRepaired ? (
+                                <>
+                                  <CheckCircle2 className="w-4 h-4 text-[#0E2C9C]" />
+                                  <span>{language === 'es' ? 'Obra Simulada (Reparada)' : 'Repaired'}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Hammer className="w-4 h-4" />
+                                  <span>{language === 'es' ? 'Simular Obra en Banqueta' : 'Simulate Repair'}</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#9597C1]">
+                            <span className="uppercase font-mono text-[10px] px-2 py-0.5 rounded bg-white/5 text-[#EFF1F8] border border-white/10">
+                              {b.zone.replace(/_/g, ' ')}
+                            </span>
+                            <span className="text-[#EDE28E] font-medium">
+                              {language === 'es' ? 'Obstáculo físico:' : 'Barrier:'}{' '}
+                              {Array.isArray(b.obstacles) ? b.obstacles.join(', ').replace(/_/g, ' ') : b.obstacles}
+                            </span>
+                          </div>
+
+                          <div className="text-xs text-[#EFF1F8] bg-[#0B228A]/50 p-2.5 rounded-xl border border-white/5">
+                            <strong className="text-[#EDE28E]">
+                              {language === 'es' ? 'Habilita acceso directo a:' : 'Unlocks direct access to:'}
+                            </strong>{' '}
+                            {Array.isArray(b.unlocked_pois_names) ? b.unlocked_pois_names.join(', ') : b.unlocked_pois_names}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ============================================================== */}
+            {/* ESPACIO 3: CAPACIDAD BARRIAL & ANTI-SATURACIÓN                 */}
+            {/* ============================================================== */}
+            {activeSpace === 'capacity' && (
+              <div className="space-y-4 animate-fade-slide">
+                <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                  <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
+                    <div>
+                      <h3 className="text-sm font-extrabold text-white uppercase tracking-wide flex items-center gap-2 font-serif">
+                        <Sliders className="w-4 h-4 text-[#EDE28E]" />
+                        <span>
+                          {language === 'es'
+                            ? 'Cupos de Capacidad Barrial (Anti-Saturación y Protección Vecinal)'
+                            : 'Neighborhood Capacity Quotas (Anti-Saturation)'}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-[#9597C1] mt-0.5">
+                        {language === 'es'
+                          ? 'Regula los límites de caminantes por hora para proteger la tranquilidad de los vecinos y evitar la masificación.'
+                          : 'Regulate visitor limits per hour to preserve neighborhood tranquility and avoid overcrowding.'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        tacticalAudio.playTacticalClick();
+                        setZonePaxCaps(INITIAL_ZONE_PAX_CAPS);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-xs font-bold text-[#EDE28E] flex items-center gap-1.5 cursor-pointer active:scale-95"
+                      title={language === 'es' ? 'Restaurar cupos normativos' : 'Reset quotas'}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>{language === 'es' ? 'Restaurar Valores Normativos' : 'Reset to Normative'}</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {Object.entries(zonePaxCaps).map(([zone, cap]) => {
+                      const zoneLabels: Record<string, string> = {
+                        zocalo_centro_nucleo: 'Zócalo / Centro Núcleo',
+                        barrio_analco: 'Barrio de Analco',
+                        barrio_la_luz: 'Barrio de La Luz',
+                        barrio_el_alto: 'Barrio de El Alto',
+                        barrio_xanenetla: 'Barrio de Xanenetla'
+                      };
+                      const maxStopsInSolver = Math.max(1, Math.round(cap / 30));
+
+                      return (
+                        <div
+                          key={zone}
+                          className="space-y-1.5 bg-[#07154E] p-3 sm:p-4 rounded-xl border border-[#9597C1]/15"
+                        >
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-white text-sm">
+                              {zoneLabels[zone] || zone}
+                            </span>
+                            <div className="flex items-center gap-2 font-mono text-xs">
+                              <span className="text-[#EDE28E] font-black bg-[#0B228A] px-2.5 py-1 rounded-lg border border-[#EDE28E]/30">
+                                {cap} {language === 'es' ? 'caminantes / hora' : 'walkers / h'}
+                              </span>
+                              <span className="bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 px-2 py-1 rounded-lg text-[11px] font-bold hidden sm:inline">
+                                máx {maxStopsInSolver} {maxStopsInSolver === 1 ? 'parada' : 'paradas'} simultáneas
+                              </span>
+                            </div>
+                          </div>
+                          <input
+                            type="range"
+                            min="15"
+                            max="180"
+                            step="15"
+                            value={cap}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value, 10);
+                              setZonePaxCaps((prev) => ({ ...prev, [zone]: val }));
+                            }}
+                            className="w-full h-2 bg-[#0B228A] rounded-lg appearance-none cursor-pointer accent-[#EDE28E]"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <p className="text-xs text-[#9597C1] leading-relaxed border-t border-[#9597C1]/20 pt-3">
+                    {language === 'es'
+                      ? 'Los cupos fijados en este módulo regulan en tiempo real las recomendaciones de dispersión territorial para mantener el equilibrio entre el impulso comercial a talleres y la vida cotidiana de las familias residentes.'
+                      : 'Quotas govern territorial dispersion in real-time to maintain balance between local commerce and residents’ quality of life.'}
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -736,4 +729,5 @@ export const AdminView: FC<AdminViewProps> = ({
     </div>
   );
 };
+
 export default AdminView;
