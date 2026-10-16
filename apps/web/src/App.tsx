@@ -379,7 +379,7 @@ function MainApp() {
               <div className="px-2.5 py-1.5 rounded-xl bg-[#9597C1]/20 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
                 <Store className="w-3.5 h-3.5 text-[#9597C1] flex-shrink-0" />
                 <span className="max-w-[100px] sm:max-w-[180px] truncate">{artisanUser.workshopName}</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5 flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#EDE28E] animate-pulse ml-0.5 flex-shrink-0" />
               </div>
             )}
 
@@ -409,21 +409,21 @@ function MainApp() {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
               }}
-              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer flex-shrink-0"
+              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-[#9597C1]/30 transition cursor-pointer flex-shrink-0"
             >
               <Languages className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
               <span>{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
-            {/* Botón Cerrar Sesión (Solo icono para evitar superposición) */}
+            {/* Botón Cerrar Sesión */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 transition cursor-pointer flex-shrink-0 shadow-md flex items-center justify-center"
+              className="p-2 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/45 transition cursor-pointer flex-shrink-0 shadow-md flex items-center justify-center"
               title={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
               aria-label={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
             >
-              <LogOut className="w-4 h-4 text-rose-400 flex-shrink-0" />
+              <LogOut className="w-4 h-4 text-[#EDE28E] flex-shrink-0" />
             </button>
           </div>
         </div>

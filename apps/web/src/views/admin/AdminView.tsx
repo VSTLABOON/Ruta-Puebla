@@ -288,21 +288,21 @@ export const AdminView: FC<AdminViewProps> = ({
   };
 
   return (
-    <div className="flex-1 w-full h-full overflow-y-auto bg-slate-950 p-4 sm:p-6 pb-24 text-slate-100">
+    <div className="flex-1 w-full h-full overflow-y-auto bg-[#07154E] p-4 sm:p-6 pb-24 text-[#EFF1F8]">
       <div className="max-w-6xl mx-auto space-y-4">
-        {/* Barra Superior Institucional */}
-        <div className="flex flex-wrap items-center justify-between pb-3 border-b border-white/10 gap-3">
+        {/* Barra Superior Institucional con Paleta Talavera */}
+        <div className="flex flex-wrap items-center justify-between pb-3 border-b border-[#9597C1]/20 gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-xs">
+            <div className="w-8 h-8 rounded-xl bg-[#EDE28E] text-[#0E2C9C] font-black text-xs flex items-center justify-center border border-[#EDE28E]/60 shadow-sm">
               GOB
             </div>
             <div>
-              <h2 className="text-sm font-extrabold text-white tracking-tight">
+              <h2 className="text-sm font-extrabold text-white tracking-tight font-serif">
                 {language === 'es'
                   ? 'Consola de Gestión Urbana y Sostenibilidad'
                   : 'Urban Planning & Sustainability Console'}
               </h2>
-              <span className="text-[10px] text-emerald-400 font-mono">
+              <span className="text-[10px] text-[#EDE28E] font-mono">
                 SECIHTI • Gobierno de Puebla
               </span>
             </div>
@@ -313,30 +313,30 @@ export const AdminView: FC<AdminViewProps> = ({
               <>
                 <button
                   type="button"
+                  onClick={handleExportReport}
+                  className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  title={language === 'es' ? 'Descargar informe técnico' : 'Export report'}
+                >
+                  <Download className="w-3.5 h-3.5 text-[#EDE28E]" />
+                  <span className="hidden sm:inline">
+                    {language === 'es' ? 'Exportar Dictamen' : 'Export Report'}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => {
                     tacticalAudio.playTacticalClick();
                     localStorage.removeItem('ruta_abierta_admin_user');
                     setSession(null);
                     if (onSessionChange) onSessionChange();
                   }}
-                  className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                  title={language === 'es' ? 'Cerrar sesión institucional' : 'Sign out'}
-                  aria-label={language === 'es' ? 'Cerrar sesión institucional' : 'Sign out'}
+                  className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  title={language === 'es' ? 'Cerrar sesión de administrador' : 'Sign out'}
+                  aria-label={language === 'es' ? 'Cerrar sesión de administrador' : 'Sign out'}
                 >
-                  <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                  <LogOut className="w-3.5 h-3.5 text-[#EDE28E]" />
                   <span className="hidden sm:inline">{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleExportReport}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                  title={language === 'es' ? 'Descargar informe técnico' : 'Export report'}
-                >
-                  <Download className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="hidden sm:inline">
-                    {language === 'es' ? 'Exportar Dictamen' : 'Export Report'}
-                  </span>
                 </button>
               </>
             )}
@@ -344,10 +344,10 @@ export const AdminView: FC<AdminViewProps> = ({
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <Compass className="w-3.5 h-3.5 text-amber-400" />
+              <Compass className="w-3.5 h-3.5 text-[#EDE28E]" />
               <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
             </button>
           </div>
@@ -355,15 +355,15 @@ export const AdminView: FC<AdminViewProps> = ({
 
         {/* Si no hay sesión iniciada, mostrar Login institucional */}
         {!session ? (
-          <div className="max-w-md mx-auto my-12 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
-            <div className="text-center space-y-1 pb-3 border-b border-white/10">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto mb-2">
+          <div className="max-w-md mx-auto my-12 bg-[#0B228A] border border-[#9597C1]/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
+            <div className="text-center space-y-1 pb-3 border-b border-[#9597C1]/20">
+              <div className="w-12 h-12 rounded-2xl bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 flex items-center justify-center mx-auto mb-2">
                 <Lock className="w-6 h-6" />
               </div>
               <h3 className="font-extrabold text-base text-white">
                 {language === 'es' ? 'Acceso Planificadores SECIHTI' : 'SECIHTI Planner Access'}
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#9597C1]">
                 {language === 'es'
                   ? 'Panel técnico para gestión territorial, obras de banqueta y flujos de turismo'
                   : 'Technical suite for territorial management and accessible walk policies'}
@@ -371,14 +371,14 @@ export const AdminView: FC<AdminViewProps> = ({
             </div>
 
             {errorMsg && (
-              <div className="text-xs text-rose-400 bg-rose-950/40 p-2.5 rounded-xl border border-rose-500/30">
+              <div className="text-xs text-rose-300 bg-rose-950/60 p-2.5 rounded-xl border border-rose-500/40">
                 {errorMsg}
               </div>
             )}
 
             <form onSubmit={handleLogin} className="space-y-3.5">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-semibold text-[#EFF1F8] uppercase tracking-wider mb-1">
                   {language === 'es' ? 'Clave de Acceso Institucional:' : 'Institutional Access Key:'}
                 </label>
                 <div className="relative">
@@ -387,15 +387,15 @@ export const AdminView: FC<AdminViewProps> = ({
                     value={key}
                     onChange={(e) => setKey(e.target.value)}
                     placeholder="SECIHTI-PUEBLA-2026"
-                    className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 font-mono tracking-wider placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    className="w-full border border-[#9597C1]/30 rounded-xl p-2.5 pl-8 text-xs text-[#EFF1F8] bg-[#07154E] font-mono tracking-wider placeholder:text-[#9597C1]/50 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
                   />
-                  <KeyRound className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
+                  <KeyRound className="w-3.5 h-3.5 text-[#9597C1] absolute left-2.5 top-3" />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
+                className="w-full py-2.5 px-4 rounded-xl bg-[#EDE28E] hover:bg-[#F4ECA6] text-[#0E2C9C] font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
               >
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span>{language === 'es' ? 'Acceder al Panel' : 'Access Analytics'}</span>
@@ -404,9 +404,9 @@ export const AdminView: FC<AdminViewProps> = ({
               <button
                 type="button"
                 onClick={handleQuickDemo}
-                className="w-full py-2 px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/20 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 text-[#EDE28E] border border-[#EDE28E]/30 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <Sparkles className="w-3.5 h-3.5 text-[#EDE28E]" />
                 <span>
                   {language === 'es' ? 'Acceso Rápido Demo (1 Clic)' : 'Quick 1-Click Demo'}
                 </span>
@@ -415,67 +415,67 @@ export const AdminView: FC<AdminViewProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {/* 4 TARJETAS EJECUTIVAS SUPERIORES (KPIS DE IMPACTO URBANO) */}
+            {/* 4 TARJETAS EJECUTIVAS SUPERIORES (KPIS DE IMPACTO URBANO CON PALETA TALAVERA) */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
                   <span>{language === 'es' ? 'Desconcentración' : 'Decentralization'}</span>
-                  <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                  <TrendingUp className="w-3.5 h-3.5 text-[#EDE28E]" />
                 </div>
-                <div className="text-2xl font-black text-white font-mono">89.4%</div>
-                <p className="text-[10px] text-emerald-400 font-medium">
+                <div className="text-2xl font-black text-[#EDE28E] font-mono">89.4%</div>
+                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
                   {language === 'es' ? 'Paradas fuera del Zócalo' : 'Stops outside core'}
                 </p>
               </div>
 
-              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
                   <span>{language === 'es' ? 'Gasto en Barrios' : 'Local Spend'}</span>
-                  <BarChart3 className="w-3.5 h-3.5 text-sky-400" />
+                  <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E]" />
                 </div>
-                <div className="text-2xl font-black text-white font-mono">59.4%</div>
-                <p className="text-[10px] text-sky-400 font-medium">
+                <div className="text-2xl font-black text-[#EDE28E] font-mono">59.4%</div>
+                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
                   {language === 'es' ? 'En microtalleres DENUE' : 'In traditional shops'}
                 </p>
               </div>
 
-              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
                   <span>{language === 'es' ? 'Accesibilidad' : 'Accessibility'}</span>
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#EDE28E]" />
                 </div>
-                <div className="text-2xl font-black text-white font-mono">100%</div>
-                <p className="text-[10px] text-amber-400 font-medium">
+                <div className="text-2xl font-black text-[#EDE28E] font-mono">100%</div>
+                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
                   {language === 'es' ? 'Rutas seguras sin escalón' : 'Step-free itineraries'}
                 </p>
               </div>
 
-              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
-                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+              <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
                   <span>{language === 'es' ? 'Afluencia en Vivo' : 'Live Walkers'}</span>
-                  <Award className="w-3.5 h-3.5 text-indigo-400" />
+                  <Award className="w-3.5 h-3.5 text-[#EDE28E]" />
                 </div>
-                <div className="text-2xl font-black text-white font-mono">
+                <div className="text-2xl font-black text-[#EDE28E] font-mono">
                   {stampLedgerCount}
                 </div>
-                <p className="text-[10px] text-indigo-400 font-medium">
+                <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
                   {language === 'es' ? 'Sellos en pasaportes' : 'Stamps issued today'}
                 </p>
               </div>
             </div>
 
             {/* SELECTOR DE PESTAÑA EJECUTIVA (2 MODOS CLAROS - SIN SCROLL INFINITO) */}
-            <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+            <div className="flex items-center gap-2 border-b border-[#9597C1]/20 pb-2">
               <button
                 type="button"
                 onClick={() => {
                   tacticalAudio.playTacticalClick();
                   setAdminTab('territory');
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
                   adminTab === 'territory'
-                    ? 'bg-emerald-500 text-slate-950 shadow-md'
-                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-white/5'
+                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md'
+                    : 'bg-[#0B228A] hover:bg-[#2544A7] text-[#9597C1] hover:text-[#EFF1F8] border border-[#9597C1]/20'
                 }`}
               >
                 <Hammer className="w-4 h-4" />
@@ -485,7 +485,7 @@ export const AdminView: FC<AdminViewProps> = ({
                     : 'Sidewalk Works & Carrying Capacity'}
                 </span>
                 {repairedBarriers.length > 0 && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-950 text-emerald-400 font-bold">
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#0E2C9C] text-[#EDE28E] font-bold">
                     {repairedBarriers.length}
                   </span>
                 )}
@@ -497,10 +497,10 @@ export const AdminView: FC<AdminViewProps> = ({
                   tacticalAudio.playTacticalClick();
                   setAdminTab('policy');
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
                   adminTab === 'policy'
-                    ? 'bg-emerald-500 text-slate-950 shadow-md'
-                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-white/5'
+                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md'
+                    : 'bg-[#0B228A] hover:bg-[#2544A7] text-[#9597C1] hover:text-[#EFF1F8] border border-[#9597C1]/20'
                 }`}
               >
                 <SlidersHorizontal className="w-4 h-4" />
@@ -534,15 +534,15 @@ export const AdminView: FC<AdminViewProps> = ({
             {adminTab === 'policy' && (
               <div className="space-y-4 animate-fade-slide">
                 {/* Panel de Calibración de Pesos de Política Pública */}
-                <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+                <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#9597C1]/20 pb-3">
                     <div>
-                      <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">
+                      <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-serif">
                         {language === 'es'
                           ? 'Calibrador de Prioridades de Política Turística'
                           : 'Public Policy Priority Levers'}
                       </h3>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-[#9597C1]">
                         {language === 'es'
                           ? 'Ajusta los objetivos estratégicos para influir en las recomendaciones de ruta que reciben los turistas.'
                           : 'Adjust policy targets to balance walking itineraries.'}
@@ -550,7 +550,7 @@ export const AdminView: FC<AdminViewProps> = ({
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-white/10 text-xs">
+                      <div className="flex items-center gap-1 bg-[#07154E] p-1 rounded-xl border border-[#9597C1]/20 text-xs">
                         {(
                           [
                             {
@@ -576,8 +576,8 @@ export const AdminView: FC<AdminViewProps> = ({
                             }}
                             className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition cursor-pointer ${
                               evalProfile === prof.id
-                                ? 'bg-amber-500 text-slate-950'
-                                : 'text-slate-400 hover:text-white'
+                                ? 'bg-[#EDE28E] text-[#0E2C9C]'
+                                : 'text-[#9597C1] hover:text-[#EFF1F8]'
                             }`}
                           >
                             {prof.label}
@@ -591,7 +591,7 @@ export const AdminView: FC<AdminViewProps> = ({
                           tacticalAudio.playTacticalClick();
                           setCustomWeights(defaultWeights);
                         }}
-                        className="p-1.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-white/10 text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer"
+                        className="p-1.5 px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-xs font-bold text-[#EDE28E] flex items-center gap-1 cursor-pointer"
                         title={language === 'es' ? 'Restaurar pesos calibrados' : 'Reset weights'}
                       >
                         <RotateCcw className="w-3.5 h-3.5" />
@@ -610,8 +610,7 @@ export const AdminView: FC<AdminViewProps> = ({
                             language === 'es'
                               ? 'Impulso a Barrios Periféricos'
                               : 'Decentralize into Outer Wards',
-                          desc: language === 'es' ? 'Analco, La Luz, Xanenetla' : 'Analco, La Luz, Xanenetla',
-                          color: 'text-indigo-400'
+                          desc: language === 'es' ? 'Analco, La Luz, Xanenetla' : 'Analco, La Luz, Xanenetla'
                         },
                         {
                           key: 'w_local',
@@ -619,8 +618,7 @@ export const AdminView: FC<AdminViewProps> = ({
                             language === 'es'
                               ? 'Economía en Microtalleres'
                               : 'Support DENUE Workshops',
-                          desc: language === 'es' ? 'Talleres artesanales DENUE' : 'Registered artisans',
-                          color: 'text-amber-400'
+                          desc: language === 'es' ? 'Talleres artesanales DENUE' : 'Registered artisans'
                         },
                         {
                           key: 'w_presupuesto',
@@ -628,8 +626,7 @@ export const AdminView: FC<AdminViewProps> = ({
                             language === 'es'
                               ? 'Accesibilidad Económica'
                               : 'Budget Friendliness',
-                          desc: language === 'es' ? 'Ajuste al gasto del caminante' : 'Walker cost matching',
-                          color: 'text-emerald-400'
+                          desc: language === 'es' ? 'Ajuste al gasto del caminante' : 'Walker cost matching'
                         },
                         {
                           key: 'w_interes',
@@ -637,22 +634,21 @@ export const AdminView: FC<AdminViewProps> = ({
                             language === 'es'
                               ? 'Afinidad Temática'
                               : 'Cultural Affinity',
-                          desc: language === 'es' ? 'Patrimonio y gastronomía' : 'Heritage and food',
-                          color: 'text-sky-400'
+                          desc: language === 'es' ? 'Patrimonio y gastronomía' : 'Heritage and food'
                         }
                       ] as const
                     ).map((item) => (
                       <div
                         key={item.key}
-                        className="bg-slate-950/80 border border-white/10 rounded-xl p-3 space-y-1.5"
+                        className="bg-[#07154E] border border-[#9597C1]/20 rounded-xl p-3 space-y-1.5"
                       >
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-white">{item.label}</span>
-                          <span className={`font-mono font-black ${item.color}`}>
+                          <span className="font-bold text-[#EFF1F8]">{item.label}</span>
+                          <span className="font-mono font-black text-[#EDE28E]">
                             {customWeights[item.key].toFixed(2)}
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-400">{item.desc}</p>
+                        <p className="text-[10px] text-[#9597C1]">{item.desc}</p>
                         <input
                           type="range"
                           min="0.05"
@@ -665,7 +661,7 @@ export const AdminView: FC<AdminViewProps> = ({
                               [item.key]: parseFloat(e.target.value)
                             }))
                           }
-                          className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+                          className="w-full h-1.5 bg-[#0B228A] rounded-lg appearance-none cursor-pointer accent-[#EDE28E]"
                         />
                       </div>
                     ))}
@@ -685,19 +681,19 @@ export const AdminView: FC<AdminViewProps> = ({
 
                 {/* Itinerario Resultante Seleccionado */}
                 {activeRoute && (
-                  <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#9597C1]/20 pb-2.5">
                       <div>
-                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-white flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-white flex items-center gap-1.5 font-serif">
+                          <MapPin className="w-4 h-4 text-[#EDE28E]" />
                           <span>{activeRoute.name}</span>
                         </h4>
-                        <p className="text-[11px] text-slate-400">
+                        <p className="text-[11px] text-[#9597C1]">
                           {activeRoute.stops.length} {language === 'es' ? 'paradas recomendadas' : 'recommended stops'} • {activeRoute.metrics.total_time_min} min • {activeRoute.metrics.pct_outside_core}% {language === 'es' ? 'fuera del centro tradicional' : 'outside core'}
                         </p>
                       </div>
 
-                      <span className="text-[11px] font-mono px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold flex items-center gap-1">
+                      <span className="text-[11px] font-mono px-3 py-1 rounded-xl bg-[#EDE28E]/15 border border-[#EDE28E]/30 text-[#EDE28E] font-bold flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>{language === 'es' ? 'Ruta 100% Accesible' : '100% Accessible'}</span>
                       </span>
@@ -707,21 +703,21 @@ export const AdminView: FC<AdminViewProps> = ({
                       {activeRoute.stops.map((stop) => (
                         <div
                           key={stop.poi.id}
-                          className="bg-slate-950 border border-white/5 rounded-xl p-2.5 flex items-start gap-2.5 text-xs"
+                          className="bg-[#07154E] border border-[#9597C1]/15 rounded-xl p-2.5 flex items-start gap-2.5 text-xs"
                         >
-                          <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-300 font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs">
+                          <span className="w-6 h-6 rounded-lg bg-[#EDE28E]/15 text-[#EDE28E] font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs border border-[#EDE28E]/30">
                             {stop.stop_order}
                           </span>
                           <div className="flex-1 min-w-0">
-                            <span className="font-bold text-white truncate block">
+                            <span className="font-bold text-[#EFF1F8] truncate block">
                               {stop.poi.name}
                             </span>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/5 text-slate-400 font-mono uppercase">
+                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/5 text-[#9597C1] font-mono uppercase">
                                 {stop.poi.zone.replace(/_/g, ' ')}
                               </span>
                               {stop.poi.is_local_business && (
-                                <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-300 font-bold">
+                                <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#EDE28E]/15 text-[#EDE28E] font-bold border border-[#EDE28E]/25">
                                   Taller DENUE
                                 </span>
                               )}
