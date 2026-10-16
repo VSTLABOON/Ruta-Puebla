@@ -415,15 +415,15 @@ function MainApp() {
               <span>{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
-            {/* Botón Cerrar Sesión (Siempre visible y prominente) */}
+            {/* Botón Cerrar Sesión (Solo icono para evitar superposición) */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-1.5 px-2.5 sm:px-3 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer flex-shrink-0 shadow-md"
-              title={language === 'es' ? 'Cerrar sesión actual' : 'Sign out'}
+              className="p-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 transition cursor-pointer flex-shrink-0 shadow-md flex items-center justify-center"
+              title={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
+              aria-label={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
             >
-              <LogOut className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
-              <span className="font-bold text-xs whitespace-nowrap">{language === 'es' ? 'Cerrar Sesión' : 'Log Out'}</span>
+              <LogOut className="w-4 h-4 text-rose-400 flex-shrink-0" />
             </button>
           </div>
         </div>

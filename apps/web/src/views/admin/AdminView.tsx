@@ -319,11 +319,12 @@ export const AdminView: FC<AdminViewProps> = ({
                     setSession(null);
                     if (onSessionChange) onSessionChange();
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                   title={language === 'es' ? 'Cerrar sesión institucional' : 'Sign out'}
+                  aria-label={language === 'es' ? 'Cerrar sesión institucional' : 'Sign out'}
                 >
                   <LogOut className="w-3.5 h-3.5 text-rose-400" />
-                  <span>{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
+                  <span className="hidden sm:inline">{language === 'es' ? 'Cerrar Sesión' : 'Sign Out'}</span>
                 </button>
 
                 <button
