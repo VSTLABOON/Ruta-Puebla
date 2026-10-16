@@ -1,46 +1,35 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import {
   POI,
   SidewalkGraph,
   TimeMatrices,
-  RouteRequest,
-  RouteResponse,
-  RouteAlternative,
   PassportState,
-  MobilityProfile,
-  solveOPTW
+  MobilityProfile
 } from '@ruta-abierta/shared-types';
-import { MapViewer } from './components/MapViewer';
-import { RouteForm } from './components/RouteForm';
 import { DataInfoModal } from './components/DataInfoModal';
 import { CelebrationModal } from './components/CelebrationModal';
-import { ArtisansPortal } from './components/ArtisansPortal';
-import { SustainabilityDashboard } from './components/SustainabilityDashboard';
-import { MobileBottomNav, CommandTab } from './components/MobileBottomNav';
-import { TacticalBottomSheet } from './components/TacticalBottomSheet';
-import { TacticalDesktopPanel } from './components/TacticalDesktopPanel';
-import { PassportGallery } from './components/PassportGallery';
-import { ArtisanDirectory } from './components/ArtisanDirectory';
-import { USER_ROLES, UserRole, AppMode } from './types/roles';
+import { USER_ROLES, UserRole } from './types/roles';
 import {
   Languages,
   Filter,
   Compass,
   Store,
   BarChart3,
-  Download,
   UserCheck,
   ChevronDown,
   Check,
-  SlidersHorizontal,
   Smartphone,
   Monitor,
   X,
-  Radio,
-  PanelLeftClose,
-  PanelLeftOpen
+  Radio
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
+import { RouterProvider, useRouter } from './router/Router';
+
+// Carga diferida (code-splitting) de las 3 vistas por rol
+const VisitorView = React.lazy(() => import('./views/visitor/VisitorView'));
+const ArtisanView = React.lazy(() => import('./views/artisan/ArtisanView'));
+const AdminView = React.lazy(() => import('./views/admin/AdminView'));
 
 // Enriquecer dinámicamente la matriz de tiempos y distancias para incluir las 24 locaciones
 function enrichTimeMatrices(pois: POI[], baseMatrices: TimeMatrices): TimeMatrices {
@@ -121,27 +110,20 @@ function enrichTimeMatrices(pois: POI[], baseMatrices: TimeMatrices): TimeMatric
   };
 }
 
-export default function App() {
-  // Rol de usuario
-  const [currentRole, setCurrentRole] = useState<UserRole>(() => {
-    try {
-      const saved = localStorage.getItem('ruta_abierta_role');
-      if (saved && saved in USER_ROLES) return saved as UserRole;
-    } catch {}
+function MainApp() {
+  const { activeRoute, navigate } = useRouter();
+
+  // Mapeo automático de ruta a rol de usuario
+  const currentRole: UserRole = useMemo(() => {
+    if (activeRoute === '/taller') return 'artisan';
+    if (activeRoute === '/admin') return 'government';
     return 'tourist';
-  });
+  }, [activeRoute]);
 
   const activeRoleDef = useMemo(() => USER_ROLES[currentRole], [currentRole]);
-  const [currentMode, setCurrentMode] = useState<AppMode>(() => activeRoleDef.defaultMode);
-  const [commandTab, setCommandTab] = useState<CommandTab>('explore');
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [isDesktopPanelOpen, setIsDesktopPanelOpen] = useState(true);
-  const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
-  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
-  const [isPulseActive, setIsPulseActive] = useState(false);
 
-  // Ubicación actual del usuario en el mapa (Por defecto: Zócalo de Puebla)
-  const [userLocation, setUserLocation] = useState<[number, number]>([-98.198, 19.0431]);
+  // Modo de visualización: Marco Móvil 390x844 o Pantalla Completa
+  const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
 
   // Modales
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
@@ -153,6 +135,9 @@ export default function App() {
     zone: string;
   } | null>(null);
 
+  // Ubicación del usuario en el mapa (por defecto: Zócalo de Puebla)
+  const [userLocation, setUserLocation] = useState<[number, number]>([-98.198, 19.0431]);
+
   // Datos
   const [pois, setPois] = useState<POI[]>([]);
   const [graph, setGraph] = useState<SidewalkGraph | null>(null);
@@ -161,7 +146,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
 
-  // Pasaporte
+  // Pasaporte de Exploración dinámico
   const [passportState, setPassportState] = useState<PassportState>(() => {
     try {
       const saved = localStorage.getItem('ruta_abierta_passport');
@@ -199,22 +184,7 @@ export default function App() {
     }
   };
 
-  const [request, setRequest] = useState<RouteRequest>({
-    profile: 'sin_restriccion',
-    max_time_min: 180,
-    max_budget_mxn: 250,
-    interests: ['patrimonio', 'gastronomia', 'artesania'],
-    language: 'es',
-    start_poi_id: 'poi_catedral',
-    balance_local_pct: 60,
-    free_text: ''
-  });
-
-  const [, setSolution] = useState<RouteResponse | null>(null);
-  const [activeRoute, setActiveRoute] = useState<RouteAlternative | null>(null);
-  const [selectedStopPoiId, setSelectedStopPoiId] = useState<string | null>(null);
-
-  // Carga inicial con cache-busting para Brave y navegadores estrictos
+  // Carga inicial con cache-busting para Brave y Cloudflare
   useEffect(() => {
     async function loadStaticData() {
       try {
@@ -226,24 +196,11 @@ export default function App() {
           fetch('/data/choice_model_weights.json?v=3', fetchOpts).then((r) => r.json())
         ]);
 
-        const enrichedMatrices = enrichTimeMatrices(poisRes, matricesRes);
-
+        const enriched = enrichTimeMatrices(poisRes, matricesRes);
         setPois(poisRes);
         setGraph(graphRes);
-        setMatrices(enrichedMatrices);
+        setMatrices(enriched);
         setWeights(weightsRes);
-
-        const initialSolution = solveOPTW(request, poisRes, enrichedMatrices, graphRes, {
-          weights: {
-            w_interes: weightsRes.pesos_puntaje_parada_S_i.w_interes.valor_defecto,
-            w_presupuesto: weightsRes.pesos_puntaje_parada_S_i.w_presupuesto.valor_defecto,
-            w_dispersion: weightsRes.pesos_puntaje_parada_S_i.w_dispersion.valor_defecto,
-            w_local: weightsRes.pesos_puntaje_parada_S_i.w_local.valor_defecto
-          }
-        });
-
-        setSolution(initialSolution);
-        setActiveRoute(initialSolution.main_route);
         setIsLoading(false);
       } catch (err) {
         console.error('Error cargando datos:', err);
@@ -255,93 +212,11 @@ export default function App() {
   }, []);
 
   const handleSelectRole = (newRole: UserRole) => {
-    setCurrentRole(newRole);
-    try {
-      localStorage.setItem('ruta_abierta_role', newRole);
-    } catch {}
-
-    const newDef = USER_ROLES[newRole];
-    if (!newDef.allowedModes.includes(currentMode)) {
-      setCurrentMode(newDef.defaultMode);
-    }
+    tacticalAudio.playTacticalClick();
+    if (newRole === 'tourist') navigate('/');
+    else if (newRole === 'artisan') navigate('/taller');
+    else if (newRole === 'government') navigate('/admin');
     setIsRoleModalOpen(false);
-  };
-
-  const handleGenerate = useCallback(() => {
-    if (!graph || !matrices || pois.length === 0) return;
-
-    const optWeights = weights
-      ? {
-          w_interes: weights.pesos_puntaje_parada_S_i.w_interes.valor_defecto,
-          w_presupuesto: weights.pesos_puntaje_parada_S_i.w_presupuesto.valor_defecto,
-          w_dispersion: weights.pesos_puntaje_parada_S_i.w_dispersion.valor_defecto,
-          w_local: weights.pesos_puntaje_parada_S_i.w_local.valor_defecto
-        }
-      : undefined;
-
-    const res = solveOPTW(request, pois, matrices, graph, { weights: optWeights });
-    setSolution(res);
-    setActiveRoute(res.main_route);
-    setSelectedStopPoiId(null);
-    setIsFilterDrawerOpen(false);
-    setCommandTab('explore');
-  }, [request, graph, matrices, pois, weights]);
-
-  const handleUpdateReq = (updated: Partial<RouteRequest>) => {
-    setRequest((prev) => ({ ...prev, ...updated }));
-  };
-
-  const handleTriggerUrbanPulse = () => {
-    setIsPulseActive(true);
-    tacticalAudio.playUrbanPulse();
-    setTimeout(() => {
-      setIsPulseActive(false);
-    }, 2800);
-  };
-
-  const handleInspectStop = (poiId: string) => {
-    setSelectedStopPoiId(poiId);
-    setIsBottomSheetOpen(true);
-    setIsDesktopPanelOpen(true);
-  };
-
-  const handleSelectTab = (tab: CommandTab) => {
-    if (tab === 'itinerary') {
-      setIsBottomSheetOpen((prev) => !prev);
-      setIsDesktopPanelOpen(true);
-      setCommandTab('explore');
-    } else {
-      setCommandTab(tab);
-      if (tab !== 'explore') {
-        setIsBottomSheetOpen(false);
-      }
-    }
-  };
-
-  const handleExportRoute = () => {
-    if (!activeRoute) return;
-    const textLines = [
-      `RUTA ABIERTA PUEBLA - GUÍA DE RECORRIDO PEATONAL`,
-      `Duración estimada: ${activeRoute.metrics.total_time_min} min | Distancia: ${activeRoute.metrics.distance_meters} m`,
-      `Presupuesto estimado: $${activeRoute.metrics.total_cost_mxn} MXN`,
-      ``,
-      `LUGARES DE TU RECORRIDO:`,
-      ...activeRoute.stops.map((s) => {
-        const hArr = Math.floor(s.arrival_time_min / 60).toString().padStart(2, '0');
-        const mArr = (s.arrival_time_min % 60).toString().padStart(2, '0');
-        const hDep = Math.floor(s.departure_time_min / 60).toString().padStart(2, '0');
-        const mDep = (s.departure_time_min % 60).toString().padStart(2, '0');
-        return `[${s.stop_order}] ${hArr}:${mArr} - ${hDep}:${mDep} | ${s.poi.name} (${s.poi.address})\n    - Entrada: ${s.poi.entrance_accessible ? 'Plana sin escalones' : 'Cuenta con escalón'}\n    - Descripción: ${s.poi.description[language] || s.poi.description.es}`;
-      })
-    ];
-
-    const blob = new Blob([textLines.join('\n')], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `recorrido_puebla_${request.profile}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
   };
 
   if (isLoading) {
@@ -359,11 +234,15 @@ export default function App() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
-      {/* Cabecera Compacta */}
+      {/* Cabecera Principal */}
       <header className="bg-slate-950/90 backdrop-blur-xl border-b border-white/10 text-white z-40 flex-shrink-0">
         <div className="w-full px-3 sm:px-5 py-2 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)] flex-shrink-0">
+          {/* Logo y Enlace a Inicio */}
+          <div
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2.5 cursor-pointer select-none group"
+          >
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)] flex-shrink-0 group-hover:scale-105 transition-transform">
               RA
             </div>
             <div>
@@ -383,40 +262,59 @@ export default function App() {
             </div>
           </div>
 
-          {/* Controles rápidos de ruta y vista en cabecera */}
+          {/* Selector de Rol y Acciones de Cabecera */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {currentMode === 'visitor' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setIsFilterDrawerOpen(true)}
-                  className="px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold text-amber-300 flex items-center gap-1.5 transition-all duration-300 cursor-pointer"
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Personalizar Ruta' : 'Customize'}</span>
-                </button>
+            {/* Píldoras de Roles con Enrutamiento Directo */}
+            <div className="hidden sm:flex bg-slate-900/90 p-1 rounded-xl border border-white/10 text-xs">
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                  activeRoute === '/'
+                    ? 'bg-amber-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>{language === 'es' ? 'Visitante' : 'Visitor'}</span>
+              </button>
 
-                <button
-                  type="button"
-                  onClick={handleExportRoute}
-                  className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-all duration-300 cursor-pointer"
-                  title={language === 'es' ? 'Descargar guía en texto' : 'Download route guide'}
-                >
-                  <Download className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="hidden lg:inline">{language === 'es' ? 'Guardar' : 'Save'}</span>
-                </button>
-              </>
-            )}
+              <button
+                type="button"
+                onClick={() => navigate('/taller')}
+                className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                  activeRoute === '/taller'
+                    ? 'bg-sky-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Store className="w-3.5 h-3.5" />
+                <span>{language === 'es' ? 'Local' : 'Local'}</span>
+              </button>
 
-            {/* Selector de Rol */}
+              <button
+                type="button"
+                onClick={() => navigate('/admin')}
+                className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                  activeRoute === '/admin'
+                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>{language === 'es' ? 'Admin' : 'Admin'}</span>
+              </button>
+            </div>
+
+            {/* Selector de Rol Móvil */}
             <button
               type="button"
               onClick={() => setIsRoleModalOpen(true)}
-              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all duration-300 ${activeRoleDef.theme.badgeBg} ${activeRoleDef.theme.badgeText} ${activeRoleDef.theme.badgeBorder} hover:brightness-110 cursor-pointer`}
-              title={language === 'es' ? 'Cambiar perfil de vista' : 'Switch role'}
+              className={`sm:hidden px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all duration-300 ${activeRoleDef.theme.badgeBg} ${activeRoleDef.theme.badgeText} ${activeRoleDef.theme.badgeBorder} cursor-pointer`}
+              title={language === 'es' ? 'Cambiar rol' : 'Switch role'}
             >
               <UserCheck className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">{activeRoleDef.shortTitle[language]}</span>
+              <span>{activeRoleDef.shortTitle[language]}</span>
               <ChevronDown className="w-3 h-3 opacity-70" />
             </button>
 
@@ -437,7 +335,7 @@ export default function App() {
               )}
             </button>
 
-            {/* Información de datos */}
+            {/* Información DENUE y Auditorías */}
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
@@ -447,13 +345,12 @@ export default function App() {
               <Filter className="w-3.5 h-3.5" />
             </button>
 
-            {/* Idioma */}
+            {/* Selector de Idioma */}
             <button
               type="button"
               onClick={() => {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
-                handleUpdateReq({ language: nextLang });
               }}
               className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition-all duration-300 cursor-pointer"
             >
@@ -462,65 +359,9 @@ export default function App() {
             </button>
           </div>
         </div>
-
-        {/* Sub-barra de modos sólo cuando el rol tiene múltiples portales */}
-        {activeRoleDef.allowedModes.length > 1 && (
-          <div className="px-3 sm:px-5 border-t border-white/5 flex items-center gap-1.5 py-1 overflow-x-auto text-xs scrollbar-none">
-            {activeRoleDef.allowedModes.includes('visitor') && (
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentMode('visitor');
-                  setCommandTab('explore');
-                }}
-                className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentMode === 'visitor'
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:bg-slate-900 hover:text-white'
-                }`}
-              >
-                <Compass className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Mapa y Recorrido' : 'Map & Route'}</span>
-              </button>
-            )}
-
-            {activeRoleDef.allowedModes.includes('artisans') && (
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentMode('artisans');
-                  setCommandTab('artisans');
-                }}
-                className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentMode === 'artisans'
-                    ? 'bg-sky-500 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:bg-slate-900 hover:text-white'
-                }`}
-              >
-                <Store className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Portal de Artesanos' : 'Artisans Portal'}</span>
-              </button>
-            )}
-
-            {activeRoleDef.allowedModes.includes('sustainability') && (
-              <button
-                type="button"
-                onClick={() => setCurrentMode('sustainability')}
-                className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentMode === 'sustainability'
-                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:bg-slate-900 hover:text-white'
-                }`}
-              >
-                <BarChart3 className="w-3.5 h-3.5" />
-                <span>{language === 'es' ? 'Panel de Gestión' : 'Analytics'}</span>
-              </button>
-            )}
-          </div>
-        )}
       </header>
 
-      {/* Área Principal: Mapa de Pantalla Completa */}
+      {/* Área Principal con Soporte para Vista Simulada 390x844 */}
       <main className="flex-1 w-full relative overflow-hidden flex items-center justify-center">
         <div
           className={
@@ -542,199 +383,45 @@ export default function App() {
             </div>
           )}
 
-          {/* MODO EXPLORADOR: MAPA A PANTALLA COMPLETA PERMANENTE */}
-          {currentMode === 'visitor' && (
-            <div className="flex-1 w-full h-full relative overflow-hidden">
-              {/* Lienzo 100% Pantalla Completa del Mapa 3D */}
-              {graph && (
-                <div className="absolute inset-0 w-full h-full z-0">
-                  <MapViewer
-                    segments={graph.edges}
-                    pois={pois}
-                    selectedRoute={activeRoute}
-                    activeProfile={request.profile}
-                    selectedStopPoiId={selectedStopPoiId}
-                    onSelectPoi={(id) => setSelectedStopPoiId(id)}
-                    onInspectStop={handleInspectStop}
-                    isPulseActive={isPulseActive}
-                    language={language}
-                    userLocation={userLocation}
-                    onUserLocationChange={(coords) => setUserLocation(coords)}
-                  />
-                </div>
-              )}
-
-              {/* Panel Lateral Flotante en Escritorio con transición suave */}
-              {viewportMode === 'full' && activeRoute && (
-                <>
-                  <div
-                    className={`hidden lg:block absolute top-16 left-4 bottom-24 w-[390px] z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      isDesktopPanelOpen && commandTab === 'explore'
-                        ? 'translate-x-0 opacity-100 pointer-events-auto'
-                        : '-translate-x-[420px] opacity-0 pointer-events-none'
-                    }`}
-                  >
-                    <TacticalDesktopPanel
-                      stops={activeRoute.stops}
-                      pois={pois}
-                      selectedStopPoiId={selectedStopPoiId}
-                      onSelectStop={(id) => setSelectedStopPoiId(id)}
-                      language={language}
-                      passportState={passportState}
-                      onUnlockSecret={handleUnlockSecret}
-                      onMoveUserHere={(coords) => setUserLocation(coords)}
-                    />
-                  </div>
-
-                  {/* Botón para mostrar/ocultar el panel flotante en escritorio */}
-                  {commandTab === 'explore' && (
-                    <button
-                      type="button"
-                      onClick={() => setIsDesktopPanelOpen((v) => !v)}
-                      className={`hidden lg:flex fixed bottom-6 left-4 z-30 px-3 py-2 rounded-2xl bg-slate-900/95 hover:bg-slate-800 text-slate-200 border border-white/15 shadow-2xl items-center gap-2 text-xs font-bold transition-all duration-300 cursor-pointer`}
-                    >
-                      {isDesktopPanelOpen ? (
-                        <>
-                          <PanelLeftClose className="w-4 h-4 text-amber-400" />
-                          <span>{language === 'es' ? 'Ocultar ficha' : 'Hide panel'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <PanelLeftOpen className="w-4 h-4 text-amber-400" />
-                          <span>{language === 'es' ? 'Ver ficha del lugar' : 'Show place card'}</span>
-                        </>
-                      )}
-                    </button>
-                  )}
-                </>
-              )}
-
-              {/* Overlay Suave: Pasaporte de Sellos */}
-              <div
-                className={`absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-xl overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  commandTab === 'passport'
-                    ? 'opacity-100 translate-y-0 pointer-events-auto'
-                    : 'opacity-0 translate-y-6 pointer-events-none'
-                }`}
-              >
-                <div className="p-4 sm:p-6 max-w-6xl mx-auto w-full">
-                  <PassportGallery
-                    pois={pois}
-                    passportState={passportState}
-                    onUnlockSecret={handleUnlockSecret}
-                    language={language}
-                  />
+          {/* Vistas Cargadas con Code Splitting (React.lazy) según la Ruta Activa */}
+          <Suspense
+            fallback={
+              <div className="flex-1 w-full h-full flex items-center justify-center bg-slate-950">
+                <div className="text-center space-y-3">
+                  <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-400 block">
+                    {language === 'es' ? 'Cargando módulo...' : 'Loading module...'}
+                  </span>
                 </div>
               </div>
-
-              {/* Overlay Suave: Directorio de Talleres Artesanales */}
-              <div
-                className={`absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-xl overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  commandTab === 'artisans'
-                    ? 'opacity-100 translate-y-0 pointer-events-auto'
-                    : 'opacity-0 translate-y-6 pointer-events-none'
-                }`}
-              >
-                <div className="p-4 sm:p-6 max-w-6xl mx-auto w-full">
-                  <ArtisanDirectory
-                    pois={pois}
-                    onSelectArtisan={(poiId) => {
-                      setSelectedStopPoiId(poiId);
-                      setCommandTab('explore');
-                      setIsBottomSheetOpen(true);
-                      setIsDesktopPanelOpen(true);
-                    }}
-                    language={language}
-                  />
-                </div>
-              </div>
-
-              {/* Bottom Sheet Deslizable (Móvil y Tablets) */}
-              {activeRoute && (
-                <div className={viewportMode === 'full' ? 'lg:hidden' : 'block'}>
-                  <TacticalBottomSheet
-                    stops={activeRoute.stops}
-                    pois={pois}
-                    selectedStopPoiId={selectedStopPoiId}
-                    onSelectStop={(id) => setSelectedStopPoiId(id)}
-                    isOpen={isBottomSheetOpen}
-                    onClose={() => setIsBottomSheetOpen(false)}
-                    language={language}
-                    passportState={passportState}
-                    onUnlockSecret={handleUnlockSecret}
-                    onMoveUserHere={(coords) => setUserLocation(coords)}
-                  />
-                </div>
-              )}
-
-              {/* Barra Inferior de Navegación */}
-              <MobileBottomNav
-                activeTab={commandTab}
-                onSelectTab={handleSelectTab}
-                onUrbanPulse={handleTriggerUrbanPulse}
-                isPulseActive={isPulseActive}
-                unlockedCount={passportState.unlocked_secrets.length}
+            }
+          >
+            {activeRoute === '/' && (
+              <VisitorView
+                pois={pois}
+                graph={graph}
+                matrices={matrices}
+                weights={weights}
                 language={language}
+                passportState={passportState}
+                onUnlockSecret={handleUnlockSecret}
+                userLocation={userLocation}
+                onUserLocationChange={(coords) => setUserLocation(coords)}
               />
-            </div>
-          )}
+            )}
 
-          {/* VISTA 2: PORTAL DE ARTESANOS */}
-          {currentMode === 'artisans' && (
-            <div className="flex-1 p-4 overflow-y-auto pb-24 animate-fade-slide">
-              <ArtisansPortal pois={pois} language={language} />
-            </div>
-          )}
+            {activeRoute === '/taller' && (
+              <ArtisanView pois={pois} language={language} />
+            )}
 
-          {/* VISTA 3: PANEL DE GESTIÓN */}
-          {currentMode === 'sustainability' && (
-            <div className="flex-1 p-4 overflow-y-auto pb-24 animate-fade-slide">
-              <SustainabilityDashboard language={language} />
-            </div>
-          )}
+            {activeRoute === '/admin' && (
+              <AdminView language={language} />
+            )}
+          </Suspense>
         </div>
       </main>
 
-      {/* Panel Deslizable de Personalización de Ruta con transición suave */}
-      <div
-        className={`fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex justify-end transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isFilterDrawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setIsFilterDrawerOpen(false)}
-      >
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className={`w-full max-w-md bg-slate-950 border-l border-white/15 h-full overflow-y-auto p-5 shadow-2xl space-y-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            isFilterDrawerOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-amber-400" />
-              <h3 className="font-extrabold text-sm text-white uppercase tracking-wider">
-                {language === 'es' ? 'Personalizar Recorrido' : 'Customize Walk'}
-              </h3>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsFilterDrawerOpen(false)}
-              className="p-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <RouteForm
-            request={request}
-            onChangeRequest={handleUpdateReq}
-            onGenerate={handleGenerate}
-            pois={pois}
-            language={language}
-          />
-        </div>
-      </div>
-
-      {/* Modal de Selección de Rol */}
+      {/* Modal Interactivo de Selección de Rol */}
       {isRoleModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 animate-fade-slide">
           <div className="bg-slate-900 border border-white/10 text-white rounded-3xl max-w-md w-full p-5 shadow-2xl space-y-4">
@@ -797,6 +484,7 @@ export default function App() {
         </div>
       )}
 
+      {/* Modales de Transparencia y Celebración */}
       <DataInfoModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -815,5 +503,13 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <RouterProvider>
+      <MainApp />
+    </RouterProvider>
   );
 }
