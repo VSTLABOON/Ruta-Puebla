@@ -11,16 +11,17 @@ import {
 } from '@ruta-abierta/shared-types';
 import { MapViewer } from './components/MapViewer';
 import { RouteForm } from './components/RouteForm';
-import { RouteComparison } from './components/RouteComparison';
-import { StopDetails } from './components/StopDetails';
 import { DataInfoModal } from './components/DataInfoModal';
+import { CelebrationModal } from './components/CelebrationModal';
 import { ArtisansPortal } from './components/ArtisansPortal';
 import { SustainabilityDashboard } from './components/SustainabilityDashboard';
+import { MobileBottomNav, CommandTab } from './components/MobileBottomNav';
+import { TacticalBottomSheet } from './components/TacticalBottomSheet';
+import { PassportGallery } from './components/PassportGallery';
+import { ArtisanDirectory } from './components/ArtisanDirectory';
 import { USER_ROLES, UserRole, AppMode } from './types/roles';
 import {
   Languages,
-  Play,
-  Square,
   Filter,
   Compass,
   Store,
@@ -29,11 +30,13 @@ import {
   UserCheck,
   ChevronDown,
   Check,
-  MapPin,
   SlidersHorizontal,
-  ListOrdered,
-  X
+  Smartphone,
+  Monitor,
+  X,
+  Radio
 } from 'lucide-react';
+import { tacticalAudio } from './utils/tacticalAudio';
 
 export default function App() {
   // Sistema dinámico de roles de usuario
@@ -47,14 +50,33 @@ export default function App() {
 
   const activeRoleDef = useMemo(() => USER_ROLES[currentRole], [currentRole]);
 
-  // Modo de vista actual (garantizado que pertenezca a los modos permitidos del rol)
+  // Modo de vista actual
   const [currentMode, setCurrentMode] = useState<AppMode>(() => activeRoleDef.defaultMode);
 
-  // Pestaña móvil activa para la vista de explorador
-  const [mobileTab, setMobileTab] = useState<'map' | 'form' | 'stops'>('map');
+  // Centro de mando móvil (Pestañas tácticas: 'explore' | 'itinerary' | 'passport' | 'artisans')
+  const [commandTab, setCommandTab] = useState<CommandTab>('explore');
 
-  // Modal para cambio de rol de usuario
+  // Estado del Bottom Sheet deslizable
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  // Modo de visualización: Marco Móvil 390x844 o Pantalla Completa
+  const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
+
+  // Panel deslizable de filtros / parámetros de ruta
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+
+  // Estado de pulso urbano (radar activo)
+  const [isPulseActive, setIsPulseActive] = useState(false);
+
+  // Modales
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [celebrationData, setCelebrationData] = useState<{
+    badgeName: string;
+    title: string;
+    description: string;
+    zone: string;
+  } | null>(null);
 
   // Estados de datos
   const [pois, setPois] = useState<POI[]>([]);
@@ -63,8 +85,6 @@ export default function App() {
   const [weights, setWeights] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isExhibitionActive, setIsExhibitionActive] = useState(false);
 
   // Pasaporte de Exploración dinámico en LocalStorage
   const [passportState, setPassportState] = useState<PassportState>(() => {
@@ -86,6 +106,16 @@ export default function App() {
       } catch {}
       return next;
     });
+
+    const targetPoi = pois.find((p) => p.id === poiId);
+    if (targetPoi && targetPoi.secret_to_unlock) {
+      setCelebrationData({
+        badgeName,
+        title: targetPoi.secret_to_unlock.titulo,
+        description: targetPoi.secret_to_unlock.descripcion,
+        zone: targetPoi.zone
+      });
+    }
   };
 
   // Parámetros dinámicos de solicitud de ruta
@@ -172,22 +202,47 @@ export default function App() {
     setSolution(res);
     setActiveRoute(res.main_route);
     setSelectedStopPoiId(null);
-
-    // En móviles, regresar la vista al mapa para ver el resultado de inmediato
-    setMobileTab('map');
+    setIsFilterDrawerOpen(false);
+    setCommandTab('explore');
   }, [request, graph, matrices, pois, weights]);
 
   const handleUpdateReq = (updated: Partial<RouteRequest>) => {
     setRequest((prev) => ({ ...prev, ...updated }));
   };
 
+  // Trigger de Pulso Urbano (Sonar radar a 50m)
+  const handleTriggerUrbanPulse = () => {
+    setIsPulseActive(true);
+    tacticalAudio.playUrbanPulse();
+    setTimeout(() => {
+      setIsPulseActive(false);
+    }, 2800);
+  };
+
+  const handleInspectStop = (poiId: string) => {
+    setSelectedStopPoiId(poiId);
+    setIsBottomSheetOpen(true);
+  };
+
+  const handleSelectTab = (tab: CommandTab) => {
+    if (tab === 'itinerary') {
+      setIsBottomSheetOpen((prev) => !prev);
+      setCommandTab('explore');
+    } else {
+      setCommandTab(tab);
+      if (tab !== 'explore') {
+        setIsBottomSheetOpen(false);
+      }
+    }
+  };
+
   const handleExportRoute = () => {
     if (!activeRoute) return;
     const textLines = [
       `RUTA ABIERTA PUEBLA - ITINERARIO ACCESIBLE`,
-      `Perfil: ${request.profile} | Duración estimada: ${activeRoute.metrics.total_time_min} min | Distancia: ${activeRoute.metrics.distance_meters} m`,
-      `Porcentaje de tramos verificados en campo: ${activeRoute.metrics.pct_verified}%`,
-      `Gasto estimado en comercios locales: $${activeRoute.metrics.total_cost_mxn} MXN`,
+      `Perfil: ${request.profile} | Duración: ${activeRoute.metrics.total_time_min} min | Distancia: ${activeRoute.metrics.distance_meters} m`,
+      `Auditoría de aceras verificadas en campo: ${activeRoute.metrics.pct_verified}%`,
+      `Gasto en comercios tradicionales de barrio: $${activeRoute.metrics.total_cost_mxn} MXN`,
       ``,
       `PARADAS PROGRAMADAS:`,
       ...activeRoute.stops.map((s) => {
@@ -210,91 +265,96 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
         <div className="text-center space-y-3">
-          <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm font-semibold tracking-wide">
+          <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs font-mono font-semibold tracking-widest uppercase text-amber-400">
             {language === 'es'
-              ? 'Cargando red peatonal de aceras y matrices de Puebla...'
-              : 'Loading Puebla sidewalk pedestrian network & matrices...'}
+              ? 'Iniciando Sistema Operativo de Patrimonio Urbano...'
+              : 'Initializing Augmented Heritage OS...'}
           </p>
         </div>
       </div>
     );
   }
 
+  // App Wrapper
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans">
-      {/* Encabezado Responsivo */}
-      <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-3">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
+      {/* Encabezado Táctico Principal */}
+      <header className="bg-slate-950/90 backdrop-blur-xl border-b border-white/10 text-white sticky top-0 z-40 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-3">
           {/* Logo y Nombre de la Plataforma */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500 text-slate-950 font-extrabold flex items-center justify-center text-base sm:text-lg shadow">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)] flex-shrink-0">
               RA
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold tracking-tight">
+                <h1 className="text-xs sm:text-sm font-extrabold tracking-tight text-white uppercase">
                   Ruta Abierta Puebla
                 </h1>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  Tech-Capital 2026
+                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-black uppercase tracking-widest bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  Heritage OS
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-400">
+              <p className="text-[10px] text-slate-400 font-mono hidden xs:block">
                 {language === 'es'
-                  ? 'Movilidad accesible, patrimonio y turismo sostenible'
-                  : 'Accessible mobility & sustainable living heritage'}
+                  ? 'Analco • La Luz • El Parián • El Alto • Xanenetla'
+                  : 'Accessible Pedestrian Heritage'}
               </p>
             </div>
           </div>
 
-          {/* Selector de Rol y Acciones Rápidas */}
+          {/* Selector de Rol y Acciones Tácticas */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Botón Selector de Rol Dinámico */}
+            {/* Selector de Rol Dinámico en Cabecera */}
             <button
+              type="button"
               onClick={() => setIsRoleModalOpen(true)}
-              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all ${activeRoleDef.theme.badgeBg} ${activeRoleDef.theme.badgeText} ${activeRoleDef.theme.badgeBorder} hover:brightness-110 shadow-sm`}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all ${activeRoleDef.theme.badgeBg} ${activeRoleDef.theme.badgeText} ${activeRoleDef.theme.badgeBorder} hover:brightness-110 shadow-sm cursor-pointer`}
               title="Cambiar rol de usuario"
             >
               <UserCheck className="w-3.5 h-3.5" />
-              <span>{activeRoleDef.shortTitle[language]}</span>
+              <span className="hidden sm:inline">{activeRoleDef.shortTitle[language]}</span>
               <ChevronDown className="w-3 h-3 opacity-70" />
+            </button>
+
+            {/* Toggle de Viewport: Móvil 390x844 vs Pantalla Completa */}
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
+              }}
+              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-mono font-semibold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+              title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Simulador Móvil 390x844'}
+            >
+              {viewportMode === 'mobile' ? <Monitor className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
+              <span className="hidden md:inline">
+                {viewportMode === 'mobile' ? 'Full View' : '390×844'}
+              </span>
             </button>
 
             {/* Modal de Transparencia DENUE */}
             <button
+              type="button"
               onClick={() => setIsModalOpen(true)}
-              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-semibold flex items-center gap-1 border border-slate-700 transition"
-              title="Embudo DENUE & Calidad"
+              className="p-1.5 sm:px-2 sm:py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+              title="Embudo DENUE & Auditorías"
             >
               <Filter className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">{language === 'es' ? 'Embudo DENUE' : 'DENUE'}</span>
-            </button>
-
-            {/* Modo Exhibición / Pitch Stand */}
-            <button
-              onClick={() => setIsExhibitionActive(!isExhibitionActive)}
-              className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition ${
-                isExhibitionActive
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
-              }`}
-              title="Modo Stand / Exhibición"
-            >
-              {isExhibitionActive ? <Square className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">{language === 'es' ? 'Stand' : 'Demo'}</span>
             </button>
 
             {/* Selector de Idioma */}
             <button
+              type="button"
               onClick={() => {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
                 handleUpdateReq({ language: nextLang });
               }}
-              className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold flex items-center gap-1 border border-slate-700 transition"
+              className="px-2 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-mono font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
               aria-label="Cambiar idioma"
             >
               <Languages className="w-3.5 h-3.5" />
@@ -303,35 +363,41 @@ export default function App() {
           </div>
         </div>
 
-        {/* Pestañas de Modos Permitidos para el Rol Activo */}
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 border-t border-slate-800 flex items-center gap-1.5 py-1.5 overflow-x-auto text-xs scrollbar-none">
+        {/* Pestañas de Modos Permitidos para el Rol Activo (Desktop / Navegación rápida) */}
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 border-t border-white/5 flex items-center gap-1.5 py-1.5 overflow-x-auto text-xs scrollbar-none">
           {activeRoleDef.allowedModes.includes('visitor') && (
             <button
               type="button"
-              onClick={() => setCurrentMode('visitor')}
-              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition whitespace-nowrap ${
+              onClick={() => {
+                setCurrentMode('visitor');
+                setCommandTab('explore');
+              }}
+              className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition whitespace-nowrap cursor-pointer ${
                 currentMode === 'visitor'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:bg-slate-800'
+                  ? 'bg-amber-500 text-slate-950 shadow-sm'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-white'
               }`}
             >
-              <Compass className="w-4 h-4" />
-              <span>{language === 'es' ? '1. Explorador & Pasaporte' : '1. Explorer & Passport'}</span>
+              <Compass className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? '1. Explorador Táctico' : '1. Tactical Explorer'}</span>
             </button>
           )}
 
           {activeRoleDef.allowedModes.includes('artisans') && (
             <button
               type="button"
-              onClick={() => setCurrentMode('artisans')}
-              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition whitespace-nowrap ${
+              onClick={() => {
+                setCurrentMode('artisans');
+                setCommandTab('artisans');
+              }}
+              className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition whitespace-nowrap cursor-pointer ${
                 currentMode === 'artisans'
-                  ? 'bg-sky-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:bg-slate-800'
+                  ? 'bg-sky-500 text-slate-950 shadow-sm'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-white'
               }`}
             >
-              <Store className="w-4 h-4" />
-              <span>{language === 'es' ? '2. Portal Artesanos de Barrio' : '2. Artisans Portal'}</span>
+              <Store className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? '2. Portal Artesanos' : '2. Artisans Portal'}</span>
             </button>
           )}
 
@@ -339,107 +405,84 @@ export default function App() {
             <button
               type="button"
               onClick={() => setCurrentMode('sustainability')}
-              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition whitespace-nowrap ${
+              className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition whitespace-nowrap cursor-pointer ${
                 currentMode === 'sustainability'
-                  ? 'bg-emerald-500 text-slate-950 shadow'
-                  : 'text-slate-300 hover:bg-slate-800'
+                  ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-white'
               }`}
             >
-              <BarChart3 className="w-4 h-4" />
-              <span>{language === 'es' ? '3. Sostenibilidad & Destino (Gobierno)' : '3. Sustainability Dashboard'}</span>
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? '3. Analítica SECIHTI' : '3. SECIHTI Analytics'}</span>
             </button>
           )}
         </div>
       </header>
 
-      {/* Contenido Principal */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-1 w-full space-y-5">
-        {/* Banner de Modo Exhibición / Stand si está activo */}
-        {isExhibitionActive && (
-          <div className="bg-amber-500 text-slate-950 p-3 rounded-xl font-medium text-xs flex items-center justify-between shadow">
-            <span>
-              <strong>{language === 'es' ? 'Modo Stand Activo:' : 'Demo Stand Active:'}</strong>{' '}
-              {language === 'es'
-                ? 'Rotación de escenarios accesible, dispersión económica en barrios y cálculo OPTW en tiempo real.'
-                : 'Accessible scenario cycling, economic dispersion in neighborhoods, real-time OPTW solving.'}
-            </span>
-            <button
-              onClick={() => setIsExhibitionActive(false)}
-              className="text-slate-950 font-bold hover:underline ml-2"
-            >
-              ✕
-            </button>
-          </div>
-        )}
-
-        {/* VISTA 1: MODO EXPLORADOR (VISITANTE) */}
-        {currentMode === 'visitor' && (
-          <div className="space-y-5">
-            {/* Barra de Segmentación Móvil (Solo visible en pantallas pequeñas < lg) */}
-            <div className="lg:hidden flex rounded-xl bg-slate-200 p-1 border border-slate-300 text-xs font-bold text-slate-700 shadow-inner">
-              <button
-                type="button"
-                onClick={() => setMobileTab('map')}
-                className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
-                  mobileTab === 'map' ? 'bg-slate-900 text-white shadow' : 'hover:text-slate-900'
-                }`}
-              >
-                <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                <span>{language === 'es' ? 'Mapa 3D' : '3D Map'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab('form')}
-                className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
-                  mobileTab === 'form' ? 'bg-slate-900 text-white shadow' : 'hover:text-slate-900'
-                }`}
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
-                <span>{language === 'es' ? 'Ajustes' : 'Filters'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMobileTab('stops')}
-                className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
-                  mobileTab === 'stops' ? 'bg-slate-900 text-white shadow' : 'hover:text-slate-900'
-                }`}
-              >
-                <ListOrdered className="w-3.5 h-3.5 text-amber-400" />
-                <span>
-                  {language === 'es' ? 'Paradas' : 'Stops'}
-                  {activeRoute ? ` (${activeRoute.stops.length})` : ''}
-                </span>
-              </button>
+      {/* Contenido Principal con Contenedor Opcional Móvil 390x844 */}
+      <main className="flex-1 w-full flex flex-col items-center justify-center p-0 sm:py-4">
+        <div
+          className={
+            viewportMode === 'mobile'
+              ? 'w-full max-w-[390px] min-h-[844px] h-[844px] bg-slate-950 border-[5px] border-slate-800 rounded-[44px] shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden relative flex flex-col'
+              : 'w-full max-w-7xl mx-auto px-3 sm:px-4 py-2 flex-1 flex flex-col relative'
+          }
+        >
+          {/* Muesca Superior en Modo Móvil Simulado */}
+          {viewportMode === 'mobile' && (
+            <div className="h-6 w-full bg-slate-950 flex items-center justify-between px-6 z-40 select-none flex-shrink-0">
+              <span className="text-[10px] font-mono text-slate-400 font-bold">12:00</span>
+              <div className="w-20 h-4 bg-slate-900 rounded-full border border-slate-800 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-emerald-500/80 animate-pulse" />
+              </div>
+              <div className="flex items-center gap-1 text-[10px] font-mono text-slate-400">
+                <Radio className="w-3 h-3 text-sky-400" />
+                <span>5G</span>
+              </div>
             </div>
+          )}
 
-            {/* Estructura Adaptativa: Columnas en desktop / Pestañas en móvil */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-              {/* Columna Izquierda: Formulario (En móvil condicionado a mobileTab === 'form') */}
-              <div
-                className={`lg:col-span-5 space-y-5 ${
-                  mobileTab === 'form' ? 'block' : 'hidden lg:block'
-                }`}
-              >
-                <RouteForm
-                  request={request}
-                  onChangeRequest={handleUpdateReq}
-                  onGenerate={handleGenerate}
-                  pois={pois}
-                  language={language}
-                />
+          {/* VISTA 1: MODO EXPLORADOR TÁCTICO */}
+          {currentMode === 'visitor' && (
+            <div className="flex-1 flex flex-col relative overflow-hidden">
+              {/* Barra Rápida Superior de Controles de Ruta */}
+              <div className="px-3 py-2 bg-slate-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between gap-2 z-20 flex-shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] uppercase font-bold text-amber-400">
+                    {request.profile.replace(/_/g, ' ')}
+                  </span>
+                  {activeRoute && (
+                    <span className="text-[11px] font-mono text-slate-400">
+                      • {activeRoute.stops.length} {language === 'es' ? 'paradas' : 'stops'} • {activeRoute.metrics.total_time_min}m
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterDrawerOpen(true)}
+                    className="px-2 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1 cursor-pointer"
+                  >
+                    <SlidersHorizontal className="w-3 h-3 text-amber-400" />
+                    <span>{language === 'es' ? 'Filtros' : 'Tune'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleExportRoute}
+                    className="p-1 rounded-lg bg-slate-900 border border-white/10 text-slate-300 hover:text-white cursor-pointer"
+                    title="Exportar Itinerario"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
-              {/* Columna Derecha: Mapa y Detalles (En móvil condicionado a mobileTab === 'map' o 'stops') */}
-              <div
-                className={`lg:col-span-7 space-y-5 ${
-                  mobileTab === 'map' || mobileTab === 'stops' ? 'block' : 'hidden lg:block'
-                }`}
-              >
-                {/* Mapa WebGL 3D (visible en desktop o cuando mobileTab === 'map') */}
-                <div className={mobileTab === 'stops' ? 'hidden lg:block' : 'block'}>
-                  {graph && (
+              {/* Vistas según la pestaña activa del Centro de Mando */}
+              <div className="flex-1 relative overflow-y-auto">
+                {/* PESTAÑA EXPLORAR: MAPA 3D VECTORIAL */}
+                {commandTab === 'explore' && graph && (
+                  <div className="w-full h-full min-h-[500px] relative">
                     <MapViewer
                       segments={graph.edges}
                       pois={pois}
@@ -447,130 +490,152 @@ export default function App() {
                       activeProfile={request.profile}
                       selectedStopPoiId={selectedStopPoiId}
                       onSelectPoi={(id) => setSelectedStopPoiId(id)}
+                      onInspectStop={handleInspectStop}
+                      isPulseActive={isPulseActive}
                       language={language}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
 
-                {/* Resumen de Itinerario y Descarga */}
-                {solution && (
-                  <div
-                    className={`bg-white border border-slate-200 p-4 rounded-xl text-xs text-slate-700 shadow-sm space-y-3 ${
-                      mobileTab === 'form' ? 'hidden' : 'block'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="font-bold text-slate-900 flex items-center gap-1.5">
-                        <Compass className="w-4 h-4 text-amber-600" />
-                        <span>{language === 'es' ? 'Explicación de la Ruta' : 'Route Rationale'}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleExportRoute}
-                        className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm"
-                      >
-                        <Download className="w-3.5 h-3.5 text-amber-400" />
-                        <span>{language === 'es' ? 'Descargar' : 'Export'}</span>
-                      </button>
-                    </div>
+                {/* PESTAÑA PASAPORTE: GALERÍA DE INSIGNIAS HOLOGRÁFICAS */}
+                {commandTab === 'passport' && (
+                  <div className="p-3">
+                    <PassportGallery
+                      pois={pois}
+                      passportState={passportState}
+                      onUnlockSecret={handleUnlockSecret}
+                      language={language}
+                    />
+                  </div>
+                )}
 
-                    <p className="leading-relaxed">
-                      {language === 'es' ? solution.explanation.es : solution.explanation.en}
-                    </p>
-
-                    <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-100 flex flex-wrap gap-x-4 gap-y-1">
-                      <span>
-                        <strong>{language === 'es' ? 'Auditoría en campo:' : 'Field audited:'}</strong>{' '}
-                        {activeRoute?.metrics.pct_verified}%
-                      </span>
-                      <span>
-                        <strong>{language === 'es' ? 'Comercios locales:' : 'Local commerce:'}</strong>{' '}
-                        {activeRoute?.metrics.pct_local_stops}%
-                      </span>
-                      <span>
-                        <strong>{language === 'es' ? 'Fuera del zócalo:' : 'Outside core:'}</strong>{' '}
-                        {activeRoute?.metrics.pct_outside_core}%
-                      </span>
-                    </div>
+                {/* PESTAÑA TALLERES: DIRECTORIO DE ARTESANOS EN VIVO */}
+                {commandTab === 'artisans' && (
+                  <div className="p-3">
+                    <ArtisanDirectory
+                      pois={pois}
+                      onSelectArtisan={(poiId) => {
+                        setSelectedStopPoiId(poiId);
+                        setCommandTab('explore');
+                        setIsBottomSheetOpen(true);
+                      }}
+                      language={language}
+                    />
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* Comparador de Rutas y Paradas (En móvil visible si mobileTab === 'stops' o en desktop) */}
-            <div className={mobileTab === 'stops' ? 'block space-y-5' : 'hidden lg:block lg:space-y-5'}>
-              {solution && activeRoute && (
-                <RouteComparison
-                  mainRoute={solution.main_route}
-                  alternativeRoutes={solution.alternative_routes}
-                  activeRouteName={activeRoute.name}
-                  onSelectRoute={(r) => setActiveRoute(r)}
-                  language={language}
-                />
-              )}
-
+              {/* BOTTOM SHEET DESLIZABLE TÁCTICO */}
               {activeRoute && (
-                <StopDetails
+                <TacticalBottomSheet
                   stops={activeRoute.stops}
                   selectedStopPoiId={selectedStopPoiId}
                   onSelectStop={(id) => setSelectedStopPoiId(id)}
+                  isOpen={isBottomSheetOpen}
+                  onClose={() => setIsBottomSheetOpen(false)}
                   language={language}
                   passportState={passportState}
                   onUnlockSecret={handleUnlockSecret}
                 />
               )}
+
+              {/* CENTRO DE MANDO INFERIOR (Mobile Bottom Command Center) */}
+              <MobileBottomNav
+                activeTab={commandTab}
+                onSelectTab={handleSelectTab}
+                onUrbanPulse={handleTriggerUrbanPulse}
+                isPulseActive={isPulseActive}
+                unlockedCount={passportState.unlocked_secrets.length}
+                language={language}
+              />
             </div>
-          </div>
-        )}
+          )}
 
-        {/* VISTA 2: MODO VENDEDORES Y ARTESANOS (COMERCIO LOCAL) */}
-        {currentMode === 'artisans' && (
-          <ArtisansPortal pois={pois} language={language} />
-        )}
+          {/* VISTA 2: PORTAL DE ARTESANOS Y COMERCIO LOCAL */}
+          {currentMode === 'artisans' && (
+            <div className="flex-1 p-4 overflow-y-auto pb-24">
+              <ArtisansPortal pois={pois} language={language} />
+            </div>
+          )}
 
-        {/* VISTA 3: MODO SOSTENIBILIDAD Y DESTINO (GOBIERNO) */}
-        {currentMode === 'sustainability' && (
-          <SustainabilityDashboard language={language} />
-        )}
+          {/* VISTA 3: GOBIERNO / SOSTENIBILIDAD Y PLANIFICACIÓN */}
+          {currentMode === 'sustainability' && (
+            <div className="flex-1 p-4 overflow-y-auto pb-24">
+              <SustainabilityDashboard language={language} />
+            </div>
+          )}
+
+          {/* Barra de Home Indicator en Móvil Simulado */}
+          {viewportMode === 'mobile' && (
+            <div className="h-4 w-full bg-slate-950 flex items-center justify-center flex-shrink-0 z-50">
+              <div className="w-32 h-1 bg-slate-700 rounded-full" />
+            </div>
+          )}
+        </div>
       </main>
 
-      {/* Pie de Página Responsivo */}
-      <footer className="bg-white border-t border-slate-200 text-slate-500 text-xs py-4 mt-8">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-2">
-          <div>
-            <strong>Ruta Abierta Puebla</strong> • Centro Histórico y Barrios Tradicionales
-          </div>
-          <div className="text-[11px] text-slate-400">
-            INEGI DENUE 2026 • OpenStreetMap (ODbL) • Microauditorías CC BY 4.0
-          </div>
-        </div>
-      </footer>
-
-      {/* Modal Interactivo de Selección de Rol Dinámico */}
-      {isRoleModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+      {/* Drawer Deslizable de Filtros de Ruta */}
+      {isFilterDrawerOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex justify-end animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-slate-950 border-l border-white/10 h-full overflow-y-auto p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-base text-slate-100">
-                  {language === 'es' ? 'Seleccionar Rol de Usuario' : 'Select User Role'}
+                <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+                <h3 className="font-extrabold text-sm text-white uppercase tracking-wider">
+                  {language === 'es' ? 'Ajustes del Itinerario' : 'Route Tuning'}
                 </h3>
               </div>
               <button
-                onClick={() => setIsRoleModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1"
-                title="Cerrar"
+                type="button"
+                onClick={() => setIsFilterDrawerOpen(false)}
+                className="p-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {language === 'es'
-                ? 'El sistema adapta dinámicamente las herramientas, permisos y métricas según el perfil seleccionado:'
-                : 'The platform dynamically adapts tools, permissions, and analytics according to the selected profile:'}
-            </p>
+            {solution && (
+              <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-white/5 text-xs text-slate-300 font-mono space-y-1.5">
+                <span className="font-bold text-amber-400 block text-[11px] uppercase tracking-wider">
+                  {language === 'es' ? 'Explicación del Algoritmo OPTW:' : 'OPTW Algorithm Rationale:'}
+                </span>
+                <p className="text-[11px] leading-relaxed text-slate-300 font-sans">
+                  {language === 'es' ? solution.explanation.es : solution.explanation.en}
+                </p>
+              </div>
+            )}
+
+            <RouteForm
+              request={request}
+              onChangeRequest={handleUpdateReq}
+              onGenerate={handleGenerate}
+              pois={pois}
+              language={language}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal Interactivo de Selección de Rol Dinámico */}
+      {isRoleModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 text-white rounded-3xl max-w-md w-full p-5 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <UserCheck className="w-5 h-5 text-amber-400" />
+                <h3 className="font-extrabold text-sm text-slate-100 uppercase tracking-wide">
+                  {language === 'es' ? 'Seleccionar Rol de Usuario' : 'Select User Role'}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsRoleModalOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg"
+                title="Cerrar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <div className="space-y-2.5">
               {(Object.keys(USER_ROLES) as UserRole[]).map((roleKey) => {
@@ -582,10 +647,10 @@ export default function App() {
                     key={roleKey}
                     type="button"
                     onClick={() => handleSelectRole(roleKey)}
-                    className={`w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3 ${
+                    className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-start gap-3 cursor-pointer ${
                       isSelected
                         ? `${role.theme.badgeBg} ${role.theme.badgeBorder} ring-1 ring-amber-400`
-                        : 'bg-slate-800/60 border-slate-700/80 hover:bg-slate-800'
+                        : 'bg-slate-950/70 border-white/5 hover:bg-slate-800'
                     }`}
                   >
                     <div className="mt-0.5">
@@ -619,6 +684,19 @@ export default function App() {
         onClose={() => setIsModalOpen(false)}
         language={language}
       />
+
+      {/* Modal de Celebración al desbloquear sellos/insignias */}
+      {celebrationData && (
+        <CelebrationModal
+          isOpen={true}
+          onClose={() => setCelebrationData(null)}
+          badgeName={celebrationData.badgeName}
+          title={celebrationData.title}
+          description={celebrationData.description}
+          zone={celebrationData.zone}
+          language={language}
+        />
+      )}
     </div>
   );
 }

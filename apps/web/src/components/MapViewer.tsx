@@ -14,7 +14,8 @@ import {
   Moon,
   Sun,
   Crosshair,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 
 interface MapViewerProps {
@@ -25,6 +26,8 @@ interface MapViewerProps {
   selectedStopPoiId: string | null;
   onSelectPoi: (poiId: string) => void;
   language: 'es' | 'en';
+  isPulseActive?: boolean;
+  onInspectStop?: (poiId: string) => void;
 }
 
 type MapStyleKey = 'voyager' | 'dark' | 'positron';
@@ -33,15 +36,15 @@ const MAP_STYLES: Record<
   MapStyleKey,
   { name: { es: string; en: string }; url: string; iconType: 'palette' | 'moon' | 'sun' }
 > = {
-  voyager: {
-    name: { es: 'Turismo Voyager', en: 'Voyager Tourism' },
-    url: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
-    iconType: 'palette'
-  },
   dark: {
     name: { es: 'Noche Neón', en: 'Dark Neon' },
     url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
     iconType: 'moon'
+  },
+  voyager: {
+    name: { es: 'Turismo Voyager', en: 'Voyager Tourism' },
+    url: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+    iconType: 'palette'
   },
   positron: {
     name: { es: 'Luz Arquitectónica', en: 'Positron Clean' },
@@ -71,7 +74,9 @@ export const MapViewer: FC<MapViewerProps> = ({
   activeProfile,
   selectedStopPoiId,
   onSelectPoi,
-  language
+  language,
+  isPulseActive = false,
+  onInspectStop
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -80,7 +85,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const watchPositionIdRef = useRef<number | null>(null);
 
-  const [activeStyle, setActiveStyle] = useState<MapStyleKey>('voyager');
+  const [activeStyle, setActiveStyle] = useState<MapStyleKey>('dark');
   const [is3D, setIs3D] = useState(true);
   const [hoveredSegment, setHoveredSegment] = useState<Segment | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -422,6 +427,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         const handleClick = (e: Event) => {
           e.stopPropagation();
           onSelectPoi(stop.poi.id);
+          if (onInspectStop) onInspectStop(stop.poi.id);
 
           if (popupRef.current) popupRef.current.remove();
 
@@ -665,6 +671,29 @@ export const MapViewer: FC<MapViewerProps> = ({
     });
   }, [is3D]);
 
+  useEffect(() => {
+    if (!isPulseActive) return;
+    const map = mapRef.current;
+    if (!map) return;
+
+    const center = map.getCenter();
+    const centerCoords: [number, number] = [center.lng, center.lat];
+
+    let closest: { poi: POI; distanceM: number } | null = null;
+    pois.forEach((poi) => {
+      const dist = getDistanceMeters(centerCoords, poi.coordinates);
+      if (dist <= 300) {
+        if (!closest || dist < closest.distanceM) {
+          closest = { poi, distanceM: dist };
+        }
+      }
+    });
+
+    if (closest) {
+      setProximityAlert(closest);
+    }
+  }, [isPulseActive, pois]);
+
   return (
     <div className="relative w-full h-[380px] sm:h-[480px] md:h-[560px] lg:h-[620px] rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950 select-none">
       <div ref={mapContainerRef} className="w-full h-full" />
@@ -683,8 +712,12 @@ export const MapViewer: FC<MapViewerProps> = ({
             </div>
           </div>
           <button
-            onClick={() => onSelectPoi(proximityAlert.poi.id)}
-            className="px-2.5 py-1 bg-slate-950 text-amber-400 font-bold rounded-lg text-[10px] uppercase shadow hover:bg-slate-900 transition whitespace-nowrap"
+            type="button"
+            onClick={() => {
+              onSelectPoi(proximityAlert.poi.id);
+              if (onInspectStop) onInspectStop(proximityAlert.poi.id);
+            }}
+            className="px-2.5 py-1 bg-slate-950 text-amber-400 font-bold rounded-lg text-[10px] uppercase shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
           >
             {language === 'es' ? 'Explorar' : 'Explore'}
           </button>
@@ -806,10 +839,10 @@ export const MapViewer: FC<MapViewerProps> = ({
               <span>{language === 'es' ? 'Microcartografía' : 'Cartography'}</span>
               <button
                 onClick={() => setShowLegend(false)}
-                className="text-slate-400 hover:text-white px-1 text-[11px]"
+                className="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800"
                 title="Minimizar"
               >
-                ✕
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="flex items-center gap-2">
