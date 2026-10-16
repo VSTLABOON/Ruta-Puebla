@@ -212,19 +212,19 @@ export const AdminView: FC<AdminViewProps> = ({
   }, [barrierData, barrierProfile]);
 
   return (
-    <div className="flex-1 w-full h-full overflow-y-auto bg-[#07154E] p-3 sm:p-6 pb-24 text-[#EFF1F8]">
+    <div className="flex-1 w-full h-full overflow-y-auto talavera-bg-pattern p-3 sm:p-6 pb-24 text-[#162035]">
       <div className="max-w-6xl mx-auto space-y-4">
         {/* Si no hay sesión, mostrar Login institucional */}
         {!session ? (
-          <div className="max-w-md mx-auto my-12 bg-[#0B228A] border border-[#9597C1]/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
+          <div className="max-w-md mx-auto my-12 bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
             <div className="text-center space-y-1 pb-3 border-b border-[#9597C1]/20">
-              <div className="w-12 h-12 rounded-2xl bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 flex items-center justify-center mx-auto mb-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#0F3078]/15 text-[#B84A2C] border border-[#B84A2C]/30 flex items-center justify-center mx-auto mb-2">
                 <Lock className="w-6 h-6" />
               </div>
               <h3 className="font-extrabold text-base text-white">
                 {language === 'es' ? 'Acceso Planificadores SECIHTI' : 'SECIHTI Planner Access'}
               </h3>
-              <p className="text-xs text-[#9597C1]">
+              <p className="text-xs text-[#0F3078]/70">
                 {language === 'es'
                   ? 'Consola institucional para gestión territorial y sostenibilidad de flujos'
                   : 'Institutional suite for territorial management and walk sustainability'}
@@ -239,7 +239,7 @@ export const AdminView: FC<AdminViewProps> = ({
 
             <form onSubmit={handleLogin} className="space-y-3.5">
               <div>
-                <label className="block text-[11px] font-semibold text-[#EFF1F8] uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-semibold text-[#162035] uppercase tracking-wider mb-1">
                   {language === 'es' ? 'Clave de Acceso Institucional:' : 'Institutional Access Key:'}
                 </label>
                 <div className="relative">
@@ -248,15 +248,15 @@ export const AdminView: FC<AdminViewProps> = ({
                     value={key}
                     onChange={(e) => setKey(e.target.value)}
                     placeholder="SECIHTI-PUEBLA-2026"
-                    className="w-full border border-[#9597C1]/30 rounded-xl p-2.5 pl-8 text-xs text-[#EFF1F8] bg-[#07154E] font-mono tracking-wider placeholder:text-[#9597C1]/50 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
+                    className="w-full border border-[#9597C1]/30 rounded-xl p-2.5 pl-8 text-xs text-[#162035] bg-white font-mono tracking-wider text-[#162035] placeholder:text-slate-400 border-[#0F3078]/30 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
                   />
-                  <KeyRound className="w-3.5 h-3.5 text-[#9597C1] absolute left-2.5 top-3" />
+                  <KeyRound className="w-3.5 h-3.5 text-[#0F3078]/70 absolute left-2.5 top-3" />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 px-4 rounded-xl bg-[#EDE28E] hover:bg-[#F4ECA6] text-[#0E2C9C] font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
+                className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#F4ECA6] text-[#FAF6EE] font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
               >
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span>{language === 'es' ? 'Acceder al Panel' : 'Access Console'}</span>
@@ -265,9 +265,9 @@ export const AdminView: FC<AdminViewProps> = ({
               <button
                 type="button"
                 onClick={handleQuickDemo}
-                className="w-full py-2 px-3 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 text-[#EDE28E] border border-[#EDE28E]/30 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-[#0F3078]/15 hover:bg-[#0F3078]/25 text-[#B84A2C] border border-[#B84A2C]/30 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#EDE28E]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#B84A2C]" />
                 <span>
                   {language === 'es' ? 'Acceso Rápido Demo (1 Clic)' : 'Quick 1-Click Demo'}
                 </span>
@@ -279,7 +279,7 @@ export const AdminView: FC<AdminViewProps> = ({
             {/* BARRA DE NAVEGACIÓN ENTRE ESPACIOS DE ADMINISTRACIÓN */}
             <nav
               aria-label={language === 'es' ? 'Navegación de administración' : 'Admin navigation'}
-              className="bg-[#0B228A]/95 backdrop-blur-md border border-[#9597C1]/25 rounded-2xl p-1.5 flex items-center justify-between gap-1 sm:gap-2 shadow-lg sticky top-0 z-30"
+              className="bg-[#FAF6EE]/95 backdrop-blur-md border-2 border-[#0F3078] rounded-2xl p-1.5 flex items-center justify-between gap-1 sm:gap-2 shadow-lg sticky top-0 z-30"
             >
               <button
                 type="button"
@@ -289,8 +289,8 @@ export const AdminView: FC<AdminViewProps> = ({
                 }}
                 className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
                   activeSpace === 'metrics'
-                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
-                    : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+                    ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md ring-1 ring-[#0F3078] font-serif font-black'
+                    : 'text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 font-serif'
                 }`}
               >
                 <BarChart3 className="w-4 h-4 flex-shrink-0" />
@@ -305,8 +305,8 @@ export const AdminView: FC<AdminViewProps> = ({
                 }}
                 className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none relative ${
                   activeSpace === 'infrastructure'
-                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
-                    : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+                    ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md ring-1 ring-[#0F3078] font-serif font-black'
+                    : 'text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 font-serif'
                 }`}
               >
                 <Hammer className="w-4 h-4 flex-shrink-0" />
@@ -315,8 +315,8 @@ export const AdminView: FC<AdminViewProps> = ({
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold flex-shrink-0 ${
                       activeSpace === 'infrastructure'
-                        ? 'bg-[#0E2C9C] text-[#EDE28E]'
-                        : 'bg-[#EDE28E] text-[#0E2C9C]'
+                        ? 'bg-[#0E2C9C] text-[#B84A2C]'
+                        : 'bg-[#0F3078] text-[#FAF6EE]'
                     }`}
                   >
                     {repairedBarriers.length}
@@ -332,8 +332,8 @@ export const AdminView: FC<AdminViewProps> = ({
                 }}
                 className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
                   activeSpace === 'capacity'
-                    ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
-                    : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+                    ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md ring-1 ring-[#0F3078] font-serif font-black'
+                    : 'text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 font-serif'
                 }`}
               >
                 <Sliders className="w-4 h-4 flex-shrink-0" />
@@ -348,55 +348,55 @@ export const AdminView: FC<AdminViewProps> = ({
               <div className="space-y-4 animate-fade-slide">
                 {/* 4 Tarjetas Ejecutivas de Impacto Territorial */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
-                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                  <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#0F3078]/70 font-semibold flex items-center justify-between">
                       <span>{language === 'es' ? 'Desconcentración' : 'Decentralization'}</span>
-                      <TrendingUp className="w-3.5 h-3.5 text-[#EDE28E]" />
+                      <TrendingUp className="w-3.5 h-3.5 text-[#B84A2C]" />
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">89.4%</div>
-                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                    <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">89.4%</div>
+                    <p className="text-[10px] text-[#162035]/80 font-medium">
                       {language === 'es' ? 'Visitas fuera del Zócalo' : 'Visits outside core'}
                     </p>
                   </div>
 
-                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
-                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                  <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#0F3078]/70 font-semibold flex items-center justify-between">
                       <span>{language === 'es' ? 'Gasto en Barrios' : 'Local Spend'}</span>
-                      <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E]" />
+                      <BarChart3 className="w-3.5 h-3.5 text-[#B84A2C]" />
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">59.4%</div>
-                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                    <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">59.4%</div>
+                    <p className="text-[10px] text-[#162035]/80 font-medium">
                       {language === 'es' ? 'En talleres DENUE' : 'In craft workshops'}
                     </p>
                   </div>
 
-                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
-                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                  <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#0F3078]/70 font-semibold flex items-center justify-between">
                       <span>{language === 'es' ? 'Accesibilidad' : 'Accessibility'}</span>
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#EDE28E]" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#B84A2C]" />
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">100%</div>
-                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                    <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">100%</div>
+                    <p className="text-[10px] text-[#162035]/80 font-medium">
                       {language === 'es' ? 'Red sin escalón auditada' : 'Step-free audited'}
                     </p>
                   </div>
 
-                  <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 shadow-md space-y-1">
-                    <div className="text-[11px] text-[#9597C1] font-semibold flex items-center justify-between">
+                  <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 shadow-md space-y-1">
+                    <div className="text-[11px] text-[#0F3078]/70 font-semibold flex items-center justify-between">
                       <span>{language === 'es' ? 'Afluencia en Vivo' : 'Live Walkers'}</span>
-                      <Award className="w-3.5 h-3.5 text-[#EDE28E]" />
+                      <Award className="w-3.5 h-3.5 text-[#B84A2C]" />
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
+                    <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">
                       {stampLedgerCount}
                     </div>
-                    <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+                    <p className="text-[10px] text-[#162035]/80 font-medium">
                       {language === 'es' ? 'Sellos emitidos en pasaportes' : 'Stamps issued today'}
                     </p>
                   </div>
                 </div>
 
                 {/* Tablero Territorial de Afluencia por Barrios */}
-                <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
                   <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
                     <div>
                       <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-serif">
@@ -404,7 +404,7 @@ export const AdminView: FC<AdminViewProps> = ({
                           ? 'Monitoreo de Carga y Afluencia Barrial en Tiempo Real'
                           : 'Real-Time Neighborhood Influx & Carrying Load'}
                       </h3>
-                      <p className="text-xs text-[#9597C1]">
+                      <p className="text-xs text-[#0F3078]/70">
                         {language === 'es'
                           ? 'Distribución territorial de caminantes entre los 5 núcleos patrimoniales de Puebla.'
                           : 'Territorial distribution of pedestrians across Puebla’s 5 historic zones.'}
@@ -415,7 +415,7 @@ export const AdminView: FC<AdminViewProps> = ({
                       <button
                         type="button"
                         onClick={handleExportReport}
-                        className="px-3.5 py-1.5 rounded-xl bg-[#EDE28E] hover:bg-[#F4ECA6] text-[#0E2C9C] text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
+                        className="px-3.5 py-1.5 rounded-xl bg-[#0F3078] hover:bg-[#F4ECA6] text-[#FAF6EE] text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>{language === 'es' ? 'Exportar Dictamen SECIHTI' : 'Export SECIHTI Report'}</span>
@@ -424,7 +424,7 @@ export const AdminView: FC<AdminViewProps> = ({
                       <button
                         type="button"
                         onClick={() => navigate('/')}
-                        className="px-3 py-1.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EDE28E] border border-[#EDE28E]/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] text-[#FAF6EE] border border-[#FAF6EE]/20 font-serif text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                       >
                         <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -477,23 +477,23 @@ export const AdminView: FC<AdminViewProps> = ({
                     ].map((zone) => (
                       <div
                         key={zone.key}
-                        className="bg-[#07154E] border border-[#9597C1]/20 rounded-xl p-3.5 space-y-2.5"
+                        className="bg-white border border-[#0F3078]/20 rounded-xl p-3.5 space-y-2.5"
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-white text-xs">{zone.title}</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 font-bold">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#0F3078]/15 text-[#B84A2C] border border-[#B84A2C]/30 font-bold">
                             {zone.workshops} {language === 'es' ? 'talleres DENUE' : 'shops'}
                           </span>
                         </div>
 
                         <div className="space-y-1">
-                          <div className="flex items-center justify-between text-[11px] text-[#9597C1]">
+                          <div className="flex items-center justify-between text-[11px] text-[#0F3078]/70">
                             <span>{zone.status}</span>
-                            <span className="font-mono text-[#EDE28E] font-bold">
+                            <span className="font-mono text-[#B84A2C] font-bold">
                               {zone.loadPct}% ({zone.cap} pax/h)
                             </span>
                           </div>
-                          <div className="w-full h-2 bg-[#0B228A] rounded-full overflow-hidden">
+                          <div className="w-full h-2 bg-[#0F3078]/15 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-gradient-to-r from-emerald-400 to-[#EDE28E] rounded-full transition-all duration-500"
                               style={{ width: `${zone.loadPct}%` }}
@@ -512,25 +512,25 @@ export const AdminView: FC<AdminViewProps> = ({
             {/* ============================================================== */}
             {activeSpace === 'infrastructure' && (
               <div className="space-y-4 animate-fade-slide">
-                <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
                   <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-3">
                     <div>
                       <h3 className="text-sm font-extrabold text-white uppercase tracking-wide flex items-center gap-2 font-serif">
-                        <AlertTriangle className="w-4 h-4 text-[#EDE28E]" />
+                        <AlertTriangle className="w-4 h-4 text-[#B84A2C]" />
                         <span>
                           {language === 'es'
                             ? 'Priorización de Obras en Banquetas (Análisis "¿Qué pasa si...?")'
                             : 'Sidewalk Works Simulator ("What-If" Analysis)'}
                         </span>
                       </h3>
-                      <p className="text-xs text-[#9597C1] mt-0.5">
+                      <p className="text-xs text-[#0F3078]/70 mt-0.5">
                         {language === 'es'
                           ? 'Simula la reparación de banquetas para verificar qué talleres y patrimonio histórico quedan conectados.'
                           : 'Simulate repairs to see how workshops and heritage connect on the pedestrian network.'}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-[#07154E] p-1 rounded-xl border border-[#9597C1]/20 text-xs">
+                    <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-[#0F3078]/20 text-xs">
                       <button
                         type="button"
                         onClick={() => {
@@ -539,8 +539,8 @@ export const AdminView: FC<AdminViewProps> = ({
                         }}
                         className={`px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
                           barrierProfile === 'silla_de_ruedas'
-                            ? 'bg-[#EDE28E] text-[#0E2C9C] shadow'
-                            : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                            ? 'bg-[#0F3078] text-[#FAF6EE] shadow'
+                            : 'text-[#0F3078]/70 hover:text-[#162035]'
                         }`}
                       >
                         {language === 'es' ? 'Silla de Ruedas' : 'Wheelchair'}
@@ -553,8 +553,8 @@ export const AdminView: FC<AdminViewProps> = ({
                         }}
                         className={`px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
                           barrierProfile === 'movilidad_reducida'
-                            ? 'bg-[#EDE28E] text-[#0E2C9C] shadow'
-                            : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                            ? 'bg-[#0F3078] text-[#FAF6EE] shadow'
+                            : 'text-[#0F3078]/70 hover:text-[#162035]'
                         }`}
                       >
                         {language === 'es' ? 'Movilidad Reducida' : 'Reduced Mobility'}
@@ -571,13 +571,13 @@ export const AdminView: FC<AdminViewProps> = ({
                           key={b.segment_id}
                           className={`p-4 rounded-xl border text-xs space-y-2.5 transition ${
                             isRepaired
-                              ? 'bg-[#0E2C9C]/40 border-[#EDE28E]/70 shadow-md'
-                              : 'bg-[#07154E] border-[#9597C1]/20 hover:border-[#9597C1]/40'
+                              ? 'bg-[#0E2C9C]/40 border-[#B84A2C]/70 shadow-md'
+                              : 'bg-white border-[#0F3078]/20 hover:border-[#0F3078]/40'
                           }`}
                         >
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <div className="flex items-center gap-2.5">
-                              <span className="font-mono font-black text-[#EDE28E] bg-[#0B228A] px-2 py-0.5 rounded-lg border border-[#EDE28E]/30">
+                              <span className="font-mono font-black text-[#0F3078] bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/30 font-bold">
                                 #{idx + 1}
                               </span>
                               <span className="font-bold text-white text-sm capitalize">
@@ -590,13 +590,13 @@ export const AdminView: FC<AdminViewProps> = ({
                               onClick={() => handleToggleRepair(b.segment_id)}
                               className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer active:scale-95 ${
                                 isRepaired
-                                  ? 'bg-[#EDE28E] text-[#0E2C9C] shadow font-black'
-                                  : 'bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EDE28E] border border-[#EDE28E]/40'
+                                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow font-black'
+                                  : 'bg-[#0E2C9C] hover:bg-[#2544A7] text-[#B84A2C] border border-[#B84A2C]/40'
                               }`}
                             >
                               {isRepaired ? (
                                 <>
-                                  <CheckCircle2 className="w-4 h-4 text-[#0E2C9C]" />
+                                  <CheckCircle2 className="w-4 h-4 text-[#FAF6EE]" />
                                   <span>{language === 'es' ? 'Obra Simulada (Reparada)' : 'Repaired'}</span>
                                 </>
                               ) : (
@@ -608,18 +608,18 @@ export const AdminView: FC<AdminViewProps> = ({
                             </button>
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#9597C1]">
-                            <span className="uppercase font-mono text-[10px] px-2 py-0.5 rounded bg-white/5 text-[#EFF1F8] border border-white/10">
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#0F3078]/70">
+                            <span className="uppercase font-mono text-[10px] px-2 py-0.5 rounded bg-white/5 text-[#162035] border border-white/10">
                               {b.zone.replace(/_/g, ' ')}
                             </span>
-                            <span className="text-[#EDE28E] font-medium">
+                            <span className="text-[#B84A2C] font-medium">
                               {language === 'es' ? 'Obstáculo físico:' : 'Barrier:'}{' '}
                               {Array.isArray(b.obstacles) ? b.obstacles.join(', ').replace(/_/g, ' ') : b.obstacles}
                             </span>
                           </div>
 
-                          <div className="text-xs text-[#EFF1F8] bg-[#0B228A]/50 p-2.5 rounded-xl border border-white/5">
-                            <strong className="text-[#EDE28E]">
+                          <div className="text-xs text-[#162035] bg-white p-2.5 rounded-xl border border-[#0F3078]/15">
+                            <strong className="text-[#B84A2C]">
                               {language === 'es' ? 'Habilita acceso directo a:' : 'Unlocks direct access to:'}
                             </strong>{' '}
                             {Array.isArray(b.unlocked_pois_names) ? b.unlocked_pois_names.join(', ') : b.unlocked_pois_names}
@@ -637,18 +637,18 @@ export const AdminView: FC<AdminViewProps> = ({
             {/* ============================================================== */}
             {activeSpace === 'capacity' && (
               <div className="space-y-4 animate-fade-slide">
-                <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
                   <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
                     <div>
                       <h3 className="text-sm font-extrabold text-white uppercase tracking-wide flex items-center gap-2 font-serif">
-                        <Sliders className="w-4 h-4 text-[#EDE28E]" />
+                        <Sliders className="w-4 h-4 text-[#B84A2C]" />
                         <span>
                           {language === 'es'
                             ? 'Cupos de Capacidad Barrial (Anti-Saturación y Protección Vecinal)'
                             : 'Neighborhood Capacity Quotas (Anti-Saturation)'}
                         </span>
                       </h3>
-                      <p className="text-xs text-[#9597C1] mt-0.5">
+                      <p className="text-xs text-[#0F3078]/70 mt-0.5">
                         {language === 'es'
                           ? 'Regula los límites de caminantes por hora para proteger la tranquilidad de los vecinos y evitar la masificación.'
                           : 'Regulate visitor limits per hour to preserve neighborhood tranquility and avoid overcrowding.'}
@@ -661,7 +661,7 @@ export const AdminView: FC<AdminViewProps> = ({
                         tacticalAudio.playTacticalClick();
                         setZonePaxCaps(INITIAL_ZONE_PAX_CAPS);
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-xs font-bold text-[#EDE28E] flex items-center gap-1.5 cursor-pointer active:scale-95"
+                      className="px-3 py-1.5 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] border border-[#FAF6EE]/20 text-xs font-bold text-[#FAF6EE] flex items-center gap-1.5 cursor-pointer active:scale-95"
                       title={language === 'es' ? 'Restaurar cupos normativos' : 'Reset quotas'}
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
@@ -683,17 +683,17 @@ export const AdminView: FC<AdminViewProps> = ({
                       return (
                         <div
                           key={zone}
-                          className="space-y-1.5 bg-[#07154E] p-3 sm:p-4 rounded-xl border border-[#9597C1]/15"
+                          className="space-y-1.5 bg-white p-3 sm:p-4 rounded-xl border border-[#0F3078]/15"
                         >
                           <div className="flex items-center justify-between text-xs">
                             <span className="font-bold text-white text-sm">
                               {zoneLabels[zone] || zone}
                             </span>
                             <div className="flex items-center gap-2 font-mono text-xs">
-                              <span className="text-[#EDE28E] font-black bg-[#0B228A] px-2.5 py-1 rounded-lg border border-[#EDE28E]/30">
+                              <span className="text-[#0F3078] font-black bg-[#FAF6EE] px-2.5 py-1 rounded-lg border border-[#0F3078]/30 font-serif">
                                 {cap} {language === 'es' ? 'caminantes / hora' : 'walkers / h'}
                               </span>
-                              <span className="bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 px-2 py-1 rounded-lg text-[11px] font-bold hidden sm:inline">
+                              <span className="bg-[#0F3078]/15 text-[#B84A2C] border border-[#B84A2C]/30 px-2 py-1 rounded-lg text-[11px] font-bold hidden sm:inline">
                                 máx {maxStopsInSolver} {maxStopsInSolver === 1 ? 'parada' : 'paradas'} simultáneas
                               </span>
                             </div>
@@ -708,14 +708,14 @@ export const AdminView: FC<AdminViewProps> = ({
                               const val = parseInt(e.target.value, 10);
                               setZonePaxCaps((prev) => ({ ...prev, [zone]: val }));
                             }}
-                            className="w-full h-2 bg-[#0B228A] rounded-lg appearance-none cursor-pointer accent-[#EDE28E]"
+                            className="w-full h-2 bg-[#0F3078]/20 rounded-lg appearance-none cursor-pointer accent-[#0F3078]"
                           />
                         </div>
                       );
                     })}
                   </div>
 
-                  <p className="text-xs text-[#9597C1] leading-relaxed border-t border-[#9597C1]/20 pt-3">
+                  <p className="text-xs text-[#0F3078]/70 leading-relaxed border-t border-[#9597C1]/20 pt-3">
                     {language === 'es'
                       ? 'Los cupos fijados en este módulo regulan en tiempo real las recomendaciones de dispersión territorial para mantener el equilibrio entre el impulso comercial a talleres y la vida cotidiana de las familias residentes.'
                       : 'Quotas govern territorial dispersion in real-time to maintain balance between local commerce and residents’ quality of life.'}

@@ -212,23 +212,23 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-slide">
-      <div className="bg-slate-900 border border-white/15 text-white rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      <div className="bg-[#FAF6EE] border-4 border-[#0F3078] text-[#162035] rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Cabecera del Récord */}
-        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-3 bg-slate-950/60">
+        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-3 bg-[#0F3078] text-[#FAF6EE]">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-inner">
+            <div className="w-10 h-10 rounded-2xl bg-[#FAF6EE]/20 text-[#FAF6EE] border border-[#FAF6EE]/40 flex items-center justify-center shadow-inner">
               <Trophy className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-sm sm:text-base text-white tracking-tight">
+                <h3 className="font-extrabold text-sm sm:text-base text-[#FAF6EE] tracking-tight font-serif font-black">
                   {language === 'es' ? 'Mi Récord de Exploración' : 'My Explorer Record'}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-slate-950">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#FAF6EE] text-[#0F3078] font-serif font-black">
                   {currentUser ? `Nivel ${currentUser.level}` : 'Nivel 1'}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-[#FAF6EE]/80">
                 {currentUser
                   ? `${currentUser.name} (${currentUser.nickname})`
                   : language === 'es'
@@ -256,7 +256,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+              className="p-1.5 rounded-xl bg-slate-800 text-[#FAF6EE]/80 hover:text-white transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -273,8 +273,8 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             }}
             className={`py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer ${
               activeTab === 'records'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#FAF6EE] text-[#0F3078] font-serif font-black shadow-md'
+                : 'text-[#FAF6EE]/80 hover:text-white'
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
@@ -290,7 +290,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             className={`py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer ${
               activeTab === 'tracker'
                 ? 'bg-rose-500 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                : 'text-[#FAF6EE]/80 hover:text-white'
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
@@ -308,7 +308,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             className={`py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer ${
               activeTab === 'history'
                 ? 'bg-sky-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                : 'text-[#FAF6EE]/80 hover:text-white'
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -347,7 +347,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                <div className="flex justify-between text-[10px] text-[#FAF6EE]/80 font-mono">
                   <span>{stats.totalKmWalked} km acumulados</span>
                   <span>Meta: 5.0 km (Nivel Siguiente)</span>
                 </div>
@@ -356,12 +356,12 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
               {/* Grid 2x2 de Récords Personales */}
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                  <div className="flex items-center justify-between text-[11px] text-[#FAF6EE]/80 font-semibold">
                     <span>{language === 'es' ? 'Récord Caminata' : 'Longest Walk'}</span>
                     <Footprints className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div className="text-xl sm:text-2xl font-black text-white font-mono">
-                    {stats.longestWalkKm} <span className="text-xs text-slate-400 font-normal">km</span>
+                    {stats.longestWalkKm} <span className="text-xs text-[#FAF6EE]/80 font-normal">km</span>
                   </div>
                   <div className="text-[10px] text-emerald-400">
                     {language === 'es' ? 'Tu mayor distancia continua' : 'Longest single session'}
@@ -369,12 +369,12 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                  <div className="flex items-center justify-between text-[11px] text-[#FAF6EE]/80 font-semibold">
                     <span>{language === 'es' ? 'Tiempo en Ruta' : 'Total Time'}</span>
                     <Clock className="w-4 h-4 text-sky-400" />
                   </div>
                   <div className="text-xl sm:text-2xl font-black text-white font-mono">
-                    {stats.totalTimeMinutes} <span className="text-xs text-slate-400 font-normal">min</span>
+                    {stats.totalTimeMinutes} <span className="text-xs text-[#FAF6EE]/80 font-normal">min</span>
                   </div>
                   <div className="text-[10px] text-sky-400">
                     {language === 'es' ? 'Explorando a pie en Puebla' : 'Walking historic center'}
@@ -382,12 +382,12 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                  <div className="flex items-center justify-between text-[11px] text-[#FAF6EE]/80 font-semibold">
                     <span>{language === 'es' ? 'Sellos Ganados' : 'Stamps Unlocked'}</span>
                     <Award className="w-4 h-4 text-amber-400" />
                   </div>
                   <div className="text-xl sm:text-2xl font-black text-white font-mono">
-                    {stats.totalBadgesUnlocked} <span className="text-xs text-slate-400 font-normal">/ {pois.length}</span>
+                    {stats.totalBadgesUnlocked} <span className="text-xs text-[#FAF6EE]/80 font-normal">/ {pois.length}</span>
                   </div>
                   <div className="text-[10px] text-amber-400">
                     {language === 'es' ? 'Insignias en pasaporte' : 'In cultural passport'}
@@ -395,7 +395,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                  <div className="flex items-center justify-between text-[11px] text-[#FAF6EE]/80 font-semibold">
                     <span>{language === 'es' ? 'Talleres Locales' : 'Local Artisans'}</span>
                     <Store className="w-4 h-4 text-violet-400" />
                   </div>
@@ -409,12 +409,12 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
               </div>
 
               {/* Acceso Rápido a Iniciar Grabación */}
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/10 flex items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-[#0F3078] text-[#FAF6EE] border border-white/10 flex items-center justify-between gap-3">
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-extrabold text-white">
                     {language === 'es' ? '¿Listo para una nueva caminata?' : 'Ready for a new walk?'}
                   </h4>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-[#FAF6EE]/80">
                     {language === 'es'
                       ? 'Activa el cronómetro y GPS táctico para superar tu récord de distancia.'
                       : 'Record live steps & distance to break your personal record.'}
@@ -471,7 +471,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                 <div className="text-4xl sm:text-5xl font-mono font-black text-amber-400 tracking-wider">
                   {formatTimer(elapsedSeconds)}
                 </div>
-                <div className="flex items-center justify-center gap-4 text-xs font-mono text-slate-400 pt-2 border-t border-white/5">
+                <div className="flex items-center justify-center gap-4 text-xs font-mono text-[#FAF6EE]/80 pt-2 border-t border-white/5">
                   <div>
                     <span className="text-[10px] block uppercase text-slate-500">
                       {language === 'es' ? 'Distancia' : 'Distance'}
@@ -557,7 +557,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="font-bold text-xs text-white">{walk.title}</div>
-                      <span className="text-[10px] font-mono text-slate-400 flex-shrink-0">
+                      <span className="text-[10px] font-mono text-[#FAF6EE]/80 flex-shrink-0">
                         {walk.date}
                       </span>
                     </div>

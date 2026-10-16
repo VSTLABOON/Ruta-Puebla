@@ -92,7 +92,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   const avatarCtrlRef = useRef<Avatar3DController | null>(null);
   const watchPositionIdRef = useRef<number | null>(null);
 
-  const [activeStyle, setActiveStyle] = useState<MapStyleKey>('dark');
+  const [activeStyle, setActiveStyle] = useState<MapStyleKey>('voyager');
   const [is3D, setIs3D] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
@@ -263,7 +263,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         filter: ['!', ['get', 'transitable']],
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#f43f5e',
+          'line-color': '#B84A2C',
           'line-width': 3,
           'line-dasharray': [2, 2],
           'line-opacity': 0.85
@@ -277,9 +277,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         filter: ['all', ['get', 'is_verified'], ['get', 'transitable']],
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#10b981',
+          'line-color': '#1D6B52',
           'line-width': 2.5,
-          'line-opacity': 0.75
+          'line-opacity': 0.85
         }
       });
     } else {
@@ -299,9 +299,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         source: 'active-route',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#fde68a',
-          'line-width': 13,
-          'line-blur': 5,
+          'line-color': '#F0B43A',
+          'line-width': 14,
+          'line-blur': 6,
           'line-opacity': 0.45
         }
       });
@@ -312,9 +312,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         source: 'active-route',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#78350f',
+          'line-color': '#0F3078',
           'line-width': 7.5,
-          'line-opacity': 0.95
+          'line-opacity': 0.98
         }
       });
 
@@ -324,7 +324,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         source: 'active-route',
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': '#fbbf24',
+          'line-color': '#F0B43A',
           'line-width': 4.5,
           'line-opacity': 1
         }
@@ -421,41 +421,45 @@ export const MapViewer: FC<MapViewerProps> = ({
           isSelected || isNearby ? 'scale-115 z-40' : 'hover:scale-105 z-30'
         }`;
 
-        // Arquitectura de Baliza 3D Elevada (Anchor Bottom):
-        // 1. Ficha flotante con nombre (si está seleccionada o cerca)
-        // 2. Medallón dorado 3D volumétrico con el número de orden
-        // 3. Columna de luz vertical (proyecta la baliza sobre las construcciones 3D)
-        // 4. Base georreferenciada en la banqueta con halo expansivo
+        // Arquitectura de Baliza de Cerámica Talavera 3D Elevada (Anchor Bottom):
+        // 1. Ficha flotante de cerámica con doble filete cobalto
+        // 2. Plato de Talavera 3D con doble anillo concéntrico de cobalto y centro marfil majólica
+        // 3. Columna de luz vertical cobalto/ocre sobre las construcciones 3D
+        // 4. Base georreferenciada de barro cocido y cobalto
         el.innerHTML = `
           ${
             isSelected || isNearby
-              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-slate-950/95 border border-amber-400 text-[10px] font-black text-amber-200 shadow-[0_4px_16px_rgba(0,0,0,0.8)] whitespace-nowrap animate-bounce">
-                  ${stop.poi.name}
+              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-[#FAF6EE]/98 border-2 border-[#0F3078] text-[10px] font-black text-[#0F3078] shadow-[0_6px_20px_rgba(15,48,120,0.35)] whitespace-nowrap animate-bounce flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#B84A2C]"></span>
+                  <span>${stop.poi.name}</span>
                 </div>`
               : ''
           }
           <div class="relative flex flex-col items-center">
-            <!-- Medallón Volumétrico Dorado 3D -->
+            <!-- Plato de Talavera 3D Volumétrico -->
             <div class="relative flex items-center justify-center">
-              <div class="absolute -inset-1.5 rounded-2xl bg-amber-400/40 blur-sm ${
+              <div class="absolute -inset-1.5 rounded-full bg-[#0F3078]/25 blur-sm ${
                 isSelected || isNearby ? 'animate-pulse' : ''
               }"></div>
-              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-0.5 shadow-[0_6px_16px_rgba(0,0,0,0.65)] flex items-center justify-center border-2 border-white transform transition-transform ${
-                isSelected ? 'scale-110' : ''
+              <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#0F3078] via-[#1B49AC] to-[#0F3078] p-0.5 shadow-[0_6px_18px_rgba(15,48,120,0.45)] flex items-center justify-center border-2 border-white transform transition-transform ${
+                isSelected ? 'scale-110 ring-2 ring-[#B84A2C]' : ''
               }">
-                <div class="w-full h-full rounded-[14px] bg-slate-950 flex items-center justify-center font-black text-sm text-amber-300 shadow-inner">
-                  <span>${stop.stop_order}</span>
+                <!-- Borde concéntrico interior de Talavera -->
+                <div class="w-full h-full rounded-full bg-[#FAF6EE] p-0.5 flex items-center justify-center border border-[#0F3078]">
+                  <div class="w-full h-full rounded-full border border-dashed border-[#0F3078]/50 flex items-center justify-center font-black text-sm text-[#0F3078] shadow-inner font-serif">
+                    <span>${stop.stop_order}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Baliza de luz vertical (Elevación física sobre el plano 3D) -->
-            <div class="w-1 h-6 bg-gradient-to-b from-amber-300 via-amber-400/70 to-amber-500/20 shadow-[0_0_8px_rgba(251,191,36,0.9)]"></div>
+            <!-- Baliza de luz vertical (Cobalto y Ocre Poblano) -->
+            <div class="w-1 h-6 bg-gradient-to-b from-[#0F3078] via-[#1B49AC]/80 to-[#B84A2C]/30 shadow-[0_0_8px_rgba(15,48,120,0.6)]"></div>
 
-            <!-- Base geodésica anclada a nivel de calle -->
+            <!-- Base geodésica anclada a nivel de calle (Barro y Cobalto) -->
             <div class="relative w-4 h-4 flex items-center justify-center">
-              <div class="absolute inset-0 rounded-full bg-amber-400/40 animate-ping"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-amber-400 border border-white shadow-[0_0_6px_rgba(251,191,36,1)]"></div>
+              <div class="absolute inset-0 rounded-full bg-[#0F3078]/40 animate-ping"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#0F3078] border-2 border-[#FAF6EE] shadow-[0_0_6px_rgba(15,48,120,0.9)]"></div>
             </div>
           </div>
         `;
@@ -477,7 +481,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       });
     }
 
-    // 2. Todas las demás locaciones en el mapa (Siempre visibles como gemas elegantes sin saturar)
+    // 2. Todas las demás locaciones en el mapa (Gemas de Talavera y Barro Poblano)
     const shouldRenderAll = true;
     if (shouldRenderAll) {
       pois.forEach((poi) => {
@@ -492,26 +496,27 @@ export const MapViewer: FC<MapViewerProps> = ({
           isSelected || isNearby ? 'scale-125 z-30' : 'hover:scale-110 z-10'
         }`;
 
+        // Talleres = Terracota petatillo con halo ocre; Patrimonio = Azul cobalto poblano
         const gemBg = isWorkshop
-          ? 'bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.7)]'
-          : 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.7)]';
+          ? 'bg-[#B84A2C] shadow-[0_0_10px_rgba(184,74,44,0.7)]'
+          : 'bg-[#0F3078] shadow-[0_0_10px_rgba(15,48,120,0.7)]';
 
         const textTint = isWorkshop
-          ? 'text-sky-200 border-sky-400/50'
-          : 'text-emerald-200 border-emerald-400/50';
+          ? 'text-[#B84A2C] border-[#B84A2C]/40 bg-[#FAF6EE]/95'
+          : 'text-[#0F3078] border-[#0F3078]/40 bg-[#FAF6EE]/95';
 
         el.innerHTML = `
           <div class="relative flex items-center justify-center p-1">
             ${
               isSelected || isNearby
-                ? '<div class="absolute -inset-1 rounded-full bg-sky-400/40 animate-ping"></div>'
+                ? `<div class="absolute -inset-1 rounded-full ${isWorkshop ? 'bg-[#B84A2C]/40' : 'bg-[#0F3078]/40'} animate-ping"></div>`
                 : ''
             }
-            <div class="w-3.5 h-3.5 rounded-full ${gemBg} border-2 border-white"></div>
+            <div class="w-3.5 h-3.5 rounded-full ${gemBg} border-2 border-white ring-1 ring-black/10"></div>
           </div>
           ${
             isSelected || isNearby
-              ? `<div class="mt-0.5 px-2 py-0.5 rounded-md bg-slate-950/95 border ${textTint} text-[9px] font-bold shadow-xl whitespace-nowrap animate-fade-slide">
+              ? `<div class="mt-0.5 px-2.5 py-0.5 rounded-lg border-2 ${textTint} text-[9px] font-black shadow-xl whitespace-nowrap animate-fade-slide">
                   ${poi.name}
                 </div>`
               : ''
@@ -697,42 +702,42 @@ export const MapViewer: FC<MapViewerProps> = ({
       >
         {proximityAlert &&
           (isAlertMinimized ? (
-            /* Burbuja minimizada flotante */
+            /* Burbuja minimizada flotante Talavera */
             <div
               onClick={() => {
                 onSelectPoi(proximityAlert.poi.id);
                 if (onInspectStop) onInspectStop(proximityAlert.poi.id);
               }}
-              className="bg-slate-950/90 hover:bg-slate-900 text-white p-2 px-3.5 rounded-full border border-amber-400/60 shadow-[0_0_25px_rgba(245,158,11,0.45)] backdrop-blur-xl flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide"
+              className="bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#162035] p-2 px-3.5 rounded-full border-2 border-[#0F3078] shadow-[0_6px_25px_rgba(15,48,120,0.35)] backdrop-blur-xl flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide"
               title={language === 'es' ? 'Toca para abrir la ficha de este lugar' : 'Tap to open place details'}
             >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center flex-shrink-0 shadow">
+              <div className="w-6 h-6 rounded-full bg-[#0F3078] text-[#FAF6EE] flex items-center justify-center flex-shrink-0 shadow">
                 <Sparkles className="w-3.5 h-3.5" />
               </div>
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-extrabold text-xs text-amber-200 truncate max-w-[140px] sm:max-w-[200px]">
+                <span className="font-extrabold text-xs text-[#0F3078] truncate max-w-[140px] sm:max-w-[200px]">
                   {proximityAlert.poi.name}
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 bg-slate-800/80 px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#B84A2C] bg-[#B84A2C]/10 px-1.5 py-0.5 rounded-full">
                   {proximityAlert.distanceM}m
                 </span>
               </div>
             </div>
           ) : (
-            /* Banner expandido completo (se minimiza automáticamente tras 3.5 segundos) */
-            <div className="bg-amber-500/95 backdrop-blur-md text-slate-950 p-3 rounded-2xl border border-white/40 shadow-2xl flex items-center justify-between gap-3 sm:max-w-sm animate-fade-slide">
+            /* Banner expandido completo Talavera */
+            <div className="bg-[#FAF6EE]/98 backdrop-blur-md text-[#162035] p-3 rounded-2xl border-2 border-[#0F3078] shadow-2xl flex items-center justify-between gap-3 sm:max-w-sm animate-fade-slide">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-xl bg-[#0F3078] text-[#FAF6EE] flex items-center justify-center flex-shrink-0 shadow">
+                  <Sparkles className="w-4 h-4 text-[#F0B43A]" />
                 </div>
                 <div className="text-xs min-w-0">
-                  <span className="font-black uppercase tracking-wider text-[10px] block text-slate-900">
+                  <span className="font-black uppercase tracking-wider text-[10px] block text-[#B84A2C]">
                     {language === 'es' ? 'Lugar cercano a ti' : 'Nearby location'}
                   </span>
-                  <span className="font-extrabold text-sm truncate block">
+                  <span className="font-extrabold text-sm truncate block text-[#0F3078]">
                     {proximityAlert.poi.name}
                   </span>
-                  <span className="text-slate-900 font-semibold text-[11px]">
+                  <span className="text-[#162035]/80 font-semibold text-[11px]">
                     {language === 'es'
                       ? `A ${proximityAlert.distanceM} metros de tu ubicación`
                       : `${proximityAlert.distanceM}m away`}
@@ -746,14 +751,14 @@ export const MapViewer: FC<MapViewerProps> = ({
                     onSelectPoi(proximityAlert.poi.id);
                     if (onInspectStop) onInspectStop(proximityAlert.poi.id);
                   }}
-                  className="px-3 py-1.5 bg-slate-950 text-amber-400 font-bold rounded-xl text-xs shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
+                  className="px-3 py-1.5 bg-[#0F3078] text-[#FAF6EE] font-bold rounded-xl text-xs shadow hover:bg-[#1B49AC] transition whitespace-nowrap cursor-pointer"
                 >
                   {language === 'es' ? 'Ver lugar' : 'Open'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsAlertMinimized(true)}
-                  className="p-1 rounded-lg bg-slate-950/20 hover:bg-slate-950/40 text-slate-950 cursor-pointer"
+                  className="p-1 rounded-lg bg-[#0F3078]/10 hover:bg-[#0F3078]/20 text-[#0F3078] cursor-pointer"
                   title={language === 'es' ? 'Minimizar a burbuja' : 'Minimize to bubble'}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -763,18 +768,18 @@ export const MapViewer: FC<MapViewerProps> = ({
           ))}
       </div>
 
-      {/* HUD Flotante Superior: Limpio, Ultra-Compacto y Diseñado para Móviles */}
+      {/* HUD Flotante Superior Talavera */}
       <div className="absolute top-3 left-3 right-3 z-10 flex items-start justify-between pointer-events-none">
         {/* Lado Izquierdo: Insignia de Estado y Selector de Enfoque */}
         <div className="flex flex-col gap-1.5 pointer-events-auto max-w-[calc(100%-60px)]">
           {selectedRoute ? (
-            <div className="flex items-center gap-2 bg-slate-900/95 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-500/40 shadow-xl">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse flex-shrink-0 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+            <div className="flex items-center gap-2 bg-[#FAF6EE]/95 backdrop-blur-md px-3 py-1.5 rounded-2xl border-2 border-[#0F3078] shadow-xl">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#B84A2C] animate-pulse flex-shrink-0 shadow-[0_0_8px_rgba(184,74,44,0.8)]" />
               <div className="flex flex-col min-w-0">
-                <span className="text-[9px] font-bold tracking-wider uppercase text-amber-400/90 leading-none">
+                <span className="text-[9px] font-bold tracking-wider uppercase text-[#B84A2C] leading-none">
                   {language === 'es' ? 'Ruta Activa' : 'Active Route'}
                 </span>
-                <span className="text-xs font-black text-slate-100 truncate leading-tight mt-0.5">
+                <span className="text-xs font-black text-[#0F3078] truncate leading-tight mt-0.5">
                   {selectedRoute.name}
                 </span>
               </div>
@@ -782,7 +787,7 @@ export const MapViewer: FC<MapViewerProps> = ({
                 <button
                   type="button"
                   onClick={onClearRoute}
-                  className="ml-1 p-1 rounded-lg bg-white/10 hover:bg-rose-500/25 text-slate-300 hover:text-rose-200 transition cursor-pointer"
+                  className="ml-1 p-1 rounded-lg bg-[#0F3078]/10 hover:bg-rose-500/20 text-[#0F3078] hover:text-rose-700 transition cursor-pointer"
                   title={language === 'es' ? 'Salir de la ruta y volver a exploración libre' : 'Exit route'}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -791,9 +796,9 @@ export const MapViewer: FC<MapViewerProps> = ({
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-slate-900/95 backdrop-blur-md px-3 py-2 rounded-2xl border border-sky-500/30 shadow-xl">
-                <span className="w-2 h-2 rounded-full bg-sky-400 flex-shrink-0 shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
-                <span className="text-xs font-black text-slate-100">
+              <div className="flex items-center gap-2 bg-[#FAF6EE]/95 backdrop-blur-md px-3 py-2 rounded-2xl border-2 border-[#0F3078] shadow-xl">
+                <span className="w-2 h-2 rounded-full bg-[#0F3078] flex-shrink-0 shadow-[0_0_8px_rgba(15,48,120,0.8)]" />
+                <span className="text-xs font-black text-[#0F3078]">
                   {language === 'es' ? `Puebla (${pois.length} lugares)` : `Puebla (${pois.length} places)`}
                 </span>
               </div>
@@ -801,9 +806,9 @@ export const MapViewer: FC<MapViewerProps> = ({
                 <button
                   type="button"
                   onClick={onOpenCustomizer}
-                  className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs px-3.5 py-2 rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-300/40 transition active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 bg-[#B84A2C] hover:bg-[#D66544] text-white font-black text-xs px-3.5 py-2 rounded-2xl shadow-md border border-white/30 transition active:scale-95 cursor-pointer"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#F0B43A]" />
                   <span>{language === 'es' ? 'Personalizar' : 'Customize'}</span>
                 </button>
               )}
@@ -811,27 +816,27 @@ export const MapViewer: FC<MapViewerProps> = ({
           )}
         </div>
 
-        {/* Lado Derecho: Dock de Comandos Vertical (Dónde estoy, 3D/2D, Estilo, Encuadrar) */}
+        {/* Lado Derecho: Dock de Comandos Vertical Talavera */}
         <div className="flex flex-col items-center gap-2 pointer-events-auto">
           {/* Botón ¿Dónde estoy? */}
           <button
             type="button"
             onClick={handleWhereAmI}
-            className="w-10 h-10 rounded-2xl bg-sky-500 text-slate-950 shadow-[0_0_18px_rgba(14,165,233,0.55)] border border-white/40 flex items-center justify-center active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-400 focus:outline-none transition-all cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] shadow-[0_4px_16px_rgba(15,48,120,0.45)] border-2 border-white flex items-center justify-center active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0F3078] focus:outline-none transition-all cursor-pointer"
             aria-label={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
             title={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
           >
-            <Navigation className="w-4 h-4 fill-slate-950" />
+            <Navigation className="w-4 h-4 fill-[#FAF6EE]" />
           </button>
 
           {/* Botón 3D / 2D */}
           <button
             type="button"
             onClick={toggle3D}
-            className={`w-10 h-10 rounded-2xl backdrop-blur-md border shadow-lg flex items-center justify-center text-xs font-black focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer ${
+            className={`w-10 h-10 rounded-2xl backdrop-blur-md border-2 shadow-lg flex items-center justify-center text-xs font-black focus-visible:ring-2 focus-visible:ring-[#0F3078] focus:outline-none transition-all cursor-pointer ${
               is3D
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                : 'bg-slate-900/90 text-slate-300 border-white/15'
+                ? 'bg-[#0F3078] text-[#FAF6EE] border-[#0F3078]'
+                : 'bg-[#FAF6EE]/95 text-[#0F3078] border-[#0F3078]'
             }`}
             aria-label={language === 'es' ? 'Alternar perspectiva 3D y 2D' : 'Toggle 3D and 2D perspective'}
             title={language === 'es' ? 'Alternar perspectiva 3D / 2D' : 'Toggle 3D / 2D perspective'}
@@ -839,11 +844,11 @@ export const MapViewer: FC<MapViewerProps> = ({
             <span>{is3D ? '3D' : '2D'}</span>
           </button>
 
-          {/* Botón Cambio de Estilo de Mapa (Ciclo: Oscuro -> Callejero -> Claro) */}
+          {/* Botón Cambio de Estilo de Mapa */}
           <button
             type="button"
             onClick={cycleMapStyle}
-            className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#0F3078] border-2 border-[#0F3078] backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-[#0F3078] focus:outline-none transition-all cursor-pointer"
             aria-label={
               language === 'es'
                 ? `Cambiar estilo de mapa. Actual: ${MAP_STYLES[activeStyle].name.es}`
@@ -855,17 +860,17 @@ export const MapViewer: FC<MapViewerProps> = ({
                 : `Current style: ${MAP_STYLES[activeStyle].name.en} (Tap to change)`
             }
           >
-            {activeStyle === 'dark' && <Moon className="w-4 h-4 text-indigo-300" />}
-            {activeStyle === 'voyager' && <Palette className="w-4 h-4 text-emerald-300" />}
-            {activeStyle === 'positron' && <Sun className="w-4 h-4 text-amber-300" />}
+            {activeStyle === 'dark' && <Moon className="w-4 h-4 text-[#0F3078]" />}
+            {activeStyle === 'voyager' && <Palette className="w-4 h-4 text-[#B84A2C]" />}
+            {activeStyle === 'positron' && <Sun className="w-4 h-4 text-[#D48914]" />}
           </button>
 
-          {/* Botón Encuadrar Ruta Completa (solo si hay ruta seleccionada) */}
+          {/* Botón Encuadrar Ruta Completa */}
           {selectedRoute && (
             <button
               type="button"
               onClick={fitToRoute}
-              className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer"
+              className="w-10 h-10 rounded-2xl bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#B84A2C] border-2 border-[#B84A2C] backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-[#B84A2C] focus:outline-none transition-all cursor-pointer"
               aria-label={language === 'es' ? 'Encuadrar y ver ruta completa en el mapa' : 'Fit full route on map'}
               title={language === 'es' ? 'Ver ruta completa' : 'Fit full route'}
             >
@@ -875,49 +880,49 @@ export const MapViewer: FC<MapViewerProps> = ({
         </div>
       </div>
 
-      {/* Indicador discreto de navegación con un dedo y simbología */}
+      {/* Indicador discreto de navegación con un dedo y simbología Talavera */}
       <div className="absolute bottom-24 left-3 z-10 flex items-center gap-2">
         {showLegend ? (
-          <div className="bg-slate-900/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 text-xs text-slate-200 shadow-2xl space-y-2 transition-all duration-300">
-            <div className="flex items-center justify-between font-bold text-slate-100 uppercase tracking-wider text-[10px] pb-1 border-b border-slate-800 gap-4">
-              <span>{language === 'es' ? 'Guía del Mapa' : 'Map Guide'}</span>
+          <div className="bg-[#FAF6EE]/98 backdrop-blur-md p-3.5 rounded-2xl border-2 border-[#0F3078] text-xs text-[#162035] shadow-2xl space-y-2 transition-all duration-300">
+            <div className="flex items-center justify-between font-bold text-[#0F3078] uppercase tracking-wider text-[10px] pb-1 border-b border-[#0F3078]/20 gap-4">
+              <span>{language === 'es' ? 'Guía del Mapa Poblano' : 'Puebla Map Guide'}</span>
               <button
                 type="button"
                 onClick={() => setShowLegend(false)}
-                className="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800 cursor-pointer"
+                className="text-[#0F3078] hover:text-[#B84A2C] p-0.5 rounded hover:bg-[#DCE6F9] cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-sky-500 border border-white inline-block"></span>
-              <span className="text-[11px] font-semibold text-sky-300">
+              <span className="w-3 h-3 rounded-full bg-[#0F3078] border border-white inline-block"></span>
+              <span className="text-[11px] font-bold text-[#0F3078]">
                 {language === 'es' ? 'Tu ubicación actual' : 'Your location'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-amber-400 border border-white inline-block"></span>
-              <span className="text-[11px] font-semibold text-amber-300">
-                {language === 'es' ? 'Paradas de tu recorrido' : 'Route stops'}
+              <span className="w-3 h-3 rounded-full bg-[#F0B43A] border border-[#0F3078] inline-block"></span>
+              <span className="text-[11px] font-bold text-[#9E650C]">
+                {language === 'es' ? 'Paradas del recorrido (Platos 3D)' : 'Route stops'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-cyan-400 border border-white inline-block"></span>
-              <span className="text-[11px] text-slate-200">
-                {language === 'es' ? 'Talleres y comercios locales' : 'Artisan workshops'}
+              <span className="w-3 h-3 rounded-full bg-[#B84A2C] border border-white inline-block"></span>
+              <span className="text-[11px] font-semibold text-[#B84A2C]">
+                {language === 'es' ? 'Talleres artesanales (Barro)' : 'Artisan workshops'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-4 h-1 bg-emerald-500 inline-block rounded"></span>
-              <span className="flex items-center gap-1 text-[11px]">
-                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              <span className="w-4 h-1 bg-[#1D6B52] inline-block rounded"></span>
+              <span className="flex items-center gap-1 text-[11px] font-medium text-[#1D6B52]">
+                <ShieldCheck className="w-3 h-3 text-[#1D6B52]" />
                 {language === 'es' ? 'Banqueta accesible sin barreras' : 'Accessible sidewalk'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-4 h-1 bg-rose-500 inline-block rounded"></span>
-              <span className="flex items-center gap-1 text-[11px]">
-                <AlertTriangle className="w-3 h-3 text-rose-400" />
+              <span className="w-4 h-1 bg-[#B84A2C] inline-block rounded"></span>
+              <span className="flex items-center gap-1 text-[11px] font-medium text-[#B84A2C]">
+                <AlertTriangle className="w-3 h-3 text-[#B84A2C]" />
                 {language === 'es' ? 'Escalón o calle con obstáculo' : 'Step or obstacle'}
               </span>
             </div>
@@ -926,11 +931,11 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={() => setShowLegend(true)}
-            className="px-3 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-white/10 text-slate-200 hover:text-white shadow-lg text-xs flex items-center gap-1.5 transition-all duration-300 cursor-pointer"
+            className="px-3 py-1.5 bg-[#FAF6EE]/95 backdrop-blur-md rounded-xl border-2 border-[#0F3078] text-[#0F3078] hover:bg-[#FFFDF9] shadow-lg text-xs flex items-center gap-1.5 transition-all duration-300 cursor-pointer font-bold"
           >
-            <Hand className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px] font-medium">
-              {language === 'es' ? 'Mueve con 1 dedo • Guía' : '1-finger pan • Guide'}
+            <Hand className="w-3.5 h-3.5 text-[#B84A2C]" />
+            <span className="text-[11px]">
+              {language === 'es' ? 'Mueve con 1 dedo • Simbología' : '1-finger pan • Legend'}
             </span>
           </button>
         )}

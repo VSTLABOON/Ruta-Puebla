@@ -1,6 +1,5 @@
 import { useState, useRef, useMemo, useEffect, type MouseEvent, type TouchEvent, type FC } from 'react';
 import {
-  Award,
   Sparkles,
   Check,
   ShieldCheck,
@@ -21,6 +20,7 @@ import {
   subscribeToLiveCounterStamps,
   recordStampInLedger
 } from '../utils/offlineStamp';
+import { TalaveraPlateMedallion } from './TalaveraOrnament';
 
 interface HolographicBadgeProps {
   poiId?: string;
@@ -253,109 +253,88 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
             : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
           transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.5s ease-out'
         }}
-        className={`relative overflow-hidden rounded-2xl p-5 border transition-all duration-300 ${
+        className={`relative overflow-hidden rounded-3xl p-5 border-2 transition-all duration-300 ${
           isUnlocked
-            ? 'holographic-card border-amber-400/50 shadow-[0_0_35px_rgba(245,158,11,0.25)]'
-            : 'bg-slate-900/90 border-slate-700/80 shadow-xl'
+            ? 'bg-[#FAF6EE] border-[#0F3078] shadow-[0_12px_36px_rgba(15,48,120,0.25)]'
+            : 'bg-[#FAF6EE]/90 border-[#0F3078]/30 shadow-lg'
         }`}
       >
-        {/* Iridescent Glare Sheen */}
+        {/* Cerámica vitrificada reflejo de brillo */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-40 transition-opacity duration-300"
+          className="absolute inset-0 pointer-events-none opacity-50 transition-opacity duration-300"
           style={{
-            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.35) 0%, rgba(56,189,248,0.2) 35%, rgba(245,158,11,0.15) 60%, transparent 80%)`
+            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.7) 0%, rgba(240,180,58,0.2) 35%, rgba(15,48,120,0.1) 60%, transparent 80%)`
           }}
         />
 
-        {/* Tactical Stencil Grid Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px] pointer-events-none" />
+        {/* Textura sutil de petatillo de Talavera */}
+        <div className="absolute inset-0 bg-[radial-gradient(#0F3078_0.75px,transparent_0.75px)] [background-size:14px_14px] opacity-10 pointer-events-none" />
 
-        {/* Card Header Telemetry */}
-        <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10 text-xs">
-          <div className="flex items-center gap-1.5 font-mono uppercase tracking-widest text-[10px] text-amber-400 font-bold">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-            <span>{language === 'es' ? 'Sello Patrimonial' : 'Heritage Stamp'}</span>
+        {/* Cabecera del Medallón */}
+        <div className="relative z-10 flex items-center justify-between pb-3 border-b-2 border-[#0F3078]/15 text-xs">
+          <div className="flex items-center gap-1.5 font-serif uppercase tracking-wider text-[11px] text-[#0F3078] font-bold">
+            <Sparkles className="w-3.5 h-3.5 text-[#B84A2C]" />
+            <span>{language === 'es' ? 'Placa de Talavera Poblana' : 'Puebla Talavera Plate'}</span>
           </div>
-          <span className="font-mono text-[10px] text-slate-400 uppercase px-2 py-0.5 rounded bg-slate-950/60 border border-white/5">
+          <span className="font-serif text-[10px] text-[#0F3078] uppercase px-2.5 py-0.5 rounded-full bg-white/80 border border-[#0F3078]/25 font-bold">
             {zone.replace(/_/g, ' ')}
           </span>
         </div>
 
-        {/* Central Medallion Badge */}
+        {/* Medallón Central de Cerámica Talavera */}
         <div className="relative z-10 my-4 flex flex-col items-center text-center">
-          <div className="relative mb-3">
-            {/* Glowing Aura Ring */}
-            <div
-              className={`absolute -inset-2 rounded-full blur-md opacity-75 ${
-                isUnlocked
-                  ? 'bg-gradient-to-r from-amber-500 via-sky-400 to-amber-500 animate-pulse'
-                  : 'bg-slate-700'
-              }`}
-            />
+          <div className="relative mb-3 flex items-center justify-center">
+            {/* Medallón auténtico Talavera */}
+            <TalaveraPlateMedallion size="lg" variant={isUnlocked ? 'polychrome' : 'cobalt'} animate={isUnlocked} />
 
-            {/* Medallion Core */}
+            {/* Sello de verificación */}
             <div
-              className={`relative w-20 h-20 rounded-full flex items-center justify-center border-2 shadow-2xl transition-all duration-300 ${
-                isUnlocked
-                  ? 'bg-gradient-to-br from-amber-400 via-amber-600 to-slate-950 border-amber-300 text-slate-950'
-                  : 'bg-slate-950 border-slate-700 text-slate-500'
+              className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center shadow-md ${
+                isUnlocked ? 'bg-[#1D6B52] text-[#FAF6EE]' : 'bg-[#B84A2C] text-[#FAF6EE]'
               }`}
             >
-              {isUnlocked ? (
-                <Award className="w-10 h-10 text-amber-200 stroke-[2.2] drop-shadow-md" />
-              ) : (
-                <Award className="w-9 h-9 text-slate-600 stroke-[1.8]" />
-              )}
-            </div>
-
-            {/* Verification Chip */}
-            <div
-              className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-slate-950 flex items-center justify-center ${
-                isUnlocked ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-500'
-              }`}
-            >
-              {isUnlocked ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <ShieldCheck className="w-3 h-3" />}
+              {isUnlocked ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <ShieldCheck className="w-3.5 h-3.5" />}
             </div>
           </div>
 
-          <h4 className="text-base font-extrabold tracking-tight text-white mb-0.5">
+          <h4 className="text-base font-serif font-black tracking-tight text-[#0F3078] mb-0.5">
             {badgeName}
           </h4>
-          <p className="text-xs text-amber-300/90 font-medium">
+          <p className="text-xs text-[#B84A2C] font-serif font-semibold">
             {poiName}
           </p>
         </div>
 
-        {/* Secret / Memory Information */}
+        {/* Información secreta del artesano o patrimonio */}
         {secretTitle && (
-          <div className="relative z-10 bg-slate-950/70 backdrop-blur-md rounded-xl p-3 border border-white/10 text-xs space-y-1 my-3 text-left">
-            <div className="flex items-center gap-1.5 font-bold text-amber-400 text-[11px]">
-              <Flame className="w-3.5 h-3.5 text-amber-500" />
+          <div className="relative z-10 bg-white/90 rounded-2xl p-3 border-2 border-[#0F3078]/15 text-xs space-y-1 my-3 text-left shadow-xs">
+            <div className="flex items-center gap-1.5 font-bold text-[#B84A2C] text-[11px] font-serif">
+              <Flame className="w-3.5 h-3.5 text-[#B84A2C]" />
               <span>{secretTitle}</span>
             </div>
             {secretDescription && (
-              <p className="text-[11px] text-slate-300 leading-relaxed font-sans">
+              <p className="text-[11px] text-[#162035]/80 leading-relaxed font-sans">
                 {secretDescription}
               </p>
             )}
           </div>
         )}
 
-        {/* Bottom Interactive Stamp Controls (Real NFC + Counter Sync + Code Verification) */}
-        <div className="relative z-10 pt-3 border-t border-white/10 space-y-2.5">
+        {/* Controles de sellado físico / NFC / Código de mostrador */}
+        <div className="relative z-10 pt-3 border-t-2 border-[#0F3078]/15 space-y-2.5">
           {isUnlocked ? (
-            <div className="w-full py-2 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+            <div className="w-full py-2 px-3 rounded-xl bg-[#1D6B52]/15 border border-[#1D6B52]/40 text-[#1D6B52] text-xs font-bold flex items-center justify-center gap-2 font-serif">
+              <Check className="w-4 h-4 text-[#1D6B52] stroke-[2.5]" />
               <span>
                 {language === 'es'
-                  ? `Sello Verificado (${expectedCode})`
-                  : `Verified in Passport (${expectedCode})`}
+                  ? `Sello Horneado en Pasaporte (${expectedCode})`
+                  : `Baked Stamp in Passport (${expectedCode})`}
               </span>
             </div>
           ) : (
             <>
-              {/* Selector de método de sellado: Lector NFC / Pulso vs Código / QR de Mostrador */}
-              <div className="grid grid-cols-2 gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-white/10 text-[11px]">
+              {/* Selector de método de sellado */}
+              <div className="grid grid-cols-2 gap-1.5 bg-white/70 p-1 rounded-xl border border-[#0F3078]/15 text-[11px]">
                 <button
                   type="button"
                   onClick={() => {
@@ -365,8 +344,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   }}
                   className={`py-1.5 px-2 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     stampMode === 'nfc'
-                      ? 'bg-amber-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[#0F3078] text-[#FAF6EE] shadow-sm font-serif'
+                      : 'text-[#0F3078]/70 hover:text-[#0F3078]'
                   }`}
                 >
                   <SmartphoneNfc className="w-3.5 h-3.5" />
@@ -383,8 +362,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   }}
                   className={`py-1.5 px-2 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     stampMode === 'qr'
-                      ? 'bg-sky-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[#B84A2C] text-[#FAF6EE] shadow-sm font-serif'
+                      : 'text-[#0F3078]/70 hover:text-[#0F3078]'
                   }`}
                 >
                   <QrCode className="w-3.5 h-3.5" />
@@ -394,9 +373,9 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
 
               {stampMode === 'nfc' ? (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[10px] font-mono px-1 text-slate-400">
+                  <div className="flex items-center justify-between text-[10px] font-mono px-1 text-[#0F3078]/70">
                     <span className="flex items-center gap-1">
-                      <Radio className={`w-3 h-3 ${webNfcAvailable ? 'text-emerald-400' : 'text-sky-400'}`} />
+                      <Radio className={`w-3 h-3 ${webNfcAvailable ? 'text-[#1D6B52]' : 'text-[#0F3078]'}`} />
                       {webNfcAvailable
                         ? language === 'es'
                           ? 'Hardware Web NFC: Activo'
@@ -410,15 +389,15 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   <button
                     type="button"
                     onClick={handleNfcTap}
-                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer font-serif ${
                       nfcScanning
-                        ? 'bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30'
-                        : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-110 active:scale-[0.98] text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
+                        ? 'bg-rose-500/20 border border-rose-500/40 text-rose-700 hover:bg-rose-500/30'
+                        : 'bg-[#0F3078] hover:bg-[#0A2255] active:scale-[0.98] text-[#FAF6EE] shadow-md border border-[#FAF6EE]/20'
                     }`}
                   >
                     {nfcScanning ? (
                       <>
-                        <X className="w-4 h-4 text-rose-400" />
+                        <X className="w-4 h-4 text-rose-600" />
                         <span>
                           {language === 'es'
                             ? 'Detener Escáner NFC / Receptor'
@@ -438,23 +417,23 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   </button>
 
                   {feedbackMsg && (
-                    <div className="bg-slate-950/90 border border-amber-500/30 rounded-xl p-2.5 text-[11px] text-amber-300 leading-relaxed flex items-start gap-2 text-left">
-                      <SmartphoneNfc className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5 animate-pulse" />
+                    <div className="bg-white/90 border border-[#0F3078]/20 rounded-xl p-2.5 text-[11px] text-[#0F3078] leading-relaxed flex items-start gap-2 text-left shadow-xs">
+                      <SmartphoneNfc className="w-4 h-4 text-[#0F3078] flex-shrink-0 mt-0.5 animate-pulse" />
                       <span>{feedbackMsg}</span>
                     </div>
                   )}
 
                   {errorMsg && (
-                    <div className="bg-rose-950/60 border border-rose-500/40 rounded-xl p-2 text-[11px] text-rose-300 flex items-center gap-1.5 text-left">
-                      <AlertCircle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                    <div className="bg-rose-100 border border-rose-300 rounded-xl p-2 text-[11px] text-rose-800 flex items-center gap-1.5 text-left">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-600 flex-shrink-0" />
                       <span>{errorMsg}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="bg-slate-950/90 border border-white/10 rounded-xl p-3 space-y-2.5 text-left">
+                <div className="bg-white/90 border border-[#0F3078]/20 rounded-xl p-3 space-y-2.5 text-left shadow-xs">
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase">
+                    <div className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1D6B52] uppercase font-serif">
                       <WifiOff className="w-3 h-3" />
                       <span>
                         {language === 'es'
@@ -462,7 +441,7 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                           : 'Offline Cryptographic Verification (FNV-1a)'}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-300 leading-snug">
+                    <p className="text-[11px] text-[#162035]/80 leading-snug">
                       {language === 'es'
                         ? 'Ingresa el código verificador que aparece en la pantalla del taller (ej. ABC-1234) o pega el payload de la etiqueta NFC:'
                         : 'Enter the verification code shown on the workshop screen (e.g., ABC-1234) or paste the NFC tag payload:'}
@@ -484,12 +463,12 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                         }
                       }}
                       placeholder="Ej. ABC-1234"
-                      className="flex-1 bg-slate-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white uppercase placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400"
+                      className="flex-1 bg-white border border-[#0F3078]/30 rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#162035] uppercase placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0F3078]"
                     />
                     <button
                       type="button"
                       onClick={handleVerifyOfflineCode}
-                      className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs transition cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-lg bg-[#B84A2C] hover:bg-[#96381F] text-[#FAF6EE] font-bold text-xs transition cursor-pointer flex items-center gap-1 font-serif shadow-xs"
                     >
                       <QrCode className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Validar' : 'Verify'}</span>
@@ -497,8 +476,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   </div>
 
                   {errorMsg && (
-                    <div className="bg-rose-950/60 border border-rose-500/40 rounded-lg p-2 text-[11px] text-rose-300 flex items-center gap-1.5">
-                      <AlertCircle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                    <div className="bg-rose-100 border border-rose-300 rounded-lg p-2 text-[11px] text-rose-800 flex items-center gap-1.5">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-600 flex-shrink-0" />
                       <span>{errorMsg}</span>
                     </div>
                   )}

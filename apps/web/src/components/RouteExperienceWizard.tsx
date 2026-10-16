@@ -161,27 +161,27 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#162035]/70 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-slate-900 border border-white/15 rounded-t-3xl sm:rounded-3xl p-5 sm:p-7 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto animate-in fade-in slide-in-from-bottom-6 duration-300"
+        className="w-full max-w-2xl bg-[#FAF6EE] border-4 border-[#0F3078] rounded-t-3xl sm:rounded-3xl p-5 sm:p-7 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto animate-in fade-in slide-in-from-bottom-6 duration-300"
       >
         {/* Encabezado */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-white/10">
+        <div className="flex items-start justify-between gap-4 pb-4 border-b-2 border-[#0F3078]/15">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40">
+              <span className="p-2 rounded-xl bg-[#0F3078] text-[#FAF6EE] shadow-xs">
                 <Compass className="w-5 h-5" />
               </span>
-              <h2 className="text-lg sm:text-xl font-black text-white font-serif">
+              <h2 className="text-lg sm:text-xl font-black text-[#0F3078] font-serif">
                 {language === 'es'
                   ? 'Personaliza tu Recorrido en Puebla'
                   : 'Customize Your Walking Route'}
               </h2>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#0F3078]/70">
               {language === 'es'
                 ? 'Elige tus preferencias y te sugerimos las mejores rutas con la explicación del por qué.'
                 : 'Choose your preferences and we suggest curated routes with a clear rationale.'}
@@ -191,7 +191,7 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition cursor-pointer"
+            className="p-2 rounded-xl bg-white border border-[#0F3078]/20 text-[#0F3078] hover:bg-[#FAF6EE] transition cursor-pointer shadow-xs"
             aria-label={language === 'es' ? 'Cerrar' : 'Close'}
           >
             <X className="w-5 h-5" />
@@ -203,11 +203,11 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
           {/* Presupuesto */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-extrabold text-slate-200 flex items-center gap-1.5">
-                <Coins className="w-4 h-4 text-amber-400" />
+              <span className="font-serif font-black text-[#0F3078] flex items-center gap-1.5">
+                <Coins className="w-4 h-4 text-[#B84A2C]" />
                 {language === 'es' ? 'Presupuesto Estimado' : 'Estimated Budget'}
               </span>
-              <span className="font-mono font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/30">
+              <span className="font-mono font-black text-[#B84A2C] bg-white px-2 py-0.5 rounded-lg border border-[#B84A2C]/30 shadow-xs">
                 ${budget} MXN
               </span>
             </div>
@@ -224,10 +224,10 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                     tacticalAudio.playTacticalClick();
                     setBudget(b.val);
                   }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer select-none ${
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer select-none font-serif ${
                     budget === b.val
-                      ? 'bg-amber-500 text-slate-950 shadow-md font-black ring-2 ring-amber-300'
-                      : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+                      ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md font-black border border-[#0F3078]'
+                      : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
                   }`}
                 >
                   {b.label}
@@ -239,11 +239,11 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
           {/* Tiempo disponible */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-extrabold text-slate-200 flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-sky-400" />
+              <span className="font-serif font-black text-[#0F3078] flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-[#0F3078]" />
                 {language === 'es' ? 'Tiempo Disponible' : 'Available Time'}
               </span>
-              <span className="font-mono font-black text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-lg border border-sky-500/30">
+              <span className="font-mono font-black text-[#0F3078] bg-white px-2 py-0.5 rounded-lg border border-[#0F3078]/25 shadow-xs">
                 {timeMin} min
               </span>
             </div>
@@ -260,10 +260,10 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                     tacticalAudio.playTacticalClick();
                     setTimeMin(t.val);
                   }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer select-none ${
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer select-none font-serif ${
                     timeMin === t.val
-                      ? 'bg-sky-500 text-slate-950 shadow-md font-black ring-2 ring-sky-300'
-                      : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+                      ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md font-black border border-[#0F3078]'
+                      : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
                   }`}
                 >
                   {t.label}
@@ -274,8 +274,8 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
 
           {/* Interés Principal */}
           <div className="space-y-2">
-            <span className="font-extrabold text-slate-200 text-xs flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span className="font-serif font-black text-[#0F3078] text-xs flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#B84A2C]" />
               {language === 'es' ? '¿Qué quieres descubrir hoy?' : 'What do you want to experience?'}
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -311,10 +311,10 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                       tacticalAudio.playTacticalClick();
                       setInterest(item.id);
                     }}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold flex flex-col items-center gap-1.5 transition cursor-pointer select-none ${
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold flex flex-col items-center gap-1.5 transition cursor-pointer select-none font-serif ${
                       isSelected
-                        ? 'bg-emerald-500 text-slate-950 font-black shadow-md ring-2 ring-emerald-300'
-                        : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+                        ? 'bg-[#B84A2C] text-[#FAF6EE] font-black shadow-md border border-[#B84A2C]'
+                        : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -327,8 +327,8 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
 
           {/* Accesibilidad y Paso */}
           <div className="space-y-2">
-            <span className="font-extrabold text-slate-200 text-xs flex items-center gap-1.5">
-              <Accessibility className="w-4 h-4 text-indigo-400" />
+            <span className="font-serif font-black text-[#0F3078] text-xs flex items-center gap-1.5">
+              <Accessibility className="w-4 h-4 text-[#1D6B52]" />
               {language === 'es' ? 'Paso y Accesibilidad Peatonal' : 'Mobility & Step'}
             </span>
             <div className="grid grid-cols-3 gap-2">
@@ -359,10 +359,10 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                       tacticalAudio.playTacticalClick();
                       setProfile(p.id);
                     }}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer select-none ${
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer select-none font-serif ${
                       isSelected
-                        ? 'bg-indigo-500 text-white font-black shadow-md ring-2 ring-indigo-300'
-                        : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-white/5'
+                        ? 'bg-[#1D6B52] text-[#FAF6EE] font-black shadow-md border border-[#1D6B52]'
+                        : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -375,13 +375,13 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
         </div>
 
         {/* 2. Rutas Sugeridas con "El Por Qué" */}
-        <div className="space-y-3 pt-2 border-t border-white/10">
+        <div className="space-y-3 pt-2 border-t-2 border-[#0F3078]/15">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <h3 className="text-xs font-serif font-black uppercase tracking-wider text-[#0F3078] flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#B84A2C]" />
               {language === 'es' ? 'Rutas Sugeridas para Ti' : 'Suggested Routes for You'}
             </h3>
-            <span className="text-[10px] text-slate-400 font-mono">
+            <span className="text-[10px] text-[#0F3078]/70 font-serif">
               {suggestions.length} {language === 'es' ? 'opciones calculadas' : 'options ready'}
             </span>
           </div>
@@ -392,38 +392,38 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
               return (
                 <div
                   key={sug.id}
-                  className="bg-slate-950/80 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3 hover:border-amber-500/40 transition-all duration-300"
+                  className="bg-white/95 border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-md space-y-3 hover:border-[#0F3078] transition-all duration-300"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border font-bold ${sug.badgeColor}`}>
+                      <span className={`text-[10px] font-serif px-2 py-0.5 rounded-full border font-bold ${sug.badgeColor}`}>
                         {sug.badge}
                       </span>
-                      <h4 className="font-extrabold text-sm sm:text-base text-white font-serif">
+                      <h4 className="font-serif font-black text-sm sm:text-base text-[#0F3078]">
                         {sug.name}
                       </h4>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-                      <span className="bg-slate-800/90 px-2 py-0.5 rounded-lg border border-white/10">
+                    <div className="flex items-center gap-2 text-xs font-serif text-[#0F3078]">
+                      <span className="bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/20 font-bold">
                         {r.stops.length} {language === 'es' ? 'paradas' : 'stops'}
                       </span>
-                      <span className="bg-slate-800/90 px-2 py-0.5 rounded-lg border border-white/10">
+                      <span className="bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/20 font-bold">
                         {r.metrics.total_time_min}m
                       </span>
-                      <span className="bg-amber-500/15 text-amber-300 px-2 py-0.5 rounded-lg border border-amber-500/30 font-bold">
+                      <span className="bg-[#B84A2C]/15 text-[#B84A2C] px-2 py-0.5 rounded-lg border border-[#B84A2C]/30 font-bold">
                         ${r.metrics.total_cost_mxn} MXN
                       </span>
                     </div>
                   </div>
 
                   {/* EL POR QUÉ (The Why) */}
-                  <div className="bg-slate-900/90 border border-amber-500/20 rounded-xl p-3 text-xs text-slate-200 space-y-1">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                  <div className="bg-[#FAF6EE] border-2 border-[#F0B43A]/40 rounded-xl p-3 text-xs text-[#162035] space-y-1">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#B84A2C] font-serif">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#B84A2C] flex-shrink-0" />
                       <span>{language === 'es' ? '¿Por qué te sugerimos esta ruta?' : 'Why we suggest this route:'}</span>
                     </div>
-                    <p className="text-[11px] text-slate-300 leading-relaxed pl-5">
+                    <p className="text-[11px] text-[#162035]/80 leading-relaxed pl-5 font-sans">
                       {sug.why}
                     </p>
                   </div>
@@ -433,9 +433,9 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                     {r.stops.map((stop) => (
                       <span
                         key={stop.poi.id}
-                        className="text-[10px] whitespace-nowrap bg-slate-900 border border-white/10 px-2 py-1 rounded-lg text-slate-300 flex items-center gap-1"
+                        className="text-[10px] whitespace-nowrap bg-white border border-[#0F3078]/20 px-2 py-1 rounded-lg text-[#0F3078] flex items-center gap-1 font-serif shadow-2xs"
                       >
-                        <span className="w-3.5 h-3.5 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-[9px]">
+                        <span className="w-3.5 h-3.5 rounded-full bg-[#0F3078] text-[#FAF6EE] font-black flex items-center justify-center text-[9px]">
                           {stop.stop_order}
                         </span>
                         <span className="truncate max-w-[120px]">{stop.poi.name}</span>
@@ -451,7 +451,7 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                       onSelectRoute(r);
                       onClose();
                     }}
-                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-[0.99] text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition cursor-pointer select-none"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] active:scale-[0.99] text-[#FAF6EE] font-serif font-black text-xs flex items-center justify-center gap-2 shadow-md border border-[#FAF6EE]/20 transition cursor-pointer select-none"
                   >
                     <span>{language === 'es' ? 'Aceptar y Trazar esta Ruta' : 'Accept & Trace this Route'}</span>
                     <ArrowRight className="w-4 h-4" />

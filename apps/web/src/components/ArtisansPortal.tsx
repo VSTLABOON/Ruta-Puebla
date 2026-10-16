@@ -323,7 +323,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
       {/* BARRA DE NAVEGACIÓN ENTRE ESPACIOS INDIVIDUALES DEL DUEÑO DE TALLER */}
       <nav
         aria-label={language === 'es' ? 'Navegación del taller' : 'Workshop navigation'}
-        className="bg-[#0B228A]/95 backdrop-blur-md border border-[#9597C1]/25 rounded-2xl p-1.5 flex items-center justify-between gap-1 sm:gap-2 shadow-lg sticky top-0 z-30"
+        className="bg-[#FAF6EE]/95 backdrop-blur-md border-2 border-[#0F3078] rounded-2xl p-1.5 flex items-center justify-between gap-1 sm:gap-2 shadow-lg sticky top-0 z-30"
       >
         <button
           type="button"
@@ -333,8 +333,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           }}
           className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
             activeTab === 'counter'
-              ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
-              : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+              ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md ring-1 ring-[#0F3078] font-serif'
+              : 'text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 font-serif'
           }`}
         >
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
@@ -349,8 +349,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           }}
           className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none relative ${
             activeTab === 'activity'
-              ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
-              : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+              ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md ring-1 ring-[#0F3078] font-serif'
+              : 'text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 font-serif'
           }`}
         >
           <History className="w-4 h-4 flex-shrink-0" />
@@ -359,8 +359,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             <span
               className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold flex-shrink-0 ${
                 activeTab === 'activity'
-                  ? 'bg-[#0E2C9C] text-[#EDE28E]'
-                  : 'bg-[#EDE28E] text-[#0E2C9C]'
+                  ? 'bg-[#FAF6EE] text-[#0F3078]'
+                  : 'bg-[#0F3078] text-[#FAF6EE]'
               }`}
             >
               {ledger.length}
@@ -376,8 +376,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           }}
           className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer select-none ${
             activeTab === 'workshop'
-              ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md ring-1 ring-[#EDE28E]'
-              : 'text-[#9597C1] hover:text-[#EFF1F8] hover:bg-[#07154E]/50'
+              ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md ring-1 ring-[#0F3078] font-serif'
+              : 'text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 font-serif'
           }`}
         >
           <Store className="w-4 h-4 flex-shrink-0" />
@@ -391,31 +391,31 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
       {activeTab === 'counter' && (
         <div className="space-y-4 animate-fade-slide">
           {/* Ficha Superior de Identidad y Estado Operativo */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#EDE28E] font-bold px-2 py-0.5 rounded-full bg-[#EDE28E]/15 border border-[#EDE28E]/30">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#B84A2C] font-bold px-2 py-0.5 rounded-full bg-[#B84A2C]/15 border border-[#B84A2C]/30">
                     {selectedPoi.zone.replace(/_/g, ' ')}
                   </span>
-                  <span className="text-xs text-[#9597C1] truncate">
+                  <span className="text-xs text-[#0F3078]/70 truncate">
                     {profile.maestro_artesano} • {profile.oficio}
                   </span>
                 </div>
-                <h2 className="text-lg sm:text-xl font-black text-white tracking-tight font-serif truncate">
+                <h2 className="text-lg sm:text-xl font-black text-[#0F3078] tracking-tight font-serif font-black truncate">
                   {profile.nombre_taller}
                 </h2>
               </div>
 
               {/* Selector de Estado Operativo de 1 toque */}
-              <div className="flex items-center gap-1 sm:gap-1.5 bg-[#07154E] p-1.5 rounded-xl border border-[#9597C1]/20">
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-white p-1.5 rounded-xl border border-[#0F3078]/20">
                 <button
                   type="button"
                   onClick={() => handleStatusChange('open')}
                   className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
                     liveStatus === 'open'
-                      ? 'bg-[#0E2C9C] text-[#EFF1F8] border border-[#EDE28E]/60 shadow-md'
-                      : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                      ? 'bg-[#0E2C9C] text-[#162035] border border-[#B84A2C]/60 shadow-md'
+                      : 'text-[#0F3078]/70 hover:text-[#162035]'
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -427,8 +427,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                   onClick={() => handleStatusChange('live_demo')}
                   className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
                     liveStatus === 'live_demo'
-                      ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md font-black'
-                      : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                      ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md font-black'
+                      : 'text-[#0F3078]/70 hover:text-[#162035]'
                   }`}
                 >
                   <Flame className="w-3.5 h-3.5 text-[#0E2C9C]" />
@@ -440,8 +440,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                   onClick={() => handleStatusChange('closed')}
                   className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
                     liveStatus === 'closed'
-                      ? 'bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/70 shadow-md'
-                      : 'text-[#9597C1] hover:text-[#EFF1F8]'
+                      ? 'bg-[#7B5E86]/50 text-[#162035] border border-[#7B5E86]/70 shadow-md'
+                      : 'text-[#0F3078]/70 hover:text-[#162035]'
                   }`}
                 >
                   <Clock className="w-3.5 h-3.5" />
@@ -452,8 +452,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
 
             {/* Aviso rápido para caminantes */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-[#9597C1]/20">
-              <div className="flex-1 flex items-center gap-2 bg-[#07154E] border border-[#9597C1]/20 rounded-xl px-3 py-2">
-                <Sparkles className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+              <div className="flex-1 flex items-center gap-2 bg-white border border-[#0F3078]/20 rounded-xl px-3 py-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#B84A2C] flex-shrink-0" />
                 <input
                   type="text"
                   value={announcement}
@@ -463,17 +463,17 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                       ? 'Aviso para visitantes hoy (ej. Torno abierto hasta las 14:00, esmaltado en vivo)...'
                       : 'Notice for visitors today...'
                   }
-                  className="w-full bg-transparent text-xs text-[#EFF1F8] focus:outline-none placeholder:text-[#9597C1]/50"
+                  className="w-full bg-transparent text-xs text-[#162035] focus:outline-none placeholder:text-[#0F3078]/70/50"
                 />
               </div>
               <button
                 type="button"
                 onClick={handleSaveAnnouncement}
-                className="px-4 py-2 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 text-[#EDE28E] border border-[#EDE28E]/40 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5 flex-shrink-0 active:scale-95"
+                className="px-4 py-2 rounded-xl bg-[#B84A2C]/15 hover:bg-[#EDE28E]/25 text-[#B84A2C] border border-[#B84A2C]/40 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5 flex-shrink-0 active:scale-95"
               >
                 {savedNotice ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-[#EDE28E]" />
+                    <Check className="w-3.5 h-3.5 text-[#B84A2C]" />
                     <span>{language === 'es' ? 'Guardado' : 'Saved'}</span>
                   </>
                 ) : (
@@ -484,21 +484,21 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           </div>
 
           {/* Botón Principal de Mostrador: Sellar Pasaporte */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-serif">
+                <h3 className="text-sm font-extrabold text-[#0F3078] uppercase tracking-wider font-serif font-black">
                   {language === 'es' ? 'Mostrador de Atención al Turista' : 'Visitor Greeting Station'}
                 </h3>
-                <p className="text-xs text-[#9597C1]">
+                <p className="text-xs text-[#0F3078]/70">
                   {language === 'es'
                     ? `Sello oficial del taller: "${profile.sello_artesanal}"`
                     : `Workshop badge: "${profile.sello_artesanal}"`}
                 </p>
               </div>
 
-              <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-[#EDE28E]/15 border border-[#EDE28E]/30 text-[#EDE28E] font-bold flex items-center gap-1">
-                <Radio className="w-3 h-3 text-[#EDE28E] animate-pulse" />
+              <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-[#B84A2C]/15 border border-[#B84A2C]/30 text-[#B84A2C] font-bold flex items-center gap-1">
+                <Radio className="w-3 h-3 text-[#B84A2C] animate-pulse" />
                 <span>{language === 'es' ? 'Listo para Sellar' : 'Ready to Stamp'}</span>
               </span>
             </div>
@@ -511,7 +511,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                   tacticalAudio.playTacticalClick();
                   setIsScanningTouristQr(true);
                 }}
-                className="py-4 px-4 rounded-2xl bg-gradient-to-r from-[#EDE28E] via-[#F4ECA6] to-[#EDE28E] hover:brightness-105 active:scale-[0.99] text-[#0E2C9C] font-black text-sm flex items-center justify-center gap-2.5 shadow-[0_0_20px_rgba(237,226,142,0.35)] border border-[#EDE28E] transition cursor-pointer select-none"
+                className="py-4 px-4 rounded-2xl bg-gradient-to-r from-[#0F3078] via-[#1638b5] to-[#0F3078] text-[#FAF6EE] hover:brightness-105 active:scale-[0.99] text-[#0E2C9C] font-black text-sm flex items-center justify-center gap-2.5 shadow-[0_0_20px_rgba(237,226,142,0.35)] border border-[#B84A2C] transition cursor-pointer select-none"
               >
                 <Camera className="w-5 h-5 stroke-[2.5]" />
                 <span>
@@ -527,7 +527,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                 className={`py-4 px-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 border transition cursor-pointer select-none active:scale-[0.99] ${
                   isTestingNfc
                     ? 'bg-rose-500/25 border-rose-500/50 text-rose-200 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                    : 'bg-[#0E2C9C] hover:bg-[#1638b5] text-[#EDE28E] border-[#EDE28E]/40 shadow-lg'
+                    : 'bg-[#0E2C9C] hover:bg-[#1638b5] text-[#B84A2C] border-[#B84A2C]/40 shadow-lg'
                 }`}
               >
                 <SmartphoneNfc className={`w-5 h-5 ${isTestingNfc ? 'animate-pulse' : ''}`} />
@@ -543,9 +543,9 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             <button
               type="button"
               onClick={handleIssueCounterStamp}
-              className="w-full py-2.5 px-3 rounded-xl bg-[#07154E] hover:bg-[#0b1c61] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
+              className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-[#FAF6EE] border border-[#0F3078]/20 text-[#0F3078] text-xs font-bold text-[#162035] flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
             >
-              <CheckCircle2 className="w-4 h-4 text-[#EDE28E]" />
+              <CheckCircle2 className="w-4 h-4 text-[#B84A2C]" />
               <span>
                 {language === 'es'
                   ? 'O registrar visita presencial rápida (1 Toque)'
@@ -561,8 +561,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             )}
 
             {stampedSuccess && (
-              <div className="bg-[#07154E] border border-[#EDE28E]/40 text-[#EFF1F8] text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide">
-                <CheckCircle2 className="w-4 h-4 text-[#EDE28E] flex-shrink-0" />
+              <div className="bg-white border-2 border-[#0F3078]/30 text-[#0F3078] text-xs p-3.5 rounded-xl flex items-center gap-2.5 animate-fade-slide">
+                <CheckCircle2 className="w-4 h-4 text-[#B84A2C] flex-shrink-0" />
                 <span>{stampedSuccess}</span>
               </div>
             )}
@@ -591,35 +591,35 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
               >
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="w-full max-w-md bg-[#0B228A] border border-[#EDE28E]/40 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200"
+                  className="w-full max-w-md bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200"
                 >
                   <div className="flex items-center justify-between pb-2 border-b border-[#9597C1]/20">
                     <div className="flex items-center gap-2">
-                      <Camera className="w-5 h-5 text-[#EDE28E]" />
-                      <h3 className="font-black text-base text-white font-serif">
+                      <Camera className="w-5 h-5 text-[#B84A2C]" />
+                      <h3 className="font-black text-base text-[#0F3078] font-serif font-black">
                         {language === 'es' ? 'Escanear QR del Visitante' : 'Scan Visitor QR'}
                       </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsScanningTouristQr(false)}
-                      className="p-1.5 rounded-xl bg-[#07154E] text-[#9597C1] hover:text-white cursor-pointer"
+                      className="p-1.5 rounded-xl bg-[#07154E] text-[#0F3078]/70 hover:text-white cursor-pointer"
                     >
                       <X className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <p className="text-xs text-[#9597C1] leading-relaxed">
+                  <p className="text-xs text-[#0F3078]/70 leading-relaxed">
                     {language === 'es'
                       ? 'Apunta tu cámara al código QR que el turista tiene abierto en su pantalla. Funciona 100% sin que el turista requiera internet o datos móviles.'
                       : 'Point your camera at the QR code on the tourist’s phone screen. Works completely offline without mobile data for the tourist.'}
                   </p>
 
                   {/* Visor simulado de cámara con cuadro de enfoque */}
-                  <div className="relative aspect-square max-w-[240px] mx-auto rounded-2xl bg-[#07154E] border-2 border-dashed border-[#EDE28E]/60 flex flex-col items-center justify-center p-4 overflow-hidden">
-                    <div className="absolute inset-4 border-2 border-[#EDE28E] rounded-xl pointer-events-none animate-pulse"></div>
-                    <QrCode className="w-16 h-16 text-[#EDE28E]/40" />
-                    <span className="text-[10px] text-[#EDE28E] font-bold mt-2 font-mono">
+                  <div className="relative aspect-square max-w-[240px] mx-auto rounded-2xl bg-[#07154E] border-2 border-dashed border-[#B84A2C]/60 flex flex-col items-center justify-center p-4 overflow-hidden">
+                    <div className="absolute inset-4 border-2 border-[#B84A2C] rounded-xl pointer-events-none animate-pulse"></div>
+                    <QrCode className="w-16 h-16 text-[#B84A2C]/40" />
+                    <span className="text-[10px] text-[#B84A2C] font-bold mt-2 font-mono">
                       {language === 'es' ? 'ENFOCAR CÓDIGO QR' : 'FOCUS QR CODE'}
                     </span>
                   </div>
@@ -632,12 +632,12 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                         value={touristInputCode}
                         onChange={(e) => setTouristInputCode(e.target.value)}
                         placeholder="POPOGO:TURISTA:TUR-7701..."
-                        className="flex-1 bg-[#07154E] border border-[#9597C1]/30 rounded-xl px-3 py-2 text-xs font-mono text-white placeholder:text-[#9597C1]/40 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
+                        className="flex-1 bg-[#07154E] border border-[#9597C1]/30 rounded-xl px-3 py-2 text-xs font-mono text-white placeholder:text-[#0F3078]/70/40 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
                       />
                       <button
                         type="button"
                         onClick={() => handleScanTouristSuccess()}
-                        className="px-4 py-2 rounded-xl bg-[#EDE28E] text-[#0E2C9C] font-black text-xs transition cursor-pointer hover:brightness-105 active:scale-95"
+                        className="px-4 py-2 rounded-xl bg-[#0F3078] text-[#FAF6EE] font-black text-xs transition cursor-pointer hover:brightness-105 active:scale-95"
                       >
                         {language === 'es' ? 'Validar' : 'Validate'}
                       </button>
@@ -646,7 +646,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleScanTouristSuccess(`POPOGO:TURISTA:TUR-${Math.floor(1000 + Math.random() * 9000)}`)}
-                      className="w-full py-2.5 px-3 rounded-xl bg-[#0E2C9C] hover:bg-[#1b3ea8] border border-[#EDE28E]/40 text-xs font-extrabold text-[#EDE28E] flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
+                      className="w-full py-2.5 px-3 rounded-xl bg-[#0E2C9C] hover:bg-[#1b3ea8] border border-[#B84A2C]/40 text-xs font-extrabold text-[#B84A2C] flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Simular Lectura de Turista Actual' : 'Simulate Scanning Current Tourist'}</span>
@@ -657,12 +657,12 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             )}
 
             {/* Código de Respaldo del Taller (Mostrado de forma compacta para emergencias) */}
-            <div className="bg-[#07154E] border border-[#9597C1]/20 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+            <div className="bg-white border border-[#0F3078]/20 rounded-2xl p-3.5 flex items-center justify-between gap-3">
               <div className="space-y-0.5">
-                <span className="text-[10px] uppercase font-bold text-[#9597C1] block">
+                <span className="text-[10px] uppercase font-bold text-[#0F3078]/70 block">
                   {language === 'es' ? 'Código de Respaldo del Mostrador' : 'Counter Backup Code'}
                 </span>
-                <span className="font-mono text-base font-black text-[#EDE28E]">
+                <span className="font-mono text-base font-black text-[#B84A2C]">
                   {stampCode}
                 </span>
               </div>
@@ -670,9 +670,9 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
               <button
                 type="button"
                 onClick={handleCopyCode}
-                className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-xs font-bold text-[#EFF1F8] flex items-center gap-1.5 transition cursor-pointer active:scale-95"
+                className="px-3 py-1.5 rounded-xl bg-[#0B228A] hover:bg-[#2544A7] border border-[#9597C1]/30 text-xs font-bold text-[#162035] flex items-center gap-1.5 transition cursor-pointer active:scale-95"
               >
-                {copiedCode ? <Check className="w-3.5 h-3.5 text-[#EDE28E]" /> : <Copy className="w-3.5 h-3.5 text-[#EDE28E]" />}
+                {copiedCode ? <Check className="w-3.5 h-3.5 text-[#B84A2C]" /> : <Copy className="w-3.5 h-3.5 text-[#B84A2C]" />}
                 <span>{copiedCode ? (language === 'es' ? 'Copiado' : 'Copied') : (language === 'es' ? 'Copiar' : 'Copy')}</span>
               </button>
             </div>
@@ -687,69 +687,69 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
         <div className="space-y-4 animate-fade-slide">
           {/* Tarjetas Ejecutivas de Impacto en el Taller */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
-              <div className="text-xs text-[#9597C1] font-semibold flex items-center justify-between">
+            <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
+              <div className="text-xs text-[#0F3078]/70 font-semibold flex items-center justify-between">
                 <span>{language === 'es' ? 'Visitantes Hoy' : 'Visitors Today'}</span>
-                <Users className="w-4 h-4 text-[#EDE28E]" />
+                <Users className="w-4 h-4 text-[#B84A2C]" />
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
+              <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">
                 {stampsTodayCount}
               </div>
-              <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+              <p className="text-[10px] text-[#162035]/80 font-medium">
                 {language === 'es' ? 'Sellos otorgados en pasaportes' : 'Verified stamps today'}
               </p>
             </div>
 
-            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
-              <div className="text-xs text-[#9597C1] font-semibold flex items-center justify-between">
+            <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
+              <div className="text-xs text-[#0F3078]/70 font-semibold flex items-center justify-between">
                 <span>{language === 'es' ? 'Derrama Estimada' : 'Direct Spend'}</span>
-                <DollarSign className="w-4 h-4 text-[#EDE28E]" />
+                <DollarSign className="w-4 h-4 text-[#B84A2C]" />
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
-                ${directSpendMxn} <span className="text-xs font-normal text-[#EFF1F8]">MXN</span>
+              <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">
+                ${directSpendMxn} <span className="text-xs font-normal text-[#162035]">MXN</span>
               </div>
-              <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+              <p className="text-[10px] text-[#162035]/80 font-medium">
                 {language === 'es' ? 'Consumo local directo en el taller' : 'Local commerce estimate'}
               </p>
             </div>
 
-            <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
-              <div className="text-xs text-[#9597C1] font-semibold flex items-center justify-between">
+            <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 space-y-1 shadow-md">
+              <div className="text-xs text-[#0F3078]/70 font-semibold flex items-center justify-between">
                 <span>{language === 'es' ? 'Ticket Promedio' : 'Average Ticket'}</span>
-                <Award className="w-4 h-4 text-[#EDE28E]" />
+                <Award className="w-4 h-4 text-[#B84A2C]" />
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-[#EDE28E] font-mono">
-                ${unitTicketMxn} <span className="text-xs font-normal text-[#EFF1F8]">MXN</span>
+              <div className="text-2xl sm:text-3xl font-black text-[#B84A2C] font-mono">
+                ${unitTicketMxn} <span className="text-xs font-normal text-[#162035]">MXN</span>
               </div>
-              <p className="text-[10px] text-[#EFF1F8]/80 font-medium">
+              <p className="text-[10px] text-[#162035]/80 font-medium">
                 {language === 'es' ? 'Por visitante registrado' : 'Per verified visitor'}
               </p>
             </div>
           </div>
 
           {/* Bitácora de Sellos Emitidos */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
             <div className="flex items-center justify-between border-b border-[#9597C1]/20 pb-3">
               <div className="flex items-center gap-2">
-                <History className="w-4 h-4 text-[#EDE28E]" />
+                <History className="w-4 h-4 text-[#B84A2C]" />
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wide font-serif">
                   {language === 'es' ? 'Bitácora de Visitas de Hoy' : 'Today’s Stamped Visits'}
                 </h3>
               </div>
-              <span className="text-xs font-mono font-bold text-[#EDE28E] bg-[#EDE28E]/15 border border-[#EDE28E]/30 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-mono font-bold text-[#B84A2C] bg-[#B84A2C]/15 border border-[#B84A2C]/30 px-2.5 py-0.5 rounded-full">
                 {ledger.length} {language === 'es' ? 'sellos emitidos' : 'stamps issued'}
               </span>
             </div>
 
             {ledger.length === 0 ? (
-              <div className="p-8 rounded-xl bg-[#07154E] border border-white/5 text-center text-xs text-[#9597C1] space-y-2">
-                <Award className="w-8 h-8 text-[#9597C1]/40 mx-auto" />
-                <p className="font-bold text-[#EFF1F8]">
+              <div className="p-8 rounded-xl bg-white border border-[#0F3078]/15 text-center text-xs text-[#0F3078]/70 space-y-2">
+                <Award className="w-8 h-8 text-[#0F3078]/70/40 mx-auto" />
+                <p className="font-bold text-[#162035]">
                   {language === 'es'
                     ? 'Aún no se han sellado visitas en esta jornada.'
                     : 'No stamps recorded in this session yet.'}
                 </p>
-                <p className="text-[11px] text-[#9597C1]">
+                <p className="text-[11px] text-[#0F3078]/70">
                   {language === 'es'
                     ? 'Ve a la pestaña de Mostrador y presiona el botón de sellar al recibir a un visitante.'
                     : 'Switch to the Counter tab and tap the stamp button when greeting a visitor.'}
@@ -760,7 +760,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                 {ledger.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 rounded-xl bg-[#07154E] border border-[#9597C1]/20 flex items-center justify-between text-xs"
+                    className="p-3 rounded-xl bg-white border border-[#0F3078]/20 flex items-center justify-between text-xs"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full bg-[#EDE28E]" />
@@ -768,7 +768,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                         <span className="font-bold text-white block">
                           {language === 'es' ? 'Pasaporte Sellado' : 'Passport Stamped'}
                         </span>
-                        <span className="text-[10px] text-[#9597C1] font-mono">
+                        <span className="text-[10px] text-[#0F3078]/70 font-mono">
                           {item.method === 'web-nfc'
                             ? 'NFC Físico'
                             : item.method === 'live-counter'
@@ -777,12 +777,12 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                             ? 'Enlace QR'
                             : 'Código Verificador'}
                           {' • '}
-                          <span className="text-[#EDE28E]">{item.code}</span>
+                          <span className="text-[#B84A2C]">{item.code}</span>
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-xs font-mono text-[#9597C1] bg-[#0B228A] px-2 py-1 rounded-lg border border-[#9597C1]/20">
+                    <span className="text-xs font-mono text-[#0F3078]/70 bg-[#FAF6EE] px-2 py-1 rounded-lg border border-[#0F3078]/20 text-[#0F3078]">
                       {new Date(item.timestamp).toLocaleTimeString([], {
                         hour: '2-digit',
                         minute: '2-digit'
@@ -802,15 +802,15 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
       {activeTab === 'workshop' && (
         <div className="space-y-4 animate-fade-slide">
           {/* Ficha Patrimonial Oficial */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
             <div className="flex flex-wrap items-center justify-between border-b border-[#9597C1]/20 pb-3 gap-2">
               <div className="flex items-center gap-2">
-                <Store className="w-4 h-4 text-[#EDE28E]" />
+                <Store className="w-4 h-4 text-[#B84A2C]" />
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wide font-serif">
                   {language === 'es' ? 'Ficha Patrimonial del Taller' : 'Workshop Heritage Profile'}
                 </h3>
               </div>
-              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 font-bold">
+              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#B84A2C]/15 text-[#B84A2C] border border-[#B84A2C]/30 font-bold">
                 {selectedPoi.entrance_accessible
                   ? language === 'es' ? '✓ Acceso Llano Sin Escalón' : '✓ Step-free Access'
                   : language === 'es' ? '⚠ Cuenta con Escalón' : '⚠ Stepped Entrance'}
@@ -818,44 +818,44 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="bg-[#07154E] p-3 rounded-xl border border-[#9597C1]/15 space-y-1">
-                <span className="text-[10px] text-[#9597C1] uppercase font-semibold block">
+              <div className="bg-white p-3 rounded-xl border border-[#0F3078]/15 space-y-1">
+                <span className="text-[10px] text-[#0F3078]/70 uppercase font-semibold block">
                   {language === 'es' ? 'Maestro Artesano & Oficio' : 'Master Artisan & Craft'}
                 </span>
                 <p className="font-bold text-white text-sm">
                   {profile.maestro_artesano}
                 </p>
-                <p className="text-[#EDE28E] text-xs">
+                <p className="text-[#B84A2C] text-xs">
                   {profile.oficio}
                 </p>
               </div>
 
-              <div className="bg-[#07154E] p-3 rounded-xl border border-[#9597C1]/15 space-y-1">
-                <span className="text-[10px] text-[#9597C1] uppercase font-semibold block">
+              <div className="bg-white p-3 rounded-xl border border-[#0F3078]/15 space-y-1">
+                <span className="text-[10px] text-[#0F3078]/70 uppercase font-semibold block">
                   {language === 'es' ? 'Sello Artesanal Oficial' : 'Official Artisan Stamp'}
                 </span>
                 <p className="font-bold text-white text-sm">
                   "{profile.sello_artesanal}"
                 </p>
-                <p className="text-[#9597C1] text-xs">
+                <p className="text-[#0F3078]/70 text-xs">
                   {selectedPoi.zone.replace(/_/g, ' ')}
                 </p>
               </div>
             </div>
 
-            <div className="bg-[#07154E] p-3.5 rounded-xl border border-[#9597C1]/15 space-y-2 text-xs">
+            <div className="bg-white p-3.5 rounded-xl border border-[#0F3078]/15 space-y-2 text-xs">
               <div>
                 <strong className="text-white block mb-0.5">
                   {language === 'es' ? 'Técnica Ancestral y Materiales:' : 'Traditional Technique & Materials:'}
                 </strong>
-                <p className="text-[#EFF1F8]/90 leading-relaxed">
+                <p className="text-[#162035]/90 leading-relaxed">
                   {profile.tecnica_ancestral}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between">
                 <div>
-                  <strong className="text-[#EDE28E] block text-[11px]">
+                  <strong className="text-[#B84A2C] block text-[11px]">
                     {language === 'es' ? 'Horario de Demostración en Vivo:' : 'Live Demonstration Hours:'}
                   </strong>
                   <span className="text-white text-xs">
@@ -867,13 +867,13 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           </div>
 
           {/* Selector de Taller Activo (para dueños con más de un taller) */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                   {language === 'es' ? 'Gestionar o Cambiar de Taller' : 'Switch Active Workshop'}
                 </h4>
-                <p className="text-xs text-[#9597C1]">
+                <p className="text-xs text-[#0F3078]/70">
                   {language === 'es'
                     ? 'Selecciona otro taller si administras múltiples sedes artesanales.'
                     : 'Switch if you manage another artisan workshop.'}
@@ -884,7 +884,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             <select
               value={selectedPoi.id}
               onChange={(e) => handleWorkshopSelection(e.target.value)}
-              className="w-full bg-[#07154E] border border-[#9597C1]/30 rounded-xl p-3 text-xs text-[#EFF1F8] focus:outline-none focus:ring-1 focus:ring-[#EDE28E] cursor-pointer"
+              className="w-full bg-white border-2 border-[#0F3078]/25 rounded-xl text-[#162035] p-3 text-xs text-[#162035] focus:outline-none focus:ring-1 focus:ring-[#EDE28E] cursor-pointer"
             >
               {localBusinesses.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -895,17 +895,17 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           </div>
 
           {/* Configuración de Sticker o Medallón NFC Físico */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3.5">
             <div className="flex items-center justify-between border-b border-[#9597C1]/20 pb-3">
               <div className="flex items-center gap-2">
-                <SmartphoneNfc className="w-4 h-4 text-[#EDE28E]" />
+                <SmartphoneNfc className="w-4 h-4 text-[#B84A2C]" />
                 <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                   {language === 'es' ? 'Sticker NFC Físico del Mostrador' : 'Physical Counter NFC Sticker'}
                 </h4>
               </div>
             </div>
 
-            <p className="text-xs text-[#9597C1] leading-relaxed">
+            <p className="text-xs text-[#0F3078]/70 leading-relaxed">
               {language === 'es'
                 ? 'Si tienes un sticker o medallón NFC físico en tu mostrador o vitrina, puedes programarlo aquí para que los turistas solo acerquen su teléfono y reciban su sello al instante.'
                 : 'If you have a physical NFC sticker on your counter, program it here so visitors can tap-and-go.'}
@@ -918,7 +918,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                 className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer border ${
                   isWritingNfc
                     ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-                    : 'bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E]'
+                    : 'bg-[#B84A2C]/15 hover:bg-[#EDE28E]/25 border border-[#B84A2C]/40 text-[#B84A2C]'
                 }`}
               >
                 {isWritingNfc ? (
@@ -940,7 +940,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                 className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer border ${
                   isTestingNfc
                     ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-                    : 'bg-[#07154E] hover:bg-[#0E2C9C] border border-[#9597C1]/30 text-[#EFF1F8]'
+                    : 'bg-white hover:bg-[#FAF6EE] border border-[#0F3078]/25 text-[#0F3078]'
                 }`}
               >
                 {isTestingNfc ? (
@@ -950,7 +950,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
                   </>
                 ) : (
                   <>
-                    <QrCode className="w-4 h-4 text-[#EDE28E]" />
+                    <QrCode className="w-4 h-4 text-[#B84A2C]" />
                     <span>{language === 'es' ? 'Probar Etiqueta Grabada' : 'Test NFC Sticker'}</span>
                   </>
                 )}
@@ -958,8 +958,8 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             </div>
 
             {nfcStatus && (
-              <div className="bg-[#07154E] text-[#EDE28E] text-xs p-3 rounded-xl flex items-center gap-2 border border-[#EDE28E]/30 animate-fade-slide">
-                <SmartphoneNfc className="w-4 h-4 text-[#EDE28E] flex-shrink-0 animate-pulse" />
+              <div className="bg-white text-[#B84A2C] text-xs p-3 rounded-xl flex items-center gap-2 border border-[#B84A2C]/30 animate-fade-slide">
+                <SmartphoneNfc className="w-4 h-4 text-[#B84A2C] flex-shrink-0 animate-pulse" />
                 <span>{nfcStatus}</span>
               </div>
             )}
@@ -973,12 +973,12 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
           </div>
 
           {/* Acceso Directo para ver cómo se ve en el mapa de visitantes */}
-          <div className="bg-[#0B228A] border border-[#9597C1]/25 rounded-2xl p-4 sm:p-5 shadow-lg flex items-center justify-between gap-3">
+          <div className="bg-[#FAF6EE] border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-lg flex items-center justify-between gap-3">
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                 {language === 'es' ? 'Mapa Turístico de Visitantes' : 'Tourist Exploration Map'}
               </h4>
-              <p className="text-xs text-[#9597C1]">
+              <p className="text-xs text-[#0F3078]/70">
                 {language === 'es'
                   ? 'Verifica cómo se muestra tu taller y tu horario de demostración para los caminantes.'
                   : 'Check how your workshop and schedule appear to pedestrians.'}
@@ -988,7 +988,7 @@ export const ArtisansPortal: FC<ArtisansPortalProps> = ({
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="px-3.5 py-2 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] border border-[#EDE28E]/40 text-xs font-bold text-[#EDE28E] flex items-center gap-1.5 transition cursor-pointer flex-shrink-0"
+              className="px-3.5 py-2 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] border border-[#FAF6EE]/20 text-xs font-bold text-[#FAF6EE] flex items-center gap-1.5 transition cursor-pointer flex-shrink-0"
             >
               <span>{language === 'es' ? 'Ver Mapa' : 'View Map'}</span>
               <ExternalLink className="w-3.5 h-3.5" />

@@ -1,6 +1,7 @@
 import { useEffect, useRef, type FC } from 'react';
-import { Award, CheckCircle2, Sparkles, X, MapPin } from 'lucide-react';
+import { CheckCircle2, Sparkles, X, MapPin } from 'lucide-react';
 import { Language } from '@ruta-abierta/shared-types';
+import { TalaveraPlateMedallion } from './TalaveraOrnament';
 
 interface CelebrationModalProps {
   isOpen: boolean;
@@ -72,7 +73,7 @@ export const CelebrationModal: FC<CelebrationModalProps> = ({
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ['#f59e0b', '#fbbf24', '#38bdf8', '#34d399', '#ffffff', '#e0e7ff'];
+    const colors = ['#0F3078', '#B84A2C', '#F0B43A', '#1D6B52', '#FAF6EE', '#6D438A'];
     const particleCount = 75;
     const particles = Array.from({ length: particleCount }).map(() => ({
       x: canvas.width / 2,
@@ -123,70 +124,66 @@ export const CelebrationModal: FC<CelebrationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-      {/* Canvas de partículas de celebración */}
+    <div className="fixed inset-0 z-50 bg-[#162035]/75 backdrop-blur-md flex items-center justify-center p-4 select-none">
+      {/* Canvas de partículas de celebración de Talavera */}
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
 
-      {/* Contenedor de la Tarjeta Holográfica Coleccionable */}
+      {/* Contenedor de la Tarjeta de Talavera Coleccionable */}
       <div className="relative z-20 max-w-sm w-full animate-in zoom-in-90 duration-300">
         <button
           onClick={onClose}
-          className="absolute -top-12 right-0 p-2 text-slate-400 hover:text-white rounded-full bg-slate-900/80 border border-slate-700 transition"
+          className="absolute -top-12 right-0 p-2 text-[#FAF6EE] hover:text-[#F0B43A] rounded-full bg-[#0F3078] border border-[#FAF6EE]/30 transition shadow-md"
           aria-label="Cerrar"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Tarjeta Holográfica Reflectante */}
-        <div className="holographic-card rounded-3xl p-6 text-white shadow-2xl space-y-5 border border-white/30">
+        {/* Tarjeta de Talavera Poblana */}
+        <div className="bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-6 text-[#162035] shadow-2xl space-y-5">
           {/* Cabecera de Insignia */}
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0F3078] text-[#FAF6EE] text-[10px] font-serif font-black uppercase tracking-wider shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#F0B43A]" />
               {language === 'es' ? 'Secreto Desbloqueado' : 'Secret Unlocked'}
             </span>
 
-            <span className="text-[11px] text-slate-300 flex items-center gap-1 font-semibold capitalize">
-              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-[11px] text-[#0F3078] flex items-center gap-1 font-serif font-bold capitalize">
+              <MapPin className="w-3.5 h-3.5 text-[#B84A2C]" />
               {zone.replace(/_/g, ' ')}
             </span>
           </div>
 
-          {/* Medallón Central Giratorio con Resplandor */}
-          <div className="flex flex-col items-center justify-center py-4">
-            <div className="relative flex items-center justify-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-1 shadow-2xl animate-marker-pulse">
-                <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center border-2 border-amber-300/80">
-                  <Award className="w-12 h-12 text-amber-400 animate-pokestop-float" />
-                </div>
-              </div>
+          {/* Medallón Central de Cerámica Talavera */}
+          <div className="flex flex-col items-center justify-center py-2">
+            <div className="relative flex items-center justify-center mb-2">
+              <TalaveraPlateMedallion size="xl" variant="polychrome" animate={true} />
             </div>
 
-            <h3 className="font-black text-xl text-center text-white mt-4 tracking-tight drop-shadow">
+            <h3 className="font-serif font-black text-xl text-center text-[#0F3078] mt-2 tracking-tight">
               {badgeName}
             </h3>
-            <p className="text-xs font-semibold text-amber-300 text-center mt-0.5">
+            <p className="text-xs font-serif font-bold text-[#B84A2C] text-center mt-0.5">
               {title}
             </p>
           </div>
 
           {/* Descripción del Patrimonio */}
-          <div className="bg-slate-950/70 p-3.5 rounded-2xl border border-slate-700/80 text-xs text-slate-200 leading-relaxed shadow-inner">
+          <div className="bg-white/95 p-3.5 rounded-2xl border-2 border-[#0F3078]/15 text-xs text-[#162035]/80 leading-relaxed shadow-xs">
             <p>{description}</p>
           </div>
 
           {/* Sello Oficial y Botón de Recolección */}
-          <div className="pt-2 flex items-center justify-between border-t border-white/15">
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-300 font-semibold">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <div className="pt-2 flex items-center justify-between border-t-2 border-[#0F3078]/15">
+            <div className="flex items-center gap-1.5 text-[11px] text-[#1D6B52] font-serif font-bold">
+              <CheckCircle2 className="w-4 h-4 text-[#1D6B52]" />
               <span>{language === 'es' ? 'Sellado en tu Pasaporte' : 'Stamped in Passport'}</span>
             </div>
 
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition active:scale-95"
+              className="px-4 py-2 bg-[#0F3078] hover:bg-[#0A2255] text-[#FAF6EE] font-serif font-black text-xs rounded-xl shadow-md border border-[#FAF6EE]/20 transition active:scale-95 cursor-pointer"
             >
-              {language === 'es' ? 'Guardar Insignia' : 'Collect Badge'}
+              {language === 'es' ? 'Guardar Placa' : 'Collect Plate'}
             </button>
           </div>
         </div>

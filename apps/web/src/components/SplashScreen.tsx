@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, ChevronRight, Volume2, VolumeX, Compass } from 'lucide-react';
 import { tacticalAudio } from '../utils/tacticalAudio';
+import { TalaveraFrieze, TalaveraCorner, TalaveraPlateMedallion } from './TalaveraOrnament';
 
 interface SplashScreenProps {
   onFinish: () => void;
@@ -61,164 +62,169 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-between p-4 sm:p-6 transition-opacity duration-500 selection:bg-amber-400 selection:text-slate-950 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-between talavera-bg-pattern text-[#162035] transition-opacity duration-500 selection:bg-[#0F3078] selection:text-[#FAF6EE] overflow-hidden ${
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
-      style={{
-        background: 'radial-gradient(ellipse at 50% 20%, #1738B5 0%, #0E2C9C 45%, #07154E 90%, #030A26 100%)'
-      }}
     >
-      {/* Patrón sutil estilo Talavera poblana en el fondo */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-10"
-        style={{
-          backgroundImage: `radial-gradient(#EDE28E 1.5px, transparent 1.5px), radial-gradient(#9597C1 1.5px, transparent 1.5px)`,
-          backgroundSize: '36px 36px',
-          backgroundPosition: '0 0, 18px 18px'
-        }}
-      />
+      {/* Cenefa Superior de Azulejo Poblano y Ladrillo Petatillo */}
+      <div className="w-full z-20">
+        <div className="w-full talavera-cobalt-pattern px-4 py-2.5 shadow-md">
+          <header className="w-full max-w-md mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <TalaveraPlateMedallion size="sm" variant="polychrome">
+                <img
+                  src="/popogo-logo.png"
+                  alt="PopoGo Logo"
+                  className="w-6 h-6 rounded-full object-contain"
+                />
+              </TalaveraPlateMedallion>
+              <div>
+                <h1 className="text-lg sm:text-xl font-black tracking-wider text-[#FAF6EE] font-serif flex items-center gap-2 drop-shadow">
+                  <span>PopoGo</span>
+                  <span className="text-[10px] font-sans font-extrabold px-2 py-0.5 rounded-full bg-[#B84A2C] text-[#FAF6EE] border border-[#F0B43A] tracking-widest uppercase">
+                    Puebla
+                  </span>
+                </h1>
+                <p className="text-[10px] text-[#DCE6F9] font-medium tracking-wide">
+                  {language === 'es' ? 'Talavera • Barrios & Patrimonio Vivo' : 'Talavera • Historic Walks'}
+                </p>
+              </div>
+            </div>
 
-      {/* Barra Superior con Logo y Omitir */}
-      <header className="w-full max-w-md mx-auto flex items-center justify-between z-10 pt-2">
-        <div className="flex items-center gap-2.5">
-          <img
-            src="/popogo-logo.png"
-            alt="PopoGo Logo"
-            className="w-10 h-10 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-contain bg-[#EFF1F8] p-0.5"
-          />
-          <div>
-            <h1 className="text-xl font-black tracking-wider text-white font-serif flex items-center gap-1.5 drop-shadow">
-              <span>PopoGo</span>
-              <span className="text-[10px] font-sans font-bold px-2 py-0.5 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase">
-                Puebla
+            {/* Botón Saltar */}
+            {canSkip && (
+              <button
+                type="button"
+                onClick={handleComplete}
+                className="px-3.5 py-1.5 rounded-full bg-[#FAF6EE] hover:bg-white active:scale-95 border-2 border-[#D48914] text-[#0F3078] text-xs font-extrabold flex items-center gap-1 transition-all shadow-md cursor-pointer"
+              >
+                <span>{language === 'es' ? 'Entrar' : 'Enter'}</span>
+                <ChevronRight className="w-4 h-4 text-[#B84A2C]" />
+              </button>
+            )}
+          </header>
+        </div>
+        <TalaveraFrieze />
+      </div>
+
+      {/* Contenedor Central con Marco de Azulejo de Talavera */}
+      <main className="w-full max-w-sm my-auto flex flex-col items-center justify-center z-10 px-4 py-2">
+        <div className="relative w-full p-3 rounded-[28px] talavera-plate-card flex flex-col items-center">
+          <TalaveraCorner position="tl" />
+          <TalaveraCorner position="tr" />
+          <TalaveraCorner position="bl" />
+          <TalaveraCorner position="br" />
+
+          <div className="relative w-full aspect-[9/16] max-h-[46vh] sm:max-h-[50vh] rounded-2xl overflow-hidden border-2 border-[#0F3078] bg-[#0A1E4A] flex items-center justify-center group shadow-inner">
+            {!videoError ? (
+              <video
+                ref={videoRef}
+                src="/splash.mp4"
+                playsInline
+                autoPlay
+                muted={isMuted}
+                onEnded={handleComplete}
+                onError={() => setVideoError(true)}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center p-6 text-center space-y-4 talavera-cobalt-pattern w-full h-full">
+                <TalaveraPlateMedallion size="xl" variant="polychrome" animate>
+                  <img
+                    src="/popogo-logo.png"
+                    alt="PopoGo"
+                    className="w-12 h-12 rounded-full object-contain"
+                  />
+                </TalaveraPlateMedallion>
+                <p className="text-sm font-bold text-[#FAF6EE] font-serif">
+                  {language === 'es' ? 'Bienvenido a PopoGo Puebla' : 'Welcome to PopoGo Puebla'}
+                </p>
+              </div>
+            )}
+
+            {!videoError && (
+              <button
+                type="button"
+                onClick={toggleSound}
+                className="absolute bottom-3 right-3 p-2 rounded-full bg-[#FAF6EE]/95 hover:bg-white text-[#0F3078] border-2 border-[#0F3078] transition-transform hover:scale-110 shadow-lg cursor-pointer"
+                title={isMuted ? 'Activar audio' : 'Silenciar'}
+              >
+                {isMuted ? <VolumeX className="w-4 h-4 text-[#B84A2C]" /> : <Volume2 className="w-4 h-4 text-[#0F3078]" />}
+              </button>
+            )}
+          </div>
+
+          {/* Lema de Identidad Poblana sobre Esmalte Marfil */}
+          <div className="mt-3 text-center space-y-1 px-2">
+            <div className="flex items-center justify-center gap-1.5 text-[#0F3078]">
+              <Sparkles className="w-3.5 h-3.5 text-[#B84A2C]" />
+              <span className="text-[11px] font-black uppercase tracking-widest font-serif">
+                {language === 'es' ? 'Arte Talavera & Ladrillo de Petatillo' : 'Talavera & Puebla Heritage'}
               </span>
-            </h1>
-            <p className="text-[10px] text-[#9597C1] font-medium tracking-wide">
-              {language === 'es' ? 'Caminatas & Patrimonio Vivo' : 'Accessible Historic Walks'}
+              <Sparkles className="w-3.5 h-3.5 text-[#D48914]" />
+            </div>
+            <p className="text-[11px] text-[#162035]/85 font-medium leading-snug">
+              {language === 'es'
+                ? 'Rutas peatonales accesibles por Zócalo, Analco, La Luz, El Alto y Xanenetla.'
+                : 'Accessible walking routes across Puebla’s historic neighborhoods.'}
             </p>
           </div>
         </div>
-
-        {/* Botón Saltar */}
-        {canSkip && (
-          <button
-            type="button"
-            onClick={handleComplete}
-            className="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1 backdrop-blur-md transition-all shadow cursor-pointer"
-          >
-            <span>{language === 'es' ? 'Entrar' : 'Enter'}</span>
-            <ChevronRight className="w-4 h-4 text-[#EDE28E]" />
-          </button>
-        )}
-      </header>
-
-      {/* Contenedor Central del Video Animado / Splash */}
-      <main className="w-full max-w-sm my-auto flex flex-col items-center justify-center z-10 px-2">
-        <div className="relative w-full aspect-[9/16] max-h-[52vh] sm:max-h-[58vh] rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(7,21,78,0.95)] border-2 border-[#EDE28E]/60 bg-[#0B228A] flex items-center justify-center group">
-          {!videoError ? (
-            <video
-              ref={videoRef}
-              src="/splash.mp4"
-              playsInline
-              autoPlay
-              muted={isMuted}
-              onEnded={handleComplete}
-              onError={() => setVideoError(true)}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            /* Fallback animado en caso de error o navegador sin soporte mp4 */
-            <div className="flex flex-col items-center justify-center p-6 text-center space-y-4">
-              <img
-                src="/popogo-logo.png"
-                alt="PopoGo"
-                className="w-40 h-40 rounded-full border-4 border-[#EDE28E] shadow-2xl animate-pulse"
-              />
-              <p className="text-sm font-bold text-[#EFF1F8]">
-                {language === 'es' ? 'Bienvenido a PopoGo Puebla' : 'Welcome to PopoGo Puebla'}
-              </p>
-            </div>
-          )}
-
-          {/* Botón de Sonido Flotante sobre el video */}
-          {!videoError && (
-            <button
-              type="button"
-              onClick={toggleSound}
-              className="absolute bottom-3 right-3 p-2 rounded-full bg-[#0E2C9C]/80 hover:bg-[#0E2C9C] text-[#EFF1F8] border border-white/20 backdrop-blur-md transition-transform hover:scale-110 shadow-lg cursor-pointer"
-              title={isMuted ? 'Activar audio' : 'Silenciar'}
-            >
-              {isMuted ? <VolumeX className="w-4 h-4 text-[#EDE28E]" /> : <Volume2 className="w-4 h-4 text-[#EDE28E]" />}
-            </button>
-          )}
-
-          {/* Brillo holográfico perimetral */}
-          <div className="absolute inset-0 pointer-events-none rounded-3xl ring-1 ring-inset ring-white/20" />
-        </div>
-
-        {/* Lema de Identidad Poblana */}
-        <div className="mt-4 text-center space-y-1">
-          <div className="flex items-center justify-center gap-1.5 text-[#EDE28E]">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-xs font-extrabold uppercase tracking-widest font-mono">
-              {language === 'es' ? 'Identidad Talavera • Centro Histórico' : 'Talavera Identity • Historic Center'}
-            </span>
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <p className="text-xs text-[#EFF1F8]/80 max-w-xs mx-auto">
-            {language === 'es'
-              ? 'Rutas peatonales accesibles, talleres artesanales y secretos vivos de Puebla.'
-              : 'Accessible walking routes, artisan workshops, and living secrets of Puebla.'}
-          </p>
-        </div>
       </main>
 
-      {/* Pie con Barra de Carga & Paleta de Colores de Identidad */}
-      <footer className="w-full max-w-md mx-auto space-y-3 z-10 pb-2">
-        {/* Barra de progreso */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-[11px] font-bold text-[#EFF1F8]">
-            <span className="flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-[#EDE28E] animate-spin" />
-              {isLoadingData
-                ? (language === 'es' ? 'Preparando mapa y patrimonio...' : 'Loading map & heritage...')
-                : (language === 'es' ? 'Iniciando PopoGo...' : 'Starting PopoGo...')}
-            </span>
-            <span className="font-mono text-[#EDE28E]">{progress}%</span>
+      {/* Pie con Barra de Carga & Los 6 Pigmentos Minerales de la Talavera de Puebla */}
+      <footer className="w-full z-10 bg-[#FAF6EE]/95 border-t-2 border-[#0F3078] px-4 py-3 shadow-[0_-8px_25px_rgba(15,48,120,0.12)]">
+        <div className="max-w-md mx-auto space-y-2.5">
+          {/* Barra de progreso policroma */}
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[11px] font-extrabold text-[#0F3078]">
+              <span className="flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-[#B84A2C] animate-spin" />
+                {isLoadingData
+                  ? (language === 'es' ? 'Horneando mapa y patrimonio...' : 'Loading map & heritage...')
+                  : (language === 'es' ? 'Esmaltando experiencia...' : 'Starting PopoGo...')}
+              </span>
+              <span className="font-mono text-[#B84A2C]">{progress}%</span>
+            </div>
+
+            <div className="w-full h-2.5 bg-[#F2EBDC] rounded-full overflow-hidden p-0.5 border border-[#0F3078]/40 shadow-inner">
+              <div
+                className="h-full rounded-full transition-all duration-200 bg-gradient-to-r from-[#0F3078] via-[#1B49AC] via-[#B84A2C] to-[#D48914]"
+                style={{ width: `${Math.max(10, progress)}%` }}
+              />
+            </div>
           </div>
 
-          <div className="w-full h-2.5 bg-[#07154E] rounded-full overflow-hidden p-0.5 border border-[#9597C1]/30 shadow-inner">
-            <div
-              className="h-full rounded-full transition-all duration-200 bg-gradient-to-r from-[#0E2C9C] via-[#7B5E86] to-[#EDE28E]"
-              style={{ width: `${Math.max(8, progress)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Muestra de la Paleta Oficial de Colores de PopoGo */}
-        <div className="flex items-center justify-center gap-2 pt-1 border-t border-white/10">
-          <div className="flex items-center gap-1.5" title="Azul Cobalto #0E2C9C (Dominante Talavera)">
-            <span className="w-3 h-3 rounded-full bg-[#0E2C9C] ring-1 ring-white/40 shadow-sm" />
-            <span className="text-[10px] text-[#EFF1F8]/70 hidden sm:inline">Cobalto</span>
-          </div>
-          <div className="flex items-center gap-1.5" title="Azul Lavanda #9597C1 (Detalles)">
-            <span className="w-3 h-3 rounded-full bg-[#9597C1] ring-1 ring-white/40 shadow-sm" />
-            <span className="text-[10px] text-[#EFF1F8]/70 hidden sm:inline">Lavanda</span>
-          </div>
-          <div className="flex items-center gap-1.5" title="Amarillo Pastel #EDE28E (Acentos)">
-            <span className="w-3 h-3 rounded-full bg-[#EDE28E] ring-1 ring-white/40 shadow-sm" />
-            <span className="text-[10px] text-[#EFF1F8]/70 hidden sm:inline">Amarillo</span>
-          </div>
-          <div className="flex items-center gap-1.5" title="Malva #7B5E86 (Cálido)">
-            <span className="w-3 h-3 rounded-full bg-[#7B5E86] ring-1 ring-white/40 shadow-sm" />
-            <span className="text-[10px] text-[#EFF1F8]/70 hidden sm:inline">Malva</span>
-          </div>
-          <div className="flex items-center gap-1.5" title="Blanco Hielo #EFF1F8 (Fondo)">
-            <span className="w-3 h-3 rounded-full bg-[#EFF1F8] ring-1 ring-white/40 shadow-sm" />
-            <span className="text-[10px] text-[#EFF1F8]/70 hidden sm:inline">Blanco Hielo</span>
+          {/* Muestra de los 6 Pigmentos Minerales Tradicionales de Talavera (DOT4) */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1 border-t border-[#0F3078]/15">
+            <div className="flex items-center gap-1" title="Blanco Majólica #FAF6EE (Esmalte de Estaño)">
+              <span className="w-3 h-3 rounded-full bg-[#FAF6EE] border-2 border-[#0F3078] shadow-sm" />
+              <span className="text-[10px] font-bold text-[#162035]">Majólica</span>
+            </div>
+            <div className="flex items-center gap-1" title="Azul Cobalto #0F3078 (Plumilla Mineral)">
+              <span className="w-3 h-3 rounded-full bg-[#0F3078] border border-white shadow-sm" />
+              <span className="text-[10px] font-bold text-[#0F3078]">Cobalto</span>
+            </div>
+            <div className="flex items-center gap-1" title="Aguada Celeste #3E6FD1 (Media Tinta)">
+              <span className="w-3 h-3 rounded-full bg-[#3E6FD1] border border-white shadow-sm" />
+              <span className="text-[10px] font-bold text-[#1B49AC]">Aguada</span>
+            </div>
+            <div className="flex items-center gap-1" title="Terracota Petatillo #B84A2C (Barro de Analco)">
+              <span className="w-3 h-3 rounded-full bg-[#B84A2C] border border-white shadow-sm" />
+              <span className="text-[10px] font-bold text-[#B84A2C]">Terracota</span>
+            </div>
+            <div className="flex items-center gap-1" title="Amarillo Ocre #D48914 (Ocre de Nápoles)">
+              <span className="w-3 h-3 rounded-full bg-[#D48914] border border-white shadow-sm" />
+              <span className="text-[10px] font-bold text-[#9A6208]">Ocre</span>
+            </div>
+            <div className="flex items-center gap-1" title="Verde Cobre #1D6B52 (Pigmento Mineral)">
+              <span className="w-3 h-3 rounded-full bg-[#1D6B52] border border-white shadow-sm" />
+              <span className="text-[10px] font-bold text-[#1D6B52]">Verde Cobre</span>
+            </div>
           </div>
         </div>
       </footer>
     </div>
   );
 };
+

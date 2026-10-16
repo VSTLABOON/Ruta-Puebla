@@ -4,14 +4,20 @@
 
 :root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color-scheme: dark;
-  --popogo-cobalto: #0E2C9C;
-  --popogo-cobalto-dark: #0B228A;
-  --popogo-cobalto-light: #2544A7;
-  --popogo-lavanda: #9597C1;
-  --popogo-amarillo: #EDE28E;
-  --popogo-malva: #7B5E86;
-  --popogo-crema: #EFF1F8;
+  color-scheme: light;
+  --popogo-cobalto: #0F3078;
+  --popogo-cobalto-dark: #0A1E4A;
+  --popogo-cobalto-light: #1B49AC;
+  --popogo-aguada: #3E6FD1;
+  --popogo-celeste: #DCE6F9;
+  --popogo-amarillo: #D48914;
+  --popogo-amarillo-vivo: #F0B43A;
+  --popogo-terracota: #B84A2C;
+  --popogo-verde: #1D6B52;
+  --popogo-malva: #6D438A;
+  --popogo-hierro: #162035;
+  --popogo-marfil: #FAF6EE;
+  --popogo-crema: #F2EBDC;
 }
 
 html, body, #root {
@@ -19,21 +25,39 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #061138;
+  background-color: #F2EBDC;
+  color: #162035;
   overscroll-behavior: none;
 }
 
-/* Patrón Talavera de fondo para identidad Poblana */
+/* Patrón auténtico de Azulejo de Talavera y Petatillo Poblano sobre Esmalte Marfil */
 .talavera-bg-pattern {
-  background-color: #061138;
-  background-image: 
-    radial-gradient(#EDE28E 1.2px, transparent 1.2px), 
-    radial-gradient(#9597C1 1.2px, #061138 1.2px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
+  background-color: #F2EBDC;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Crect width='72' height='72' fill='%23F2EBDC'/%3E%3Ccircle cx='36' cy='36' r='26' stroke='%230F3078' stroke-width='0.8' stroke-opacity='0.14'/%3E%3Ccircle cx='36' cy='36' r='22' stroke='%231B49AC' stroke-width='0.5' stroke-dasharray='2 2' stroke-opacity='0.18'/%3E%3Cpath d='M36 14 C33 19, 33 24, 36 27 C39 24, 39 19, 36 14 Z M36 58 C33 53, 33 48, 36 45 C39 48, 39 53, 36 58 Z M14 36 C19 33, 24 33, 27 36 C24 39, 19 39, 14 36 Z M58 36 C53 33, 48 33, 45 36 C48 39, 53 39, 58 36 Z' fill='%230F3078' fill-opacity='0.09'/%3E%3Cpolygon points='36,31 41,36 36,41 31,36' fill='%23B84A2C' fill-opacity='0.11'/%3E%3Ccircle cx='36' cy='36' r='2' fill='%23D48914' fill-opacity='0.22'/%3E%3Ccircle cx='0' cy='0' r='6' stroke='%230F3078' stroke-width='0.8' stroke-opacity='0.12'/%3E%3Ccircle cx='72' cy='0' r='6' stroke='%230F3078' stroke-width='0.8' stroke-opacity='0.12'/%3E%3Ccircle cx='0' cy='72' r='6' stroke='%230F3078' stroke-width='0.8' stroke-opacity='0.12'/%3E%3Ccircle cx='72' cy='72' r='6' stroke='%230F3078' stroke-width='0.8' stroke-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 72px 72px;
 }
 
-/* Patrones accesibles para representacion visual no dependiente exclusivamente del color */
+/* Patrón de Cobalto Profundo con Rosetón de Talavera y Ladrillo Petatillo */
+.talavera-cobalt-pattern {
+  background-color: #0F3078;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none'%3E%3Ccircle cx='32' cy='32' r='22' stroke='%23FAF6EE' stroke-width='0.8' stroke-opacity='0.14'/%3E%3Cpath d='M32 14 C29 19, 29 23, 32 26 C35 23, 35 19, 32 14 Z M32 50 C29 45, 29 41, 32 38 C35 41, 35 45, 32 50 Z M14 32 C19 29, 23 29, 26 32 C23 35, 19 35, 14 32 Z M50 32 C45 29, 41 29, 38 32 C41 35, 45 35, 50 32 Z' fill='%23FAF6EE' fill-opacity='0.10'/%3E%3Ccircle cx='32' cy='32' r='2.5' fill='%23F0B43A' fill-opacity='0.28'/%3E%3Cpolygon points='0,0 6,0 0,6' fill='%23B84A2C' fill-opacity='0.22'/%3E%3Cpolygon points='64,64 58,64 64,58' fill='%23B84A2C' fill-opacity='0.22'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 64px 64px;
+}
+
+/* Doble filete concéntrico de plato de Talavera Poblana */
+.talavera-plate-card {
+  background: linear-gradient(155deg, #FFFDF9 0%, #FAF6EE 65%, #F2EBDC 100%);
+  border: 2.5px solid #0F3078;
+  box-shadow:
+    inset 0 0 0 3px #FAF6EE,
+    inset 0 0 0 4.5px rgba(27, 73, 172, 0.55),
+    0 16px 38px -8px rgba(10, 30, 74, 0.25),
+    0 4px 12px rgba(184, 74, 44, 0.10);
+}
+
+/* Patrones accesibles para representación visual no dependiente exclusivamente del color */
 .pattern-verified {
   stroke-dasharray: none;
 }
@@ -60,9 +84,9 @@ html, body, #root {
 
 /* Animaciones de mapa interactivo y marcadores MapLibre */
 @keyframes marker-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 226, 142, 0.7); }
-  70% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(237, 226, 142, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(237, 226, 142, 0); }
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 48, 120, 0.65); }
+  70% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(15, 48, 120, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 48, 120, 0); }
 }
 
 .animate-marker-pulse {
@@ -71,22 +95,25 @@ html, body, #root {
 
 .maplibregl-popup-content {
   padding: 0 !important;
-  border-radius: 0.75rem !important;
+  border-radius: 1rem !important;
   overflow: hidden !important;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5) !important;
-  border: 1.5px solid #9597C1 !important;
-  background-color: #0B228A !important;
-  color: #EFF1F8 !important;
+  box-shadow:
+    inset 0 0 0 2px #FAF6EE,
+    inset 0 0 0 3.5px #1B49AC,
+    0 20px 25px -5px rgba(10, 30, 74, 0.35) !important;
+  border: 2px solid #0F3078 !important;
+  background-color: #FAF6EE !important;
+  color: #162035 !important;
 }
 
 .maplibregl-popup-anchor-top .maplibregl-popup-tip {
-  border-bottom-color: #0B228A !important;
+  border-bottom-color: #0F3078 !important;
 }
 .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
-  border-top-color: #0B228A !important;
+  border-top-color: #0F3078 !important;
 }
 
-/* Animaciones de radar GPS, fotodiscos de patrimonio y tarjetas holograficas */
+/* Animaciones de radar GPS, fotodiscos de patrimonio y tarjetas de Talavera */
 @keyframes radar-ping {
   0% { transform: scale(0.6); opacity: 0.85; }
   50% { opacity: 0.45; }
@@ -106,7 +133,7 @@ html, body, #root {
   animation: pokestop-float 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
-/* Tarjeta holografica de coleccion con colores PopoGo Talavera */
+/* Tarjeta de Esmalte Cerámico Policromo Talavera Poblana */
 @keyframes holographic-shine {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -114,12 +141,22 @@ html, body, #root {
 }
 
 .holographic-card {
-  background: linear-gradient(135deg, rgba(239,241,248,0.1) 0%, rgba(237,226,142,0.25) 25%, rgba(14,44,156,0.35) 50%, rgba(123,94,134,0.3) 75%, rgba(239,241,248,0.1) 100%);
-  background-size: 300% 300%;
-  animation: holographic-shine 6s ease infinite;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(237, 226, 142, 0.35);
-  box-shadow: 0 0 30px rgba(14, 44, 156, 0.4), inset 0 0 20px rgba(237, 226, 142, 0.15);
+  background: linear-gradient(
+    135deg,
+    #FFFDF9 0%,
+    #FAF6EE 28%,
+    #DCE6F9 52%,
+    #F9E8C8 76%,
+    #FAF6EE 100%
+  );
+  background-size: 250% 250%;
+  animation: holographic-shine 7s ease infinite;
+  border: 2.5px solid #0F3078;
+  box-shadow:
+    inset 0 0 0 3px #FAF6EE,
+    inset 0 0 0 4.5px #1B49AC,
+    0 14px 35px rgba(15, 48, 120, 0.28);
+  color: #162035;
 }
 
 /* Estilos de impresion y alto contraste */
@@ -134,16 +171,21 @@ html, body, #root {
 }
 
 .tactical-glass {
-  background: rgba(11, 34, 138, 0.75);
+  background: rgba(250, 246, 238, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(149, 151, 193, 0.25);
+  border: 2px solid #0F3078;
+  box-shadow: inset 0 0 0 2px #FAF6EE, inset 0 0 0 3px rgba(27, 73, 172, 0.45);
 }
 
 .tactical-glass-elevated {
-  background: rgba(7, 21, 78, 0.9);
+  background: rgba(250, 246, 238, 0.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(237, 226, 142, 0.3);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(14, 44, 156, 0.25);
+  border: 2.5px solid #0F3078;
+  box-shadow:
+    inset 0 0 0 3px #FAF6EE,
+    inset 0 0 0 4.5px #1B49AC,
+    0 20px 40px -10px rgba(10, 30, 74, 0.35);
 }
+

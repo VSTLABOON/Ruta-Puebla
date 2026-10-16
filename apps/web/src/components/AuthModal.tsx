@@ -272,26 +272,26 @@ export const AuthModal: FC<AuthModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-slide">
-      <div className="bg-slate-900 border border-white/10 text-white rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto p-5 shadow-2xl space-y-4">
+      <div className="bg-[#FAF6EE] border-4 border-[#0F3078] text-[#162035] rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto p-5 shadow-2xl space-y-4">
         {/* Cabecera */}
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center gap-2">
             <Lock className="w-5 h-5 text-amber-400" />
-            <h3 className="font-extrabold text-sm text-slate-100 uppercase tracking-wide">
+            <h3 className="font-extrabold text-sm text-[#0F3078] uppercase tracking-wide font-serif font-black">
               {language === 'es' ? 'Inicio de Sesión y Registro' : 'Login & Registration'}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
+            className="text-[#0F3078]/70 hover:text-[#0F3078] font-serif p-1 rounded-lg cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* 3 Pestañas Principales de Rol */}
-        <div className="grid grid-cols-3 gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-white/5 text-xs font-bold">
+        <div className="grid grid-cols-3 gap-1.5 bg-white/90 p-1.5 rounded-2xl border border-[#0F3078]/20 shadow-xs text-xs font-bold">
           <button
             type="button"
             onClick={() => {
@@ -302,8 +302,8 @@ export const AuthModal: FC<AuthModalProps> = ({
             }}
             className={`py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${
               authRole === 'tourist'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md font-serif font-bold'
+                : 'text-[#0F3078]/70 hover:text-[#0F3078] font-serif'
             }`}
           >
             <Compass className="w-3.5 h-3.5" />
@@ -321,7 +321,7 @@ export const AuthModal: FC<AuthModalProps> = ({
             className={`py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${
               authRole === 'artisan'
                 ? 'bg-sky-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                : 'text-[#0F3078]/70 hover:text-[#0F3078] font-serif'
             }`}
           >
             <Store className="w-3.5 h-3.5" />
@@ -339,7 +339,7 @@ export const AuthModal: FC<AuthModalProps> = ({
             className={`py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${
               authRole === 'admin'
                 ? 'bg-emerald-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                : 'text-[#0F3078]/70 hover:text-[#0F3078] font-serif'
             }`}
           >
             <BarChart3 className="w-3.5 h-3.5" />
@@ -425,7 +425,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                     className={`flex-1 py-1.5 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                       touristMode === 'login'
                         ? 'bg-slate-800 text-amber-300 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
+                        : 'text-[#0F3078]/70 hover:text-[#0F3078] font-serif'
                     }`}
                   >
                     <User className="w-3.5 h-3.5" />
@@ -441,7 +441,7 @@ export const AuthModal: FC<AuthModalProps> = ({
                     className={`flex-1 py-1.5 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                       touristMode === 'register'
                         ? 'bg-slate-800 text-amber-300 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
+                        : 'text-[#0F3078]/70 hover:text-[#0F3078] font-serif'
                     }`}
                   >
                     <UserPlus className="w-3.5 h-3.5" />

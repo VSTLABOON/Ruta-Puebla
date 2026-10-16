@@ -80,19 +80,19 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
   };
 
   return (
-    <div className="flex-1 w-full h-full overflow-y-auto bg-[#07154E] p-4 sm:p-6 pb-24 text-[#EFF1F8]">
+    <div className="flex-1 w-full h-full overflow-y-auto talavera-bg-pattern p-4 sm:p-6 pb-24 text-[#162035]">
       <div className="max-w-5xl mx-auto space-y-4">
         {/* Tarjeta de Inicio de Sesión si no hay sesión activa */}
         {!session ? (
-          <div className="max-w-md mx-auto my-12 bg-[#0B228A] border border-[#9597C1]/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
-            <div className="text-center space-y-1 pb-3 border-b border-[#9597C1]/20">
-              <div className="w-12 h-12 rounded-2xl bg-[#EDE28E]/15 text-[#EDE28E] border border-[#EDE28E]/30 flex items-center justify-center mx-auto mb-2">
+          <div className="max-w-md mx-auto my-12 bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
+            <div className="text-center space-y-1 pb-3 border-b-2 border-[#0F3078]/15">
+              <div className="w-12 h-12 rounded-2xl bg-[#0F3078] text-[#FAF6EE] flex items-center justify-center mx-auto mb-2 shadow-md">
                 <Lock className="w-6 h-6" />
               </div>
-              <h3 className="font-extrabold text-base text-white">
+              <h3 className="font-serif font-black text-base text-[#0F3078]">
                 {language === 'es' ? 'Acceso al Mostrador de Taller' : 'Workshop Counter Access'}
               </h3>
-              <p className="text-xs text-[#9597C1]">
+              <p className="text-xs text-[#0F3078]/70 font-sans">
                 {language === 'es'
                   ? 'Selecciona tu taller para comenzar a emitir sellos y recibir visitantes'
                   : 'Select your workshop to issue stamps and welcome visitors'}
@@ -100,20 +100,20 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
             </div>
 
             {errorMsg && (
-              <div className="text-xs text-rose-300 bg-rose-950/60 p-2.5 rounded-xl border border-rose-500/40">
+              <div className="text-xs text-rose-800 bg-rose-100 p-2.5 rounded-xl border border-rose-300">
                 {errorMsg}
               </div>
             )}
 
             <form onSubmit={handleLogin} className="space-y-3.5">
               <div>
-                <label className="block text-[11px] font-semibold text-[#EFF1F8] uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-serif font-bold text-[#0F3078] uppercase tracking-wider mb-1">
                   {language === 'es' ? 'Taller Artesanal:' : 'Artisan Workshop:'}
                 </label>
                 <select
                   value={selectedWorkshopId}
                   onChange={(e) => setSelectedWorkshopId(e.target.value)}
-                  className="w-full border border-[#9597C1]/30 rounded-xl p-2.5 text-xs text-[#EFF1F8] bg-[#07154E] focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
+                  className="w-full border-2 border-[#0F3078]/25 rounded-xl p-2.5 text-xs text-[#162035] bg-white focus:outline-none focus:ring-2 focus:ring-[#0F3078]"
                 >
                   {artisanPois.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -124,7 +124,7 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#EFF1F8] uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-serif font-bold text-[#0F3078] uppercase tracking-wider mb-1">
                   {language === 'es' ? 'PIN de Mostrador:' : 'Counter PIN:'}
                 </label>
                 <div className="relative">
@@ -134,15 +134,15 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
                     value={pin}
                     onChange={(e) => setPin(e.target.value)}
                     placeholder="1234"
-                    className="w-full border border-[#9597C1]/30 rounded-xl p-2.5 pl-8 text-xs text-[#EFF1F8] bg-[#07154E] font-mono tracking-widest placeholder:text-[#9597C1]/50 focus:outline-none focus:ring-1 focus:ring-[#EDE28E]"
+                    className="w-full border-2 border-[#0F3078]/25 rounded-xl p-2.5 pl-8 text-xs text-[#162035] bg-white font-mono tracking-widest placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0F3078]"
                   />
-                  <KeyRound className="w-3.5 h-3.5 text-[#9597C1] absolute left-2.5 top-3" />
+                  <KeyRound className="w-3.5 h-3.5 text-[#0F3078]/50 absolute left-2.5 top-3" />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 px-4 rounded-xl bg-[#EDE28E] hover:bg-[#F4ECA6] text-[#0E2C9C] font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg"
+                className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] text-[#FAF6EE] font-serif font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md border border-[#FAF6EE]/20"
               >
                 <Store className="w-3.5 h-3.5" />
                 <span>{language === 'es' ? 'Abrir Mostrador' : 'Open Counter'}</span>
@@ -151,9 +151,9 @@ export const ArtisanView: FC<ArtisanViewProps> = ({ pois, language, onSessionCha
               <button
                 type="button"
                 onClick={handleQuickDemo}
-                className="w-full py-2 px-3 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 text-[#EDE28E] border border-[#EDE28E]/30 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-white hover:bg-[#FAF6EE] text-[#B84A2C] border-2 border-[#B84A2C]/30 font-serif font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#EDE28E]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#B84A2C]" />
                 <span>{language === 'es' ? 'Acceso Rápido Demo (1 Clic)' : 'Quick Demo Access'}</span>
               </button>
             </form>

@@ -28,6 +28,7 @@ import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
 import { verifyOfflineStampPayload, recordStampInLedger } from './utils/offlineStamp';
 import { SplashScreen } from './components/SplashScreen';
+import { TalaveraFrieze, TalaveraPlateMedallion } from './components/TalaveraOrnament';
 
 // Carga diferida (code-splitting) de las 3 vistas por rol
 const VisitorView = React.lazy(() => import('./views/visitor/VisitorView'));
@@ -222,7 +223,6 @@ function MainApp() {
     if (verified.valid && verified.poiId) {
       const targetPoi = pois.find((p) => p.id === verified.poiId);
       if (targetPoi) {
-        // Si el visitante abrió el enlace con su teléfono sin sesión previa, iniciar sesión rápida de caminante
         if (!currentUser) {
           const autoTourist: UserProfile = {
             id: `tourist_nfc_${Date.now()}`,
@@ -254,11 +254,9 @@ function MainApp() {
         tacticalAudio.playStampSuccess();
         handleUnlockSecret(targetPoi.id, badge);
       }
-      // Limpiar parámetros de la URL tras procesar la etiqueta NFC
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, [pois]);
-
 
   const handleAuthenticated = (
     role: 'tourist' | 'artisan' | 'government',
@@ -341,66 +339,67 @@ function MainApp() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#07154E] text-[#EFF1F8] flex flex-col font-sans antialiased selection:bg-[#EDE28E] selection:text-[#0E2C9C]">
-      {/* Cabecera Principal PopoGo */}
-      <header className="bg-[#0B228A]/95 backdrop-blur-xl border-b border-[#9597C1]/25 text-[#EFF1F8] z-40 flex-shrink-0">
+    <div className="h-screen w-screen overflow-hidden talavera-bg-pattern text-[#162035] flex flex-col font-sans antialiased selection:bg-[#0F3078] selection:text-[#FAF6EE]">
+      {/* Cabecera Principal PopoGo estilo Azulejo de Talavera con Cenefa Policroma */}
+      <header className="talavera-cobalt-pattern text-[#FAF6EE] z-40 flex-shrink-0 shadow-md">
         <div className="w-full px-3 sm:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3">
-          {/* Logo y Nombre PopoGo */}
+          {/* Logo en Medallón de Plato de Talavera y Nombre PopoGo */}
           <div
             onClick={() => navigate('/')}
             className="flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none group min-w-0"
           >
-            <img
-              src="/popogo-logo.png"
-              alt="PopoGo Logo"
-              className="w-9 h-9 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-contain bg-[#EFF1F8] flex-shrink-0 group-hover:scale-105 transition-transform p-0.5"
-            />
+            <TalaveraPlateMedallion size="sm" variant="polychrome" className="flex-shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/popogo-logo.png"
+                alt="PopoGo Logo"
+                className="w-5 h-5 rounded-full object-contain"
+              />
+            </TalaveraPlateMedallion>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-sm sm:text-base font-black tracking-wider text-white uppercase font-serif whitespace-nowrap">
+                <h1 className="text-sm sm:text-base font-black tracking-wider text-[#FAF6EE] uppercase font-serif whitespace-nowrap">
                   PopoGo
                 </h1>
-                <span className="text-[10px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase leading-none flex-shrink-0">
+                <span className="text-[10px] font-sans font-extrabold px-2 py-0.5 rounded-full bg-[#B84A2C] text-[#FAF6EE] border border-[#F0B43A] tracking-widest uppercase leading-none flex-shrink-0 shadow-sm">
                   Puebla
                 </span>
               </div>
-              <p className="text-[10px] text-[#9597C1] hidden md:block font-medium truncate">
+              <p className="text-[10px] text-[#DCE6F9] hidden md:block font-medium truncate">
                 {activeRoute === '/taller'
-                  ? (language === 'es' ? 'Terminal de Mostrador para Talleres' : 'Workshop Counter Terminal')
+                  ? (language === 'es' ? 'Terminal de Mostrador • Talleres de Talavera y Alfarería' : 'Workshop Counter Terminal')
                   : activeRoute === '/admin'
-                  ? (language === 'es' ? 'Consola de Gestión Urbana • SECIHTI' : 'Urban Management Console • SECIHTI')
-                  : (language === 'es' ? 'Caminatas Peatonales & Patrimonio Vivo' : 'Accessible Heritage Walks')}
+                  ? (language === 'es' ? 'Consola de Gestión Urbana • SECIHTI Puebla' : 'Urban Management Console • SECIHTI')
+                  : (language === 'es' ? 'Rutas Peatonales, Talavera & Patrimonio Vivo' : 'Accessible Heritage Walks')}
               </p>
             </div>
           </div>
 
-          {/* Controles de Cabecera: Únicamente Idioma Dinámico y Cerrar Sesión */}
+          {/* Controles de Cabecera en Marfil Majólica y Terracota */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            {/* Selector de Idioma Dinámico */}
             <button
               type="button"
               onClick={handleToggleLanguage}
-              className="p-1.5 px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#9597C1]/30 transition cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
+              className="p-1.5 px-2.5 rounded-xl bg-[#FAF6EE] hover:bg-white text-[#0F3078] text-xs font-extrabold flex items-center gap-1.5 border-2 border-[#D48914] transition cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
               title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
               aria-label={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
             >
-              <Languages className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-              <span className="font-mono text-xs font-bold">{language === 'es' ? 'EN' : 'ES'}</span>
+              <Languages className="w-3.5 h-3.5 text-[#B84A2C] flex-shrink-0" />
+              <span className="font-mono text-xs font-black">{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
-            {/* Botón Cerrar Sesión */}
             <button
               type="button"
               onClick={handleLogout}
-              className="p-1.5 px-2.5 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/45 transition cursor-pointer flex-shrink-0 active:scale-95 shadow-sm flex items-center justify-center gap-1.5"
+              className="p-1.5 px-2.5 rounded-xl bg-[#B84A2C] hover:bg-[#9E3B20] text-[#FAF6EE] border border-[#F0B43A] transition cursor-pointer flex-shrink-0 active:scale-95 shadow-sm flex items-center justify-center gap-1.5"
               title={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
               aria-label={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
             >
-              <LogOut className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
-              <span className="hidden sm:inline text-xs font-bold">{language === 'es' ? 'Salir' : 'Sign out'}</span>
+              <LogOut className="w-3.5 h-3.5 text-[#F0B43A] flex-shrink-0" />
+              <span className="hidden sm:inline text-xs font-extrabold">{language === 'es' ? 'Salir' : 'Sign out'}</span>
             </button>
           </div>
         </div>
+        <TalaveraFrieze compact />
       </header>
 
       {/* Área Principal con Soporte para Vista Simulada 390x844 */}
@@ -408,18 +407,18 @@ function MainApp() {
         <div
           className={
             viewportMode === 'mobile'
-              ? 'w-full max-w-[390px] h-[844px] max-h-[calc(100vh-60px)] bg-slate-950 border-[5px] border-slate-800 rounded-[44px] shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden relative flex flex-col transition-all duration-500'
+              ? 'w-full max-w-[390px] h-[844px] max-h-[calc(100vh-64px)] bg-[#FAF6EE] border-[5px] border-[#0F3078] rounded-[44px] shadow-[0_25px_80px_rgba(10,30,74,0.45)] overflow-hidden relative flex flex-col transition-all duration-500'
               : 'w-full h-full relative flex flex-col overflow-hidden transition-all duration-500'
           }
         >
           {viewportMode === 'mobile' && (
-            <div className="h-6 w-full bg-slate-950 flex items-center justify-between px-6 z-40 select-none flex-shrink-0">
-              <span className="text-[10px] font-mono text-slate-400 font-bold">12:00</span>
-              <div className="w-20 h-4 bg-slate-900 rounded-full border border-slate-800 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-emerald-500/80 animate-pulse" />
+            <div className="h-6 w-full bg-[#0F3078] flex items-center justify-between px-6 z-40 select-none flex-shrink-0">
+              <span className="text-[10px] font-mono text-[#FAF6EE] font-bold">12:00</span>
+              <div className="w-20 h-4 bg-[#0A1E4A] rounded-full border border-[#3E6FD1]/40 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[#F0B43A] animate-pulse" />
               </div>
-              <div className="flex items-center gap-1 text-[10px] font-mono text-slate-400">
-                <Radio className="w-3 h-3 text-sky-400" />
+              <div className="flex items-center gap-1 text-[10px] font-mono text-[#FAF6EE]">
+                <Radio className="w-3 h-3 text-[#F0B43A]" />
                 <span>5G</span>
               </div>
             </div>
@@ -428,11 +427,11 @@ function MainApp() {
           {/* Vistas Cargadas con Code Splitting (React.lazy) según la Ruta Activa */}
           <Suspense
             fallback={
-              <div className="flex-1 w-full h-full flex items-center justify-center bg-slate-950">
-                <div className="text-center space-y-3">
-                  <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-400 block">
-                    {language === 'es' ? 'Cargando módulo...' : 'Loading module...'}
+              <div className="flex-1 w-full h-full flex items-center justify-center talavera-bg-pattern">
+                <div className="text-center space-y-3 talavera-plate-card p-6 rounded-3xl">
+                  <div className="w-10 h-10 border-4 border-[#0F3078] border-t-[#B84A2C] rounded-full animate-spin mx-auto" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#0F3078] block font-serif">
+                    {language === 'es' ? 'Cargando azulejos y rutas...' : 'Loading module...'}
                   </span>
                 </div>
               </div>
@@ -483,19 +482,19 @@ function MainApp() {
 
       {/* Modal Interactivo de Selección de Rol */}
       {isRoleModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 animate-fade-slide">
-          <div className="bg-slate-900 border border-white/10 text-white rounded-3xl max-w-md w-full p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="fixed inset-0 z-50 bg-[#0A1E4A]/70 backdrop-blur-md flex items-center justify-center p-4 animate-fade-slide">
+          <div className="talavera-plate-card text-[#162035] rounded-3xl max-w-md w-full p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0F3078]/15">
               <div className="flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-amber-400" />
-                <h3 className="font-extrabold text-sm text-slate-100 uppercase tracking-wide">
+                <UserCheck className="w-5 h-5 text-[#0F3078]" />
+                <h3 className="font-extrabold text-sm text-[#0F3078] uppercase tracking-wide font-serif">
                   {language === 'es' ? 'Seleccionar Perfil de Vista' : 'Select View Profile'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsRoleModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
+                className="text-[#0F3078] hover:bg-[#DCE6F9] p-1 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -511,28 +510,28 @@ function MainApp() {
                     key={roleKey}
                     type="button"
                     onClick={() => handleSelectRole(roleKey)}
-                    className={`w-full text-left p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 cursor-pointer ${
+                    className={`w-full text-left p-3.5 rounded-2xl border-2 transition-all duration-300 flex items-start gap-3 cursor-pointer ${
                       isSelected
-                        ? `${role.theme.badgeBg} ${role.theme.badgeBorder} ring-1 ring-amber-400`
-                        : 'bg-slate-950/70 border-white/5 hover:bg-slate-800'
+                        ? 'bg-[#0F3078] text-[#FAF6EE] border-[#D48914] shadow-md'
+                        : 'bg-[#FFFDF9] border-[#0F3078]/20 hover:border-[#0F3078] text-[#162035]'
                     }`}
                   >
                     <div className="mt-0.5">
-                      {role.iconName === 'Compass' && <Compass className="w-5 h-5 text-amber-400" />}
-                      {role.iconName === 'Store' && <Store className="w-5 h-5 text-sky-400" />}
+                      {role.iconName === 'Compass' && <Compass className={`w-5 h-5 ${isSelected ? 'text-[#F0B43A]' : 'text-[#0F3078]'}`} />}
+                      {role.iconName === 'Store' && <Store className={`w-5 h-5 ${isSelected ? 'text-[#F0B43A]' : 'text-[#B84A2C]'}`} />}
                       {role.iconName === 'BarChart3' && (
-                        <BarChart3 className="w-5 h-5 text-emerald-400" />
+                        <BarChart3 className={`w-5 h-5 ${isSelected ? 'text-[#F0B43A]' : 'text-[#1D6B52]'}`} />
                       )}
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sm text-slate-100">
+                        <span className={`font-extrabold text-sm ${isSelected ? 'text-[#FAF6EE]' : 'text-[#0F3078]'}`}>
                           {role.name[language]}
                         </span>
-                        {isSelected && <Check className="w-4 h-4 text-amber-400" />}
+                        {isSelected && <Check className="w-4 h-4 text-[#F0B43A]" />}
                       </div>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      <p className={`text-xs mt-1 leading-relaxed ${isSelected ? 'text-[#DCE6F9]' : 'text-[#162035]/75'}`}>
                         {role.description[language]}
                       </p>
                     </div>
@@ -543,6 +542,7 @@ function MainApp() {
           </div>
         </div>
       )}
+
 
       {/* Modal de Autenticación y Registro (Explorador, Artesano, Gobierno) */}
       <AuthModal
