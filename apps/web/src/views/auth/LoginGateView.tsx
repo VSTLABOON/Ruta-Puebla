@@ -207,21 +207,36 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col justify-between p-4 sm:p-8 font-sans selection:bg-amber-500 selection:text-slate-950 relative overflow-y-auto">
-      {/* Fondo ambiental sutil */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-950/20 via-slate-950 to-slate-950 pointer-events-none -z-10" />
+    <div className="min-h-screen w-full bg-[#07154E] text-[#EFF1F8] flex flex-col justify-between p-4 sm:p-8 font-sans selection:bg-[#EDE28E] selection:text-[#0E2C9C] relative overflow-y-auto">
+      {/* Fondo ambiental sutil con azul cobalto y talavera */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0E2C9C]/40 via-[#07154E] to-[#030A26] pointer-events-none -z-10" />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-5 -z-10"
+        style={{
+          backgroundImage: `radial-gradient(#EDE28E 1.5px, transparent 1.5px), radial-gradient(#9597C1 1.5px, transparent 1.5px)`,
+          backgroundSize: '32px 32px',
+          backgroundPosition: '0 0, 16px 16px'
+        }}
+      />
 
-      {/* Barra superior con Identidad y Estado de Conexión en Vivo */}
+      {/* Barra superior con Identidad PopoGo y Estado de Conexión en Vivo */}
       <div className="w-full max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-base shadow-[0_0_20px_rgba(245,158,11,0.4)]">
-            RA
-          </div>
+          <img
+            src="/popogo-logo.png"
+            alt="PopoGo Logo"
+            className="w-12 h-12 rounded-full border-2 border-[#EDE28E] shadow-[0_0_20px_rgba(237,226,142,0.4)] object-cover bg-white"
+          />
           <div>
-            <h1 className="text-base sm:text-lg font-black tracking-tight text-white uppercase">
-              Ruta Abierta Puebla
-            </h1>
-            <p className="text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg sm:text-xl font-black tracking-wider text-white font-serif uppercase">
+                PopoGo
+              </h1>
+              <span className="text-[10px] font-sans font-bold px-2 py-0.5 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase">
+                Puebla
+              </span>
+            </div>
+            <p className="text-xs text-[#9597C1]">
               {language === 'es'
                 ? 'Turismo Cultural Accesible • Centro Histórico y Barrios Tradicionales'
                 : 'Accessible Cultural Tourism & Historic Neighborhoods'}
@@ -266,21 +281,21 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
         </div>
       </div>
 
-      {/* Contenedor Principal de Autenticación "De toda la vida" */}
-      <div className="w-full max-w-md mx-auto my-8 bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.8)] space-y-6 animate-fade-slide">
+      {/* Contenedor Principal de Autenticación */}
+      <div className="w-full max-w-md mx-auto my-8 bg-[#0B228A]/90 backdrop-blur-2xl border border-[#9597C1]/30 rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_rgba(3,10,38,0.9)] space-y-6 animate-fade-slide">
         <div className="text-center space-y-1.5">
-          <h2 className="text-xl font-black text-white tracking-tight">
-            {language === 'es' ? 'Iniciar Sesión en el Sistema' : 'System Sign In'}
+          <h2 className="text-xl font-black text-white tracking-tight font-serif">
+            {language === 'es' ? 'Iniciar Sesión en PopoGo' : 'Sign In to PopoGo'}
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#EFF1F8]/80">
             {language === 'es'
               ? 'Selecciona tu tipo de perfil para acceder a tus herramientas correspondientes'
               : 'Choose your profile to access your dedicated workspace'}
           </p>
         </div>
 
-        {/* Selector de Rol Tradicional con 3 Pestañas Claras */}
-        <div className="grid grid-cols-3 gap-1.5 bg-slate-950 p-1.5 rounded-2xl border border-white/10 text-xs">
+        {/* Selector de Rol con 3 Pestañas Claras en Paleta PopoGo */}
+        <div className="grid grid-cols-3 gap-1.5 bg-[#07154E] p-1.5 rounded-2xl border border-[#9597C1]/20 text-xs">
           <button
             type="button"
             onClick={() => {
@@ -290,8 +305,8 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
             }}
             className={`py-2 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer ${
               activeTab === 'tourist'
-                ? 'bg-amber-500 text-slate-950 shadow-md scale-[1.02]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#EDE28E] text-[#0E2C9C] shadow-md scale-[1.02]'
+                : 'text-[#9597C1] hover:text-[#EFF1F8]'
             }`}
           >
             <Compass className="w-4 h-4" />
@@ -307,8 +322,8 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
             }}
             className={`py-2 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer ${
               activeTab === 'artisan'
-                ? 'bg-sky-500 text-slate-950 shadow-md scale-[1.02]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#9597C1] text-[#07154E] shadow-md scale-[1.02]'
+                : 'text-[#9597C1] hover:text-[#EFF1F8]'
             }`}
           >
             <Store className="w-4 h-4" />
@@ -324,8 +339,8 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
             }}
             className={`py-2 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer ${
               activeTab === 'government'
-                ? 'bg-emerald-500 text-slate-950 shadow-md scale-[1.02]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#7B5E86] text-white shadow-md scale-[1.02]'
+                : 'text-[#9597C1] hover:text-[#EFF1F8]'
             }`}
           >
             <BarChart3 className="w-4 h-4" />
@@ -634,10 +649,10 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
         )}
       </div>
 
-      {/* Pie de Página Institucional */}
-      <div className="text-center text-xs text-slate-400 space-y-1">
-        <p>Ruta Abierta Puebla • Algoritmo OPTW y Persistencia Híbrida Cloud & Local</p>
-        <p className="text-[11px] text-slate-400">
+      {/* Pie de Página PopoGo */}
+      <div className="text-center text-xs text-[#9597C1] space-y-1">
+        <p className="font-semibold text-[#EFF1F8]/90">PopoGo Puebla • Identidad Talavera, Rutas Accesibles y Patrimonio Vivo</p>
+        <p className="text-[11px] text-[#9597C1]/80">
           Zócalo • Barrio de Analco • La Luz • El Parián • El Alto • Xanenetla
         </p>
       </div>

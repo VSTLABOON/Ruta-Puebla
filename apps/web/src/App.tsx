@@ -12,27 +12,24 @@ import { UserRecordModal } from './components/UserRecordModal';
 import { UserProfile } from './types/userRecord';
 import { USER_ROLES, UserRole } from './types/roles';
 import { LoginGateView } from './views/auth/LoginGateView';
-import { dbSync, SyncStatus } from './services/dbSync';
+import { dbSync } from './services/dbSync';
 import {
   Languages,
-  Filter,
   Compass,
   Store,
   BarChart3,
   UserCheck,
   Check,
-  Smartphone,
-  Monitor,
   X,
   Radio,
   Trophy,
   LogOut,
-  Wifi,
-  WifiOff
+  PlayCircle
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
 import { RouterProvider, useRouter } from './router/Router';
 import { verifyOfflineStampPayload, recordStampInLedger } from './utils/offlineStamp';
+import { SplashScreen } from './components/SplashScreen';
 
 // Carga diferida (code-splitting) de las 3 vistas por rol
 const VisitorView = React.lazy(() => import('./views/visitor/VisitorView'));
@@ -125,6 +122,7 @@ function MainApp() {
   const [matrices, setMatrices] = useState<TimeMatrices | null>(null);
   const [weights, setWeights] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
 
   // Pasaporte de Exploración dinámico
@@ -244,12 +242,6 @@ function MainApp() {
     }
   }, [pois]);
 
-  // Estado de sincronización en vivo para demostraciones con/sin conexión
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>(dbSync.getStatus());
-
-  useEffect(() => {
-    return dbSync.subscribe((st) => setSyncStatus(st));
-  }, []);
 
   const handleAuthenticated = (
     role: 'tourist' | 'artisan' | 'government',
@@ -300,16 +292,23 @@ function MainApp() {
     }
   };
 
+  if (showSplash) {
+    return (
+      <SplashScreen
+        onFinish={() => setShowSplash(false)}
+        isLoadingData={isLoading}
+        language={language}
+      />
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
-        <div className="text-center space-y-3">
-          <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs font-semibold tracking-widest uppercase text-amber-400">
-            {language === 'es' ? 'Cargando Mapa de Puebla...' : 'Loading Puebla Map...'}
-          </p>
-        </div>
-      </div>
+      <SplashScreen
+        onFinish={() => setShowSplash(false)}
+        isLoadingData={true}
+        language={language}
+      />
     );
   }
 
@@ -325,150 +324,103 @@ function MainApp() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
-      {/* Cabecera: En móvil es ultra limpia y discreta; en escritorio es completa */}
-      <header className="bg-slate-950/90 backdrop-blur-xl border-b border-white/10 text-white z-40 flex-shrink-0">
-        <div className="w-full px-3 sm:px-5 py-2 flex items-center justify-between gap-2">
-          {/* Logo y Nombre (Siempre visible) */}
+    <div className="h-screen w-screen overflow-hidden bg-[#07154E] text-[#EFF1F8] flex flex-col font-sans antialiased selection:bg-[#EDE28E] selection:text-[#0E2C9C]">
+      {/* Cabecera Principal PopoGo */}
+      <header className="bg-[#0B228A]/95 backdrop-blur-xl border-b border-[#9597C1]/25 text-[#EFF1F8] z-40 flex-shrink-0">
+        <div className="w-full px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
+          {/* Logo y Nombre PopoGo */}
           <div
             onClick={() => navigate('/')}
             className="flex items-center gap-2.5 cursor-pointer select-none group"
           >
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-xs sm:text-sm shadow-[0_0_15px_rgba(245,158,11,0.5)] flex-shrink-0 group-hover:scale-105 transition-transform">
-              RA
-            </div>
+            <img
+              src="/popogo-logo.png"
+              alt="PopoGo Logo"
+              className="w-9 h-9 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-cover bg-white flex-shrink-0 group-hover:scale-105 transition-transform"
+            />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xs sm:text-sm font-extrabold tracking-tight text-white uppercase">
-                  Ruta Abierta Puebla
+                <h1 className="text-base font-black tracking-wider text-white uppercase font-serif">
+                  PopoGo
                 </h1>
-                <span className="hidden md:inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  {pois.length} {language === 'es' ? 'lugares' : 'places'}
+                <span className="text-[10px] font-sans font-bold px-1.5 py-0.2 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase">
+                  Puebla
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 hidden sm:block">
-                {language === 'es'
-                  ? 'Centro Histórico • Analco • La Luz • El Parián • El Alto • Xanenetla'
-                  : 'Accessible Historic & Artisan Map'}
+              <p className="text-[10px] text-[#9597C1] hidden sm:block font-medium">
+                {activeRoute === '/taller'
+                  ? (language === 'es' ? 'Terminal de Mostrador para Talleres' : 'Workshop Counter Terminal')
+                  : activeRoute === '/admin'
+                  ? (language === 'es' ? 'Consola de Gestión Urbana • SECIHTI' : 'Urban Management Console • SECIHTI')
+                  : (language === 'es' ? 'Caminatas Peatonales & Patrimonio Vivo' : 'Accessible Heritage Walks')}
               </p>
             </div>
           </div>
 
-          {/* Controles de Cabecera: Perfil Activo, Estado de Red en Vivo y Cerrar Sesión */}
-          <div className="flex items-center gap-2">
-            {/* 1. Indicador del Rol y Perfil Autenticado */}
+          {/* Controles de Cabecera: Perfil Activo, Intro Splash, Idioma y Cerrar Sesión */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Indicador del Rol y Perfil Autenticado */}
             {activeRoute === '/' && currentUser && (
               <button
                 type="button"
                 onClick={() => setIsRecordModalOpen(true)}
-                className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm select-none"
+                className="px-2.5 py-1.5 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer select-none shadow-sm"
                 title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
               >
-                <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                <span className="max-w-[70px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
-                <span className="text-[10px] bg-amber-500 text-slate-950 px-1.5 py-0.2 rounded-full font-mono font-black">
+                <Trophy className="w-3.5 h-3.5 text-[#EDE28E]" />
+                <span className="max-w-[80px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
+                <span className="text-[10px] bg-[#EDE28E] text-[#0E2C9C] px-1.5 py-0.2 rounded-full font-mono font-black">
                   Nv.{currentUser.level}
                 </span>
               </button>
             )}
 
             {activeRoute === '/taller' && artisanUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-sky-500/20 border border-sky-500/40 text-sky-300 text-xs font-bold flex items-center gap-1.5 select-none">
-                <Store className="w-3.5 h-3.5 text-sky-400" />
-                <span className="max-w-[110px] sm:max-w-[150px] truncate">{artisanUser.workshopName}</span>
+              <div className="px-2.5 py-1.5 rounded-xl bg-[#9597C1]/20 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none">
+                <Store className="w-3.5 h-3.5 text-[#9597C1]" />
+                <span className="max-w-[120px] sm:max-w-[180px] truncate">{artisanUser.workshopName}</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
               </div>
             )}
 
             {activeRoute === '/admin' && adminUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 select-none">
-                <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="hidden sm:inline">SECIHTI • Planificación</span>
+              <div className="px-2.5 py-1.5 rounded-xl bg-[#7B5E86]/25 border border-[#7B5E86]/50 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none">
+                <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E]" />
+                <span className="hidden sm:inline">SECIHTI • Gobierno de Puebla</span>
                 <span className="sm:hidden">SECIHTI</span>
               </div>
             )}
 
-            {/* 2. Indicador de Red / Sincronización Nube Híbrida (Conexión / Sin Conexión) */}
+            {/* Botón Ver Intro / Splash PopoGo */}
             <button
               type="button"
-              onClick={() => {
-                tacticalAudio.playTacticalClick();
-                dbSync.toggleSimulatedOffline();
-              }}
-              className={`p-1.5 px-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
-                syncStatus.isOnline
-                  ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
-                  : 'bg-amber-950/40 border-amber-500/30 text-amber-300'
-              }`}
-              title={
-                language === 'es'
-                  ? 'Demostración de Red: Toca para alternar Modo Offline / Conectado'
-                  : 'Tap to toggle simulated Offline / Online'
-              }
+              onClick={() => setShowSplash(true)}
+              className="p-1.5 px-2.5 rounded-xl bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#EDE28E]/40 shadow-sm transition cursor-pointer"
+              title={language === 'es' ? 'Ver video splash de PopoGo' : 'Watch PopoGo Splash Video'}
             >
-              {syncStatus.isOnline ? (
-                <>
-                  <Wifi className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="hidden md:inline">{language === 'es' ? 'En Línea' : 'Online'}</span>
-                </>
-              ) : (
-                <>
-                  <WifiOff className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="hidden md:inline">{language === 'es' ? 'Offline' : 'Offline'}</span>
-                </>
-              )}
-              {syncStatus.pendingQueueCount > 0 && (
-                <span className="text-[10px] px-1 rounded-full bg-amber-500 text-slate-950 font-bold">
-                  +{syncStatus.pendingQueueCount}
-                </span>
-              )}
+              <PlayCircle className="w-3.5 h-3.5 text-[#EDE28E]" />
+              <span className="hidden md:inline">{language === 'es' ? 'Intro' : 'Intro'}</span>
             </button>
 
-            {/* 3. Selector de Idioma */}
+            {/* Selector de Idioma */}
             <button
               type="button"
               onClick={() => {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
               }}
-              className="p-1.5 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
+              className="p-1.5 px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-white/10 transition cursor-pointer"
             >
-              <Languages className="w-3.5 h-3.5" />
+              <Languages className="w-3.5 h-3.5 text-[#EDE28E]" />
               <span>{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
-            {/* 4. Simulador móvil vs Pantalla Completa (Visible en desktop) */}
-            <button
-              type="button"
-              onClick={() => {
-                tacticalAudio.playTacticalClick();
-                setViewportMode((v) => (v === 'mobile' ? 'full' : 'mobile'));
-              }}
-              className="hidden sm:flex p-1.5 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold items-center gap-1 border border-white/10 transition cursor-pointer"
-              title={viewportMode === 'mobile' ? 'Pantalla Completa' : 'Vista Teléfono'}
-            >
-              {viewportMode === 'mobile' ? (
-                <Monitor className="w-3.5 h-3.5" />
-              ) : (
-                <Smartphone className="w-3.5 h-3.5" />
-              )}
-            </button>
-
-            {/* 5. Información DENUE */}
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="hidden sm:flex p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs items-center border border-white/10 transition cursor-pointer"
-              title={language === 'es' ? 'Acerca de los datos' : 'About data'}
-            >
-              <Filter className="w-3.5 h-3.5" />
-            </button>
-
-            {/* 6. Botón Cerrar Sesión / Salir al Login */}
+            {/* Botón Salir / Cambiar de Rol */}
             <button
               type="button"
               onClick={handleLogout}
               className="p-1.5 px-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-              title={language === 'es' ? 'Cerrar sesión actual y cambiar de rol' : 'Sign out & switch role'}
+              title={language === 'es' ? 'Cerrar sesión actual' : 'Sign out'}
             >
               <LogOut className="w-3.5 h-3.5 text-rose-400" />
               <span className="hidden sm:inline">{language === 'es' ? 'Salir' : 'Sign Out'}</span>

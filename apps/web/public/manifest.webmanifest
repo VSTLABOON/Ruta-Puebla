@@ -1,12 +1,18 @@
 {
-  "name": "Ruta Abierta Puebla",
-  "short_name": "RutaAbierta",
+  "name": "PopoGo",
+  "short_name": "PopoGo",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "description": "Sistema de generacion de rutas peatonales accesibles y turismo sostenible en el Centro Historico de Puebla",
+  "background_color": "#0E2C9C",
+  "theme_color": "#0E2C9C",
+  "description": "PopoGo: rutas peatonales accesibles, talleres artesanales y patrimonio vivo en Puebla",
   "icons": [
+    {
+      "src": "/popogo-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/icon-192.svg",
       "sizes": "192x192 512x512 any",

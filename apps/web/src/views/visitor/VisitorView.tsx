@@ -138,11 +138,11 @@ export const VisitorView: FC<VisitorViewProps> = ({
   const handleExportRoute = () => {
     if (!activeRoute) return;
     const textLines = [
-      `RUTA ABIERTA PUEBLA - GUÍA DE RECORRIDO PEATONAL`,
+      `POPOGO PUEBLA - GUÍA DE RECORRIDO PEATONAL ACCESIBLE`,
       `Duración estimada: ${activeRoute.metrics.total_time_min} min | Distancia: ${activeRoute.metrics.distance_meters} m`,
       `Presupuesto estimado: $${activeRoute.metrics.total_cost_mxn} MXN`,
       ``,
-      `LUGARES DE TU RECORRIDO:`,
+      `LUGARES DE TU RECORRIDO POPOGO:`,
       ...activeRoute.stops.map((s) => {
         const hArr = Math.floor(s.arrival_time_min / 60).toString().padStart(2, '0');
         const mArr = (s.arrival_time_min % 60).toString().padStart(2, '0');
@@ -156,7 +156,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `recorrido_puebla_${request.profile}.txt`;
+    link.download = `popogo_recorrido_${request.profile}.txt`;
     link.click();
     URL.revokeObjectURL(url);
   };

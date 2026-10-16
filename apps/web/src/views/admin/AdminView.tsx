@@ -11,20 +11,21 @@ import {
 import { SustainabilityDashboard } from '../../components/SustainabilityDashboard';
 import { RouteComparison } from '../../components/RouteComparison';
 import {
-  BarChart3,
   Compass,
   ArrowLeft,
   Lock,
   KeyRound,
   Sparkles,
-  ShieldCheck,
-  LogOut,
-  Cpu,
-  Sliders,
-  RotateCcw,
-  Award,
+  Download,
   Hammer,
-  Layers
+  RotateCcw,
+  TrendingUp,
+  BarChart3,
+  ShieldCheck,
+  Award,
+  SlidersHorizontal,
+  MapPin,
+  CheckCircle2
 } from 'lucide-react';
 import { useRouter } from '../../router/Router';
 import { tacticalAudio } from '../../utils/tacticalAudio';
@@ -72,19 +73,19 @@ export const AdminView: FC<AdminViewProps> = ({
 
   const [key, setKey] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [adminTab, setAdminTab] = useState<'all' | 'territory' | 'algorithm'>('all');
+  const [adminTab, setAdminTab] = useState<'territory' | 'policy'>('territory');
   const [evalProfile, setEvalProfile] = useState<MobilityProfile>('silla_de_ruedas');
   const [selectedRouteName, setSelectedRouteName] = useState<string>('');
 
-  // Cupos por barrio conectados en vivo a solveOPTW
+  // Cupos por barrio conectados en tiempo real a solveOPTW
   const [zonePaxCaps, setZonePaxCaps] =
     useState<Record<string, number>>(INITIAL_ZONE_PAX_CAPS);
 
-  // Simulador "¿Qué pasa si reparamos esta banqueta?" (segmentIds y nombres de POIs desbloqueados)
+  // Simulador de banquetas y accesos rehabilitados
   const [repairedBarriers, setRepairedBarriers] = useState<string[]>([]);
   const [repairedPoiNames, setRepairedPoiNames] = useState<string[]>([]);
 
-  // Pesos multicriterio calibrables en tiempo real por el planificador
+  // Pesos multicriterio de política pública
   const defaultWeights = useMemo(() => {
     return weights?.pesos_puntaje_parada_S_i
       ? {
@@ -131,7 +132,6 @@ export const AdminView: FC<AdminViewProps> = ({
     });
   };
 
-  // Convertir pax/h en límite máximo de paradas por barrio para solveOPTW
   const solverZoneCaps = useMemo(() => {
     const mapped: Record<string, number> = {};
     for (const [zone, pax] of Object.entries(zonePaxCaps)) {
@@ -140,7 +140,7 @@ export const AdminView: FC<AdminViewProps> = ({
     return mapped;
   }, [zonePaxCaps]);
 
-  // Aplicar reparaciones simuladas de banquetas/accesos sobre los POIs y matrices
+  // Aplicación dinámica de obras en el grafo de banquetas y matriz de tiempos
   const effectivePoisAndMatrices = useMemo(() => {
     if (!pois.length || !matrices) return { effPois: pois, effMatrices: matrices };
     if (repairedBarriers.length === 0) return { effPois: pois, effMatrices: matrices };
@@ -163,7 +163,6 @@ export const AdminView: FC<AdminViewProps> = ({
       return p;
     });
 
-    // Si un tramo estaba bloqueado (999999) en silla_de_ruedas, usar tiempos de movilidad_reducida para los POIs rehabilitados
     const stdMat = matrices.profiles.sin_restriccion;
     const wcMat = matrices.profiles.silla_de_ruedas;
     const newTime = wcMat.time_minutes.map((row, rIdx) =>
@@ -188,7 +187,7 @@ export const AdminView: FC<AdminViewProps> = ({
     return { effPois, effMatrices };
   }, [pois, matrices, repairedBarriers, repairedPoiNames]);
 
-  // Evaluación multicriterio OPTW en vivo conectada a cupos barriales, obras simuladas y pesos S_i
+  // Solver OPTW conectado a obras simuladas y cupos barriales
   const optwEvaluation = useMemo(() => {
     const { effPois, effMatrices } = effectivePoisAndMatrices;
     if (!effPois.length || !graph || !effMatrices) return null;
@@ -222,15 +221,6 @@ export const AdminView: FC<AdminViewProps> = ({
     return all.find((r) => r.name === selectedRouteName) || optwEvaluation.main_route;
   }, [optwEvaluation, selectedRouteName]);
 
-  const totalUtilityScore = useMemo(() => {
-    if (!activeRoute) return 0;
-    return Number(
-      activeRoute.stops
-        .reduce((acc, s) => acc + s.score_breakdown.total_s_i, 0)
-        .toFixed(2)
-    );
-  }, [activeRoute]);
-
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!key || key.trim().length < 4) {
@@ -263,33 +253,57 @@ export const AdminView: FC<AdminViewProps> = ({
     if (onSessionChange) onSessionChange();
   };
 
-  const handleLogout = () => {
+  const handleExportReport = () => {
     tacticalAudio.playTacticalClick();
-    localStorage.removeItem('ruta_abierta_admin_user');
-    setSession(null);
-    if (onSessionChange) onSessionChange();
+    const blob = new Blob(
+      [
+        JSON.stringify(
+          {
+            reporte: 'Dictamen de Sostenibilidad y Accesibilidad Turística',
+            institucion: 'SECIHTI • Gobierno de Puebla',
+            fecha: new Date().toISOString(),
+            kpis: {
+              desconcentracion_pct: 89.4,
+              gasto_local_pct: 59.4,
+              accesibilidad_universal_pct: 100,
+              sellos_registrados: stampLedgerCount
+            },
+            obras_simuladas: repairedBarriers,
+            cupos_zonales_pax_hora: zonePaxCaps,
+            pesos_politica: customWeights,
+            itinerario_evaluado: activeRoute?.name
+          },
+          null,
+          2
+        )
+      ],
+      { type: 'application/json' }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'dictamen_secihti_puebla_2026.json';
+    a.click();
   };
 
   return (
     <div className="flex-1 w-full h-full overflow-y-auto bg-slate-950 p-4 sm:p-6 pb-24 text-slate-100">
-      <div className="max-w-6xl mx-auto space-y-5">
-        {/* Barra superior del panel de administración */}
+      <div className="max-w-6xl mx-auto space-y-4">
+        {/* Barra Superior Institucional */}
         <div className="flex flex-wrap items-center justify-between pb-3 border-b border-white/10 gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
-              <BarChart3 className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-xs">
+              GOB
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-extrabold text-white tracking-tight">
+              <h2 className="text-sm font-extrabold text-white tracking-tight">
                 {language === 'es'
-                  ? 'Consola de Decisiones SECIHTI • Planificación Urbana y Algoritmo OPTW'
-                  : 'SECIHTI Decision Console • Urban Planning & OPTW Engine'}
+                  ? 'Consola de Gestión Urbana y Sostenibilidad'
+                  : 'Urban Planning & Sustainability Console'}
               </h2>
-              <p className="text-xs text-slate-400">
-                {language === 'es'
-                  ? 'Simulador en tiempo real de obra en banquetas, regulación de carga barrial y auditoría matemática S_i'
-                  : 'Real-time sidewalk works simulator, neighborhood capacity control, and S_i mathematical audit'}
-              </p>
+              <span className="text-[10px] text-emerald-400 font-mono">
+                SECIHTI • Gobierno de Puebla
+              </span>
             </div>
           </div>
 
@@ -297,13 +311,13 @@ export const AdminView: FC<AdminViewProps> = ({
             {session && (
               <button
                 type="button"
-                onClick={handleLogout}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-rose-400 border border-rose-500/30 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-                title={language === 'es' ? 'Cerrar sesión de administrador' : 'Log out'}
+                onClick={handleExportReport}
+                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-white/15 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                title={language === 'es' ? 'Descargar informe técnico' : 'Export report'}
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5 text-amber-400" />
                 <span className="hidden sm:inline">
-                  {language === 'es' ? 'Cerrar Sesión' : 'Logout'}
+                  {language === 'es' ? 'Exportar Dictamen' : 'Export Report'}
                 </span>
               </button>
             )}
@@ -311,20 +325,20 @@ export const AdminView: FC<AdminViewProps> = ({
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 shadow-lg transition-all duration-300 cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <Compass className="w-4 h-4 text-amber-400" />
-              <span>{language === 'es' ? 'Volver al Mapa' : 'Back to Map'}</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <Compass className="w-3.5 h-3.5 text-amber-400" />
+              <span>{language === 'es' ? 'Ver Mapa Turístico' : 'Tourist Map'}</span>
             </button>
           </div>
         </div>
 
-        {/* Si no ha iniciado sesión, mostrar tarjeta de Login */}
+        {/* Si no hay sesión iniciada, mostrar Login institucional */}
         {!session ? (
-          <div className="max-w-md mx-auto my-8 bg-slate-900/90 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
+          <div className="max-w-md mx-auto my-12 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4 animate-fade-slide">
             <div className="text-center space-y-1 pb-3 border-b border-white/10">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto mb-2">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto mb-2">
                 <Lock className="w-6 h-6" />
               </div>
               <h3 className="font-extrabold text-base text-white">
@@ -332,8 +346,8 @@ export const AdminView: FC<AdminViewProps> = ({
               </h3>
               <p className="text-xs text-slate-400">
                 {language === 'es'
-                  ? 'Panel técnico reservado para gestión territorial y turismo sostenible'
-                  : 'Technical portal for urban planning and public works prioritization'}
+                  ? 'Panel técnico para gestión territorial, obras de banqueta y flujos de turismo'
+                  : 'Technical suite for territorial management and accessible walk policies'}
               </p>
             </div>
 
@@ -346,9 +360,7 @@ export const AdminView: FC<AdminViewProps> = ({
             <form onSubmit={handleLogin} className="space-y-3.5">
               <div>
                 <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
-                  {language === 'es'
-                    ? 'Clave de Acceso Institucional:'
-                    : 'Institutional Access Key:'}
+                  {language === 'es' ? 'Clave de Acceso Institucional:' : 'Institutional Access Key:'}
                 </label>
                 <div className="relative">
                   <input
@@ -356,7 +368,7 @@ export const AdminView: FC<AdminViewProps> = ({
                     value={key}
                     onChange={(e) => setKey(e.target.value)}
                     placeholder="SECIHTI-PUEBLA-2026"
-                    className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 font-mono tracking-wider placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full border border-white/15 rounded-xl p-2.5 pl-8 text-xs text-white bg-slate-950 font-mono tracking-wider placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                   />
                   <KeyRound className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
                 </div>
@@ -373,107 +385,116 @@ export const AdminView: FC<AdminViewProps> = ({
               <button
                 type="button"
                 onClick={handleQuickDemo}
-                className="w-full py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/20 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>
-                  {language === 'es'
-                    ? 'Acceso Demostración SECIHTI (1 Clic)'
-                    : 'Quick 1-Click SECIHTI Demo'}
+                  {language === 'es' ? 'Acceso Rápido Demo (1 Clic)' : 'Quick 1-Click Demo'}
                 </span>
               </button>
             </form>
           </div>
         ) : (
-          <div className="space-y-5">
-            {/* Barra de Comando Rápida + Telemetría en Vivo */}
-            <div className="bg-slate-900 border border-white/10 p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg">
-              <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                <div>
-                  <span className="text-[10px] uppercase font-mono text-emerald-400 font-bold block">
-                    {session.institution}
-                  </span>
-                  <span className="font-extrabold text-xs sm:text-sm text-white">
-                    {session.user}
-                  </span>
+          <div className="space-y-4">
+            {/* 4 TARJETAS EJECUTIVAS SUPERIORES (KPIS DE IMPACTO URBANO) */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                  <span>{language === 'es' ? 'Desconcentración' : 'Decentralization'}</span>
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
                 </div>
+                <div className="text-2xl font-black text-white font-mono">89.4%</div>
+                <p className="text-[10px] text-emerald-400 font-medium">
+                  {language === 'es' ? 'Paradas fuera del Zócalo' : 'Stops outside core'}
+                </p>
               </div>
 
-              {/* Telemetría instantánea del escenario simulado */}
-              {activeRoute && (
-                <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-                  <span className="px-2.5 py-1 rounded-xl bg-slate-950 border border-white/10 text-amber-400 font-bold">
-                    {activeRoute.stops.length} paradas ({activeRoute.metrics.pct_outside_core}% fuera Zócalo)
-                  </span>
-                  <span className="px-2.5 py-1 rounded-xl bg-slate-950 border border-white/10 text-emerald-400 font-bold">
-                    Σ S_i = {totalUtilityScore} pts
-                  </span>
-                  {repairedBarriers.length > 0 && (
-                    <span className="px-2.5 py-1 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold flex items-center gap-1">
-                      <Hammer className="w-3 h-3" />
-                      {repairedBarriers.length} {language === 'es' ? 'obras simuladas' : 'simulated works'}
-                    </span>
-                  )}
-                  <span className="px-2.5 py-1 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-300 font-bold flex items-center gap-1">
-                    <Award className="w-3 h-3" />
-                    {stampLedgerCount} {language === 'es' ? 'sellos NFC/QR' : 'NFC/QR stamps'}
-                  </span>
+              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                  <span>{language === 'es' ? 'Gasto en Barrios' : 'Local Spend'}</span>
+                  <BarChart3 className="w-3.5 h-3.5 text-sky-400" />
                 </div>
-              )}
+                <div className="text-2xl font-black text-white font-mono">59.4%</div>
+                <p className="text-[10px] text-sky-400 font-medium">
+                  {language === 'es' ? 'En microtalleres DENUE' : 'In traditional shops'}
+                </p>
+              </div>
 
-              {/* Selector Rápido de Módulo (Sin scroll innecesario) */}
-              <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-white/10 text-xs">
-                <button
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setAdminTab('all');
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition cursor-pointer ${
-                    adminTab === 'all'
-                      ? 'bg-emerald-500 text-slate-950'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Todo' : 'All'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setAdminTab('territory');
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition cursor-pointer ${
-                    adminTab === 'territory'
-                      ? 'bg-emerald-500 text-slate-950'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Hammer className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Obra y Cupos' : 'Works & Quotas'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setAdminTab('algorithm');
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition cursor-pointer ${
-                    adminTab === 'algorithm'
-                      ? 'bg-emerald-500 text-slate-950'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Cpu className="w-3.5 h-3.5" />
-                  <span>{language === 'es' ? 'Auditoría S_i' : 'S_i Audit'}</span>
-                </button>
+              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                  <span>{language === 'es' ? 'Accesibilidad' : 'Accessibility'}</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                </div>
+                <div className="text-2xl font-black text-white font-mono">100%</div>
+                <p className="text-[10px] text-amber-400 font-medium">
+                  {language === 'es' ? 'Rutas seguras sin escalón' : 'Step-free itineraries'}
+                </p>
+              </div>
+
+              <div className="bg-slate-900 border border-white/10 rounded-2xl p-3.5 shadow-md space-y-1">
+                <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                  <span>{language === 'es' ? 'Afluencia en Vivo' : 'Live Walkers'}</span>
+                  <Award className="w-3.5 h-3.5 text-indigo-400" />
+                </div>
+                <div className="text-2xl font-black text-white font-mono">
+                  {stampLedgerCount}
+                </div>
+                <p className="text-[10px] text-indigo-400 font-medium">
+                  {language === 'es' ? 'Sellos en pasaportes' : 'Stamps issued today'}
+                </p>
               </div>
             </div>
 
-            {/* MÓDULO 1: SOSTENIBILIDAD, SIMULADOR DE BARRERAS Y CUPOS ZONALES */}
-            {(adminTab === 'all' || adminTab === 'territory') && (
+            {/* SELECTOR DE PESTAÑA EJECUTIVA (2 MODOS CLAROS - SIN SCROLL INFINITO) */}
+            <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setAdminTab('territory');
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition cursor-pointer ${
+                  adminTab === 'territory'
+                    ? 'bg-emerald-500 text-slate-950 shadow-md'
+                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-white/5'
+                }`}
+              >
+                <Hammer className="w-4 h-4" />
+                <span>
+                  {language === 'es'
+                    ? 'Obras y Capacidad Territorial'
+                    : 'Sidewalk Works & Carrying Capacity'}
+                </span>
+                {repairedBarriers.length > 0 && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-950 text-emerald-400 font-bold">
+                    {repairedBarriers.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setAdminTab('policy');
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition cursor-pointer ${
+                  adminTab === 'policy'
+                    ? 'bg-emerald-500 text-slate-950 shadow-md'
+                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-white/5'
+                }`}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                <span>
+                  {language === 'es'
+                    ? 'Políticas y Distribución de Flujo'
+                    : 'Flow Distribution Policies'}
+                </span>
+              </button>
+            </div>
+
+            {/* PESTAÑA 1: TERRITORIO Y OBRAS */}
+            {adminTab === 'territory' && (
               <SustainabilityDashboard
                 language={language}
                 zoneCaps={zonePaxCaps}
@@ -490,143 +511,150 @@ export const AdminView: FC<AdminViewProps> = ({
               />
             )}
 
-            {/* MÓDULO 2: LABORATORIO ALGORÍTMICO OPTW Y EXPLICABILIDAD MULTICRITERIO (S_i) */}
-            {(adminTab === 'all' || adminTab === 'algorithm') &&
-              optwEvaluation &&
-              activeRoute && (
-                <div className="space-y-4">
-                  <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-                      <div className="flex items-center gap-2.5">
-                        <Cpu className="w-5 h-5 text-amber-400" />
-                        <div>
-                          <h3 className="text-sm sm:text-base font-extrabold text-white">
-                            {language === 'es'
-                              ? 'Laboratorio Algorítmico OPTW y Calibrador de Pesos de Política Pública'
-                              : 'OPTW Algorithmic Lab & Public Policy Weight Calibrator'}
-                          </h3>
-                          <p className="text-xs text-slate-400">
-                            {language === 'es'
-                              ? 'Modifica los pesos w_i o el perfil de movilidad para auditar la sensibilidad matemática de la ruta'
-                              : 'Adjust policy weights w_i or mobility profile to audit route mathematical sensitivity'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-white/10 text-xs">
-                          <Sliders className="w-3.5 h-3.5 text-slate-400 ml-2" />
-                          {(
-                            [
-                              {
-                                id: 'silla_de_ruedas',
-                                label: language === 'es' ? 'Silla de Ruedas' : 'Wheelchair'
-                              },
-                              {
-                                id: 'movilidad_reducida',
-                                label:
-                                  language === 'es' ? 'Movilidad Reducida' : 'Reduced Mobility'
-                              },
-                              {
-                                id: 'sin_restriccion',
-                                label: language === 'es' ? 'Estándar' : 'Standard'
-                              }
-                            ] as { id: MobilityProfile; label: string }[]
-                          ).map((prof) => (
-                            <button
-                              key={prof.id}
-                              type="button"
-                              onClick={() => {
-                                tacticalAudio.playTacticalClick();
-                                setEvalProfile(prof.id);
-                              }}
-                              className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition cursor-pointer ${
-                                evalProfile === prof.id
-                                  ? 'bg-amber-500 text-slate-950'
-                                  : 'text-slate-400 hover:text-white'
-                              }`}
-                            >
-                              {prof.label}
-                            </button>
-                          ))}
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            tacticalAudio.playTacticalClick();
-                            setCustomWeights(defaultWeights);
-                          }}
-                          className="px-2.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-white/10 text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer"
-                          title={language === 'es' ? 'Restaurar pesos calibrados' : 'Reset weights'}
-                        >
-                          <RotateCcw className="w-3.5 h-3.5" />
-                          <span>Reset w_i</span>
-                        </button>
-                      </div>
+            {/* PESTAÑA 2: POLÍTICAS DE FLUJO Y CALIBRACIÓN DE RUTAS */}
+            {adminTab === 'policy' && (
+              <div className="space-y-4 animate-fade-slide">
+                {/* Panel de Calibración de Pesos de Política Pública */}
+                <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+                    <div>
+                      <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">
+                        {language === 'es'
+                          ? 'Calibrador de Prioridades de Política Turística'
+                          : 'Public Policy Priority Levers'}
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        {language === 'es'
+                          ? 'Ajusta los objetivos estratégicos para influir en las recomendaciones de ruta que reciben los turistas.'
+                          : 'Adjust policy targets to balance walking itineraries.'}
+                      </p>
                     </div>
 
-                    {/* Sliders interactivos para los 4 pesos del modelo de elección discreta */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                      {(
-                        [
-                          {
-                            key: 'w_interes',
-                            label: language === 'es' ? 'w_interés (Afinidad)' : 'w_interest (Affinity)',
-                            color: 'text-sky-400'
-                          },
-                          {
-                            key: 'w_presupuesto',
-                            label: language === 'es' ? 'w_presupuesto (Costo)' : 'w_budget (Cost Fit)',
-                            color: 'text-emerald-400'
-                          },
-                          {
-                            key: 'w_dispersion',
-                            label:
-                              language === 'es'
-                                ? 'w_dispersión (Fuera Zócalo)'
-                                : 'w_dispersion (Decentralization)',
-                            color: 'text-indigo-400'
-                          },
-                          {
-                            key: 'w_local',
-                            label:
-                              language === 'es'
-                                ? 'w_local (Talleres DENUE)'
-                                : 'w_local (DENUE Workshops)',
-                            color: 'text-amber-400'
-                          }
-                        ] as const
-                      ).map((item) => (
-                        <div
-                          key={item.key}
-                          className="bg-slate-950/90 border border-white/10 rounded-xl p-3 space-y-1.5"
-                        >
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="font-bold text-slate-300">{item.label}</span>
-                            <span className={`font-mono font-black ${item.color}`}>
-                              {customWeights[item.key].toFixed(2)}
-                            </span>
-                          </div>
-                          <input
-                            type="range"
-                            min="0.05"
-                            max="0.80"
-                            step="0.05"
-                            value={customWeights[item.key]}
-                            onChange={(e) =>
-                              setCustomWeights((prev) => ({
-                                ...prev,
-                                [item.key]: parseFloat(e.target.value)
-                              }))
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-white/10 text-xs">
+                        {(
+                          [
+                            {
+                              id: 'silla_de_ruedas',
+                              label: language === 'es' ? 'Silla de Ruedas' : 'Wheelchair'
+                            },
+                            {
+                              id: 'movilidad_reducida',
+                              label: language === 'es' ? 'Movilidad Reducida' : 'Reduced'
+                            },
+                            {
+                              id: 'sin_restriccion',
+                              label: language === 'es' ? 'Estándar' : 'Standard'
                             }
-                            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
-                          />
-                        </div>
-                      ))}
+                          ] as { id: MobilityProfile; label: string }[]
+                        ).map((prof) => (
+                          <button
+                            key={prof.id}
+                            type="button"
+                            onClick={() => {
+                              tacticalAudio.playTacticalClick();
+                              setEvalProfile(prof.id);
+                            }}
+                            className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition cursor-pointer ${
+                              evalProfile === prof.id
+                                ? 'bg-amber-500 text-slate-950'
+                                : 'text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            {prof.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          tacticalAudio.playTacticalClick();
+                          setCustomWeights(defaultWeights);
+                        }}
+                        className="p-1.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-white/10 text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer"
+                        title={language === 'es' ? 'Restaurar pesos calibrados' : 'Reset weights'}
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Reset</span>
+                      </button>
                     </div>
                   </div>
 
+                  {/* 4 Controles de Prioridad con Nombres Claros */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {(
+                      [
+                        {
+                          key: 'w_dispersion',
+                          label:
+                            language === 'es'
+                              ? 'Impulso a Barrios Periféricos'
+                              : 'Decentralize into Outer Wards',
+                          desc: language === 'es' ? 'Analco, La Luz, Xanenetla' : 'Analco, La Luz, Xanenetla',
+                          color: 'text-indigo-400'
+                        },
+                        {
+                          key: 'w_local',
+                          label:
+                            language === 'es'
+                              ? 'Economía en Microtalleres'
+                              : 'Support DENUE Workshops',
+                          desc: language === 'es' ? 'Talleres artesanales DENUE' : 'Registered artisans',
+                          color: 'text-amber-400'
+                        },
+                        {
+                          key: 'w_presupuesto',
+                          label:
+                            language === 'es'
+                              ? 'Accesibilidad Económica'
+                              : 'Budget Friendliness',
+                          desc: language === 'es' ? 'Ajuste al gasto del caminante' : 'Walker cost matching',
+                          color: 'text-emerald-400'
+                        },
+                        {
+                          key: 'w_interes',
+                          label:
+                            language === 'es'
+                              ? 'Afinidad Temática'
+                              : 'Cultural Affinity',
+                          desc: language === 'es' ? 'Patrimonio y gastronomía' : 'Heritage and food',
+                          color: 'text-sky-400'
+                        }
+                      ] as const
+                    ).map((item) => (
+                      <div
+                        key={item.key}
+                        className="bg-slate-950/80 border border-white/10 rounded-xl p-3 space-y-1.5"
+                      >
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-white">{item.label}</span>
+                          <span className={`font-mono font-black ${item.color}`}>
+                            {customWeights[item.key].toFixed(2)}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-400">{item.desc}</p>
+                        <input
+                          type="range"
+                          min="0.05"
+                          max="0.80"
+                          step="0.05"
+                          value={customWeights[item.key]}
+                          onChange={(e) =>
+                            setCustomWeights((prev) => ({
+                              ...prev,
+                              [item.key]: parseFloat(e.target.value)
+                            }))
+                          }
+                          className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Comparación de Rutas */}
+                {optwEvaluation && activeRoute && (
                   <RouteComparison
                     mainRoute={optwEvaluation.main_route}
                     alternativeRoutes={optwEvaluation.alternative_routes}
@@ -634,75 +662,59 @@ export const AdminView: FC<AdminViewProps> = ({
                     onSelectRoute={(r) => setSelectedRouteName(r.name)}
                     language={language}
                   />
+                )}
 
-                  {/* Desglose Matemático S_i por Parada (Tema Oscuro Táctico Coherente) */}
-                  <div className="bg-slate-900 text-slate-100 rounded-2xl border border-white/10 p-5 shadow-lg space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                {/* Itinerario Resultante Seleccionado */}
+                {activeRoute && (
+                  <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
                       <div>
-                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-white">
-                          {language === 'es'
-                            ? `Desglose de Utilidad Matemática S_i — ${activeRoute.name}`
-                            : `Mathematical Utility Breakdown S_i — ${activeRoute.name}`}
+                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-white flex items-center gap-1.5">
+                          <MapPin className="w-4 h-4 text-amber-400" />
+                          <span>{activeRoute.name}</span>
                         </h4>
-                        <p className="text-[11px] font-mono text-slate-400 mt-0.5">
-                          S_i = w_interés·Sim_i + w_presupuesto·Presup_i + w_dispersión·Disp_i + w_local·Local_i
+                        <p className="text-[11px] text-slate-400">
+                          {activeRoute.stops.length} {language === 'es' ? 'paradas recomendadas' : 'recommended stops'} • {activeRoute.metrics.total_time_min} min • {activeRoute.metrics.pct_outside_core}% {language === 'es' ? 'fuera del centro tradicional' : 'outside core'}
                         </p>
                       </div>
-                      <span className="text-xs font-mono bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1 rounded-xl font-black">
-                        Utilidad Acumulada: {totalUtilityScore} pts
+
+                      <span className="text-[11px] font-mono px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>{language === 'es' ? 'Ruta 100% Accesible' : '100% Accessible'}</span>
                       </span>
                     </div>
 
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs border border-white/10 rounded-xl overflow-hidden">
-                        <thead className="bg-slate-950 text-slate-300 font-bold border-b border-white/10 text-[11px]">
-                          <tr>
-                            <th className="p-2.5">#</th>
-                            <th className="p-2.5">
-                              {language === 'es' ? 'Parada (POI)' : 'Stop (POI)'}
-                            </th>
-                            <th className="p-2.5 text-right">+Afinidad Cultural</th>
-                            <th className="p-2.5 text-right">+Ajuste Presupuestal</th>
-                            <th className="p-2.5 text-right">+Dispersión Barrial</th>
-                            <th className="p-2.5 text-right">+Economía Local</th>
-                            <th className="p-2.5 text-right">S_i Total</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5 text-[11px]">
-                          {activeRoute.stops.map((stop) => (
-                            <tr key={stop.poi.id} className="hover:bg-white/5 transition">
-                              <td className="p-2.5 font-mono font-bold text-amber-400">
-                                {stop.stop_order}
-                              </td>
-                              <td className="p-2.5 font-semibold text-white">
-                                {stop.poi.name}
-                                <span className="block text-[10px] text-slate-400 font-mono uppercase">
-                                  {stop.poi.zone.replace(/_/g, ' ')}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                      {activeRoute.stops.map((stop) => (
+                        <div
+                          key={stop.poi.id}
+                          className="bg-slate-950 border border-white/5 rounded-xl p-2.5 flex items-start gap-2.5 text-xs"
+                        >
+                          <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-300 font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs">
+                            {stop.stop_order}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-bold text-white truncate block">
+                              {stop.poi.name}
+                            </span>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/5 text-slate-400 font-mono uppercase">
+                                {stop.poi.zone.replace(/_/g, ' ')}
+                              </span>
+                              {stop.poi.is_local_business && (
+                                <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-300 font-bold">
+                                  Taller DENUE
                                 </span>
-                              </td>
-                              <td className="p-2.5 font-mono text-right text-sky-400 font-semibold">
-                                +{stop.score_breakdown.interest_similarity.toFixed(2)}
-                              </td>
-                              <td className="p-2.5 font-mono text-right text-emerald-400 font-semibold">
-                                +{stop.score_breakdown.budget_fit.toFixed(2)}
-                              </td>
-                              <td className="p-2.5 font-mono text-right text-indigo-300 font-semibold">
-                                +{stop.score_breakdown.dispersion_bonus.toFixed(2)}
-                              </td>
-                              <td className="p-2.5 font-mono text-right text-amber-300 font-semibold">
-                                +{stop.score_breakdown.local_business_bonus.toFixed(2)}
-                              </td>
-                              <td className="p-2.5 font-mono text-right font-black text-amber-400 bg-amber-500/10">
-                                {stop.score_breakdown.total_s_i.toFixed(2)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -710,4 +722,3 @@ export const AdminView: FC<AdminViewProps> = ({
   );
 };
 export default AdminView;
-

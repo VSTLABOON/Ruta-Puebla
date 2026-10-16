@@ -10,3 +10,4 @@ dist/
 coverage/
 .pytest_cache/
 data/raw/denue/
+WhatsApp Video*.mp4

@@ -7,12 +7,21 @@ export default {
   theme: {
     extend: {
       colors: {
+        popogo: {
+          cobalto: '#0E2C9C',       // Dominante Talavera clásico (~77%)
+          cobaltoDark: '#0B228A',   // Tono profundo Talavera
+          cobaltoLight: '#2544A7',  // Tono luminoso Talavera
+          lavanda: '#9597C1',       // Detalles y sombras suaves
+          amarillo: '#EDE28E',      // Acentos florales
+          malva: '#7B5E86',         // Acento cálido
+          crema: '#EFF1F8',         // Fondo crema blanco hielo
+        },
         puebla: {
-          talavera: '#0d3b66',
-          terracota: '#d64933',
-          cantera: '#e5d9c5',
-          oro: '#d4af37',
-          marfil: '#fbfbf2'
+          talavera: '#0E2C9C',
+          terracota: '#7B5E86',
+          cantera: '#9597C1',
+          oro: '#EDE28E',
+          marfil: '#EFF1F8'
         }
       }
     },

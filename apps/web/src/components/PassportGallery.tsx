@@ -127,8 +127,8 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
         onInvalidRead: () => {
           setScannerError(
             language === 'es'
-              ? 'Etiqueta NFC detectada pero sin firma válida de Ruta Abierta.'
-              : 'NFC tag detected without a valid Ruta Abierta signature.'
+              ? 'Etiqueta NFC detectada pero sin firma válida de PopoGo.'
+              : 'NFC tag detected without a valid PopoGo signature.'
           );
         }
       });
