@@ -38,17 +38,17 @@ export const RouteForm: FC<RouteFormProps> = ({
   };
 
   return (
-    <div className="bg-slate-900/90 rounded-2xl border border-white/10 p-4 shadow-xl space-y-5 text-slate-100">
-      <div className="flex items-center justify-between border-b border-white/10 pb-3">
-        <h2 className="text-sm font-bold text-white flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-amber-400" />
+    <div className="bg-[var(--surface)] rounded-2xl border border-[var(--line)] p-4 shadow-[var(--shadow)] space-y-5 text-[var(--ink)]">
+      <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+        <h2 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
+          <Sliders className="w-4 h-4 text-[var(--brand)]" />
           {language === 'es' ? 'Personaliza tu Recorrido' : 'Customize Your Walk'}
         </h2>
       </div>
 
       {/* 1. Perfil de Movilidad */}
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+        <label className="block text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-2">
           {language === 'es' ? '¿Cómo prefieres caminar?' : 'Walking comfort'}
         </label>
         <div className="grid grid-cols-1 gap-2">
@@ -85,14 +85,14 @@ export const RouteForm: FC<RouteFormProps> = ({
                 onClick={() => onChangeRequest({ profile: prof.id as MobilityProfile })}
                 className={`p-3 rounded-xl border text-left transition-all duration-300 cursor-pointer ${
                   isSelected
-                    ? 'border-amber-400 bg-amber-500/20 text-white shadow-sm'
-                    : 'border-white/10 hover:border-white/20 bg-slate-950/70 text-slate-300'
+                    ? 'border-[var(--line-strong)] bg-[var(--accent-soft)] text-[var(--ink)] shadow-sm'
+                    : 'border-[var(--line)] hover:border-[var(--line)] bg-[var(--surface)] text-[var(--muted)]'
                 }`}
               >
                 <div className="text-xs font-bold">
                   {language === 'es' ? prof.labelEs : prof.labelEn}
                 </div>
-                <div className={`text-[11px] mt-0.5 ${isSelected ? 'text-amber-200' : 'text-slate-400'}`}>
+                <div className={`text-[11px] mt-0.5 ${isSelected ? 'text-[var(--brand)]' : 'text-[var(--muted)]'}`}>
                   {language === 'es' ? prof.descEs : prof.descEn}
                 </div>
               </button>
@@ -105,11 +105,11 @@ export const RouteForm: FC<RouteFormProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <label className="text-xs font-semibold text-[var(--muted)] flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[var(--brand)]" />
               {language === 'es' ? 'Duración:' : 'Duration:'}
             </label>
-            <span className="text-xs font-bold text-amber-400">{request.max_time_min} min</span>
+            <span className="text-xs font-bold text-[var(--brand)]">{request.max_time_min} min</span>
           </div>
           <input
             type="range"
@@ -118,9 +118,9 @@ export const RouteForm: FC<RouteFormProps> = ({
             step="30"
             value={request.max_time_min}
             onChange={(e) => onChangeRequest({ max_time_min: Number(e.target.value) })}
-            className="w-full accent-amber-500"
+            className="w-full accent-[var(--brand)]"
           />
-          <div className="flex justify-between text-[10px] text-slate-400 mt-0.5">
+          <div className="flex justify-between text-[10px] text-[var(--muted)] mt-0.5">
             <span>1 hora</span>
             <span>3 horas</span>
             <span>6 horas</span>
@@ -129,11 +129,11 @@ export const RouteForm: FC<RouteFormProps> = ({
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+            <label className="text-xs font-semibold text-[var(--muted)] flex items-center gap-1.5">
+              <DollarSign className="w-3.5 h-3.5 text-[var(--ok-ink)]" />
               {language === 'es' ? 'Gasto estimado:' : 'Budget:'}
             </label>
-            <span className="text-xs font-bold text-emerald-400">${request.max_budget_mxn} MXN</span>
+            <span className="text-xs font-bold text-[var(--ok-ink)]">${request.max_budget_mxn} MXN</span>
           </div>
           <input
             type="range"
@@ -144,7 +144,7 @@ export const RouteForm: FC<RouteFormProps> = ({
             onChange={(e) => onChangeRequest({ max_budget_mxn: Number(e.target.value) })}
             className="w-full accent-emerald-500"
           />
-          <div className="flex justify-between text-[10px] text-slate-400 mt-0.5">
+          <div className="flex justify-between text-[10px] text-[var(--muted)] mt-0.5">
             <span>Gratis</span>
             <span>$250</span>
             <span>$500</span>
@@ -154,14 +154,14 @@ export const RouteForm: FC<RouteFormProps> = ({
 
       {/* 3. Punto de partida */}
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-          <Compass className="w-3.5 h-3.5 text-sky-400" />
+        <label className="block text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+          <Compass className="w-3.5 h-3.5 text-[var(--brand)]" />
           {language === 'es' ? 'Punto de partida' : 'Starting location'}
         </label>
         <select
           value={request.start_poi_id}
           onChange={(e) => onChangeRequest({ start_poi_id: e.target.value })}
-          className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
         >
           {pois.map((poi) => (
             <option key={poi.id} value={poi.id}>
@@ -174,10 +174,10 @@ export const RouteForm: FC<RouteFormProps> = ({
       {/* 4. Orientación: Zócalo vs Barrios */}
       <div>
         <div className="flex justify-between items-center mb-1">
-          <label className="text-xs font-semibold text-slate-300">
+          <label className="text-xs font-semibold text-[var(--muted)]">
             {language === 'es' ? 'Estilo de ruta:' : 'Route style:'}
           </label>
-          <span className="text-xs font-bold text-amber-300">
+          <span className="text-xs font-bold text-[var(--brand)]">
             {request.balance_local_pct <= 30
               ? language === 'es'
                 ? 'Monumentos del Centro'
@@ -198,9 +198,9 @@ export const RouteForm: FC<RouteFormProps> = ({
           step="10"
           value={request.balance_local_pct}
           onChange={(e) => onChangeRequest({ balance_local_pct: Number(e.target.value) })}
-          className="w-full accent-amber-500"
+          className="w-full accent-[var(--brand)]"
         />
-        <div className="flex justify-between text-[10px] text-slate-400 mt-0.5">
+        <div className="flex justify-between text-[10px] text-[var(--muted)] mt-0.5">
           <span>{language === 'es' ? 'Más Zócalo' : 'Historic Core'}</span>
           <span>{language === 'es' ? 'Más Barrios y Talleres' : 'Artisan Barrios'}</span>
         </div>
@@ -208,7 +208,7 @@ export const RouteForm: FC<RouteFormProps> = ({
 
       {/* 5. Intereses */}
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+        <label className="block text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-2">
           {language === 'es' ? '¿Qué te gustaría descubrir?' : 'What do you want to see?'}
         </label>
         <div className="flex flex-wrap gap-1.5">
@@ -221,8 +221,8 @@ export const RouteForm: FC<RouteFormProps> = ({
                 onClick={() => toggleInterest(item.id)}
                 className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-300 cursor-pointer ${
                   isSelected
-                    ? 'bg-amber-500 border-amber-400 text-slate-950 font-bold'
-                    : 'bg-slate-950 border-white/10 text-slate-300 hover:bg-slate-800'
+                    ? 'bg-[var(--accent)] border-[var(--line-strong)] text-[var(--accent-ink)] font-bold'
+                    : 'bg-[var(--surface-solid)] border-[var(--line)] text-[var(--muted)] hover:bg-[var(--well)]'
                 }`}
               >
                 {language === 'es' ? item.labelEs : item.labelEn}
@@ -234,8 +234,8 @@ export const RouteForm: FC<RouteFormProps> = ({
 
       {/* 6. Búsqueda opcional */}
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-          <Search className="w-3.5 h-3.5 text-slate-400" />
+        <label className="block text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+          <Search className="w-3.5 h-3.5 text-[var(--muted)]" />
           {language === 'es' ? 'Buscar algo específico (opcional)' : 'Search keyword (optional)'}
         </label>
         <input
@@ -247,7 +247,7 @@ export const RouteForm: FC<RouteFormProps> = ({
               ? 'Ej. talavera, dulces, puente, vidrio, pan...'
               : 'E.g. talavera, sweets, bridge, glass...'
           }
-          className="w-full border border-white/15 rounded-xl p-2.5 text-xs text-white bg-slate-950 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full border border-[var(--line)] rounded-xl p-2.5 text-xs text-[var(--ink)] bg-[var(--surface-solid)] placeholder:text-[var(--ink)]0 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
         />
       </div>
 
@@ -255,7 +255,7 @@ export const RouteForm: FC<RouteFormProps> = ({
       <button
         type="button"
         onClick={onGenerate}
-        className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold py-3 px-4 rounded-xl text-sm shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+        className="w-full bg-[var(--accent)] hover:brightness-105 text-[var(--accent-ink)] font-extrabold py-3 px-4 rounded-xl text-sm shadow-[var(--shadow)] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
       >
         <UserCheck className="w-4 h-4" />
         {language === 'es' ? 'Actualizar Mi Recorrido' : 'Update My Route'}

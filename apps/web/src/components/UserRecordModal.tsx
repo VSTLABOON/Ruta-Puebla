@@ -211,24 +211,24 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-slide">
-      <div className="bg-slate-900 border border-white/15 text-white rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-[var(--surface)] backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-slide">
+      <div className="bg-[var(--well)] border border-[var(--line)] text-[var(--ink)] rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-[var(--shadow)] overflow-hidden">
         {/* Cabecera del Récord */}
-        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-3 bg-slate-950/60">
+        <div className="p-4 sm:p-5 border-b border-[var(--line)] flex items-center justify-between gap-3 bg-[var(--surface)]">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-inner">
+            <div className="w-10 h-10 rounded-2xl bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] flex items-center justify-center shadow-inner">
               <Trophy className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-sm sm:text-base text-white tracking-tight">
+                <h3 className="font-extrabold text-sm sm:text-base text-[var(--ink)] tracking-tight">
                   {language === 'es' ? 'Mi Récord de Exploración' : 'My Explorer Record'}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-slate-950">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[var(--accent)] text-[var(--accent-ink)]">
                   {currentUser ? `Nivel ${currentUser.level}` : 'Nivel 1'}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-[var(--muted)]">
                 {currentUser
                   ? `${currentUser.name} (${currentUser.nickname})`
                   : language === 'es'
@@ -246,7 +246,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                   onClose();
                   onOpenAuth();
                 }}
-                className="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 transition cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-soft)] text-[var(--accent-ink)] font-bold text-xs flex items-center gap-1 transition cursor-pointer"
               >
                 <UserCheck className="w-3.5 h-3.5" />
                 <span>{language === 'es' ? 'Login' : 'Login'}</span>
@@ -256,7 +256,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+              className="p-1.5 rounded-xl bg-[var(--well)] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -264,7 +264,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
         </div>
 
         {/* Selector de Pestañas: Récord, Grabar Recorrido, Bitácora */}
-        <div className="grid grid-cols-3 gap-1.5 p-3 bg-slate-950/80 border-b border-white/5 text-xs font-bold">
+        <div className="grid grid-cols-3 gap-1.5 p-3 bg-[var(--surface)] border-b border-[var(--line)] text-xs font-bold">
           <button
             type="button"
             onClick={() => {
@@ -273,8 +273,8 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             }}
             className={`py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer ${
               activeTab === 'records'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[var(--accent)] text-[var(--accent-ink)] shadow-md'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
@@ -289,8 +289,8 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             }}
             className={`py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer ${
               activeTab === 'tracker'
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-rose-600 text-[var(--on-primary)] shadow-md'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
@@ -307,8 +307,8 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
             }}
             className={`py-2 px-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer ${
               activeTab === 'history'
-                ? 'bg-sky-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[var(--primary)] text-[var(--on-primary)] shadow-md'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -319,8 +319,8 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
         {/* Contenido scrolleable */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
           {newlyUnlockedNotice && (
-            <div className="p-3 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 animate-fade-slide">
-              <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="p-3 rounded-2xl bg-emerald-950/60 border border-[var(--line)] text-[var(--ok-ink)] text-xs font-semibold flex items-center gap-2 animate-fade-slide">
+              <Sparkles className="w-4 h-4 text-[var(--ok-ink)] flex-shrink-0" />
               <span>{newlyUnlockedNotice}</span>
             </div>
           )}
@@ -329,25 +329,25 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
           {activeTab === 'records' && (
             <div className="space-y-4 animate-fade-slide">
               {/* Tarjeta de Nivel y Barra de Experiencia */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-slate-900 to-sky-500/15 border border-amber-500/30 space-y-2">
+              <div className="p-4 rounded-2xl bg-[var(--well)] border border-[var(--line)] space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="font-bold text-[var(--brand)] uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" />
                     {language === 'es' ? 'Rango de Exploración' : 'Explorer Rank'}
                   </span>
-                  <span className="text-[11px] font-mono text-slate-300">
+                  <span className="text-[11px] font-mono text-[var(--muted)]">
                     {stats.totalKmWalked > 3 ? 'Guardián del Patrimonio' : 'Caminante Inicial'}
                   </span>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                <div className="w-full bg-[var(--well)] rounded-full h-2.5 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-amber-400 via-amber-500 to-sky-400 h-full rounded-full transition-all duration-700"
+                    className="bg-[var(--surface-solid)] h-full rounded-full transition-all duration-700"
                     style={{
                       width: `${Math.min(100, (stats.totalKmWalked / 5) * 100)}%`
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                <div className="flex justify-between text-[10px] text-[var(--muted)] font-mono">
                   <span>{stats.totalKmWalked} km acumulados</span>
                   <span>Meta: 5.0 km (Nivel Siguiente)</span>
                 </div>
@@ -355,66 +355,66 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
 
               {/* Grid 2x2 de Récords Personales */}
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] space-y-1">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--muted)] font-semibold">
                     <span>{language === 'es' ? 'Récord Caminata' : 'Longest Walk'}</span>
-                    <Footprints className="w-4 h-4 text-emerald-400" />
+                    <Footprints className="w-4 h-4 text-[var(--ok-ink)]" />
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-white font-mono">
-                    {stats.longestWalkKm} <span className="text-xs text-slate-400 font-normal">km</span>
+                  <div className="text-xl sm:text-2xl font-black text-[var(--ink)] font-mono">
+                    {stats.longestWalkKm} <span className="text-xs text-[var(--muted)] font-normal">km</span>
                   </div>
-                  <div className="text-[10px] text-emerald-400">
+                  <div className="text-[10px] text-[var(--ok-ink)]">
                     {language === 'es' ? 'Tu mayor distancia continua' : 'Longest single session'}
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] space-y-1">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--muted)] font-semibold">
                     <span>{language === 'es' ? 'Tiempo en Ruta' : 'Total Time'}</span>
-                    <Clock className="w-4 h-4 text-sky-400" />
+                    <Clock className="w-4 h-4 text-[var(--brand)]" />
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-white font-mono">
-                    {stats.totalTimeMinutes} <span className="text-xs text-slate-400 font-normal">min</span>
+                  <div className="text-xl sm:text-2xl font-black text-[var(--ink)] font-mono">
+                    {stats.totalTimeMinutes} <span className="text-xs text-[var(--muted)] font-normal">min</span>
                   </div>
-                  <div className="text-[10px] text-sky-400">
+                  <div className="text-[10px] text-[var(--brand)]">
                     {language === 'es' ? 'Explorando a pie en Puebla' : 'Walking historic center'}
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] space-y-1">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--muted)] font-semibold">
                     <span>{language === 'es' ? 'Sellos Ganados' : 'Stamps Unlocked'}</span>
-                    <Award className="w-4 h-4 text-amber-400" />
+                    <Award className="w-4 h-4 text-[var(--brand)]" />
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-white font-mono">
-                    {stats.totalBadgesUnlocked} <span className="text-xs text-slate-400 font-normal">/ {pois.length}</span>
+                  <div className="text-xl sm:text-2xl font-black text-[var(--ink)] font-mono">
+                    {stats.totalBadgesUnlocked} <span className="text-xs text-[var(--muted)] font-normal">/ {pois.length}</span>
                   </div>
-                  <div className="text-[10px] text-amber-400">
+                  <div className="text-[10px] text-[var(--brand)]">
                     {language === 'es' ? 'Insignias en pasaporte' : 'In cultural passport'}
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] space-y-1">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--muted)] font-semibold">
                     <span>{language === 'es' ? 'Talleres Locales' : 'Local Artisans'}</span>
-                    <Store className="w-4 h-4 text-violet-400" />
+                    <Store className="w-4 h-4 text-[var(--brand)]" />
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-white font-mono">
+                  <div className="text-xl sm:text-2xl font-black text-[var(--ink)] font-mono">
                     {stats.localWorkshopsSupported}
                   </div>
-                  <div className="text-[10px] text-violet-400">
+                  <div className="text-[10px] text-[var(--brand)]">
                     {language === 'es' ? 'Microtalleres apoyados' : 'DENUE workshops visited'}
                   </div>
                 </div>
               </div>
 
               {/* Acceso Rápido a Iniciar Grabación */}
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/10 flex items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--line)] flex items-center justify-between gap-3">
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-extrabold text-white">
+                  <h4 className="text-xs font-extrabold text-[var(--ink)]">
                     {language === 'es' ? '¿Listo para una nueva caminata?' : 'Ready for a new walk?'}
                   </h4>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-[var(--muted)]">
                     {language === 'es'
                       ? 'Activa el cronómetro y GPS táctico para superar tu récord de distancia.'
                       : 'Record live steps & distance to break your personal record.'}
@@ -427,7 +427,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                     setActiveTab('tracker');
                     handleStartRecording();
                   }}
-                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition flex-shrink-0 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-[var(--accent)] hover:brightness-110 text-[var(--accent-ink)] font-bold text-xs flex items-center gap-1.5 shadow-md transition flex-shrink-0 cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>{language === 'es' ? 'Iniciar' : 'Start'}</span>
@@ -440,17 +440,17 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
           {activeTab === 'tracker' && (
             <div className="space-y-5 animate-fade-slide text-center py-2">
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 border border-white/10 text-xs">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface-solid)] border border-[var(--line)] text-xs">
                   <div
                     className={`w-2.5 h-2.5 rounded-full ${
                       isRecording && !isPaused
                         ? 'bg-rose-500 animate-ping'
                         : isPaused
-                        ? 'bg-amber-500'
-                        : 'bg-slate-500'
+                        ? 'bg-[var(--accent)]'
+                        : 'bg-[var(--muted)]'
                     }`}
                   />
-                  <span className="font-mono uppercase font-bold text-[11px] text-slate-200">
+                  <span className="font-mono uppercase font-bold text-[11px] text-[var(--ink)]">
                     {isRecording
                       ? isPaused
                         ? language === 'es'
@@ -467,23 +467,23 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
               </div>
 
               {/* Display Gigante del Cronómetro */}
-              <div className="py-4 px-6 rounded-3xl bg-slate-950 border border-white/10 shadow-inner max-w-xs mx-auto space-y-2">
-                <div className="text-4xl sm:text-5xl font-mono font-black text-amber-400 tracking-wider">
+              <div className="py-4 px-6 rounded-3xl bg-[var(--surface-solid)] border border-[var(--line)] shadow-inner max-w-xs mx-auto space-y-2">
+                <div className="text-4xl sm:text-5xl font-mono font-black text-[var(--brand)] tracking-wider">
                   {formatTimer(elapsedSeconds)}
                 </div>
-                <div className="flex items-center justify-center gap-4 text-xs font-mono text-slate-400 pt-2 border-t border-white/5">
+                <div className="flex items-center justify-center gap-4 text-xs font-mono text-[var(--muted)] pt-2 border-t border-[var(--line)]">
                   <div>
-                    <span className="text-[10px] block uppercase text-slate-500">
+                    <span className="text-[10px] block uppercase text-[var(--ink)]0">
                       {language === 'es' ? 'Distancia' : 'Distance'}
                     </span>
-                    <strong className="text-white text-sm">{recordedMeters} m</strong>
+                    <strong className="text-[var(--ink)] text-sm">{recordedMeters} m</strong>
                   </div>
-                  <div className="w-px h-6 bg-white/10" />
+                  <div className="w-px h-6 bg-[var(--surface)]" />
                   <div>
-                    <span className="text-[10px] block uppercase text-slate-500">
+                    <span className="text-[10px] block uppercase text-[var(--ink)]0">
                       {language === 'es' ? 'Ritmo' : 'Pace'}
                     </span>
-                    <strong className="text-emerald-400 text-sm">~4.2 km/h</strong>
+                    <strong className="text-[var(--ok-ink)] text-sm">~4.2 km/h</strong>
                   </div>
                 </div>
               </div>
@@ -494,7 +494,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                   <button
                     type="button"
                     onClick={handleStartRecording}
-                    className="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-rose-600 hover:brightness-110 text-white font-extrabold text-sm flex items-center gap-2 shadow-[0_0_25px_rgba(244,63,94,0.4)] transition cursor-pointer"
+                    className="px-6 py-3 rounded-2xl bg-[var(--surface-solid)] hover:brightness-110 text-[var(--ink)] font-extrabold text-sm flex items-center gap-2 shadow-[var(--shadow)] transition cursor-pointer"
                   >
                     <Play className="w-5 h-5 fill-current" />
                     <span>{language === 'es' ? 'Comenzar a Grabar' : 'Start Recording'}</span>
@@ -504,7 +504,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                     <button
                       type="button"
                       onClick={handlePauseResume}
-                      className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs flex items-center gap-1.5 border border-white/10 transition cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl bg-[var(--well)] hover:bg-[var(--well)] text-[var(--brand)] font-bold text-xs flex items-center gap-1.5 border border-[var(--line)] transition cursor-pointer"
                     >
                       {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4" />}
                       <span>
@@ -521,7 +521,7 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                     <button
                       type="button"
                       onClick={handleStopAndSave}
-                      className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-lg transition cursor-pointer"
+                      className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[var(--ink)] font-extrabold text-xs flex items-center gap-1.5 shadow-[var(--shadow)] transition cursor-pointer"
                     >
                       <Square className="w-4 h-4 fill-current" />
                       <span>{language === 'es' ? 'Guardar Récord' : 'Save Record'}</span>
@@ -536,13 +536,13 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
           {activeTab === 'history' && (
             <div className="space-y-3 animate-fade-slide">
               <div className="flex items-center justify-between pb-1">
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wide">
+                <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">
                   {language === 'es' ? 'Caminatas Guardadas' : 'Saved Walking Logs'} ({walks.length})
                 </span>
                 <button
                   type="button"
                   onClick={handleExportRecords}
-                  className="text-xs text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-[var(--brand)] hover:text-[var(--brand)] font-semibold flex items-center gap-1 cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>{language === 'es' ? 'Exportar JSON' : 'Export JSON'}</span>
@@ -553,25 +553,25 @@ export const UserRecordModal: FC<UserRecordModalProps> = ({
                 {walks.map((walk) => (
                   <div
                     key={walk.id}
-                    className="p-3.5 rounded-2xl bg-slate-950/70 border border-white/10 space-y-1.5 hover:border-amber-500/30 transition"
+                    className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] space-y-1.5 hover:border-[var(--line)] transition"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="font-bold text-xs text-white">{walk.title}</div>
-                      <span className="text-[10px] font-mono text-slate-400 flex-shrink-0">
+                      <div className="font-bold text-xs text-[var(--ink)]">{walk.title}</div>
+                      <span className="text-[10px] font-mono text-[var(--muted)] flex-shrink-0">
                         {walk.date}
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300 font-mono">
-                      <span className="flex items-center gap-1 text-emerald-400 font-bold">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--muted)] font-mono">
+                      <span className="flex items-center gap-1 text-[var(--ok-ink)] font-bold">
                         <Footprints className="w-3 h-3" />
                         {(walk.distanceMeters / 1000).toFixed(2)} km
                       </span>
-                      <span className="flex items-center gap-1 text-sky-400">
+                      <span className="flex items-center gap-1 text-[var(--brand)]">
                         <Clock className="w-3 h-3" />
                         {walk.durationMinutes} min
                       </span>
-                      <span className="text-slate-500 text-[11px] font-sans">
+                      <span className="text-[var(--ink)]0 text-[11px] font-sans">
                         {walk.zone}
                       </span>
                     </div>

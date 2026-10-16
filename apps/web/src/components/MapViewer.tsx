@@ -664,7 +664,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   }, []);
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-slate-950 select-none">
+    <div className="relative w-full h-full overflow-hidden bg-[var(--surface-solid)] select-none">
       {/* Lienzo de mapa de pantalla completa con soporte de 1 solo dedo (touch-none) */}
       <div ref={mapContainerRef} className="w-full h-full touch-none" />
 
@@ -684,36 +684,36 @@ export const MapViewer: FC<MapViewerProps> = ({
                 onSelectPoi(proximityAlert.poi.id);
                 if (onInspectStop) onInspectStop(proximityAlert.poi.id);
               }}
-              className="bg-slate-950/90 hover:bg-slate-900 text-white p-2 px-3.5 rounded-full border border-amber-400/60 shadow-[0_0_25px_rgba(245,158,11,0.45)] backdrop-blur-xl flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide"
+              className="bg-[var(--surface)] hover:bg-[var(--well)] text-[var(--ink)] p-2 px-3.5 rounded-full border border-[var(--line)] shadow-[var(--shadow)] backdrop-blur-xl flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide"
               title={language === 'es' ? 'Toca para abrir la ficha de este lugar' : 'Tap to open place details'}
             >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center flex-shrink-0 shadow">
+              <div className="w-6 h-6 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center flex-shrink-0 shadow">
                 <Sparkles className="w-3.5 h-3.5" />
               </div>
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-extrabold text-xs text-amber-200 truncate max-w-[140px] sm:max-w-[200px]">
+                <span className="font-extrabold text-xs text-[var(--brand)] truncate max-w-[140px] sm:max-w-[200px]">
                   {proximityAlert.poi.name}
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 bg-slate-800/80 px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[var(--muted)] bg-[var(--well)] px-1.5 py-0.5 rounded-full">
                   {proximityAlert.distanceM}m
                 </span>
               </div>
             </div>
           ) : (
             /* Banner expandido completo (se minimiza automáticamente tras 3.5 segundos) */
-            <div className="bg-amber-500/95 backdrop-blur-md text-slate-950 p-3 rounded-2xl border border-white/40 shadow-2xl flex items-center justify-between gap-3 sm:max-w-sm animate-fade-slide">
+            <div className="bg-[var(--accent-soft)] backdrop-blur-md text-[var(--ink)] p-3 rounded-2xl border border-[var(--line)] shadow-[var(--shadow)] flex items-center justify-between gap-3 sm:max-w-sm animate-fade-slide">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-[var(--surface-solid)] text-[var(--brand)] flex items-center justify-center flex-shrink-0">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div className="text-xs min-w-0">
-                  <span className="font-black uppercase tracking-wider text-[10px] block text-slate-900">
+                  <span className="font-black uppercase tracking-wider text-[10px] block text-[var(--ink)]">
                     {language === 'es' ? 'Lugar cercano a ti' : 'Nearby location'}
                   </span>
                   <span className="font-extrabold text-sm truncate block">
                     {proximityAlert.poi.name}
                   </span>
-                  <span className="text-slate-900 font-semibold text-[11px]">
+                  <span className="text-[var(--ink)] font-semibold text-[11px]">
                     {language === 'es'
                       ? `A ${proximityAlert.distanceM} metros de tu ubicación`
                       : `${proximityAlert.distanceM}m away`}
@@ -727,14 +727,14 @@ export const MapViewer: FC<MapViewerProps> = ({
                     onSelectPoi(proximityAlert.poi.id);
                     if (onInspectStop) onInspectStop(proximityAlert.poi.id);
                   }}
-                  className="px-3 py-1.5 bg-slate-950 text-amber-400 font-bold rounded-xl text-xs shadow hover:bg-slate-900 transition whitespace-nowrap cursor-pointer"
+                  className="px-3 py-1.5 bg-[var(--surface-solid)] text-[var(--brand)] font-bold rounded-xl text-xs shadow hover:bg-[var(--well)] transition whitespace-nowrap cursor-pointer"
                 >
                   {language === 'es' ? 'Ver lugar' : 'Open'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsAlertMinimized(true)}
-                  className="p-1 rounded-lg bg-slate-950/20 hover:bg-slate-950/40 text-slate-950 cursor-pointer"
+                  className="p-1 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface)] text-[var(--ink)] cursor-pointer"
                   title={language === 'es' ? 'Minimizar a burbuja' : 'Minimize to bubble'}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -749,9 +749,9 @@ export const MapViewer: FC<MapViewerProps> = ({
         {/* Lado Izquierdo: Insignia de Estado y Selector de Enfoque */}
         <div className="flex flex-col gap-1.5 pointer-events-auto max-w-[calc(100%-60px)]">
           {selectedRoute ? (
-            <div className="flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-500/30 shadow-xl">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
-              <span className="text-xs font-bold text-amber-200 truncate">
+            <div className="flex items-center gap-1.5 bg-[var(--surface)] backdrop-blur-md px-3 py-1.5 rounded-2xl border border-[var(--line)] shadow-[var(--shadow)]">
+              <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse flex-shrink-0" />
+              <span className="text-xs font-bold text-[var(--brand)] truncate">
                 {selectedRoute.name}
               </span>
               <button
@@ -759,8 +759,8 @@ export const MapViewer: FC<MapViewerProps> = ({
                 onClick={() => setShowAllLocations((v) => !v)}
                 className={`ml-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border transition cursor-pointer whitespace-nowrap ${
                   showAllLocations
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                    : 'bg-slate-800 text-slate-400 border-white/10 hover:text-white'
+                    ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--line)]'
+                    : 'bg-[var(--well)] text-[var(--muted)] border-[var(--line)] hover:text-[var(--brand)]'
                 }`}
                 title={
                   showAllLocations
@@ -774,9 +774,9 @@ export const MapViewer: FC<MapViewerProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-sky-500/30 shadow-xl">
-              <span className="w-2 h-2 rounded-full bg-sky-400 flex-shrink-0" />
-              <span className="text-xs font-bold text-sky-200">
+            <div className="flex items-center gap-1.5 bg-[var(--surface)] backdrop-blur-md px-3 py-1.5 rounded-2xl border border-[var(--line)] shadow-[var(--shadow)]">
+              <span className="w-2 h-2 rounded-full bg-[var(--primary)] flex-shrink-0" />
+              <span className="text-xs font-bold text-[var(--brand)]">
                 {language === 'es' ? `Explorando Puebla (${pois.length})` : `Puebla Exploration (${pois.length})`}
               </span>
             </div>
@@ -789,21 +789,21 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={handleWhereAmI}
-            className="w-10 h-10 rounded-2xl bg-sky-500 text-slate-950 shadow-[0_0_18px_rgba(14,165,233,0.55)] border border-white/40 flex items-center justify-center active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-400 focus:outline-none transition-all cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-[var(--primary)] text-[var(--on-primary)] shadow-[var(--shadow)] border border-[var(--line)] flex items-center justify-center active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus:outline-none transition-all cursor-pointer"
             aria-label={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
             title={language === 'es' ? 'Centrar en mi ubicación' : 'Center on my location'}
           >
-            <Navigation className="w-4 h-4 fill-slate-950" />
+            <Navigation className="w-4 h-4 fill-white" />
           </button>
 
           {/* Botón 3D / 2D */}
           <button
             type="button"
             onClick={toggle3D}
-            className={`w-10 h-10 rounded-2xl backdrop-blur-md border shadow-lg flex items-center justify-center text-xs font-black focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer ${
+            className={`w-10 h-10 rounded-2xl backdrop-blur-md border shadow-[var(--shadow)] flex items-center justify-center text-xs font-black focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus:outline-none transition-all cursor-pointer ${
               is3D
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                : 'bg-slate-900/90 text-slate-300 border-white/15'
+                ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--line)]'
+                : 'bg-[var(--surface)] text-[var(--brand)] border-[var(--line)]'
             }`}
             aria-label={language === 'es' ? 'Alternar perspectiva 3D y 2D' : 'Toggle 3D and 2D perspective'}
             title={language === 'es' ? 'Alternar perspectiva 3D / 2D' : 'Toggle 3D / 2D perspective'}
@@ -815,7 +815,7 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={cycleMapStyle}
-            className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-[var(--surface)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] backdrop-blur-md flex items-center justify-center shadow-[var(--shadow)] focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus:outline-none transition-all cursor-pointer"
             aria-label={
               language === 'es'
                 ? `Cambiar estilo de mapa. Actual: ${MAP_STYLES[activeStyle].name.es}`
@@ -827,9 +827,9 @@ export const MapViewer: FC<MapViewerProps> = ({
                 : `Current style: ${MAP_STYLES[activeStyle].name.en} (Tap to change)`
             }
           >
-            {activeStyle === 'dark' && <Moon className="w-4 h-4 text-indigo-300" />}
-            {activeStyle === 'voyager' && <Palette className="w-4 h-4 text-emerald-300" />}
-            {activeStyle === 'positron' && <Sun className="w-4 h-4 text-amber-300" />}
+            {activeStyle === 'dark' && <Moon className="w-4 h-4 text-[var(--brand)]" />}
+            {activeStyle === 'voyager' && <Palette className="w-4 h-4 text-[var(--brand)]" />}
+            {activeStyle === 'positron' && <Sun className="w-4 h-4 text-[var(--brand)]" />}
           </button>
 
           {/* Botón Encuadrar Ruta Completa (solo si hay ruta seleccionada) */}
@@ -837,7 +837,7 @@ export const MapViewer: FC<MapViewerProps> = ({
             <button
               type="button"
               onClick={fitToRoute}
-              className="w-10 h-10 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-lg focus-visible:ring-2 focus-visible:ring-amber-400 focus:outline-none transition-all cursor-pointer"
+              className="w-10 h-10 rounded-2xl bg-[var(--surface)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] backdrop-blur-md flex items-center justify-center shadow-[var(--shadow)] focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus:outline-none transition-all cursor-pointer"
               aria-label={language === 'es' ? 'Encuadrar y ver ruta completa en el mapa' : 'Fit full route on map'}
               title={language === 'es' ? 'Ver ruta completa' : 'Fit full route'}
             >
@@ -850,39 +850,39 @@ export const MapViewer: FC<MapViewerProps> = ({
       {/* Indicador discreto de navegación con un dedo y simbología */}
       <div className="absolute bottom-24 left-3 z-10 flex items-center gap-2">
         {showLegend ? (
-          <div className="bg-slate-900/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 text-xs text-slate-200 shadow-2xl space-y-2 transition-all duration-300">
-            <div className="flex items-center justify-between font-bold text-slate-100 uppercase tracking-wider text-[10px] pb-1 border-b border-slate-800 gap-4">
+          <div className="bg-[var(--surface)] backdrop-blur-md p-3.5 rounded-2xl border border-[var(--line)] text-xs text-[var(--ink)] shadow-[var(--shadow)] space-y-2 transition-all duration-300">
+            <div className="flex items-center justify-between font-bold text-[var(--ink)] uppercase tracking-wider text-[10px] pb-1 border-b border-[var(--line)] gap-4">
               <span>{language === 'es' ? 'Guía del Mapa' : 'Map Guide'}</span>
               <button
                 type="button"
                 onClick={() => setShowLegend(false)}
-                className="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800 cursor-pointer"
+                className="text-[var(--muted)] hover:text-[var(--ink)] p-0.5 rounded hover:bg-[var(--well)] cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-sky-500 border border-white inline-block"></span>
-              <span className="text-[11px] font-semibold text-sky-300">
+              <span className="w-3 h-3 rounded-full bg-[var(--primary)] border border-white inline-block"></span>
+              <span className="text-[11px] font-semibold text-[var(--brand)]">
                 {language === 'es' ? 'Tu ubicación actual' : 'Your location'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-amber-400 border border-white inline-block"></span>
-              <span className="text-[11px] font-semibold text-amber-300">
+              <span className="text-[11px] font-semibold text-[var(--brand)]">
                 {language === 'es' ? 'Paradas de tu recorrido' : 'Route stops'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-cyan-400 border border-white inline-block"></span>
-              <span className="text-[11px] text-slate-200">
+              <span className="text-[11px] text-[var(--ink)]">
                 {language === 'es' ? 'Talleres y comercios locales' : 'Artisan workshops'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-1 bg-emerald-500 inline-block rounded"></span>
               <span className="flex items-center gap-1 text-[11px]">
-                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <ShieldCheck className="w-3 h-3 text-[var(--ok-ink)]" />
                 {language === 'es' ? 'Banqueta accesible sin barreras' : 'Accessible sidewalk'}
               </span>
             </div>
@@ -898,9 +898,9 @@ export const MapViewer: FC<MapViewerProps> = ({
           <button
             type="button"
             onClick={() => setShowLegend(true)}
-            className="px-3 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-white/10 text-slate-200 hover:text-white shadow-lg text-xs flex items-center gap-1.5 transition-all duration-300 cursor-pointer"
+            className="px-3 py-1.5 bg-[var(--surface)] backdrop-blur-md rounded-xl border border-[var(--line)] text-[var(--ink)] hover:text-[var(--ink)] shadow-[var(--shadow)] text-xs flex items-center gap-1.5 transition-all duration-300 cursor-pointer"
           >
-            <Hand className="w-3.5 h-3.5 text-amber-400" />
+            <Hand className="w-3.5 h-3.5 text-[var(--brand)]" />
             <span className="text-[11px] font-medium">
               {language === 'es' ? 'Mueve con 1 dedo • Guía' : '1-finger pan • Guide'}
             </span>

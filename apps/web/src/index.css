@@ -4,7 +4,7 @@
 
 :root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
   --popogo-cobalto: #0E2C9C;
   --popogo-cobalto-dark: #0B228A;
   --popogo-cobalto-light: #2544A7;
@@ -14,23 +14,83 @@
   --popogo-crema: #EFF1F8;
 }
 
+/* ============================================================
+   Tokens de papel talavera: un solo interruptor (html.dark)
+   ========================================================================== */
+:root {
+  --paper: #f7f8fc;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-solid: #ffffff;
+  --well: #f7f8fc;
+  --line: rgba(14, 44, 156, 0.1);
+  --line-strong: rgba(14, 44, 156, 0.18);
+  --ink: #12205f;
+  --brand: #0e2c9c;
+  --muted: #5f68a0;
+  --faint: #9aa1c4;
+  --primary: #0e2c9c;
+  --primary-hover: #0b228a;
+  --primary-soft: rgba(14, 44, 156, 0.08);
+  --on-primary: #ffffff;
+  --on-primary-soft: rgba(255, 255, 255, 0.8);
+  --ink-soft: rgba(18, 32, 95, 0.78);
+  --accent: #ede28e;
+  --accent-soft: rgba(237, 226, 142, 0.45);
+  --accent-ink: #0e2c9c;
+  --scrim: rgba(18, 32, 95, 0.4);
+  --shadow: 0 18px 50px -28px rgba(14, 44, 156, 0.45);
+  --danger-bg: #ffe4e6;
+  --danger-line: #fecdd3;
+  --danger-ink: #be123c;
+  --info-bg: #e0f2fe;
+  --info-line: #bae6fd;
+  --info-ink: #075985;
+  --ok-bg: #d1fae5;
+  --ok-line: #a7f3d0;
+  --ok-ink: #047857;
+}
+
+html.dark {
+  color-scheme: dark;
+  --paper: #181b26;
+  --surface: rgba(30, 34, 48, 0.92);
+  --surface-solid: #1e2230;
+  --well: #232838;
+  --line: rgba(149, 151, 193, 0.22);
+  --line-strong: rgba(149, 151, 193, 0.38);
+  --ink: #eff1f8;
+  --brand: #a9c4ff;
+  --muted: #b6bcd9;
+  --faint: #8189b0;
+  --primary: #274bae;
+  --primary-hover: #1e3e95;
+  --primary-soft: rgba(169, 196, 255, 0.14);
+  --on-primary: #ffffff;
+  --on-primary-soft: rgba(255, 255, 255, 0.86);
+  --ink-soft: rgba(239, 241, 248, 0.85);
+  --accent: #ede28e;
+  --accent-soft: rgba(237, 226, 142, 0.16);
+  --accent-ink: #1a1f2e;
+  --scrim: rgba(6, 8, 14, 0.66);
+  --shadow: 0 18px 50px -28px rgba(0, 0, 0, 0.7);
+  --danger-bg: rgba(190, 18, 60, 0.18);
+  --danger-line: rgba(251, 113, 133, 0.35);
+  --danger-ink: #fda4af;
+  --info-bg: rgba(2, 132, 199, 0.18);
+  --info-line: rgba(56, 189, 248, 0.32);
+  --info-ink: #7dd3fc;
+  --ok-bg: rgba(4, 120, 87, 0.2);
+  --ok-line: rgba(52, 211, 153, 0.32);
+  --ok-ink: #6ee7b7;
+}
+
 html, body, #root {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #061138;
+  background-color: var(--paper);
   overscroll-behavior: none;
-}
-
-/* Patrón Talavera de fondo para identidad Poblana */
-.talavera-bg-pattern {
-  background-color: #061138;
-  background-image: 
-    radial-gradient(#EDE28E 1.2px, transparent 1.2px), 
-    radial-gradient(#9597C1 1.2px, #061138 1.2px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
 }
 
 /* Patrones accesibles para representacion visual no dependiente exclusivamente del color */
@@ -114,12 +174,11 @@ html, body, #root {
 }
 
 .holographic-card {
-  background: linear-gradient(135deg, rgba(239,241,248,0.1) 0%, rgba(237,226,142,0.25) 25%, rgba(14,44,156,0.35) 50%, rgba(123,94,134,0.3) 75%, rgba(239,241,248,0.1) 100%);
+  background: linear-gradient(135deg, var(--surface-solid) 0%, var(--accent-soft) 50%, var(--surface-solid) 100%);
   background-size: 300% 300%;
   animation: holographic-shine 6s ease infinite;
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(237, 226, 142, 0.35);
-  box-shadow: 0 0 30px rgba(14, 44, 156, 0.4), inset 0 0 20px rgba(237, 226, 142, 0.15);
+  border: 1px solid var(--line);
 }
 
 /* Estilos de impresion y alto contraste */
@@ -133,17 +192,40 @@ html, body, #root {
   perspective: 1000px;
 }
 
-.tactical-glass {
-  background: rgba(11, 34, 138, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(149, 151, 193, 0.25);
+/* Papel de talavera: composición completa del damasco (medallón central,
+   filigranas en las 4 esquinas y cenefas laterales). El tile es 1024x572 y
+   seamless, así que en pantallas altas se ancla al ancho y se repite en Y. */
+.popogo-paper {
+  background-color: var(--paper);
+  background-image: url(/fondo_talavera_plantilla.webp);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 
-.tactical-glass-elevated {
-  background: rgba(7, 21, 78, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(237, 226, 142, 0.3);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(14, 44, 156, 0.25);
+html.dark .popogo-paper {
+  background-image: url(/fondo_talavera_oscuro.webp);
+}
+
+/* El splash se reproduce siempre sobre el degradado cobalto oscuro del video:
+   fija aquí sus tokens para que el texto sea legible en ambos modos de la app. */
+.popogo-splash {
+  --ink: #eff1f8;
+  --ink-soft: rgba(239, 241, 248, 0.85);
+  --muted: #b6bcd9;
+  --faint: #9597c1;
+  --brand: #ede28e;
+  --surface: rgba(255, 255, 255, 0.14);
+  --surface-solid: #ffffff;
+  --well: rgba(255, 255, 255, 0.08);
+  --line: rgba(237, 226, 142, 0.3);
+  --line-strong: rgba(237, 226, 142, 0.5);
+}
+
+@media (max-aspect-ratio: 6/5) {
+  .popogo-paper {
+    background-repeat: repeat;
+    background-position: center top;
+    background-size: 100% auto;
+  }
 }

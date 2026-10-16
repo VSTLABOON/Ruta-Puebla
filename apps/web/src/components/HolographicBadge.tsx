@@ -255,8 +255,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
         }}
         className={`relative overflow-hidden rounded-2xl p-5 border transition-all duration-300 ${
           isUnlocked
-            ? 'holographic-card border-amber-400/50 shadow-[0_0_35px_rgba(245,158,11,0.25)]'
-            : 'bg-slate-900/90 border-slate-700/80 shadow-xl'
+            ? 'holographic-card border-[var(--line)] shadow-[var(--shadow)]'
+            : 'bg-[var(--surface)] border-[var(--line)] shadow-[var(--shadow)]'
         }`}
       >
         {/* Iridescent Glare Sheen */}
@@ -271,12 +271,12 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px] pointer-events-none" />
 
         {/* Card Header Telemetry */}
-        <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10 text-xs">
-          <div className="flex items-center gap-1.5 font-mono uppercase tracking-widest text-[10px] text-amber-400 font-bold">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+        <div className="relative z-10 flex items-center justify-between pb-3 border-b border-[var(--line)] text-xs">
+          <div className="flex items-center gap-1.5 font-mono uppercase tracking-widest text-[10px] text-[var(--brand)] font-bold">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--brand)] animate-pulse" />
             <span>{language === 'es' ? 'Sello Patrimonial' : 'Heritage Stamp'}</span>
           </div>
-          <span className="font-mono text-[10px] text-slate-400 uppercase px-2 py-0.5 rounded bg-slate-950/60 border border-white/5">
+          <span className="font-mono text-[10px] text-[var(--muted)] uppercase px-2 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)]">
             {zone.replace(/_/g, ' ')}
           </span>
         </div>
@@ -288,53 +288,53 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
             <div
               className={`absolute -inset-2 rounded-full blur-md opacity-75 ${
                 isUnlocked
-                  ? 'bg-gradient-to-r from-amber-500 via-sky-400 to-amber-500 animate-pulse'
-                  : 'bg-slate-700'
+                  ? 'bg-[var(--surface-solid)] animate-pulse'
+                  : 'bg-[var(--well)]'
               }`}
             />
 
             {/* Medallion Core */}
             <div
-              className={`relative w-20 h-20 rounded-full flex items-center justify-center border-2 shadow-2xl transition-all duration-300 ${
+              className={`relative w-20 h-20 rounded-full flex items-center justify-center border-2 shadow-[var(--shadow)] transition-all duration-300 ${
                 isUnlocked
-                  ? 'bg-gradient-to-br from-amber-400 via-amber-600 to-slate-950 border-amber-300 text-slate-950'
-                  : 'bg-slate-950 border-slate-700 text-slate-500'
+                  ? 'bg-[var(--surface-solid)] border-[var(--line-strong)] text-[var(--ink)]'
+                  : 'bg-[var(--surface-solid)] border-[var(--line)] text-[var(--ink)]0'
               }`}
             >
               {isUnlocked ? (
-                <Award className="w-10 h-10 text-amber-200 stroke-[2.2] drop-shadow-md" />
+                <Award className="w-10 h-10 text-[var(--brand)] stroke-[2.2] drop-shadow-md" />
               ) : (
-                <Award className="w-9 h-9 text-slate-600 stroke-[1.8]" />
+                <Award className="w-9 h-9 text-[var(--muted)] stroke-[1.8]" />
               )}
             </div>
 
             {/* Verification Chip */}
             <div
-              className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-slate-950 flex items-center justify-center ${
-                isUnlocked ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-500'
+              className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-[var(--surface-solid)] flex items-center justify-center ${
+                isUnlocked ? 'bg-emerald-500 text-[var(--ink)]' : 'bg-[var(--well)] text-[var(--ink)]0'
               }`}
             >
               {isUnlocked ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <ShieldCheck className="w-3 h-3" />}
             </div>
           </div>
 
-          <h4 className="text-base font-extrabold tracking-tight text-white mb-0.5">
+          <h4 className="text-base font-extrabold tracking-tight text-[var(--ink)] mb-0.5">
             {badgeName}
           </h4>
-          <p className="text-xs text-amber-300/90 font-medium">
+          <p className="text-xs text-[var(--brand)] font-medium">
             {poiName}
           </p>
         </div>
 
         {/* Secret / Memory Information */}
         {secretTitle && (
-          <div className="relative z-10 bg-slate-950/70 backdrop-blur-md rounded-xl p-3 border border-white/10 text-xs space-y-1 my-3 text-left">
-            <div className="flex items-center gap-1.5 font-bold text-amber-400 text-[11px]">
-              <Flame className="w-3.5 h-3.5 text-amber-500" />
+          <div className="relative z-10 bg-[var(--surface)] backdrop-blur-md rounded-xl p-3 border border-[var(--line)] text-xs space-y-1 my-3 text-left">
+            <div className="flex items-center gap-1.5 font-bold text-[var(--brand)] text-[11px]">
+              <Flame className="w-3.5 h-3.5 text-[var(--brand)]" />
               <span>{secretTitle}</span>
             </div>
             {secretDescription && (
-              <p className="text-[11px] text-slate-300 leading-relaxed font-sans">
+              <p className="text-[11px] text-[var(--muted)] leading-relaxed font-sans">
                 {secretDescription}
               </p>
             )}
@@ -342,10 +342,10 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
         )}
 
         {/* Bottom Interactive Stamp Controls (Real NFC + Counter Sync + Code Verification) */}
-        <div className="relative z-10 pt-3 border-t border-white/10 space-y-2.5">
+        <div className="relative z-10 pt-3 border-t border-[var(--line)] space-y-2.5">
           {isUnlocked ? (
-            <div className="w-full py-2 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+            <div className="w-full py-2 px-3 rounded-xl bg-[var(--accent-soft)] border border-[var(--line)] text-[var(--ok-ink)] text-xs font-bold flex items-center justify-center gap-2">
+              <Check className="w-4 h-4 text-[var(--ok-ink)] stroke-[2.5]" />
               <span>
                 {language === 'es'
                   ? `Sello Verificado (${expectedCode})`
@@ -355,7 +355,7 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
           ) : (
             <>
               {/* Selector de método de sellado: Lector NFC / Pulso vs Código / QR de Mostrador */}
-              <div className="grid grid-cols-2 gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-white/10 text-[11px]">
+              <div className="grid grid-cols-2 gap-1.5 bg-[var(--surface)] p-1 rounded-xl border border-[var(--line)] text-[11px]">
                 <button
                   type="button"
                   onClick={() => {
@@ -365,8 +365,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   }}
                   className={`py-1.5 px-2 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     stampMode === 'nfc'
-                      ? 'bg-amber-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)] shadow-sm'
+                      : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
                   <SmartphoneNfc className="w-3.5 h-3.5" />
@@ -383,8 +383,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   }}
                   className={`py-1.5 px-2 rounded-lg font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     stampMode === 'qr'
-                      ? 'bg-sky-500 text-slate-950 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[var(--primary)] text-[var(--on-primary)] shadow-sm'
+                      : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
                   <QrCode className="w-3.5 h-3.5" />
@@ -394,9 +394,9 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
 
               {stampMode === 'nfc' ? (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[10px] font-mono px-1 text-slate-400">
+                  <div className="flex items-center justify-between text-[10px] font-mono px-1 text-[var(--muted)]">
                     <span className="flex items-center gap-1">
-                      <Radio className={`w-3 h-3 ${webNfcAvailable ? 'text-emerald-400' : 'text-sky-400'}`} />
+                      <Radio className={`w-3 h-3 ${webNfcAvailable ? 'text-[var(--ok-ink)]' : 'text-[var(--brand)]'}`} />
                       {webNfcAvailable
                         ? language === 'es'
                           ? 'Hardware Web NFC: Activo'
@@ -412,8 +412,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                     onClick={handleNfcTap}
                     className={`w-full py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       nfcScanning
-                        ? 'bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30'
-                        : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-110 active:scale-[0.98] text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
+                        ? 'bg-rose-500/20 border border-rose-500/40 text-[var(--danger-ink)] hover:bg-rose-500/30'
+                        : 'bg-[var(--surface-solid)] hover:brightness-110 active:scale-[0.98] text-[var(--ink)] shadow-[var(--shadow)]'
                     }`}
                   >
                     {nfcScanning ? (
@@ -438,23 +438,23 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   </button>
 
                   {feedbackMsg && (
-                    <div className="bg-slate-950/90 border border-amber-500/30 rounded-xl p-2.5 text-[11px] text-amber-300 leading-relaxed flex items-start gap-2 text-left">
-                      <SmartphoneNfc className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5 animate-pulse" />
+                    <div className="bg-[var(--surface)] border border-[var(--line)] rounded-xl p-2.5 text-[11px] text-[var(--brand)] leading-relaxed flex items-start gap-2 text-left">
+                      <SmartphoneNfc className="w-4 h-4 text-[var(--brand)] flex-shrink-0 mt-0.5 animate-pulse" />
                       <span>{feedbackMsg}</span>
                     </div>
                   )}
 
                   {errorMsg && (
-                    <div className="bg-rose-950/60 border border-rose-500/40 rounded-xl p-2 text-[11px] text-rose-300 flex items-center gap-1.5 text-left">
+                    <div className="bg-rose-950/60 border border-rose-500/40 rounded-xl p-2 text-[11px] text-[var(--danger-ink)] flex items-center gap-1.5 text-left">
                       <AlertCircle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
                       <span>{errorMsg}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="bg-slate-950/90 border border-white/10 rounded-xl p-3 space-y-2.5 text-left">
+                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-xl p-3 space-y-2.5 text-left">
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase">
+                    <div className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--ok-ink)] uppercase">
                       <WifiOff className="w-3 h-3" />
                       <span>
                         {language === 'es'
@@ -462,7 +462,7 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                           : 'Offline Cryptographic Verification (FNV-1a)'}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-300 leading-snug">
+                    <p className="text-[11px] text-[var(--muted)] leading-snug">
                       {language === 'es'
                         ? 'Ingresa el código verificador que aparece en la pantalla del taller (ej. ABC-1234) o pega el payload de la etiqueta NFC:'
                         : 'Enter the verification code shown on the workshop screen (e.g., ABC-1234) or paste the NFC tag payload:'}
@@ -484,12 +484,12 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                         }
                       }}
                       placeholder="Ej. ABC-1234"
-                      className="flex-1 bg-slate-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white uppercase placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400"
+                      className="flex-1 bg-[var(--well)] border border-[var(--line)] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[var(--ink)] uppercase placeholder:text-[var(--ink)]0 focus:outline-none focus:ring-1 focus:ring-sky-400"
                     />
                     <button
                       type="button"
                       onClick={handleVerifyOfflineCode}
-                      className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs transition cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-lg bg-[var(--primary)] hover:bg-sky-400 text-[var(--on-primary)] font-extrabold text-xs transition cursor-pointer flex items-center gap-1"
                     >
                       <QrCode className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Validar' : 'Verify'}</span>
@@ -497,7 +497,7 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                   </div>
 
                   {errorMsg && (
-                    <div className="bg-rose-950/60 border border-rose-500/40 rounded-lg p-2 text-[11px] text-rose-300 flex items-center gap-1.5">
+                    <div className="bg-rose-950/60 border border-rose-500/40 rounded-lg p-2 text-[11px] text-[var(--danger-ink)] flex items-center gap-1.5">
                       <AlertCircle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
                       <span>{errorMsg}</span>
                     </div>

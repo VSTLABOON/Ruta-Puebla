@@ -24,9 +24,12 @@ import {
   Radio,
   Trophy,
   LogOut,
-  PlayCircle
+  PlayCircle,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { tacticalAudio } from './utils/tacticalAudio';
+import { applyPaper, readPaper, type Paper } from './utils/paperTheme';
 import { RouterProvider, useRouter } from './router/Router';
 import { verifyOfflineStampPayload, recordStampInLedger } from './utils/offlineStamp';
 import { SplashScreen } from './components/SplashScreen';
@@ -48,6 +51,12 @@ function MainApp() {
 
   // Modo de visualización: Marco Móvil 390x844 o Pantalla Completa
   const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
+
+  // Papel talavera: claro / oscuro (misma clave que el login)
+  const [paper, setPaper] = useState<Paper>(() => readPaper());
+  useEffect(() => {
+    applyPaper(paper);
+  }, [paper]);
 
   // Modales
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
@@ -324,9 +333,9 @@ function MainApp() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#07154E] text-[#EFF1F8] flex flex-col font-sans antialiased selection:bg-[#EDE28E] selection:text-[#0E2C9C]">
+    <div className="h-screen w-screen overflow-hidden bg-[var(--paper)] text-[var(--ink)] flex flex-col font-sans antialiased selection:bg-[var(--accent)] selection:text-[var(--brand)]">
       {/* Cabecera Principal PopoGo */}
-      <header className="bg-[#0B228A]/95 backdrop-blur-xl border-b border-[#9597C1]/25 text-[#EFF1F8] z-40 flex-shrink-0">
+      <header className="bg-[var(--surface)] backdrop-blur-md border-b border-[var(--line)] text-[var(--ink)] z-40 flex-shrink-0">
         <div className="w-full px-3 sm:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3">
           {/* Logo y Nombre PopoGo */}
           <div
@@ -336,18 +345,18 @@ function MainApp() {
             <img
               src="/popogo-logo.png"
               alt="PopoGo Logo"
-              className="w-9 h-9 rounded-full border-2 border-[#EDE28E] shadow-[0_0_15px_rgba(237,226,142,0.4)] object-contain bg-[#EFF1F8] flex-shrink-0 group-hover:scale-105 transition-transform p-0.5"
+              className="w-9 h-9 rounded-full border border-[var(--line)] object-contain bg-[var(--surface-solid)] flex-shrink-0 group-hover:scale-105 transition-transform p-0.5"
             />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <h1 className="text-sm sm:text-base font-black tracking-wider text-white uppercase font-serif whitespace-nowrap">
+                <h1 className="text-sm sm:text-base font-bold tracking-wider text-[var(--brand)] uppercase font-serif whitespace-nowrap">
                   PopoGo
                 </h1>
-                <span className="text-[10px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-[#EDE28E] text-[#0E2C9C] tracking-widest uppercase leading-none flex-shrink-0">
+                <span className="text-[10px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] tracking-widest uppercase leading-none flex-shrink-0">
                   Puebla
                 </span>
               </div>
-              <p className="text-[10px] text-[#9597C1] hidden md:block font-medium truncate">
+              <p className="text-[10px] text-[var(--muted)] hidden md:block font-medium truncate">
                 {activeRoute === '/taller'
                   ? (language === 'es' ? 'Terminal de Mostrador para Talleres' : 'Workshop Counter Terminal')
                   : activeRoute === '/admin'
@@ -364,41 +373,55 @@ function MainApp() {
               <button
                 type="button"
                 onClick={() => setIsRecordModalOpen(true)}
-                className="px-2.5 py-1.5 rounded-xl bg-[#EDE28E]/15 hover:bg-[#EDE28E]/25 border border-[#EDE28E]/40 text-[#EDE28E] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer select-none shadow-sm flex-shrink-0"
+                className="px-2.5 py-1.5 rounded-xl bg-[var(--accent-soft)] hover:bg-[var(--accent)] border border-[var(--line)] text-[var(--brand)] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer select-none shadow-sm flex-shrink-0"
                 title={language === 'es' ? 'Ver Mi Récord y Bitácora' : 'View Records & Log'}
               >
-                <Trophy className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+                <Trophy className="w-3.5 h-3.5 text-[var(--brand)] flex-shrink-0" />
                 <span className="max-w-[70px] sm:max-w-[120px] truncate">{currentUser.nickname}</span>
-                <span className="text-[10px] bg-[#EDE28E] text-[#0E2C9C] px-1.5 py-0.5 rounded-full font-mono font-black flex-shrink-0 leading-none">
+                <span className="text-[10px] bg-[var(--accent)] text-[var(--accent-ink)] px-1.5 py-0.5 rounded-full font-mono font-black flex-shrink-0 leading-none">
                   Nv.{currentUser.level}
                 </span>
               </button>
             )}
 
             {activeRoute === '/taller' && artisanUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-[#9597C1]/20 border border-[#9597C1]/40 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
-                <Store className="w-3.5 h-3.5 text-[#9597C1] flex-shrink-0" />
+              <div className="px-2.5 py-1.5 rounded-xl bg-[var(--well)] border border-[var(--line)] text-[var(--ink)] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
+                <Store className="w-3.5 h-3.5 text-[var(--muted)] flex-shrink-0" />
                 <span className="max-w-[100px] sm:max-w-[180px] truncate">{artisanUser.workshopName}</span>
-                <span className="w-2 h-2 rounded-full bg-[#EDE28E] animate-pulse ml-0.5 flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse ml-0.5 flex-shrink-0" />
               </div>
             )}
 
             {activeRoute === '/admin' && adminUser && (
-              <div className="px-2.5 py-1.5 rounded-xl bg-[#7B5E86]/25 border border-[#7B5E86]/50 text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
-                <BarChart3 className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+              <div className="px-2.5 py-1.5 rounded-xl bg-[var(--well)] border border-[var(--line)] text-[var(--ink)] text-xs font-bold flex items-center gap-1.5 select-none flex-shrink-0">
+                <BarChart3 className="w-3.5 h-3.5 text-[var(--brand)] flex-shrink-0" />
                 <span className="hidden sm:inline">SECIHTI • Gobierno de Puebla</span>
                 <span className="sm:hidden">SECIHTI</span>
               </div>
             )}
 
+            {/* Interruptor de papel talavera: claro / oscuro */}
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                setPaper((p) => (p === 'dark' ? 'light' : 'dark'));
+              }}
+              aria-label={paper === 'dark' ? 'Cambiar a talavera clara' : 'Cambiar a talavera oscura'}
+              title={paper === 'dark' ? 'Talavera clara' : 'Talavera oscura'}
+              className="p-2 rounded-xl bg-[var(--well)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] transition cursor-pointer flex-shrink-0 flex items-center justify-center"
+            >
+              {paper === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {/* Botón Ver Intro / Splash PopoGo */}
             <button
               type="button"
               onClick={() => setShowSplash(true)}
-              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#0E2C9C] hover:bg-[#2544A7] text-[#EFF1F8] text-xs font-bold flex items-center gap-1.5 border border-[#EDE28E]/40 shadow-sm transition cursor-pointer flex-shrink-0"
+              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-[var(--on-primary)] text-xs font-bold flex items-center gap-1.5 border border-[var(--line)] shadow-sm transition cursor-pointer flex-shrink-0"
               title={language === 'es' ? 'Ver video splash de PopoGo' : 'Watch PopoGo Splash Video'}
             >
-              <PlayCircle className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+              <PlayCircle className="w-3.5 h-3.5 text-[var(--accent)] flex-shrink-0" />
               <span className="hidden sm:inline">{language === 'es' ? 'Intro' : 'Intro'}</span>
             </button>
 
@@ -409,9 +432,9 @@ function MainApp() {
                 const nextLang = language === 'es' ? 'en' : 'es';
                 setLanguage(nextLang);
               }}
-              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[#07154E] hover:bg-[#0E2C9C] text-[#EFF1F8] text-xs font-bold flex items-center gap-1 border border-[#9597C1]/30 transition cursor-pointer flex-shrink-0"
+              className="p-1.5 px-2 sm:px-2.5 rounded-xl bg-[var(--well)] hover:bg-[var(--accent-soft)] text-[var(--brand)] text-xs font-bold flex items-center gap-1 border border-[var(--line)] transition cursor-pointer flex-shrink-0"
             >
-              <Languages className="w-3.5 h-3.5 text-[#EDE28E] flex-shrink-0" />
+              <Languages className="w-3.5 h-3.5 text-[var(--brand)] flex-shrink-0" />
               <span>{language === 'es' ? 'EN' : 'ES'}</span>
             </button>
 
@@ -419,11 +442,11 @@ function MainApp() {
             <button
               type="button"
               onClick={handleLogout}
-              className="p-2 rounded-xl bg-[#7B5E86]/30 hover:bg-[#7B5E86]/50 text-[#EFF1F8] border border-[#7B5E86]/45 transition cursor-pointer flex-shrink-0 shadow-md flex items-center justify-center"
+              className="p-2 rounded-xl bg-[var(--well)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] transition cursor-pointer flex-shrink-0 shadow-sm flex items-center justify-center"
               title={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
               aria-label={language === 'es' ? 'Cerrar sesión' : 'Sign out'}
             >
-              <LogOut className="w-4 h-4 text-[#EDE28E] flex-shrink-0" />
+              <LogOut className="w-4 h-4 text-[var(--brand)] flex-shrink-0" />
             </button>
           </div>
         </div>
@@ -434,18 +457,18 @@ function MainApp() {
         <div
           className={
             viewportMode === 'mobile'
-              ? 'w-full max-w-[390px] h-[844px] max-h-[calc(100vh-60px)] bg-slate-950 border-[5px] border-slate-800 rounded-[44px] shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden relative flex flex-col transition-all duration-500'
+              ? 'w-full max-w-[390px] h-[844px] max-h-[calc(100vh-60px)] bg-[var(--surface-solid)] border-[5px] border-[var(--line)] rounded-[44px] shadow-[var(--shadow)] overflow-hidden relative flex flex-col transition-all duration-500'
               : 'w-full h-full relative flex flex-col overflow-hidden transition-all duration-500'
           }
         >
           {viewportMode === 'mobile' && (
-            <div className="h-6 w-full bg-slate-950 flex items-center justify-between px-6 z-40 select-none flex-shrink-0">
-              <span className="text-[10px] font-mono text-slate-400 font-bold">12:00</span>
-              <div className="w-20 h-4 bg-slate-900 rounded-full border border-slate-800 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-emerald-500/80 animate-pulse" />
+            <div className="h-6 w-full bg-[var(--surface-solid)] flex items-center justify-between px-6 z-40 select-none flex-shrink-0">
+              <span className="text-[10px] font-mono text-[var(--muted)] font-bold">12:00</span>
+              <div className="w-20 h-4 bg-[var(--well)] rounded-full border border-[var(--line)] flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[var(--accent-soft)] animate-pulse" />
               </div>
-              <div className="flex items-center gap-1 text-[10px] font-mono text-slate-400">
-                <Radio className="w-3 h-3 text-sky-400" />
+              <div className="flex items-center gap-1 text-[10px] font-mono text-[var(--muted)]">
+                <Radio className="w-3 h-3 text-[var(--brand)]" />
                 <span>5G</span>
               </div>
             </div>
@@ -454,10 +477,10 @@ function MainApp() {
           {/* Vistas Cargadas con Code Splitting (React.lazy) según la Ruta Activa */}
           <Suspense
             fallback={
-              <div className="flex-1 w-full h-full flex items-center justify-center bg-slate-950">
+              <div className="flex-1 w-full h-full flex items-center justify-center bg-[var(--surface-solid)]">
                 <div className="text-center space-y-3">
-                  <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-amber-400 block">
+                  <div className="w-10 h-10 border-4 border-[var(--accent)] border-t-transparent rounded-full animate-spin mx-auto" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[var(--brand)] block">
                     {language === 'es' ? 'Cargando módulo...' : 'Loading module...'}
                   </span>
                 </div>
@@ -509,19 +532,19 @@ function MainApp() {
 
       {/* Modal Interactivo de Selección de Rol */}
       {isRoleModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 animate-fade-slide">
-          <div className="bg-slate-900 border border-white/10 text-white rounded-3xl max-w-md w-full p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="fixed inset-0 z-50 bg-[var(--surface)] backdrop-blur-md flex items-center justify-center p-4 animate-fade-slide">
+          <div className="bg-[var(--well)] border border-[var(--line)] text-[var(--ink)] rounded-3xl max-w-md w-full p-5 shadow-[var(--shadow)] space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
               <div className="flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-amber-400" />
-                <h3 className="font-extrabold text-sm text-slate-100 uppercase tracking-wide">
+                <UserCheck className="w-5 h-5 text-[var(--brand)]" />
+                <h3 className="font-extrabold text-sm text-[var(--ink)] uppercase tracking-wide">
                   {language === 'es' ? 'Seleccionar Perfil de Vista' : 'Select View Profile'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsRoleModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
+                className="text-[var(--muted)] hover:text-[var(--ink)] p-1 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -539,26 +562,26 @@ function MainApp() {
                     onClick={() => handleSelectRole(roleKey)}
                     className={`w-full text-left p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 cursor-pointer ${
                       isSelected
-                        ? `${role.theme.badgeBg} ${role.theme.badgeBorder} ring-1 ring-amber-400`
-                        : 'bg-slate-950/70 border-white/5 hover:bg-slate-800'
+                        ? `${role.theme.badgeBg} ${role.theme.badgeBorder} ring-1 ring-[var(--line-strong)]`
+                        : 'bg-[var(--surface)] border-[var(--line)] hover:bg-[var(--well)]'
                     }`}
                   >
                     <div className="mt-0.5">
-                      {role.iconName === 'Compass' && <Compass className="w-5 h-5 text-amber-400" />}
-                      {role.iconName === 'Store' && <Store className="w-5 h-5 text-sky-400" />}
+                      {role.iconName === 'Compass' && <Compass className="w-5 h-5 text-[var(--brand)]" />}
+                      {role.iconName === 'Store' && <Store className="w-5 h-5 text-[var(--brand)]" />}
                       {role.iconName === 'BarChart3' && (
-                        <BarChart3 className="w-5 h-5 text-emerald-400" />
+                        <BarChart3 className="w-5 h-5 text-[var(--ok-ink)]" />
                       )}
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sm text-slate-100">
+                        <span className="font-bold text-sm text-[var(--ink)]">
                           {role.name[language]}
                         </span>
-                        {isSelected && <Check className="w-4 h-4 text-amber-400" />}
+                        {isSelected && <Check className="w-4 h-4 text-[var(--brand)]" />}
                       </div>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">
                         {role.description[language]}
                       </p>
                     </div>

@@ -169,53 +169,53 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
   return (
     <div className="space-y-4 pb-28 pt-2">
       {/* Header Telemetry Card */}
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-xl space-y-3">
+      <div className="bg-[var(--surface)] backdrop-blur-xl border border-[var(--line)] rounded-2xl p-4 shadow-[var(--shadow)] space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[var(--accent-soft)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center">
               <Award className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-extrabold text-white tracking-tight">
+              <h2 className="text-sm font-extrabold text-[var(--ink)] tracking-tight">
                 {language === 'es' ? 'Pasaporte de Exploración Peatonal' : 'Pedestrian Exploration Passport'}
               </h2>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-[var(--muted)]">
                 {language === 'es' ? 'Insignias y sellos oficiales de talleres y patrimonio' : 'Official workshop & heritage stamps'}
               </p>
             </div>
           </div>
 
           <div className="text-right font-mono">
-            <span className="text-sm font-black text-amber-400">{unlockedCount}</span>
-            <span className="text-xs text-slate-500"> / {totalBadges}</span>
+            <span className="text-sm font-black text-[var(--brand)]">{unlockedCount}</span>
+            <span className="text-xs text-[var(--ink)]0"> / {totalBadges}</span>
           </div>
         </div>
 
         {/* Progress Bar */}
         <div>
-          <div className="flex justify-between text-[10px] font-mono mb-1 text-slate-400">
+          <div className="flex justify-between text-[10px] font-mono mb-1 text-[var(--muted)]">
             <span>{language === 'es' ? 'Progreso de Colección' : 'Collection Progress'}</span>
-            <span className="text-amber-400 font-bold">
+            <span className="text-[var(--brand)] font-bold">
               {unlockedCount} / {totalBadges} {language === 'es' ? 'sellos' : 'stamps'}
             </span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+          <div className="w-full h-2 rounded-full bg-[var(--well)] overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-sky-400 rounded-full transition-all duration-500"
+              className="h-full bg-[var(--surface-solid)] rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>
         </div>
 
         {/* Barra Rápida Universal: Escáner NFC Directo + Validador de Código de Mostrador */}
-        <div className="pt-2 border-t border-white/10 flex flex-col sm:flex-row gap-2">
+        <div className="pt-2 border-t border-[var(--line)] flex flex-col sm:flex-row gap-2">
           <button
             type="button"
             onClick={handleGlobalNfcScan}
             className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition cursor-pointer ${
               globalNfcScanning
-                ? 'bg-rose-500/20 border border-rose-500/40 text-rose-300'
-                : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md'
+                ? 'bg-rose-500/20 border border-rose-500/40 text-[var(--danger-ink)]'
+                : 'bg-[var(--accent)] hover:bg-[var(--accent-soft)] text-[var(--accent-ink)] shadow-md'
             }`}
           >
             <SmartphoneNfc className={`w-4 h-4 ${globalNfcScanning ? 'animate-ping' : ''}`} />
@@ -249,12 +249,12 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
                   ? 'Código de taller (ej. HOR-1234)...'
                   : 'Workshop code (e.g. HOR-1234)...'
               }
-              className="flex-1 bg-slate-950 border border-white/15 rounded-xl px-3 py-2 text-xs font-mono text-white uppercase placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-400"
+              className="flex-1 bg-[var(--surface-solid)] border border-[var(--line)] rounded-xl px-3 py-2 text-xs font-mono text-[var(--ink)] uppercase placeholder:text-[var(--ink)]0 focus:outline-none focus:ring-1 focus:ring-amber-400"
             />
             <button
               type="button"
               onClick={handleQuickCodeVerify}
-              className="px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-[var(--primary)] hover:bg-sky-400 text-[var(--on-primary)] font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer"
             >
               <QrCode className="w-3.5 h-3.5" />
               <span>{language === 'es' ? 'Canjear' : 'Redeem'}</span>
@@ -263,14 +263,14 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
         </div>
 
         {scannerStatus && (
-          <div className="text-[11px] text-amber-300 bg-slate-950/90 border border-amber-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
-            <SmartphoneNfc className="w-4 h-4 text-amber-400 flex-shrink-0 animate-pulse" />
+          <div className="text-[11px] text-[var(--brand)] bg-[var(--surface)] border border-[var(--line)] rounded-xl px-3 py-2 flex items-center gap-2">
+            <SmartphoneNfc className="w-4 h-4 text-[var(--brand)] flex-shrink-0 animate-pulse" />
             <span>{scannerStatus}</span>
           </div>
         )}
 
         {scannerError && (
-          <div className="text-[11px] text-rose-300 bg-rose-950/60 border border-rose-500/40 rounded-xl px-3 py-2 flex items-center gap-2">
+          <div className="text-[11px] text-[var(--danger-ink)] bg-rose-950/60 border border-rose-500/40 rounded-xl px-3 py-2 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
             <span>{scannerError}</span>
           </div>
@@ -284,8 +284,8 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
               onClick={() => setSelectedBarrio(barrio.id)}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 selectedBarrio === barrio.id
-                  ? 'bg-amber-500 text-slate-950 shadow-sm'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-[var(--accent)] text-[var(--accent-ink)] shadow-sm'
+                  : 'bg-[var(--well)] text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
             >
               {barrio.name[language]}
@@ -296,15 +296,15 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
 
       {/* Inspect Modal if a badge is tapped */}
       {inspectingPoi && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-slate-950 border border-white/10 rounded-3xl p-5 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-2 border-b border-white/10">
-              <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest">
+        <div className="fixed inset-0 z-50 bg-[var(--surface)] backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-sm bg-[var(--surface-solid)] border border-[var(--line)] rounded-3xl p-5 shadow-[var(--shadow)] space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-2 border-b border-[var(--line)]">
+              <span className="text-xs font-mono font-bold text-[var(--brand)] uppercase tracking-widest">
                 {language === 'es' ? 'Ficha Holográfica' : 'Holographic Card'}
               </span>
               <button
                 onClick={() => setInspectingPoiId(null)}
-                className="text-slate-400 hover:text-white text-xs font-bold p-1.5 bg-slate-900 rounded-lg cursor-pointer"
+                className="text-[var(--muted)] hover:text-[var(--ink)] text-xs font-bold p-1.5 bg-[var(--well)] rounded-lg cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -340,19 +340,19 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
               onClick={() => setInspectingPoiId(p.id)}
               className={`p-3 rounded-2xl border transition-all cursor-pointer relative flex flex-col justify-between ${
                 isUnlocked
-                  ? 'bg-slate-900/90 border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.15)] hover:border-amber-400'
-                  : 'bg-slate-950/80 border-slate-800 opacity-75 hover:opacity-100 hover:border-slate-700'
+                  ? 'bg-[var(--surface)] border-[var(--line)] shadow-[var(--shadow)] hover:border-[var(--brand)]'
+                  : 'bg-[var(--surface)] border-[var(--line)] opacity-75 hover:opacity-100 hover:border-[var(--line)]'
               }`}
             >
               {/* Top row */}
-              <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[var(--muted)] mb-2">
                 <span className="uppercase truncate max-w-[80px]">{p.zone.replace(/_/g, ' ')}</span>
                 {isUnlocked ? (
-                  <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-[var(--accent-soft)] text-[var(--ok-ink)] border border-[var(--line)] flex items-center justify-center">
                     <Check className="w-3 h-3 stroke-[3]" />
                   </span>
                 ) : (
-                  <span className="w-5 h-5 rounded-full bg-slate-800 text-slate-500 flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-[var(--well)] text-[var(--ink)]0 flex items-center justify-center">
                     <Lock className="w-3 h-3" />
                   </span>
                 )}
@@ -363,27 +363,27 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
                 <div
                   className={`w-12 h-12 rounded-full border flex items-center justify-center mb-1.5 transition-all ${
                     isUnlocked
-                      ? 'bg-gradient-to-br from-amber-400 to-amber-600 border-amber-300 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
-                      : 'bg-slate-900 border-slate-700 text-slate-600'
+                      ? 'bg-[var(--accent)] border-[var(--line-strong)] text-[var(--accent-ink)] shadow-[var(--shadow)]'
+                      : 'bg-[var(--well)] border-[var(--line)] text-[var(--muted)]'
                   }`}
                 >
                   <Award className="w-6 h-6 stroke-[2]" />
                 </div>
-                <h4 className="text-xs font-bold text-white line-clamp-1">
+                <h4 className="text-xs font-bold text-[var(--ink)] line-clamp-1">
                   {badgeName}
                 </h4>
-                <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">
+                <p className="text-[10px] text-[var(--muted)] line-clamp-1 mt-0.5">
                   {p.name}
                 </p>
               </div>
 
               {/* Status footer */}
-              <div className="pt-2 border-t border-white/5 text-center">
+              <div className="pt-2 border-t border-[var(--line)] text-center">
                 <span
                   className={`text-[9px] font-mono uppercase font-bold px-2 py-0.5 rounded-full inline-block ${
                     isUnlocked
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : 'bg-slate-900 text-slate-500'
+                      ? 'bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)]'
+                      : 'bg-[var(--well)] text-[var(--ink)]0'
                   }`}
                 >
                   {isUnlocked

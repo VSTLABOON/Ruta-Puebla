@@ -167,11 +167,11 @@ export const VisitorView: FC<VisitorViewProps> = ({
       <div className="hidden sm:flex absolute top-3 left-4 right-4 z-20 items-center justify-between pointer-events-none">
         <div className="flex items-center gap-2 pointer-events-auto">
           {activeRoute && (
-            <div className="bg-slate-950/85 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-200 shadow-lg flex items-center gap-2">
-              <span className="font-bold text-amber-400">
+            <div className="bg-[var(--surface)] backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-[var(--line)] text-xs font-semibold text-[var(--ink)] shadow-[var(--shadow)] flex items-center gap-2">
+              <span className="font-bold text-[var(--brand)]">
                 {activeRoute.stops.length} {language === 'es' ? 'paradas' : 'stops'}
               </span>
-              <span className="text-slate-400">• {activeRoute.metrics.total_time_min}m</span>
+              <span className="text-[var(--muted)]">• {activeRoute.metrics.total_time_min}m</span>
             </div>
           )}
         </div>
@@ -180,7 +180,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
           <button
             type="button"
             onClick={() => setIsFilterDrawerOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-amber-300 border border-white/10 text-xs font-bold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-[var(--on-primary)] border border-[var(--line-strong)] text-xs font-bold flex items-center gap-1.5 shadow-[var(--shadow)] backdrop-blur-md transition-all duration-300 cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             <span>{language === 'es' ? 'Filtros' : 'Tune'}</span>
@@ -189,10 +189,10 @@ export const VisitorView: FC<VisitorViewProps> = ({
           <button
             type="button"
             onClick={handleExportRoute}
-            className="p-2 px-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
+            className="p-2 px-3 rounded-xl bg-[var(--surface)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] text-xs font-semibold flex items-center gap-1.5 shadow-[var(--shadow)] backdrop-blur-md transition-all duration-300 cursor-pointer"
             title={language === 'es' ? 'Descargar guía' : 'Save route'}
           >
-            <Download className="w-3.5 h-3.5 text-amber-400" />
+            <Download className="w-3.5 h-3.5 text-[var(--brand)]" />
             <span>{language === 'es' ? 'Guardar' : 'Save'}</span>
           </button>
         </div>
@@ -243,16 +243,16 @@ export const VisitorView: FC<VisitorViewProps> = ({
             <button
               type="button"
               onClick={() => setIsDesktopPanelOpen((v) => !v)}
-              className="hidden lg:flex fixed bottom-6 left-4 z-30 px-3 py-2 rounded-2xl bg-slate-900/95 hover:bg-slate-800 text-slate-200 border border-white/15 shadow-2xl items-center gap-2 text-xs font-bold transition-all duration-300 cursor-pointer"
+              className="hidden lg:flex fixed bottom-6 left-4 z-30 px-3 py-2 rounded-2xl bg-[var(--surface)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] shadow-[var(--shadow)] items-center gap-2 text-xs font-bold transition-all duration-300 cursor-pointer"
             >
               {isDesktopPanelOpen ? (
                 <>
-                  <PanelLeftClose className="w-4 h-4 text-amber-400" />
+                  <PanelLeftClose className="w-4 h-4 text-[var(--brand)]" />
                   <span>{language === 'es' ? 'Ocultar ficha' : 'Hide panel'}</span>
                 </>
               ) : (
                 <>
-                  <PanelLeftOpen className="w-4 h-4 text-amber-400" />
+                  <PanelLeftOpen className="w-4 h-4 text-[var(--brand)]" />
                   <span>{language === 'es' ? 'Ver ficha del lugar' : 'Show place card'}</span>
                 </>
               )}
@@ -263,7 +263,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
 
       {/* Overlay Suave: Pasaporte de Sellos */}
       <div
-        className={`absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-xl overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute inset-0 z-30 bg-[var(--surface)] backdrop-blur-xl overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           commandTab === 'passport'
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 translate-y-6 pointer-events-none'
@@ -281,7 +281,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
 
       {/* Overlay Suave: Directorio de Talleres Artesanales */}
       <div
-        className={`absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-xl overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute inset-0 z-30 bg-[var(--surface)] backdrop-blur-xl overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           commandTab === 'artisans'
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 translate-y-6 pointer-events-none'
@@ -341,28 +341,28 @@ export const VisitorView: FC<VisitorViewProps> = ({
 
       {/* Drawer Deslizable de Filtros de Ruta */}
       <div
-        className={`fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex justify-end transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-0 z-50 bg-[var(--surface)] backdrop-blur-sm flex justify-end transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isFilterDrawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsFilterDrawerOpen(false)}
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`w-full max-w-md bg-slate-950 border-l border-white/15 h-full overflow-y-auto p-5 shadow-2xl space-y-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`w-full max-w-md bg-[var(--surface-solid)] border-l border-[var(--line)] h-full overflow-y-auto p-5 shadow-[var(--shadow)] space-y-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             isFilterDrawerOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-amber-400" />
-              <h3 className="font-extrabold text-sm text-white uppercase tracking-wider">
+              <SlidersHorizontal className="w-4 h-4 text-[var(--brand)]" />
+              <h3 className="font-extrabold text-sm text-[var(--ink)] uppercase tracking-wider">
                 {language === 'es' ? 'Personalizar Recorrido' : 'Customize Walk'}
               </h3>
             </div>
             <button
               type="button"
               onClick={() => setIsFilterDrawerOpen(false)}
-              className="p-1.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white cursor-pointer"
+              className="p-1.5 rounded-xl bg-[var(--well)] text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>

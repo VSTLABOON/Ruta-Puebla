@@ -133,7 +133,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
       }`}
     >
       <div
-        className={`w-full max-w-lg mx-auto bg-slate-950/95 backdrop-blur-2xl border-t border-x border-white/15 rounded-t-3xl shadow-[0_-15px_45px_rgba(0,0,0,0.9)] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`w-full max-w-lg mx-auto bg-[var(--surface)] backdrop-blur-2xl border-t border-x border-[var(--line)] rounded-t-3xl shadow-[var(--shadow)] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isOpen ? 'pointer-events-auto' : 'pointer-events-none'
         } ${heightClasses}`}
       >
@@ -144,8 +144,8 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           onClick={toggleExpand}
           className="w-full pt-3 pb-1.5 flex flex-col items-center justify-center cursor-pointer select-none group"
         >
-          <div className="w-12 h-1.5 rounded-full bg-slate-700 group-hover:bg-amber-400 transition-colors duration-300" />
-          <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-slate-400 mt-1">
+          <div className="w-12 h-1.5 rounded-full bg-[var(--well)] group-hover:bg-[var(--accent-soft)] transition-colors duration-300" />
+          <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-[var(--muted)] mt-1">
             <span>
               {sheetState === 'full'
                 ? language === 'es'
@@ -164,13 +164,13 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
         </div>
 
         {/* Cabecera del lugar */}
-        <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between gap-3 flex-shrink-0">
+        <div className="px-4 py-2.5 border-b border-[var(--line)] flex items-center justify-between gap-3 flex-shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
             <div
               className={`w-9 h-9 rounded-xl font-black text-sm flex items-center justify-center shadow-md flex-shrink-0 ${
                 standalonePoi
-                  ? 'bg-gradient-to-br from-sky-400 to-cyan-600 text-slate-950'
-                  : 'bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950'
+                  ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
+                  : 'bg-[var(--accent)] text-[var(--accent-ink)]'
               }`}
             >
               {standalonePoi ? <MapPin className="w-4 h-4" /> : currentStop?.stop_order || 1}
@@ -178,15 +178,15 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
 
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <h3 className="font-extrabold text-sm text-white truncate tracking-tight">
+                <h3 className="font-extrabold text-sm text-[var(--ink)] truncate tracking-tight">
                   {poi.name}
                 </h3>
-                <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">
+                <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] font-semibold">
                   {poi.zone.replace(/_/g, ' ')}
                 </span>
               </div>
-              <div className="flex items-center gap-2.5 text-[11px] text-slate-400 mt-0.5">
-                <span className="flex items-center gap-1 text-amber-400 font-medium">
+              <div className="flex items-center gap-2.5 text-[11px] text-[var(--muted)] mt-0.5">
+                <span className="flex items-center gap-1 text-[var(--brand)] font-medium">
                   <Clock className="w-3 h-3" />
                   {standalonePoi || !currentStop
                     ? `${poi.hours.open} - ${poi.hours.close}`
@@ -207,19 +207,19 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                   type="button"
                   onClick={handlePrev}
                   disabled={currentIndex === 0}
-                  className="p-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 disabled:opacity-30 hover:bg-slate-800 transition cursor-pointer"
+                  className="p-1.5 rounded-xl bg-[var(--well)] border border-[var(--line)] text-[var(--muted)] disabled:opacity-30 hover:bg-[var(--well)] transition cursor-pointer"
                   title={language === 'es' ? 'Parada anterior' : 'Previous stop'}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="text-[11px] font-bold text-slate-400 px-1">
+                <span className="text-[11px] font-bold text-[var(--muted)] px-1">
                   {stopIndex >= 0 ? `${currentIndex + 1}/${stops.length}` : 'Mapa'}
                 </span>
                 <button
                   type="button"
                   onClick={handleNext}
                   disabled={currentIndex === stops.length - 1}
-                  className="p-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 disabled:opacity-30 hover:bg-slate-800 transition cursor-pointer"
+                  className="p-1.5 rounded-xl bg-[var(--well)] border border-[var(--line)] text-[var(--muted)] disabled:opacity-30 hover:bg-[var(--well)] transition cursor-pointer"
                   title={language === 'es' ? 'Siguiente parada' : 'Next stop'}
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -229,7 +229,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 ml-1 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+              className="p-1.5 ml-1 rounded-xl bg-[var(--surface)] hover:bg-[var(--well)] text-[var(--muted)] hover:text-[var(--ink)] transition cursor-pointer"
               title={language === 'es' ? 'Cerrar' : 'Close'}
             >
               <X className="w-4 h-4" />
@@ -238,7 +238,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
         </div>
 
         {/* Pestañas claras y amigables para el visitante (Cero jerga matemática) */}
-        <div className="px-4 py-2 border-b border-white/5 flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
+        <div className="px-4 py-2 border-b border-[var(--line)] flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
           <button
             type="button"
             onClick={() => {
@@ -247,8 +247,8 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               activeTab === 'info'
-                ? 'bg-amber-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
+                ? 'bg-[var(--accent)] text-[var(--accent-ink)] shadow-sm'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--surface)]'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -263,8 +263,8 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               activeTab === 'accessibility'
-                ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
+                ? 'bg-emerald-500 text-[var(--ink)] shadow-sm'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--surface)]'
             }`}
           >
             <Accessibility className="w-3.5 h-3.5" />
@@ -279,8 +279,8 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
               activeTab === 'badge'
-                ? 'bg-sky-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
+                ? 'bg-[var(--primary)] text-[var(--on-primary)] shadow-sm'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--surface)]'
             }`}
           >
             <Award className="w-3.5 h-3.5" />
@@ -297,8 +297,8 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
                 activeTab === 'memories'
-                  ? 'bg-violet-500 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 bg-slate-900/60'
+                  ? 'bg-violet-500 text-[var(--ink)] shadow-sm'
+                  : 'text-[var(--muted)] hover:text-[var(--ink)] bg-[var(--surface)]'
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5" />
@@ -313,27 +313,27 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           {activeTab === 'info' && (
             <div className="space-y-3 animate-fade-slide">
               {/* Descripción principal */}
-              <div className="bg-slate-900/80 rounded-2xl p-3.5 border border-white/10 text-xs sm:text-sm text-slate-200 leading-relaxed">
+              <div className="bg-[var(--surface)] rounded-2xl p-3.5 border border-[var(--line)] text-xs sm:text-sm text-[var(--ink)] leading-relaxed">
                 {poi.description[language] || poi.description.es}
               </div>
 
               {/* Datos prácticos para el visitante */}
               <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="bg-slate-900/70 p-2.5 rounded-xl border border-white/5">
-                  <span className="text-[10px] text-slate-400 block">
+                <div className="bg-[var(--surface)] p-2.5 rounded-xl border border-[var(--line)]">
+                  <span className="text-[10px] text-[var(--muted)] block">
                     {language === 'es' ? 'Horario' : 'Hours'}
                   </span>
-                  <span className="font-bold text-slate-100 mt-0.5 block">
+                  <span className="font-bold text-[var(--ink)] mt-0.5 block">
                     {poi.hours.open} - {poi.hours.close}
                   </span>
                 </div>
 
-                <div className="bg-slate-900/70 p-2.5 rounded-xl border border-white/5">
-                  <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                    <Ticket className="w-3 h-3 text-amber-400" />
+                <div className="bg-[var(--surface)] p-2.5 rounded-xl border border-[var(--line)]">
+                  <span className="text-[10px] text-[var(--muted)] flex items-center gap-1">
+                    <Ticket className="w-3 h-3 text-[var(--brand)]" />
                     {language === 'es' ? 'Entrada' : 'Admission'}
                   </span>
-                  <span className="font-bold text-amber-300 mt-0.5 block">
+                  <span className="font-bold text-[var(--brand)] mt-0.5 block">
                     {poi.cost_mxn === 0
                       ? language === 'es'
                         ? 'Entrada libre'
@@ -342,11 +342,11 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                   </span>
                 </div>
 
-                <div className="bg-slate-900/70 p-2.5 rounded-xl border border-white/5">
-                  <span className="text-[10px] text-slate-400 block">
+                <div className="bg-[var(--surface)] p-2.5 rounded-xl border border-[var(--line)]">
+                  <span className="text-[10px] text-[var(--muted)] block">
                     {language === 'es' ? 'Estancia sugerida' : 'Suggested stay'}
                   </span>
-                  <span className="font-bold text-slate-100 mt-0.5 block">
+                  <span className="font-bold text-[var(--ink)] mt-0.5 block">
                     {poi.visit_duration_min} min
                   </span>
                 </div>
@@ -354,22 +354,22 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
 
               {/* Si es taller artesanal, mostrar ficha del maestro artesano */}
               {poi.artisan_profile && (
-                <div className="bg-sky-950/40 rounded-2xl p-3.5 border border-sky-500/30 space-y-2">
+                <div className="bg-sky-950/40 rounded-2xl p-3.5 border border-[var(--line)] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand)] flex items-center gap-1.5">
                       <Store className="w-3.5 h-3.5" />
                       {language === 'es' ? 'Taller Tradicional de Barrio' : 'Neighborhood Workshop'}
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 font-semibold">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--brand)] font-semibold">
                       {poi.artisan_profile.oficio}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-200">
+                  <div className="text-xs text-[var(--ink)]">
                     <strong>{poi.artisan_profile.maestro_artesano}</strong> •{' '}
                     {language === 'es' ? 'Fundado en' : 'Founded in'}{' '}
                     {poi.artisan_profile.fundacion_anio}
                   </div>
-                  <div className="text-xs text-amber-300 flex items-center gap-1.5">
+                  <div className="text-xs text-[var(--brand)] flex items-center gap-1.5">
                     <Flame className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>{poi.artisan_profile.demostracion_en_vivo}</span>
                   </div>
@@ -384,7 +384,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                     tacticalAudio.playTacticalClick();
                     onMoveUserHere(poi.coordinates);
                   }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer"
                 >
                   <Navigation className="w-3.5 h-3.5" />
                   <span>
@@ -401,13 +401,13 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           {activeTab === 'accessibility' && (
             <div className="space-y-3 animate-fade-slide">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                <div className="bg-slate-900/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                  <span className="text-[11px] text-slate-400">
+                <div className="bg-[var(--surface)] p-3.5 rounded-2xl border border-[var(--line)] space-y-1">
+                  <span className="text-[11px] text-[var(--muted)]">
                     {language === 'es' ? 'Acceso en la entrada' : 'Entrance access'}
                   </span>
                   <div className="font-bold text-sm">
                     {poi.entrance_accessible ? (
-                      <span className="text-emerald-400 flex items-center gap-1.5">
+                      <span className="text-[var(--ok-ink)] flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 flex-shrink-0" />
                         {language === 'es'
                           ? 'Entrada plana sin escalones'
@@ -424,18 +424,18 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-slate-900/80 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                  <span className="text-[11px] text-slate-400">
+                <div className="bg-[var(--surface)] p-3.5 rounded-2xl border border-[var(--line)] space-y-1">
+                  <span className="text-[11px] text-[var(--muted)]">
                     {language === 'es' ? 'Sanitario para visitantes' : 'Visitor restroom'}
                   </span>
                   <div className="font-bold text-sm">
                     {poi.restroom_accessible ? (
-                      <span className="text-emerald-400 flex items-center gap-1.5">
+                      <span className="text-[var(--ok-ink)] flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 flex-shrink-0" />
                         {language === 'es' ? 'Baño accesible disponible' : 'Accessible restroom'}
                       </span>
                     ) : (
-                      <span className="text-slate-300 flex items-center gap-1.5">
+                      <span className="text-[var(--muted)] flex items-center gap-1.5">
                         {language === 'es'
                           ? 'Sin sanitario adaptado'
                           : 'No adapted restroom'}
@@ -445,13 +445,13 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                 </div>
               </div>
 
-              <div className="bg-slate-900/60 p-3.5 rounded-2xl border border-white/10 text-xs text-slate-200 space-y-1">
-                <span className="font-bold text-emerald-400 block">
+              <div className="bg-[var(--surface)] p-3.5 rounded-2xl border border-[var(--line)] text-xs text-[var(--ink)] space-y-1">
+                <span className="font-bold text-[var(--ok-ink)] block">
                   {language === 'es'
                     ? 'Recomendación para tu caminata:'
                     : 'Walking recommendation:'}
                 </span>
-                <p className="leading-relaxed text-slate-300">
+                <p className="leading-relaxed text-[var(--muted)]">
                   {currentStop
                     ? currentStop.accessibility_notes[language] ||
                       currentStop.accessibility_notes.es
@@ -471,8 +471,8 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           {activeTab === 'badge' && (
             <div className="space-y-3 animate-fade-slide">
               {poi.secret_to_unlock?.pista && !isSecretUnlocked && (
-                <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3 text-xs text-amber-200">
-                  <strong className="block text-amber-400 mb-0.5">
+                <div className="bg-[var(--accent-soft)] border border-[var(--line)] rounded-2xl p-3 text-xs text-[var(--brand)]">
+                  <strong className="block text-[var(--brand)] mb-0.5">
                     {language === 'es' ? 'Pista para descubrir el secreto:' : 'Clue to unlock:'}
                   </strong>
                   {poi.secret_to_unlock.pista}
@@ -500,20 +500,20 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             <div className="space-y-3 text-xs animate-fade-slide">
               {poi.historical_figures && poi.historical_figures.length > 0 && (
                 <div className="space-y-2">
-                  <span className="font-bold text-amber-400 uppercase text-[11px] tracking-wider block">
+                  <span className="font-bold text-[var(--brand)] uppercase text-[11px] tracking-wider block">
                     {language === 'es' ? 'Personajes Históricos' : 'Historical Figures'}
                   </span>
                   {poi.historical_figures.map((hf, idx) => (
                     <div
                       key={idx}
-                      className="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1"
+                      className="bg-[var(--surface)] p-3 rounded-2xl border border-[var(--line)] space-y-1"
                     >
                       <div className="flex items-center justify-between">
-                        <strong className="text-white text-sm">{hf.nombre}</strong>
-                        <span className="text-[11px] text-slate-400">{hf.epoca}</span>
+                        <strong className="text-[var(--ink)] text-sm">{hf.nombre}</strong>
+                        <span className="text-[11px] text-[var(--muted)]">{hf.epoca}</span>
                       </div>
-                      <div className="text-[11px] text-amber-400 font-semibold">{hf.rol}</div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{hf.relato}</p>
+                      <div className="text-[11px] text-[var(--brand)] font-semibold">{hf.rol}</div>
+                      <p className="text-xs text-[var(--muted)] leading-relaxed">{hf.relato}</p>
                     </div>
                   ))}
                 </div>
@@ -521,19 +521,19 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
 
               {poi.community_memories && poi.community_memories.length > 0 && (
                 <div className="space-y-2">
-                  <span className="font-bold text-sky-400 uppercase text-[11px] tracking-wider block">
+                  <span className="font-bold text-[var(--brand)] uppercase text-[11px] tracking-wider block">
                     {language === 'es' ? 'Experiencias de Visitantes' : 'Visitor Stories'}
                   </span>
                   {poi.community_memories.map((cm, idx) => (
                     <div
                       key={idx}
-                      className="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1"
+                      className="bg-[var(--surface)] p-3 rounded-2xl border border-[var(--line)] space-y-1"
                     >
                       <div className="flex items-center justify-between">
-                        <strong className="text-sky-300">{cm.autor}</strong>
-                        <span className="text-[11px] text-slate-400">{cm.procedencia}</span>
+                        <strong className="text-[var(--brand)]">{cm.autor}</strong>
+                        <span className="text-[11px] text-[var(--muted)]">{cm.procedencia}</span>
                       </div>
-                      <p className="text-xs text-slate-200 italic leading-relaxed">
+                      <p className="text-xs text-[var(--ink)] italic leading-relaxed">
                         &quot;{cm.testimonio}&quot;
                       </p>
                     </div>

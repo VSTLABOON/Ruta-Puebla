@@ -123,7 +123,7 @@ export const CelebrationModal: FC<CelebrationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
+    <div className="fixed inset-0 z-50 bg-[var(--surface)] backdrop-blur-md flex items-center justify-center p-4 select-none">
       {/* Canvas de partículas de celebración */}
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
 
@@ -131,23 +131,23 @@ export const CelebrationModal: FC<CelebrationModalProps> = ({
       <div className="relative z-20 max-w-sm w-full animate-in zoom-in-90 duration-300">
         <button
           onClick={onClose}
-          className="absolute -top-12 right-0 p-2 text-slate-400 hover:text-white rounded-full bg-slate-900/80 border border-slate-700 transition"
+          className="absolute -top-12 right-0 p-2 text-[var(--muted)] hover:text-[var(--ink)] rounded-full bg-[var(--surface)] border border-[var(--line)] transition"
           aria-label="Cerrar"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Tarjeta Holográfica Reflectante */}
-        <div className="holographic-card rounded-3xl p-6 text-white shadow-2xl space-y-5 border border-white/30">
+        <div className="holographic-card rounded-3xl p-6 text-[var(--ink)] shadow-[var(--shadow)] space-y-5 border border-[var(--line)]">
           {/* Cabecera de Insignia */}
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--accent-soft)] text-[var(--brand)] border border-[var(--line)] text-[10px] font-black uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" />
               {language === 'es' ? 'Secreto Desbloqueado' : 'Secret Unlocked'}
             </span>
 
-            <span className="text-[11px] text-slate-300 flex items-center gap-1 font-semibold capitalize">
-              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-[11px] text-[var(--muted)] flex items-center gap-1 font-semibold capitalize">
+              <MapPin className="w-3.5 h-3.5 text-[var(--brand)]" />
               {zone.replace(/_/g, ' ')}
             </span>
           </div>
@@ -155,36 +155,36 @@ export const CelebrationModal: FC<CelebrationModalProps> = ({
           {/* Medallón Central Giratorio con Resplandor */}
           <div className="flex flex-col items-center justify-center py-4">
             <div className="relative flex items-center justify-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-1 shadow-2xl animate-marker-pulse">
-                <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center border-2 border-amber-300/80">
-                  <Award className="w-12 h-12 text-amber-400 animate-pokestop-float" />
+              <div className="w-24 h-24 rounded-full bg-[var(--surface-solid)] p-1 shadow-[var(--shadow)] animate-marker-pulse">
+                <div className="w-full h-full rounded-full bg-[var(--surface-solid)] flex items-center justify-center border-2 border-[var(--line-strong)]">
+                  <Award className="w-12 h-12 text-[var(--brand)] animate-pokestop-float" />
                 </div>
               </div>
             </div>
 
-            <h3 className="font-black text-xl text-center text-white mt-4 tracking-tight drop-shadow">
+            <h3 className="font-black text-xl text-center text-[var(--ink)] mt-4 tracking-tight drop-shadow">
               {badgeName}
             </h3>
-            <p className="text-xs font-semibold text-amber-300 text-center mt-0.5">
+            <p className="text-xs font-semibold text-[var(--brand)] text-center mt-0.5">
               {title}
             </p>
           </div>
 
           {/* Descripción del Patrimonio */}
-          <div className="bg-slate-950/70 p-3.5 rounded-2xl border border-slate-700/80 text-xs text-slate-200 leading-relaxed shadow-inner">
+          <div className="bg-[var(--surface)] p-3.5 rounded-2xl border border-[var(--line)] text-xs text-[var(--ink)] leading-relaxed shadow-inner">
             <p>{description}</p>
           </div>
 
           {/* Sello Oficial y Botón de Recolección */}
-          <div className="pt-2 flex items-center justify-between border-t border-white/15">
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-300 font-semibold">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <div className="pt-2 flex items-center justify-between border-t border-[var(--line)]">
+            <div className="flex items-center gap-1.5 text-[11px] text-[var(--ok-ink)] font-semibold">
+              <CheckCircle2 className="w-4 h-4 text-[var(--ok-ink)]" />
               <span>{language === 'es' ? 'Sellado en tu Pasaporte' : 'Stamped in Passport'}</span>
             </div>
 
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition active:scale-95"
+              className="px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] font-black text-xs rounded-xl shadow-[var(--shadow)] transition active:scale-95"
             >
               {language === 'es' ? 'Guardar Insignia' : 'Collect Badge'}
             </button>
