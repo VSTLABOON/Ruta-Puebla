@@ -208,7 +208,7 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen w-full talavera-bg-pattern text-[#162035] flex flex-col justify-between font-sans selection:bg-[#0F3078] selection:text-[#FAF6EE] relative overflow-y-auto">
+    <div className="h-full min-h-screen w-full talavera-bg-pattern text-[#162035] flex flex-col justify-between font-sans selection:bg-[#0F3078] selection:text-[#FAF6EE] relative overflow-y-auto">
       {/* Cabecera de Azulejo Poblano con Cenefa Policroma */}
       <div className="w-full">
         <div className="w-full talavera-cobalt-pattern px-4 sm:px-8 py-4 text-[#FAF6EE] shadow-lg">

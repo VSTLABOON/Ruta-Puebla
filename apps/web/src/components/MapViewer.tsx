@@ -352,7 +352,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     if (!map || !isLoaded) return;
 
     if (!userMarkerRef.current) {
-      const avatarCtrl = createAvatar3D('/models/base.fbx', 48, 62);
+      const avatarCtrl = createAvatar3D('/models/avatar.glb', 48, 62);
       avatarCtrlRef.current = avatarCtrl;
 
       const markerWrapper = document.createElement('div');

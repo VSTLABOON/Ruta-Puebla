@@ -324,10 +324,12 @@ export function solveOPTW(
         const prevIdx = routeOrder[i - 1];
         walkMin = profileMatrix.time_minutes[prevIdx][idx];
         const walkM = profileMatrix.distance_meters[prevIdx][idx];
-        const segs = profileMatrix.path_segments[prevIdx][idx];
+        const segs = profileMatrix.path_segments?.[prevIdx]?.[idx];
         totalWalkingMin += walkMin;
         totalWalkMeters += walkM;
-        pathSegments.push(...segs);
+        if (Array.isArray(segs)) {
+          pathSegments.push(...segs);
+        }
         arrivalT = Math.max(currentT + walkMin, parseTimeToMinutes(poi.hours.open));
       }
 
@@ -358,10 +360,12 @@ export function solveOPTW(
       const lastIdx = routeOrder[routeOrder.length - 1];
       const returnMin = profileMatrix.time_minutes[lastIdx][startIdx];
       const returnMeters = profileMatrix.distance_meters[lastIdx][startIdx];
-      const returnSegs = profileMatrix.path_segments[lastIdx][startIdx];
+      const returnSegs = profileMatrix.path_segments?.[lastIdx]?.[startIdx];
       totalWalkingMin += returnMin;
       totalWalkMeters += returnMeters;
-      pathSegments.push(...returnSegs);
+      if (Array.isArray(returnSegs)) {
+        pathSegments.push(...returnSegs);
+      }
     }
 
     // Calculo del porcentaje de metros verificados en auditoria

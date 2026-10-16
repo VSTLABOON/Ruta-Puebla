@@ -307,21 +307,11 @@ function MainApp() {
     }
   };
 
-  if (showSplash) {
+  if (showSplash || isLoading) {
     return (
       <SplashScreen
         onFinish={() => setShowSplash(false)}
         isLoadingData={isLoading}
-        language={language}
-      />
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <SplashScreen
-        onFinish={() => setShowSplash(false)}
-        isLoadingData={true}
         language={language}
       />
     );
@@ -587,10 +577,100 @@ function MainApp() {
   );
 }
 
+interface RootErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface RootErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+}
+
+export class RootErrorBoundary extends React.Component<RootErrorBoundaryProps, RootErrorBoundaryState> {
+  constructor(props: RootErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error: Error): Partial<RootErrorBoundaryState> {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('PopoGo RootErrorBoundary capturó una excepción:', error, errorInfo);
+    this.setState({ error, errorInfo });
+  }
+
+  handleReset = () => {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch {}
+    window.location.reload();
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#F2EBDC] text-[#162035] font-sans">
+          <div className="w-full max-w-lg bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 border-b-2 border-[#0F3078]/20 pb-3">
+              <div className="w-10 h-10 rounded-full bg-[#B84A2C] text-[#FAF6EE] flex items-center justify-center font-bold font-serif text-lg">
+                !
+              </div>
+              <div>
+                <h2 className="text-base font-black text-[#0F3078] font-serif uppercase">
+                  Error de Inicialización en PopoGo
+                </h2>
+                <p className="text-xs text-[#162035]/70">
+                  Ocurrió un error inesperado al renderizar la vista.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFDF9] border border-[#0F3078]/30 rounded-xl p-3 text-xs font-mono text-[#B84A2C] overflow-auto max-h-48 whitespace-pre-wrap select-all">
+              {this.state.error?.stack || this.state.error?.message || String(this.state.error)}
+            </div>
+
+            {this.state.errorInfo?.componentStack && (
+              <div className="bg-[#FFFDF9] border border-[#0F3078]/30 rounded-xl p-3 text-[11px] font-mono text-[#162035]/80 overflow-auto max-h-36 whitespace-pre-wrap">
+                {this.state.errorInfo.componentStack}
+              </div>
+            )}
+
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="flex-1 py-2.5 rounded-xl bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] font-extrabold text-xs transition cursor-pointer"
+              >
+                Reintentar
+              </button>
+              <button
+                type="button"
+                onClick={this.handleReset}
+                className="flex-1 py-2.5 rounded-xl bg-[#B84A2C] hover:bg-[#9E3B20] text-[#FAF6EE] font-extrabold text-xs transition cursor-pointer"
+              >
+                Reiniciar Datos Locales
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <RouterProvider>
-      <MainApp />
-    </RouterProvider>
+    <RootErrorBoundary>
+      <RouterProvider>
+        <MainApp />
+      </RouterProvider>
+    </RootErrorBoundary>
   );
 }
+

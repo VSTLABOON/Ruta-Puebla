@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 export interface Avatar3DController {
   container: HTMLElement;
@@ -9,7 +10,7 @@ export interface Avatar3DController {
 }
 
 export function createAvatar3D(
-  modelUrl: string = '/models/base.fbx',
+  modelUrl: string = '/models/avatar.glb',
   width: number = 48,
   height: number = 62
 ): Avatar3DController {
@@ -171,8 +172,27 @@ export function createAvatar3D(
     return group;
   }
 
-  // Carga del modelo 3D (FBX o GLB)
-  const isFbx = modelUrl.toLowerCase().endsWith('.fbx');
+  // Carga de texturas PBR completas del avatar (colores, sombras, detalles)
+  const textureLoader = new THREE.TextureLoader();
+  const diffuseTexture = textureLoader.load('/models/avatar/texture_diffuse.png');
+  diffuseTexture.colorSpace = THREE.SRGBColorSpace;
+  const normalTexture = textureLoader.load('/models/avatar/texture_normal.png');
+  const roughnessTexture = textureLoader.load('/models/avatar/texture_roughness.png');
+  const metallicTexture = textureLoader.load('/models/avatar/texture_metallic.png');
+
+  const avatarPbrMaterial = new THREE.MeshStandardMaterial({
+    map: diffuseTexture,
+    normalMap: normalTexture,
+    roughnessMap: roughnessTexture,
+    metalnessMap: metallicTexture,
+    roughness: 0.65,
+    metalness: 0.15
+  });
+
+  // Carga del modelo 3D (GLB, OBJ o FBX)
+  const lowerUrl = modelUrl.toLowerCase();
+  const isObj = lowerUrl.endsWith('.obj');
+  const isFbx = lowerUrl.endsWith('.fbx');
 
   const onModelLoaded = (model: THREE.Object3D, animations?: THREE.AnimationClip[]) => {
     if (isDestroyed) return;
@@ -188,7 +208,7 @@ export function createAvatar3D(
     box.setFromObject(model);
     model.position.y = -box.min.y;
 
-    // Ajustar materiales para brillo vidriado tipo Talavera
+    // Garantizar que la malla tenga aplicadas las texturas y colores completos (reemplazando el gris)
     model.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
@@ -196,12 +216,19 @@ export function createAvatar3D(
         mesh.receiveShadow = true;
         if (mesh.material) {
           const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach((m) => {
-            if (m instanceof THREE.MeshStandardMaterial) {
-              m.roughness = 0.35;
-              m.metalness = 0.15;
-            }
-          });
+          const hasDiffuseMap = mats.some((m) => m && 'map' in m && (m as any).map);
+          if (!hasDiffuseMap) {
+            mesh.material = avatarPbrMaterial;
+          } else {
+            mats.forEach((m) => {
+              if (m instanceof THREE.MeshStandardMaterial) {
+                m.roughness = 0.65;
+                m.metalness = 0.15;
+              }
+            });
+          }
+        } else {
+          mesh.material = avatarPbrMaterial;
         }
       }
     });
@@ -224,7 +251,15 @@ export function createAvatar3D(
     scene.add(fallback);
   };
 
-  if (isFbx) {
+  if (isObj) {
+    const objLoader = new OBJLoader();
+    objLoader.load(
+      modelUrl,
+      (obj) => onModelLoaded(obj),
+      undefined,
+      onModelError
+    );
+  } else if (isFbx) {
     const fbxLoader = new FBXLoader();
     fbxLoader.load(
       modelUrl,
