@@ -50,7 +50,7 @@ function MainApp() {
   const [viewportMode, setViewportMode] = useState<'mobile' | 'full'>('full');
 
   // Papel talavera: claro / oscuro (misma clave que el login)
-  const [paper, setPaper] = useState<Paper>(() => readPaper());
+  const [paper] = useState<Paper>(() => readPaper());
   useEffect(() => {
     applyPaper(paper);
   }, [paper]);

@@ -253,8 +253,19 @@ export const LoginGateView: FC<LoginGateViewProps> = ({
               </div>
             </div>
 
-            {/* Indicador de Red / Persistencia Híbrida */}
+            {/* Indicador de Red / Persistencia Híbrida y Selector de Talavera */}
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleTogglePaper}
+                aria-label={darkPaper ? 'Cambiar a talavera clara' : 'Cambiar a talavera oscura'}
+                title={darkPaper ? 'Talavera clara' : 'Talavera oscura'}
+                className="px-2.5 py-1.5 rounded-xl border-2 border-[#FAF6EE]/40 bg-[#FAF6EE]/20 hover:bg-[#FAF6EE]/30 text-[#FAF6EE] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+              >
+                {darkPaper ? <Sun className="w-3.5 h-3.5 text-[#F0B43A]" /> : <Moon className="w-3.5 h-3.5 text-[#EDE28E]" />}
+                <span className="hidden sm:inline">{darkPaper ? 'Clara' : 'Oscura'}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => {
