@@ -36,10 +36,33 @@ La solucion opera bajo una arquitectura desacoplada capaz de ejecutarse en modo 
 
 ## 3. Descripcion de la Solucion
 
-Ruta Abierta Puebla integra tres componentes operacionales:
-1. **Modo Visitante (Aplicacion Web)**: Interfaz responsiva que permite configurar perfil de movilidad, ventana de tiempo disponible, presupuesto maximo, intereses tematicos e idioma. Genera un itinerario optimizado, visualiza la red con codificacion dual de confianza (solido = verificado; punteado = inferido), despliega un comparador lado a lado frente al circuito clasico tradicional y desglosa transparentemente la utilidad de cada parada.
-2. **Optimizador de Itinerarios (OPTW)**: Algoritmo que formula la generacion de la ruta como un *Orienteering Problem with Time Windows* (OPTW) de una sola ruta, maximizando la utilidad total acumulada respetando las restricciones fisicas y presupuestarias.
-3. **Panel de Diagnostico y Priorizacion de Barreras**: Modulo analitico que cuantifica el impacto urbano de cada tramo intransitable, evaluando cuantos puntos de interes se vuelven alcanzables si se elimina la barrera.
+Ruta Abierta Puebla integra una arquitectura orientada a la experiencia de tres perfiles de usuario clave dentro de una misma aplicacion web progresiva (PWA):
+
+1. **Modo Visitante / Turista (`/`)**:
+   * Generador de itinerarios optimizados segun perfil de movilidad (`sin_restriccion`, `movilidad_reducida`, `silla_de_ruedas`), tiempo disponible (60 a 360 min) y presupuesto.
+   * Visualizador interactivo 3D con MapLibre GL sobre capas vectoriales Carto (estilos oscuro, callejero y claro).
+   * **Pasaporte de Exploración y Patrimonio Vivo (Mecánicas Pokémon GO)**:
+     * Secretos culturales ocultos con pistas de observación presencial.
+     * Insignias holográficas coleccionables en 3D (*Custodio Angelopolitano*, *Fuego de La Luz*, etc.).
+     * Galería *"Quiénes estuvieron aquí"*: reseñas de cronistas y personajes virreinales junto a memorias vivas de la comunidad.
+   * Radar GPS de proximidad y selector de vista táctica con simulador móvil (390x844 px).
+
+2. **Modo Artesano y Comercio Local (`/taller`)**:
+   * Portal dedicado para los maestros alfareros de La Luz, artesanos de talavera de Analco, cocinas de El Alto y anticuarios de Los Sapos censados en el DENUE.
+   * Ficha de oficio tradicional con técnica ancestral, horarios de demostraciones en vivo y sellado oficial de pasaportes.
+   * Visualización del impacto económico local estimado (+59.4% de derrama directa hacia talleres tradicionales).
+
+3. **Modo Planificación y Sostenibilidad SECIHTI (`/admin`)**:
+   * Tablero de control para gestores públicos de turismo y movilidad urbana.
+   * Métricas cuantitativas de desconcentración sobre 150 agentes sintéticos heterogéneos con intervalos de confianza del 95%.
+   * Regulador de cupos zonales máximos por barrio para prevenir sobrecarga turística y gentrificación.
+   * Ranking de impacto de obras públicas en aceras: prioriza la eliminación de barreras arquitectónicas según el número de atractivos y comercios que desbloquea para sillas de ruedas.
+
+4. **Catálogo de 24 Atractivos y Talleres**:
+   * Expansión del cuadrante piloto a 24 puntos de interés patrimoniales que equilibran monumentos virreinales del Centro Núcleo con talleres artesanales de Analco, La Luz, El Alto, Los Sapos y Xanenetla.
+
+5. **Motor RAG de Curaduría Cultural**:
+   * Sistema de recuperación semántica determinista (BM25) sobre corpus patrimonial validado (INAH, UNESCO, crónicas virreinales), garantizando respuestas con citas textuales y cero alucinaciones.
 
 ---
 
@@ -119,3 +142,14 @@ Comparacion reportada en `docs/simulation_report.md`:
 * **Hallazgos desfavorables y limitaciones fisicas reportadas**:
   1. *Barreras en cruces hacia barrios*: Para sillas de ruedas, la factibilidad hacia barrios cae a 0.0% debido a escalones de 18-20 cm en la conexion hacia Analco y La Luz, confinando las rutas de accesibilidad plena al Zocalo semipeatonalizado.
   2. *Incremento de distancia*: La distancia caminada media pasa de 1,218 m (clasica) a 2,588 m (optimizada), lo que exige validar la condicion fisica del visitante antes de sugerir dispersion maxima.
+
+---
+
+## 8. Diagnostico Tecnico y Estado de Madurez de la Solucion
+
+Conforme a los criterios de rigor y reproducibilidad de Tech-Capital 2026, la plataforma cuenta con una auditoría técnica completa registrada en [docs/technical_audit_and_improvements.md](file:///docs/technical_audit_and_improvements.md):
+
+* **Verificación de Pruebas**: 5/5 pruebas unitarias passing con Vitest en `packages/shared-types` que validan el optimizador OPTW y los perfiles de accesibilidad.
+* **Trazabilidad y Sincronización Topológica**: Se documenta la discrepancia entre el catálogo extendido de 24 POIs y las matrices de tiempo generadas por `graph_builder.py` (14 POIs), junto con la estrategia de mitigación para garantizar que tanto la simulación con 150 agentes como el servicio FastAPI operen sin interrupciones.
+* **Operatividad Offline PWA**: Verificación de resiliencia desconectada en navegadores móviles mediante caché de Service Worker y esquemas locales en `localStorage`.
+* **Explicabilidad Algorítmica**: Mapeo transparente de la utilidad $S_i$ por parada y desacoplamiento de modelos generativos para evitar alucinaciones en recomendaciones de accesibilidad física.

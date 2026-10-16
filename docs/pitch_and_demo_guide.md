@@ -38,26 +38,32 @@ Estructura de exposicion ante el jurado calificador y guia de operacion para el 
 
 ## 2. Guion de Demostracion Interactiva en el Stand
 
-1. **Paso 1: Abrir la Aplicacion Web en Navegador**:
-   * Desconectar la conexion a internet (modo avion) para demostrar que la aplicacion, el grafo, las matrices y la heuristica operan con total autonomia.
-2. **Paso 2: Generar Ruta en Perfil 'Sin Restriccion'**:
-   * Seleccionar 180 minutos, presupuesto de $200 MXN, intereses en artesania y gastronomia poblana.
-   * Mover el control hacia "Mas local (Barrios)".
-   * Observar como la ruta avanza desde Catedral hacia el Puente de Ovando, el Parque de Analco, el Horno de Alfareria de La Luz y el Mercado El Alto.
-3. **Paso 3: Visualizar el Nivel de Confianza en el Mapa**:
-   * Mostrar como los tramos de banqueta tienen codificacion dual:
-     * Linea solida verde: tramos con auditoria presencial verificada (alta confianza).
-     * Linea discontinua: tramos inferidos cartograficamente (baja confianza).
-4. **Paso 4: Cambiar a Perfil 'Silla de Ruedas'**:
-   * Hacer clic en "Silla de ruedas".
-   * El mapa y el itinerario se recalculan al instante: se eliminan los tramos con escalones hacia el Horno de La Luz y se ofrece una alternativa plenamente nivelada y con rampas dentro del perimetro seguro del Centro.
-5. **Paso 5: Mostrar el Comparador Lado a Lado**:
-   * Contrastar la ruta clasica frente a la optimizada sostenible:
-     * Mostrar como el gasto local sube al 59% y las paradas fuera del nucleo alcanzan casi el 90%.
-6. **Paso 6: Abrir el Detalle de Parada y Explicacion de $S_i$**:
-   * Mostrar las barras de utilidad transparente: interes, presupuesto, dispersion zonal y bono local.
-7. **Paso 7: Activar el 'Modo Stand'**:
-   * Presionar el boton "Modo Stand" en la barra superior: la aplicacion entrara en bucle automatico rotando entre perfiles y rutas cada 12 segundos para exposicion continua ante visitantes del stand.
+1. **Paso 1: Demostración Autónoma sin Conexión (Modo Offline PWA)**:
+   * Desconectar la conexión a internet (modo avión) para comprobar que la aplicación, el grafo, las matrices y el optimizador OPTW operan con total autonomía en el cliente web.
+2. **Paso 2: Generar Ruta en Perfil 'Sin Restricción'**:
+   * Abrir la aplicación en `/` (Modo Visitante).
+   * Seleccionar 180 minutos, presupuesto de $200 MXN, intereses en artesanía y gastronomía poblana.
+   * Deslizar el control hacia "Más Barrios y Talleres".
+   * Observar cómo la ruta avanza desde Catedral hacia el Puente de Ovando, el Parque de Analco, el Horno de Alfarería de La Luz y el Mercado El Alto.
+3. **Paso 3: Visualización 3D y Nivel de Confianza en el Mapa**:
+   * Mostrar el mapa interactivo MapLibre GL con extrusión 3D de manzanas urbanas y selector de capas (Oscuro, Callejero, Claro).
+   * Mostrar la codificación dual de banquetas: línea sólida para tramos con auditoría presencial de alta confianza y línea punteada para tramos inferidos.
+4. **Paso 4: Cambio a Perfil 'Silla de Ruedas'**:
+   * Conmutar a "Silla de ruedas o carriola".
+   * El mapa y el itinerario se recalculan al instante: se descartan tramos con escalones hacia el Horno de La Luz y se ofrece una alternativa nivelada con rampas dentro del polígono seguro del Centro.
+5. **Paso 5: Pasaporte de Exploración y Gamificación Cultural**:
+   * Abrir la pestaña de "Secreto de Exploración" en el panel táctico.
+   * Mostrar cómo se desbloquea el secreto patrimonial y se otorga la insignia holográfica correspondiente (*Custodio Angelopolitano*, *Fuego de La Luz*).
+   * Explorar la pestaña "Quiénes estuvieron aquí" con crónicas virreinales y testimonios de la comunidad.
+6. **Paso 6: Conmutar a Modo 'Taller y Comercio Local' (`/taller`)**:
+   * Hacer clic en la píldora "Local" en el encabezado.
+   * Mostrar el portal para maestros alfareros y artesanos de Analco, La Luz y El Alto censados en DENUE, con horarios de demostración en vivo y ficha del oficio tradicional.
+7. **Paso 7: Conmutar a Modo 'Admin y Sostenibilidad' (`/admin`)**:
+   * Hacer clic en la píldora "Admin" en el encabezado.
+   * Mostrar el panel SECIHTI con el impacto cuantitativo de 150 agentes sintéticos, regulador de cupos de carga turística y ranking de intervención municipal en aceras.
+8. **Paso 8: Simulador Móvil y Modal de Auditoría de Datos**:
+   * Presionar el botón de teléfono en la cabecera para conmutar la vista a marco de smartphone (390x844 px).
+   * Abrir el modal de embudo DENUE (ícono de filtro) para mostrar las 6 etapas metodológicas que depuran 410,693 registros hasta 676 microempresas locales.
 
 ---
 

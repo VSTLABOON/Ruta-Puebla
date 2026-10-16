@@ -44,16 +44,26 @@ Este documento registra las fuentes de datos utilizadas por la plataforma Ruta A
 ## 3. Catalogo Curado de Atractivos Culturales y Puntos de Interes (POIs)
 
 * **Entidad emisora**: Curaduria tecnica a partir de catalogos oficiales del Instituto Municipal de Arte y Cultura de Puebla (IMACP), Secretaria de Economia y Turismo del Municipio de Puebla, e inventarios patrimoniales publicos.
-* **Fecha de corte**: Octubre 2026.
+* **Fecha de corte**: Octubre 2026 (24 puntos de interés activos).
 * **Licencia**: Datos factuales de dominio publico e integracion curada bajo terminos de uso no comercial con atribucion.
 * **Proposito en el sistema**:
   * Definicion del conjunto de nodos candidatos de visita $V$ para el problema OPTW.
   * Registro de atributos operativos: nombre oficial, categorias tematicas, coordenadas de acceso peatonal, horarios de apertura y cierre por dia, costo de entrada, tiempo estimado de visita y facilidades fisicas preliminares (escalones de acceso, banos accesibles).
-* **Transformaciones aplicadas**:
-  * Asignacion a zonas especificas: Centro Nucleo (Zocalo, Catedral, Palafoxiana) vs. Barrios Perifericos (Barrio del Artista, El Parian, Analco, La Luz, El Alto, Xanenetla).
-  * Limpieza y verificacion de coordenadas de acceso exacto a nivel de banqueta.
+  * Soporte para el Pasaporte de Exploración y Patrimonio Vivo:
+    * `secret_to_unlock`: Pista y secreto patrimonial para dinámica de gamificación en el sitio.
+    * `historical_figures`: Reseñas biográficas de personajes novohispanos y virreinales vinculados al lugar.
+    * `community_memories`: Testimonios y relatos de visitantes previos y vecinos de barrio.
+    * `artisan_profile`: Datos del maestro artesano, técnica ancestral, horario de demostración en vivo y sello del taller.
+* **Distribución Territorial (24 POIs en 5 Zonas)**:
+  * **Centro Núcleo (9)**: Catedral de Puebla, Biblioteca Palafoxiana, Museo Amparo, Capilla del Rosario, Mercado El Parián, Calle de los Dulces, Casa de Alfeñique, Puente de Bubas, Casa de los Muñecos.
+  * **Barrio de Los Sapos (1)**: Bazar de Antigüedades Los Sapos.
+  * **Barrio de Analco (5)**: Templo del Santo Ángel de Analco, Parque de Analco, Taller de Talavera Tradicional, Taller de Vidrio Soplado, Panadería Colonial La Guadalupana.
+  * **Barrio de La Luz (3)**: Horno de Alfarería Tradicional de La Luz, Templo de La Luz, Taller de Cazuelas y Loza de Barro.
+  * **Barrio de El Alto (3)**: Mercado de El Alto (Fondas y Mariachis), Jardín de San Francisco, Templo de San Francisco de Asís.
+  * **Barrio de Xanenetla (3)**: Ciudad Mural Xanenetla, Antojería Típica, Mirador Mural de Xanenetla.
 * **Limitaciones conocidas**:
-  * Horarios sujetos a variaciones por festividades o mantenimiento patrimonial.
+  * Horarios sujetos a variaciones por festividades religiosas, cívicas o mantenimiento patrimonial.
+  * La integración topológica de las matrices de tiempo de los 10 puntos extendidos se encuentra documentada en la auditoría técnica.
 
 ---
 
