@@ -19,6 +19,7 @@ import {
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
 import { TalaveraFrieze } from './TalaveraOrnament';
+import { PoiCulturalContextCard } from './PoiCulturalContextCard';
 
 interface TacticalDesktopPanelProps {
   stops: RouteStop[];
@@ -246,6 +247,7 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
       <div className="flex-1 overflow-y-auto p-3.5 space-y-3.5 bg-[#FAF6EE]">
         {activeTab === 'info' && (
           <div className="space-y-3 animate-fade-slide">
+            <PoiCulturalContextCard poi={poi} language={language} />
             <div className="bg-white/95 rounded-2xl p-3.5 border-2 border-[#0F3078]/20 text-xs sm:text-sm text-[#162035] leading-relaxed shadow-sm">
               {poi.description[language] || poi.description.es}
             </div>

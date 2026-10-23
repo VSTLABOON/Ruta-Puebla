@@ -308,11 +308,26 @@ export function solveOPTW(
     // Construccion de paradas, segmentos y metricas finales
     const stops: RouteStop[] = [];
     const pathSegments: string[] = [];
+    const routeCoords: [number, number][] = [];
     let currentT = startTime;
     let totalWalkingMin = 0;
     let totalVisitMin = 0;
     let totalWalkMeters = 0;
     let totalCost = 0;
+
+    const sqDist = (a: [number, number], b: [number, number]) =>
+      (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]);
+
+    const pushCoordDedup = (pt: [number, number]) => {
+      if (routeCoords.length === 0) {
+        routeCoords.push(pt);
+        return;
+      }
+      const last = routeCoords[routeCoords.length - 1];
+      if (Math.abs(last[0] - pt[0]) > 1e-6 || Math.abs(last[1] - pt[1]) > 1e-6) {
+        routeCoords.push(pt);
+      }
+    };
 
     for (let i = 0; i < routeOrder.length; i++) {
       const idx = routeOrder[i];
@@ -320,16 +335,46 @@ export function solveOPTW(
       let arrivalT = currentT;
       let walkMin = 0;
 
-      if (i > 0) {
+      if (i === 0) {
+        pushCoordDedup(poi.coordinates);
+      } else {
         const prevIdx = routeOrder[i - 1];
+        const prevPoi = pois.find(p => poiIndexMap.get(p.id) === prevIdx)!;
         walkMin = profileMatrix.time_minutes[prevIdx][idx];
         const walkM = profileMatrix.distance_meters[prevIdx][idx];
         const segs = profileMatrix.path_segments?.[prevIdx]?.[idx];
         totalWalkingMin += walkMin;
         totalWalkMeters += walkM;
-        if (Array.isArray(segs)) {
+        let currentPos: [number, number] =
+          routeCoords.length > 0 ? routeCoords[routeCoords.length - 1] : prevPoi.coordinates;
+
+        if (Array.isArray(segs) && segs.length > 0) {
           pathSegments.push(...segs);
+          for (const sid of segs) {
+            const seg = edgeMap.get(sid);
+            if (seg && seg.geometry && seg.geometry.coordinates && seg.geometry.coordinates.length > 0) {
+              const rawCoords = seg.geometry.coordinates;
+              const firstPt = rawCoords[0];
+              const lastPt = rawCoords[rawCoords.length - 1];
+              const ordered =
+                sqDist(currentPos, lastPt) < sqDist(currentPos, firstPt)
+                  ? [...rawCoords].reverse()
+                  : rawCoords;
+              for (const pt of ordered) {
+                pushCoordDedup(pt);
+              }
+              currentPos = routeCoords[routeCoords.length - 1];
+            }
+          }
+        } else {
+          // Codo ortogonal limpio si algun tramo carece de lista de segmentos
+          const dlon = Math.abs(currentPos[0] - poi.coordinates[0]);
+          const dlat = Math.abs(currentPos[1] - poi.coordinates[1]);
+          if (dlon > 0.00035 && dlat > 0.00035) {
+            pushCoordDedup([poi.coordinates[0], currentPos[1]]);
+          }
         }
+        pushCoordDedup(poi.coordinates);
         arrivalT = Math.max(currentT + walkMin, parseTimeToMinutes(poi.hours.open));
       }
 
@@ -355,20 +400,7 @@ export function solveOPTW(
       });
     }
 
-    // Segmentos de retorno al punto de inicio para completar el circuito
-    if (routeOrder.length > 1) {
-      const lastIdx = routeOrder[routeOrder.length - 1];
-      const returnMin = profileMatrix.time_minutes[lastIdx][startIdx];
-      const returnMeters = profileMatrix.distance_meters[lastIdx][startIdx];
-      const returnSegs = profileMatrix.path_segments?.[lastIdx]?.[startIdx];
-      totalWalkingMin += returnMin;
-      totalWalkMeters += returnMeters;
-      if (Array.isArray(returnSegs)) {
-        pathSegments.push(...returnSegs);
-      }
-    }
-
-    // Calculo del porcentaje de metros verificados en auditoria
+    // Calculo del porcentaje de metros verificados en auditoria (sobre el recorrido efectivo entre paradas)
     let verifiedMeters = 0;
     let totalPathLength = 0;
     const uniqueSegs = Array.from(new Set(pathSegments));
@@ -390,18 +422,9 @@ export function solveOPTW(
     const pctLocalStops = nonStartStops.length > 0 ? Math.round((localStopsCount / nonStartStops.length) * 100) : 0;
     const pctOutsideCore = nonStartStops.length > 0 ? Math.round((outsideCoreCount / nonStartStops.length) * 100) : 0;
 
-    // Geometria de la ruta
-    const routeCoords: [number, number][] = [];
-    for (const sid of pathSegments) {
-      const seg = edgeMap.get(sid);
-      if (seg && seg.geometry && seg.geometry.coordinates) {
-        routeCoords.push(...seg.geometry.coordinates);
-      }
-    }
     if (routeCoords.length === 0) {
-      // Fallback a coordenadas de los POIs
       for (const s of stops) {
-        routeCoords.push(s.poi.coordinates);
+        pushCoordDedup(s.poi.coordinates);
       }
     }
 

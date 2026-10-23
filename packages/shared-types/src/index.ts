@@ -29,7 +29,14 @@ export type POICategory =
   | 'artesania'
   | 'espacio_publico'
   | 'comercio_local'
-  | 'historico';
+  | 'historico'
+  | 'plaza_historica'
+  | 'teatro_historico'
+  | 'museo_convento'
+  | 'monumento'
+  | 'edificio_historico'
+  | 'taller_artesanal'
+  | 'gastronomia_local';
 
 export interface TransitabilityByProfile {
   sin_restriccion: boolean;
@@ -119,6 +126,14 @@ export interface ArtisanProfile {
   sello_artesanal: string;
 }
 
+export interface CulturalContext {
+  siglo_fundacion: string;
+  estilo_arquitectonico: string;
+  patrimonio_inmaterial: string;
+  dato_curioso: string;
+  citas_documentales: string;
+}
+
 export interface PassportState {
   unlocked_secrets: string[];
   visited_poi_ids: string[];
@@ -150,6 +165,9 @@ export interface POI {
     en: string;
   };
   address: string;
+  image_url?: string;
+  image_caption?: string;
+  cultural_context?: CulturalContext;
   secret_to_unlock?: CulturalSecret;
   historical_figures?: HistoricalFigure[];
   community_memories?: VisitorMemory[];

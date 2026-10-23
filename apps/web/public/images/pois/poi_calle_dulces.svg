@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337"/>
+      <stop offset="60%" stop-color="#C35328"/>
+      <stop offset="100%" stop-color="#091536"/>
+    </linearGradient>
+    <pattern id="talaveraGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none" stroke="#FAF6EE" stroke-width="0.6" stroke-opacity="0.12"/>
+      <polygon points="20,6 26,20 20,34 14,20" fill="#FAF6EE" fill-opacity="0.07"/>
+      <circle cx="20" cy="20" r="2.5" fill="#FDE047" fill-opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <!-- Fondo Cerámico Talavera -->
+  <rect width="800" height="320" fill="url(#bgGrad)"/>
+  <rect width="800" height="320" fill="url(#talaveraGrid)"/>
+
+  <!-- Marco Doble Filete Majólica -->
+  <rect x="12" y="12" width="776" height="296" rx="18" fill="none" stroke="#FAF6EE" stroke-width="2" stroke-opacity="0.45"/>
+  <rect x="18" y="18" width="764" height="284" rx="14" fill="none" stroke="#FDE047" stroke-width="1.5" stroke-dasharray="8,5" stroke-opacity="0.7"/>
+
+  <!-- Rosetones Esquinas -->
+  <circle cx="34" cy="34" r="7" fill="#FDE047" opacity="0.85"/>
+  <circle cx="766" cy="34" r="7" fill="#FDE047" opacity="0.85"/>
+  <circle cx="34" cy="286" r="7" fill="#FDE047" opacity="0.85"/>
+  <circle cx="766" cy="286" r="7" fill="#FDE047" opacity="0.85"/>
+
+  
+      <!-- Cazuela de Mole Poblano, Comal y Tradición Culinaria -->
+      <g transform="translate(215, 26)">
+        <circle cx="185" cy="88" r="66" fill="#FDE047" opacity="0.20"/>
+        <!-- Vapor aromático -->
+        <path d="M155,35 Q145,50 160,62 Q170,72 158,84" fill="none" stroke="#FAF6EE" stroke-width="3.5" stroke-linecap="round" opacity="0.8"/>
+        <path d="M185,28 Q175,45 190,58 Q200,68 188,80" fill="none" stroke="#FDE047" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M215,35 Q205,50 220,62 Q230,72 218,84" fill="none" stroke="#FAF6EE" stroke-width="3.5" stroke-linecap="round" opacity="0.8"/>
+        <!-- Cazuela Molera de Barro Vidriado -->
+        <path d="M105,92 L265,92 C260,142 230,160 185,160 C140,160 110,142 105,92 Z" fill="#FAF6EE"/>
+        <rect x="98" y="84" width="174" height="12" rx="6" fill="#FDE047"/>
+        <!-- Asas laterales -->
+        <path d="M102,94 C82,94 82,122 108,122" fill="none" stroke="#FAF6EE" stroke-width="6"/>
+        <path d="M268,94 C288,94 288,122 262,122" fill="none" stroke="#FAF6EE" stroke-width="6"/>
+        <!-- Greca Talavera en la cazuela -->
+        <path d="M122,118 L248,118" stroke="#0F3078" stroke-width="5" stroke-dasharray="10,6"/>
+        <circle cx="185" cy="138" r="8" fill="#0F3078"/>
+      </g>
+    
+
+  <!-- Cartela Inferior de Códice Virreinal -->
+  <rect x="36" y="205" width="728" height="82" rx="14" fill="#071330" fill-opacity="0.82" stroke="#FDE047" stroke-width="1.5"/>
+  <text x="58" y="232" fill="#FDE047" font-family="Georgia, serif" font-size="13" font-weight="bold" letter-spacing="2">
+    ZOCALO CENTRO NUCLEO • SIGLO XVII (TRADICIÓN CONVENTUAL CLARISAS 1607)
+  </text>
+  <text x="58" y="260" fill="#FAF6EE" font-family="Georgia, serif" font-size="21" font-weight="bold">
+    Calle de los Dulces Tipicos de Santa Clara
+  </text>
+  <text x="58" y="278" fill="#FAF6EE" fill-opacity="0.8" font-family="sans-serif" font-size="12">
+    Corredor de Casonas Virreinales con vitrinas de botica y dulcería decimonónica
+  </text>
+</svg>

@@ -22,6 +22,7 @@ import {
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
 import { TalaveraFrieze } from './TalaveraOrnament';
+import { PoiCulturalContextCard } from './PoiCulturalContextCard';
 
 interface TacticalBottomSheetProps {
   stops: RouteStop[];
@@ -316,6 +317,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           {/* PESTAÑA 1: INFORMACIÓN PRÁCTICA DEL LUGAR */}
           {activeTab === 'info' && (
             <div className="space-y-3 animate-fade-slide">
+              <PoiCulturalContextCard poi={poi} language={language} />
               {/* Descripción principal */}
               <div className="bg-white/95 rounded-2xl p-3.5 border-2 border-[#0F3078]/15 text-xs sm:text-sm text-[#162035] leading-relaxed shadow-sm">
                 {poi.description[language] || poi.description.es}

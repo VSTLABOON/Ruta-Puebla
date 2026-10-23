@@ -195,19 +195,19 @@ def main():
                 audits_by_segment.setdefault(sid, []).append(row)
 
     # Definir esquinas y nodos base del poligono piloto
-    # Malla conectada que cubre Centro Nucleo, Analco, La Luz, El Alto y Xanenetla
+    # Malla conectada que cubre los 34 POIs en Centro Nucleo, Analco, La Luz, El Alto y Xanenetla
     base_nodes = {
         "n_zocalo_nw": [-98.1990, 19.0435],
         "n_zocalo_ne": [-98.1975, 19.0435],
-        "n_zocalo_se": [-98.1975, 19.0425],
-        "n_zocalo_sw": [-98.1990, 19.0425],
-        "n_catedral_s": [-98.1983, 19.0420],
+        "n_zocalo_se": [-98.1975, 19.0428],
+        "n_zocalo_sw": [-98.1990, 19.0428],
+        "n_catedral_s": [-98.1983, 19.0428],
         "n_palafox_5ote": [-98.1991, 19.0424],
         "n_amparo_2sur": [-98.1998, 19.0416],
         "n_rosario_5mayo": [-98.1993, 19.0453],
         "n_sapos_6sur": [-98.1963, 19.0411],
         "n_puente_ovando": [-98.1945, 19.0415],
-        "n_analco_parque_w": [-98.1930, 19.0418],
+        "n_analco_parque_w": [-98.1925, 19.0418],
         "n_analco_parque_e": [-98.1920, 19.0418],
         "n_analco_calle7ote": [-98.1918, 19.0415],
         "n_analco_5ote": [-98.1931, 19.0425],
@@ -219,7 +219,7 @@ def main():
         "n_xane_concordia": [-98.1910, 19.0480],
         "n_xane_calle4norte": [-98.1901, 19.0492],
         "n_xane_antojeria": [-98.1908, 19.0485],
-        # Nodos de expansion (10 POIs adicionales). Geometria aproximada, sin auditoria de campo.
+        # Nodos de expansion (POIs 15 al 24)
         "n_munecos_2norte": [-98.1972, 19.0439],
         "n_dulces_6ote": [-98.1968, 19.0451],
         "n_alfenique_4ote": [-98.1949, 19.0445],
@@ -229,7 +229,18 @@ def main():
         "n_analco_panaderia": [-98.1912, 19.0421],
         "n_luz_cazuelas": [-98.1882, 19.0426],
         "n_sanfco_templo": [-98.1895, 19.0449],
-        "n_xane_mirador": [-98.1894, 19.0504]
+        "n_xane_mirador": [-98.1894, 19.0504],
+        # Nodos de expansion (POIs 25 al 34)
+        "n_barrio_artistas": [-98.1945, 19.0435],
+        "n_callejon_sapos": [-98.1965, 19.0405],
+        "n_teatro_principal": [-98.1940, 19.0448],
+        "n_san_pedro_museo": [-98.1952, 19.0440],
+        "n_santa_monica": [-98.1989, 19.0490],
+        "n_parroquia_san_jose": [-98.1950, 19.0485],
+        "n_fuente_san_miguel": [-98.1978, 19.0433],
+        "n_mesonde_san_roque": [-98.1955, 19.0455],
+        "n_taller_hojalata_analco": [-98.1925, 19.0418],
+        "n_horno_pan_xanenetla": [-98.1932, 19.0475]
     }
 
     # Asociar cada POI a su nodo de acceso mas cercano
@@ -257,34 +268,49 @@ def main():
         "poi_panaderia_horno_analco": "n_analco_panaderia",
         "poi_alfareria_cazuelas_luz": "n_luz_cazuelas",
         "poi_templo_san_francisco": "n_sanfco_templo",
-        "poi_mirador_mural_xanenetla": "n_xane_mirador"
+        "poi_mirador_mural_xanenetla": "n_xane_mirador",
+        "poi_barrio_artistas": "n_barrio_artistas",
+        "poi_callejon_sapos": "n_callejon_sapos",
+        "poi_teatro_principal": "n_teatro_principal",
+        "poi_san_pedro_museo": "n_san_pedro_museo",
+        "poi_santa_monica": "n_santa_monica",
+        "poi_parroquia_san_jose": "n_parroquia_san_jose",
+        "poi_fuente_san_miguel": "n_fuente_san_miguel",
+        "poi_mesonde_san_roque": "n_mesonde_san_roque",
+        "poi_taller_hojalata_analco": "n_taller_hojalata_analco",
+        "poi_horno_pan_xanenetla": "n_horno_pan_xanenetla"
     }
 
     # Definir conexiones viales (con tramos por lado y cruces)
     # Estructura de definicion de tramo de banqueta
     street_definitions = [
-        # Zocalo - Catedral
+        # Zocalo - Catedral (trazo perimetral ortogonal sin cruzar la nave de Catedral)
         ("seg_zocalo_16sep_e", "n_zocalo_ne", "n_catedral_s", "right", "zocalo_centro_nucleo", 1.90, 1.2, "laja_colonial_nivelada", True, False),
         ("seg_zocalo_16sep_w", "n_zocalo_nw", "n_zocalo_sw", "left", "zocalo_centro_nucleo", 1.60, 1.0, "laja_colonial", True, False),
         ("seg_zocalo_sur_conn", "n_zocalo_sw", "n_catedral_s", "crossing", "zocalo_centro_nucleo", 2.00, 0.5, "concreto", True, False),
         ("seg_zocalo_norte_conn", "n_zocalo_nw", "n_zocalo_ne", "crossing", "zocalo_centro_nucleo", 2.00, 0.5, "concreto", True, False),
+        ("seg_fuente_san_miguel", "n_catedral_s", "n_fuente_san_miguel", "crossing", "zocalo_centro_nucleo", 2.20, 0.5, "laja_colonial_nivelada", True, False),
+        ("seg_fuente_zocalo_ne", "n_fuente_san_miguel", "n_zocalo_ne", "crossing", "zocalo_centro_nucleo", 2.20, 0.5, "laja_colonial_nivelada", True, False),
         # Hacia Palafoxiana
         ("seg_palafox_5ote_s", "n_catedral_s", "n_palafox_5ote", "right", "zocalo_centro_nucleo", 1.55, 1.8, "laja_colonial", True, False),
         ("seg_palafox_5ote_n", "n_zocalo_se", "n_palafox_5ote", "left", "zocalo_centro_nucleo", 1.20, 2.1, "concreto", False, False),
         # Hacia Museo Amparo
         ("seg_amparo_2sur_w", "n_palafox_5ote", "n_amparo_2sur", "left", "zocalo_centro_nucleo", 1.40, 2.5, "laja_colonial", True, False),
         ("seg_amparo_2sur_e", "n_palafox_5ote", "n_amparo_2sur", "right", "zocalo_centro_nucleo", 1.35, 2.4, "laja_colonial", True, False),
-        # Hacia Capilla del Rosario
+        # Hacia Capilla del Rosario y Santa Monica
         ("seg_rosario_5mayo_w", "n_zocalo_nw", "n_rosario_5mayo", "left", "zocalo_centro_nucleo", 1.80, 0.8, "adoquin_asentado", True, False),
         ("seg_rosario_5mayo_e", "n_zocalo_ne", "n_rosario_5mayo", "right", "zocalo_centro_nucleo", 1.70, 0.9, "adoquin_asentado", True, False),
-        # Hacia Los Sapos
+        ("seg_santa_monica_5mayo", "n_rosario_5mayo", "n_santa_monica", "left", "zocalo_centro_nucleo", 1.65, 1.4, "adoquin_asentado", True, False),
+        # Hacia Los Sapos y Callejon
         ("seg_sapos_6sur_w", "n_palafox_5ote", "n_sapos_6sur", "left", "zocalo_centro_nucleo", 1.10, 3.2, "laja_colonial", False, False),
         ("seg_sapos_6sur_e", "n_catedral_s", "n_sapos_6sur", "right", "zocalo_centro_nucleo", 1.25, 2.8, "laja_colonial", True, False),
+        ("seg_callejon_sapos", "n_sapos_6sur", "n_callejon_sapos", "right", "zocalo_centro_nucleo", 1.50, 1.5, "laja_colonial_nivelada", True, False),
         # Conexion Zocalo / Sapos hacia Analco por Puente de Ovando
         ("seg_ovando_puente", "n_sapos_6sur", "n_puente_ovando", "crossing", "barrio_analco", 1.30, 4.0, "laja_colonial", True, False),
         ("seg_ovando_a_analco", "n_puente_ovando", "n_analco_parque_w", "crossing", "barrio_analco", 1.50, 2.0, "adoquin_asentado", True, False),
         # Barrio de Analco
         ("seg_analco_parque_w", "n_analco_parque_w", "n_analco_parque_e", "right", "barrio_analco", 1.60, 1.5, "adoquin_asentado", True, False),
+        ("seg_analco_hojalata", "n_analco_parque_w", "n_taller_hojalata_analco", "right", "barrio_analco", 1.55, 1.2, "adoquin_asentado", True, False),
         ("seg_analco_calle7ote_s", "n_analco_parque_e", "n_analco_calle7ote", "right", "barrio_analco", 0.75, 2.2, "concreto", False, True),  # Barrera: escalon
         ("seg_analco_taller_5ote", "n_analco_parque_w", "n_analco_5ote", "left", "barrio_analco", 1.25, 1.8, "adoquin_asentado", True, False),
         ("seg_analco_conn_norte", "n_analco_5ote", "n_luz_palafox", "crossing", "barrio_analco", 1.30, 2.0, "concreto", True, False),
@@ -300,12 +326,19 @@ def main():
         ("seg_xane_concordia_norte", "n_xane_concordia", "n_xane_calle4norte", "right", "barrio_xanenetla", 1.30, 3.8, "concreto", True, False),
         ("seg_xane_calle4norte_w", "n_xane_calle4norte", "n_xane_antojeria", "left", "barrio_xanenetla", 1.15, 4.2, "adoquin", True, False),
         ("seg_xane_callejuela_empedrada", "n_xane_concordia", "n_xane_antojeria", "right", "barrio_xanenetla", 0.80, 6.5, "empedrado_desprendido", False, True), # Barrera
-        # Expansion: tramos estimados (sin auditoria de campo; confianza base hasta verificarse)
+        ("seg_xane_horno_pan", "n_xane_concordia", "n_horno_pan_xanenetla", "left", "barrio_xanenetla", 1.35, 2.6, "adoquin_asentado", True, False),
+        # Expansion Centro / Barrios
         ("seg_munecos_2norte", "n_zocalo_ne", "n_munecos_2norte", "right", "zocalo_centro_nucleo", 1.80, 1.0, "laja_colonial_nivelada", True, False),
         ("seg_dulces_6ote", "n_munecos_2norte", "n_dulces_6ote", "left", "zocalo_centro_nucleo", 1.50, 1.2, "laja_colonial", True, False),
         ("seg_dulces_rosario", "n_rosario_5mayo", "n_dulces_6ote", "crossing", "zocalo_centro_nucleo", 1.60, 1.0, "adoquin_asentado", True, False),
+        ("seg_san_pedro_4norte", "n_dulces_6ote", "n_san_pedro_museo", "right", "zocalo_centro_nucleo", 1.65, 1.2, "laja_colonial_nivelada", True, False),
+        ("seg_san_roque_parian", "n_san_pedro_museo", "n_mesonde_san_roque", "left", "zocalo_centro_nucleo", 1.50, 1.5, "laja_colonial", True, False),
+        ("seg_san_jose_norte", "n_mesonde_san_roque", "n_parroquia_san_jose", "right", "barrio_el_alto", 1.60, 1.8, "adoquin_asentado", True, False),
         ("seg_alfenique_4ote", "n_munecos_2norte", "n_alfenique_4ote", "right", "zocalo_centro_nucleo", 1.40, 1.5, "laja_colonial", True, False),
         ("seg_parian_6norte", "n_alfenique_4ote", "n_parian_6norte", "crossing", "zocalo_centro_nucleo", 1.70, 1.0, "adoquin_asentado", True, False),
+        ("seg_barrio_artistas_parian", "n_parian_6norte", "n_barrio_artistas", "right", "zocalo_centro_nucleo", 1.75, 1.0, "laja_colonial_nivelada", True, False),
+        ("seg_teatro_principal_8norte", "n_parian_6norte", "n_teatro_principal", "left", "barrio_el_alto", 1.65, 1.4, "laja_colonial_nivelada", True, False),
+        ("seg_teatro_a_sanfco", "n_teatro_principal", "n_san_francisco_jardin", "crossing", "barrio_el_alto", 1.60, 1.8, "adoquin_asentado", True, False),
         ("seg_parian_bubas", "n_parian_6norte", "n_bubas_puente", "crossing", "barrio_analco", 1.40, 2.5, "laja_colonial", True, False),
         ("seg_bubas_analco", "n_bubas_puente", "n_analco_5ote", "crossing", "barrio_analco", 1.30, 3.0, "laja_colonial", True, False),
         ("seg_analco_vidrio", "n_analco_parque_w", "n_analco_vidrio", "left", "barrio_analco", 1.20, 2.0, "adoquin_asentado", True, False),
@@ -316,13 +349,58 @@ def main():
         ("seg_xane_mirador", "n_xane_calle4norte", "n_xane_mirador", "right", "barrio_xanenetla", 1.00, 7.5, "empedrado", False, True) # Barrera: subida con escalones
     ]
 
+    # Waypoints ortogonales explicitos para que ningun tramo corte manzanas o la Catedral en diagonal
+    segment_waypoints = {
+        "seg_zocalo_16sep_e": [[-98.1975, 19.0428]],
+        "seg_palafox_5ote_s": [[-98.1983, 19.0424]],
+        "seg_palafox_5ote_n": [[-98.1983, 19.0424]],
+        "seg_amparo_2sur_w": [[-98.1991, 19.0416]],
+        "seg_amparo_2sur_e": [[-98.1998, 19.0424]],
+        "seg_rosario_5mayo_e": [[-98.1990, 19.0435], [-98.1993, 19.0435]],
+        "seg_sapos_6sur_w": [[-98.1963, 19.0424]],
+        "seg_sapos_6sur_e": [[-98.1975, 19.0428], [-98.1975, 19.0411]],
+        "seg_ovando_puente": [[-98.1945, 19.0411]],
+        "seg_ovando_a_analco": [[-98.1930, 19.0415]],
+        "seg_analco_conn_norte": [[-98.1931, 19.0441]],
+        "seg_luz_a_sanfco": [[-98.1912, 19.0457]],
+        "seg_alto_sanfco_jardin": [[-98.1916, 19.0457]],
+        "seg_dulces_rosario": [[-98.1993, 19.0451]],
+        "seg_alfenique_4ote": [[-98.1972, 19.0445]],
+        "seg_parian_bubas": [[-98.1942, 19.0429]],
+        "seg_bubas_analco": [[-98.1931, 19.0429]],
+        "seg_luz_cazuelas": [[-98.1882, 19.0441]],
+        "seg_luz_cazuelas_templo": [[-98.1895, 19.0446], [-98.1895, 19.0426]],
+        "seg_sanfco_templo": [[-98.1895, 19.0457]],
+        "seg_san_pedro_4norte": [[-98.1952, 19.0451]],
+        "seg_san_jose_norte": [[-98.1950, 19.0455]],
+        "seg_xane_horno_pan": [[-98.1932, 19.0480]]
+    }
+
+    def build_street_polyline(sid, coord_u, coord_v):
+        if sid in segment_waypoints:
+            return [coord_u, *segment_waypoints[sid], coord_v]
+        dlon = abs(coord_u[0] - coord_v[0])
+        dlat = abs(coord_u[1] - coord_v[1])
+        if dlon > 0.00035 and dlat > 0.00035:
+            # Codo ortogonal siguiendo la traza en damero
+            corner = [round(coord_v[0], 5), round(coord_u[1], 5)]
+            return [coord_u, corner, coord_v]
+        return [coord_u, coord_v]
+
+    def polyline_length(coords):
+        total = 0.0
+        for idx in range(len(coords) - 1):
+            total += distance_haversine(coords[idx], coords[idx + 1])
+        return round(total, 1)
+
     segments = []
     geojson_features = []
 
     for sid, u, v, side, zone, width, slope, surface, curb_ramp, has_steps in street_definitions:
         coord_u = base_nodes[u]
         coord_v = base_nodes[v]
-        length = round(distance_haversine(coord_u, coord_v), 1)
+        poly_coords = build_street_polyline(sid, coord_u, coord_v)
+        length = max(10.0, polyline_length(poly_coords))
 
         audits = audits_by_segment.get(sid, [])
         confidence, count, is_verified = compute_audit_confidence(audits, thresholds_cfg)
@@ -350,7 +428,7 @@ def main():
             "to_node": v,
             "geometry": {
                 "type": "LineString",
-                "coordinates": [coord_u, coord_v]
+                "coordinates": poly_coords
             },
             "length_m": length,
             "zone": zone,

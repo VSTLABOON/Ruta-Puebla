@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A2255"/>
+      <stop offset="60%" stop-color="#0F3078"/>
+      <stop offset="100%" stop-color="#091536"/>
+    </linearGradient>
+    <pattern id="talaveraGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none" stroke="#FAF6EE" stroke-width="0.6" stroke-opacity="0.12"/>
+      <polygon points="20,6 26,20 20,34 14,20" fill="#FAF6EE" fill-opacity="0.07"/>
+      <circle cx="20" cy="20" r="2.5" fill="#F0B43A" fill-opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <!-- Fondo Cerámico Talavera -->
+  <rect width="800" height="320" fill="url(#bgGrad)"/>
+  <rect width="800" height="320" fill="url(#talaveraGrid)"/>
+
+  <!-- Marco Doble Filete Majólica -->
+  <rect x="12" y="12" width="776" height="296" rx="18" fill="none" stroke="#FAF6EE" stroke-width="2" stroke-opacity="0.45"/>
+  <rect x="18" y="18" width="764" height="284" rx="14" fill="none" stroke="#F0B43A" stroke-width="1.5" stroke-dasharray="8,5" stroke-opacity="0.7"/>
+
+  <!-- Rosetones Esquinas -->
+  <circle cx="34" cy="34" r="7" fill="#F0B43A" opacity="0.85"/>
+  <circle cx="766" cy="34" r="7" fill="#F0B43A" opacity="0.85"/>
+  <circle cx="34" cy="286" r="7" fill="#F0B43A" opacity="0.85"/>
+  <circle cx="766" cy="286" r="7" fill="#F0B43A" opacity="0.85"/>
+
+  
+      <!-- Silueta Arquitectónica Virreinal: Torres Gemelas y Cúpula de Talavera -->
+      <g transform="translate(190, 28)">
+        <!-- Resplandor solar barroco -->
+        <circle cx="210" cy="85" r="68" fill="#F0B43A" opacity="0.18"/>
+        <circle cx="210" cy="85" r="48" fill="#F0B43A" opacity="0.28"/>
+        <!-- Torre Norte -->
+        <rect x="95" y="35" width="38" height="125" rx="3" fill="#FAF6EE" opacity="0.95"/>
+        <polygon points="95,35 114,12 133,35" fill="#F0B43A"/>
+        <rect x="106" y="48" width="16" height="24" rx="8" fill="#0A2255"/>
+        <rect x="106" y="82" width="16" height="22" rx="8" fill="#0A2255"/>
+        <!-- Torre Sur -->
+        <rect x="287" y="35" width="38" height="125" rx="3" fill="#FAF6EE" opacity="0.95"/>
+        <polygon points="287,35 306,12 325,35" fill="#F0B43A"/>
+        <rect x="298" y="48" width="16" height="24" rx="8" fill="#0A2255"/>
+        <rect x="298" y="82" width="16" height="22" rx="8" fill="#0A2255"/>
+        <!-- Cúpula Central Revestida de Azulejo -->
+        <path d="M145,105 A65,58 0 0,1 275,105 Z" fill="#F0B43A"/>
+        <path d="M160,105 A50,45 0 0,1 260,105 Z" fill="#FAF6EE" opacity="0.35"/>
+        <rect x="203" y="34" width="14" height="16" fill="#FAF6EE"/>
+        <!-- Cuerpo Central y Portada Barroca -->
+        <rect x="133" y="98" width="154" height="62" fill="#FAF6EE"/>
+        <path d="M188,160 L188,122 A22,22 0 0,1 232,122 L232,160 Z" fill="#0A2255"/>
+        <circle cx="210" cy="108" r="9" fill="#F0B43A"/>
+      </g>
+    
+
+  <!-- Cartela Inferior de Códice Virreinal -->
+  <rect x="36" y="205" width="728" height="82" rx="14" fill="#071330" fill-opacity="0.82" stroke="#F0B43A" stroke-width="1.5"/>
+  <text x="58" y="232" fill="#F0B43A" font-family="Georgia, serif" font-size="13" font-weight="bold" letter-spacing="2">
+    BARRIO LA LUZ • SIGLO XVIII (1761–1805)
+  </text>
+  <text x="58" y="260" fill="#FAF6EE" font-family="Georgia, serif" font-size="21" font-weight="bold">
+    Templo de Nuestra Senora de la Luz
+  </text>
+  <text x="58" y="278" fill="#FAF6EE" fill-opacity="0.8" font-family="sans-serif" font-size="12">
+    Barroco Poblano de Ladrillo y Azulejo con Camarín Octagonal
+  </text>
+</svg>
