@@ -45,6 +45,7 @@ class StopModel(BaseModel):
     cost_mxn: float
     score_s_i: float
     is_local_business: bool
+    poi: Optional[Dict[str, Any]] = None
 
 class RouteMetricsModel(BaseModel):
     total_time_min: int
@@ -57,12 +58,17 @@ class RouteMetricsModel(BaseModel):
     pct_outside_core: int
     feasible_for_profile: bool
 
+class GeometryModel(BaseModel):
+    type: str = "LineString"
+    coordinates: List[List[float]]
+
 class RouteAlternativeModel(BaseModel):
     name: str
     focus: str
     stops: List[StopModel]
     metrics: RouteMetricsModel
     path_segments: List[str]
+    geometry: Optional[GeometryModel] = None
 
 class RouteResponseModel(BaseModel):
     main_route: RouteAlternativeModel
@@ -119,17 +125,10 @@ def generate_route(req: RouteRequestModel):
     prof_mat = matrices_data["profiles"][req.profile]
     edge_map = {e["id"]: e for e in graph_data.get("edges", [])}
 
-    # Seleccion voraz de paradas
-    visited = [start_idx]
-    curr_time = 600 + start_poi["visit_duration_min"]
-    curr_cost = start_poi["cost_mxn"]
-    curr_dist = 0
-    walk_min_accum = 0
-    visit_min_accum = start_poi["visit_duration_min"]
-    used_segs = []
+    local_bias = req.balance_local_pct / 100.0
 
-    # Filtrar candidatos viables
-    candidates = []
+    # Ponderar candidatos con scoring multiobjetivo idéntico al solucionador OPTW
+    scored_candidates = []
     for p in pois_data:
         if p["id"] not in poi_idx_map:
             continue
@@ -139,31 +138,85 @@ def generate_route(req: RouteRequestModel):
         dist_from_start = prof_mat["distance_meters"][start_idx][p_idx]
         if dist_from_start >= 999990:
             continue
-        if req.profile == "silla_de_ruedas" and not p["entrance_accessible"]:
+        if req.profile == "silla_de_ruedas" and not p.get("entrance_accessible", False):
             continue
-        candidates.append((p_idx, p))
 
-    for c_idx, cand in candidates:
+        if req.interests:
+            p_cat = p.get("category", "")
+            p_tags = p.get("tags", [])
+            matches = sum(1 for req_int in req.interests if req_int in p_tags or req_int == p_cat)
+            interest_score = matches / max(1, len(req.interests))
+        else:
+            interest_score = 0.5
+
+        budget_score = max(0.0, 1.0 - (p.get("cost_mxn", 0.0) / max(1.0, req.max_budget_mxn)))
+
+        is_outside = (p.get("zone") != "zocalo_centro_nucleo")
+        if local_bias < 0.5:
+            dispersion_score = 0.6 if is_outside else (1.0 + (0.5 - local_bias) * 0.8)
+        else:
+            dispersion_score = (1.0 + (local_bias - 0.5) * 1.0) if is_outside else 0.7
+
+        local_score = 0.2 if p.get("is_local_business", False) else 0.0
+        total_s_i = 0.45 * interest_score + 0.15 * budget_score + 0.25 * dispersion_score + 0.15 * local_score
+
+        scored_candidates.append({
+            "idx": p_idx,
+            "poi": p,
+            "score": total_s_i,
+            "visit_duration": p.get("visit_duration_min", 30),
+            "cost": p.get("cost_mxn", 0.0)
+        })
+
+    # Construcción secuencial optimizada basada en densidad de beneficio / costo de traslado
+    visited = [start_idx]
+    curr_time = 600 + start_poi["visit_duration_min"]
+    curr_cost = start_poi["cost_mxn"]
+    curr_dist = 0
+    walk_min_accum = 0
+    visit_min_accum = start_poi["visit_duration_min"]
+    used_segs = []
+
+    remaining = list(scored_candidates)
+    while remaining:
+        best_cand = None
+        best_idx_in_rem = -1
+        best_ratio = -1.0
         last_idx = visited[-1]
-        w_min = prof_mat["time_minutes"][last_idx][c_idx]
-        if w_min >= 999990:
-            continue
-        w_dist = prof_mat["distance_meters"][last_idx][c_idx]
-        ret_min = prof_mat["time_minutes"][c_idx][start_idx]
 
-        total_est = (curr_time + w_min + cand["visit_duration_min"] + ret_min) - 600
-        if total_est > req.max_time_min:
-            continue
-        if curr_cost + cand["cost_mxn"] > req.max_budget_mxn:
-            continue
+        for i, cand in enumerate(remaining):
+            c_idx = cand["idx"]
+            w_min = prof_mat["time_minutes"][last_idx][c_idx]
+            if w_min >= 999990:
+                continue
+            ret_min = prof_mat["time_minutes"][c_idx][start_idx]
+            total_est = (curr_time + w_min + cand["visit_duration"] + ret_min) - 600
+            if total_est > req.max_time_min:
+                continue
+            if curr_cost + cand["cost"] > req.max_budget_mxn:
+                continue
+
+            ratio = cand["score"] / max(0.5, w_min)
+            if ratio > best_ratio:
+                best_ratio = ratio
+                best_cand = cand
+                best_idx_in_rem = i
+
+        if not best_cand:
+            break
+
+        c_idx = best_cand["idx"]
+        w_min = prof_mat["time_minutes"][last_idx][c_idx]
+        w_dist = prof_mat["distance_meters"][last_idx][c_idx]
 
         visited.append(c_idx)
-        curr_time += w_min + cand["visit_duration_min"]
-        curr_cost += cand["cost_mxn"]
+        curr_time += w_min + best_cand["visit_duration"]
+        curr_cost += best_cand["cost"]
         curr_dist += w_dist
         walk_min_accum += w_min
-        visit_min_accum += cand["visit_duration_min"]
+        visit_min_accum += best_cand["visit_duration"]
         used_segs.extend(prof_mat["path_segments"][last_idx][c_idx])
+        remaining.pop(best_idx_in_rem)
 
     # Segmento de retorno
     if len(visited) > 1:
@@ -191,8 +244,45 @@ def generate_route(req: RouteRequestModel):
             departure_time_min=dep_t,
             cost_mxn=poi_item["cost_mxn"],
             score_s_i=0.85,
-            is_local_business=poi_item["is_local_business"]
+            is_local_business=poi_item["is_local_business"],
+            poi=poi_item
         ))
+
+    # Construcción de polilínea continua y ortogonal
+    route_coords: List[List[float]] = []
+    def push_coord(c: List[float]):
+        if not route_coords:
+            route_coords.append(c)
+            return
+        last = route_coords[-1]
+        if abs(last[0] - c[0]) > 1e-6 or abs(last[1] - c[1]) > 1e-6:
+            route_coords.append(c)
+
+    def push_damero(c_from: List[float], c_to: List[float]):
+        if abs(c_from[0] - c_to[0]) > 0.00006 and abs(c_from[1] - c_to[1]) > 0.00006:
+            push_coord([c_to[0], c_from[1]])
+        push_coord(c_to)
+
+    curr_pos = start_poi["coordinates"]
+    push_coord(curr_pos)
+
+    for seg_id in used_segs:
+        edge = edge_map.get(seg_id)
+        if edge and "geometry" in edge and "coordinates" in edge["geometry"]:
+            raw = edge["geometry"]["coordinates"]
+            if raw:
+                d_first = (curr_pos[0] - raw[0][0])**2 + (curr_pos[1] - raw[0][1])**2
+                d_last = (curr_pos[0] - raw[-1][0])**2 + (curr_pos[1] - raw[-1][1])**2
+                oriented = list(reversed(raw)) if d_last < d_first else raw
+                if (curr_pos[0] - oriented[0][0])**2 + (curr_pos[1] - oriented[0][1])**2 > 1e-8:
+                    push_damero(curr_pos, oriented[0])
+                for pt in oriented:
+                    push_coord(pt)
+                curr_pos = route_coords[-1]
+
+    if len(route_coords) < 2 and len(visited) > 1:
+        for idx_p in visited[1:]:
+            push_damero(route_coords[-1], pois_data[idx_p]["coordinates"])
 
     unique_segs = list(set(used_segs))
     tot_len = sum(edge_map[s]["length_m"] for s in unique_segs if s in edge_map)
@@ -220,7 +310,8 @@ def generate_route(req: RouteRequestModel):
         focus="optimizada",
         stops=stops_list,
         metrics=metrics,
-        path_segments=unique_segs
+        path_segments=used_segs,
+        geometry=GeometryModel(coordinates=route_coords)
     )
 
     explanation = {

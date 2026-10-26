@@ -174,6 +174,10 @@
             19.0433
           ],
           [
+            -98.1978,
+            19.0435
+          ],
+          [
             -98.1975,
             19.0435
           ]
@@ -182,7 +186,7 @@
       "properties": {
         "id": "seg_fuente_zocalo_ne",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 38.6,
+        "length_m": 53.8,
         "width_m": 2.2,
         "slope_pct": 0.5,
         "surface": "laja_colonial_nivelada",
@@ -241,6 +245,10 @@
           ],
           [
             -98.1983,
+            19.0428
+          ],
+          [
+            -98.1983,
             19.0424
           ],
           [
@@ -252,7 +260,7 @@
       "properties": {
         "id": "seg_palafox_5ote_n",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 179.2,
+        "length_m": 212.7,
         "width_m": 1.2,
         "slope_pct": 2.1,
         "surface": "concreto",
@@ -345,6 +353,10 @@
             19.0435
           ],
           [
+            -98.199,
+            19.0453
+          ],
+          [
             -98.1993,
             19.0453
           ]
@@ -353,7 +365,7 @@
       "properties": {
         "id": "seg_rosario_5mayo_w",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 202.6,
+        "length_m": 231.7,
         "width_m": 1.8,
         "slope_pct": 0.8,
         "surface": "adoquin_asentado",
@@ -380,8 +392,8 @@
             19.0435
           ],
           [
-            -98.1993,
-            19.0435
+            -98.199,
+            19.0453
           ],
           [
             -98.1993,
@@ -415,8 +427,12 @@
             19.0453
           ],
           [
-            -98.1989,
+            -98.199,
             19.0453
+          ],
+          [
+            -98.199,
+            19.049
           ],
           [
             -98.1989,
@@ -490,7 +506,11 @@
           ],
           [
             -98.1975,
-            19.0411
+            19.0424
+          ],
+          [
+            -98.1963,
+            19.0424
           ],
           [
             -98.1963,
@@ -524,6 +544,10 @@
             19.0411
           ],
           [
+            -98.1963,
+            19.0405
+          ],
+          [
             -98.1965,
             19.0405
           ]
@@ -532,7 +556,7 @@
       "properties": {
         "id": "seg_callejon_sapos",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 70.0,
+        "length_m": 87.7,
         "width_m": 1.5,
         "slope_pct": 1.5,
         "surface": "laja_colonial_nivelada",
@@ -590,8 +614,12 @@
             19.0415
           ],
           [
-            -98.193,
+            -98.1931,
             19.0415
+          ],
+          [
+            -98.1931,
+            19.0418
           ],
           [
             -98.1925,
@@ -602,7 +630,7 @@
       "properties": {
         "id": "seg_ovando_a_analco",
         "zone": "barrio_analco",
-        "length_m": 219.9,
+        "length_m": 243.6,
         "width_m": 1.5,
         "slope_pct": 2.0,
         "surface": "adoquin_asentado",
@@ -687,6 +715,10 @@
             19.0418
           ],
           [
+            -98.192,
+            19.0415
+          ],
+          [
             -98.1918,
             19.0415
           ]
@@ -695,7 +727,7 @@
       "properties": {
         "id": "seg_analco_calle7ote_s",
         "zone": "barrio_analco",
-        "length_m": 39.4,
+        "length_m": 54.4,
         "width_m": 0.75,
         "slope_pct": 2.2,
         "surface": "concreto",
@@ -784,6 +816,150 @@
         "type": "LineString",
         "coordinates": [
           [
+            -98.1925,
+            19.0418
+          ],
+          [
+            -98.1925,
+            19.0406
+          ],
+          [
+            -98.1922,
+            19.0406
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_analco_vidrio",
+        "zone": "barrio_analco",
+        "length_m": 165.0,
+        "width_m": 1.2,
+        "slope_pct": 2.0,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.192,
+            19.0418
+          ],
+          [
+            -98.1912,
+            19.0418
+          ],
+          [
+            -98.1912,
+            19.0421
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_analco_panaderia",
+        "zone": "barrio_analco",
+        "length_m": 117.4,
+        "width_m": 1.25,
+        "slope_pct": 1.8,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1918,
+            19.0415
+          ],
+          [
+            -98.192,
+            19.0415
+          ],
+          [
+            -98.192,
+            19.0406
+          ],
+          [
+            -98.1922,
+            19.0406
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_analco_12sur_7a9",
+        "zone": "barrio_analco",
+        "length_m": 142.1,
+        "width_m": 1.4,
+        "slope_pct": 1.8,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1912,
+            19.0421
+          ],
+          [
+            -98.1912,
+            19.0415
+          ],
+          [
+            -98.1918,
+            19.0415
+          ]
+        ]
+      },
+      "properties": {
+        "id": "seg_analco_14sur_5a7",
+        "zone": "barrio_analco",
+        "length_m": 129.8,
+        "width_m": 1.35,
+        "slope_pct": 1.5,
+        "surface": "adoquin_asentado",
+        "confidence": 0.15,
+        "is_verified": false,
+        "transitable_sin_restriccion": true,
+        "transitable_movilidad_reducida": true,
+        "transitable_silla_de_ruedas": true,
+        "has_steps": false,
+        "has_curb_ramp": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
             -98.1915,
             19.0441
           ],
@@ -820,6 +996,10 @@
           ],
           [
             -98.1912,
+            19.0441
+          ],
+          [
+            -98.1912,
             19.0446
           ]
         ]
@@ -827,7 +1007,7 @@
       "properties": {
         "id": "seg_luz_palafox_n",
         "zone": "barrio_la_luz",
-        "length_m": 63.9,
+        "length_m": 87.1,
         "width_m": 1.3,
         "slope_pct": 2.8,
         "surface": "concreto",
@@ -955,8 +1135,8 @@
             19.0468
           ],
           [
-            -98.191,
-            19.0468
+            -98.1916,
+            19.048
           ],
           [
             -98.191,
@@ -1025,8 +1205,8 @@
             19.0492
           ],
           [
-            -98.1908,
-            19.0492
+            -98.1901,
+            19.0485
           ],
           [
             -98.1908,
@@ -1060,6 +1240,10 @@
             19.048
           ],
           [
+            -98.191,
+            19.0485
+          ],
+          [
             -98.1908,
             19.0485
           ]
@@ -1068,7 +1252,7 @@
       "properties": {
         "id": "seg_xane_callejuela_empedrada",
         "zone": "barrio_xanenetla",
-        "length_m": 59.4,
+        "length_m": 76.6,
         "width_m": 0.8,
         "slope_pct": 6.5,
         "surface": "empedrado_desprendido",
@@ -1127,6 +1311,10 @@
           ],
           [
             -98.1972,
+            19.0435
+          ],
+          [
+            -98.1972,
             19.0439
           ]
         ]
@@ -1134,7 +1322,7 @@
       "properties": {
         "id": "seg_munecos_2norte",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 54.5,
+        "length_m": 76.0,
         "width_m": 1.8,
         "slope_pct": 1.0,
         "surface": "laja_colonial_nivelada",
@@ -1157,8 +1345,8 @@
             19.0439
           ],
           [
-            -98.1968,
-            19.0439
+            -98.1972,
+            19.0451
           ],
           [
             -98.1968,
@@ -1192,7 +1380,11 @@
             19.0453
           ],
           [
-            -98.1993,
+            -98.199,
+            19.0453
+          ],
+          [
+            -98.199,
             19.0451
           ],
           [
@@ -1262,6 +1454,10 @@
             19.044
           ],
           [
+            -98.1952,
+            19.0455
+          ],
+          [
             -98.1955,
             19.0455
           ]
@@ -1270,7 +1466,7 @@
       "properties": {
         "id": "seg_san_roque_parian",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 169.7,
+        "length_m": 198.3,
         "width_m": 1.5,
         "slope_pct": 1.5,
         "surface": "laja_colonial",
@@ -1364,6 +1560,10 @@
           ],
           [
             -98.1942,
+            19.0445
+          ],
+          [
+            -98.1942,
             19.0442
           ]
         ]
@@ -1371,7 +1571,7 @@
       "properties": {
         "id": "seg_parian_6norte",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 80.8,
+        "length_m": 106.9,
         "width_m": 1.7,
         "slope_pct": 1.0,
         "surface": "adoquin_asentado",
@@ -1394,6 +1594,10 @@
             19.0442
           ],
           [
+            -98.1942,
+            19.0435
+          ],
+          [
             -98.1945,
             19.0435
           ]
@@ -1402,7 +1606,7 @@
       "properties": {
         "id": "seg_barrio_artistas_parian",
         "zone": "zocalo_centro_nucleo",
-        "length_m": 84.0,
+        "length_m": 109.4,
         "width_m": 1.75,
         "slope_pct": 1.0,
         "surface": "laja_colonial_nivelada",
@@ -1425,6 +1629,10 @@
             19.0442
           ],
           [
+            -98.1942,
+            19.0448
+          ],
+          [
             -98.194,
             19.0448
           ]
@@ -1433,7 +1641,7 @@
       "properties": {
         "id": "seg_teatro_principal_8norte",
         "zone": "barrio_el_alto",
-        "length_m": 70.0,
+        "length_m": 87.7,
         "width_m": 1.65,
         "slope_pct": 1.4,
         "surface": "laja_colonial_nivelada",
@@ -1542,68 +1750,6 @@
         "width_m": 1.3,
         "slope_pct": 3.0,
         "surface": "laja_colonial",
-        "confidence": 0.15,
-        "is_verified": false,
-        "transitable_sin_restriccion": true,
-        "transitable_movilidad_reducida": true,
-        "transitable_silla_de_ruedas": true,
-        "has_steps": false,
-        "has_curb_ramp": true
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -98.1925,
-            19.0418
-          ],
-          [
-            -98.1922,
-            19.0406
-          ]
-        ]
-      },
-      "properties": {
-        "id": "seg_analco_vidrio",
-        "zone": "barrio_analco",
-        "length_m": 137.1,
-        "width_m": 1.2,
-        "slope_pct": 2.0,
-        "surface": "adoquin_asentado",
-        "confidence": 0.15,
-        "is_verified": false,
-        "transitable_sin_restriccion": true,
-        "transitable_movilidad_reducida": true,
-        "transitable_silla_de_ruedas": true,
-        "has_steps": false,
-        "has_curb_ramp": true
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -98.192,
-            19.0418
-          ],
-          [
-            -98.1912,
-            19.0421
-          ]
-        ]
-      },
-      "properties": {
-        "id": "seg_analco_panaderia",
-        "zone": "barrio_analco",
-        "length_m": 90.5,
-        "width_m": 1.25,
-        "slope_pct": 1.8,
-        "surface": "adoquin_asentado",
         "confidence": 0.15,
         "is_verified": false,
         "transitable_sin_restriccion": true,
@@ -1732,8 +1878,8 @@
             19.0492
           ],
           [
-            -98.1894,
-            19.0492
+            -98.1901,
+            19.0504
           ],
           [
             -98.1894,

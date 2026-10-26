@@ -381,18 +381,40 @@ export const MapViewer: FC<MapViewerProps> = ({
     let currentPos = selectedRoute.stops[0].poi.coordinates;
     pushDedup(currentPos);
 
-    for (const segId of selectedRoute.path_segments) {
-      const seg = edgeMap.get(segId);
-      if (seg && seg.geometry?.coordinates && seg.geometry.coordinates.length > 0) {
-        const raw = seg.geometry.coordinates;
-        const firstPt = raw[0];
-        const lastPt = raw[raw.length - 1];
-        const oriented =
-          sqDist(currentPos, lastPt) < sqDist(currentPos, firstPt) ? [...raw].reverse() : raw;
-        for (const pt of oriented) {
-          pushDedup(pt);
+    const pushDameroConnection = (from: [number, number], to: [number, number]) => {
+      const dLon = Math.abs(from[0] - to[0]);
+      const dLat = Math.abs(from[1] - to[1]);
+      if (dLon > 0.00006 && dLat > 0.00006) {
+        // En damero ortogonal de Puebla, trazar esquina en ángulo recto
+        pushDedup([to[0], from[1]]);
+      }
+      pushDedup(to);
+    };
+
+    if (selectedRoute.path_segments && selectedRoute.path_segments.length > 0) {
+      for (const segId of selectedRoute.path_segments) {
+        const seg = edgeMap.get(segId);
+        if (seg && seg.geometry?.coordinates && seg.geometry.coordinates.length > 0) {
+          const raw = seg.geometry.coordinates;
+          const firstPt = raw[0];
+          const lastPt = raw[raw.length - 1];
+          const oriented =
+            sqDist(currentPos, lastPt) < sqDist(currentPos, firstPt) ? [...raw].reverse() : raw;
+          if (sqDist(currentPos, oriented[0]) > 1e-8) {
+            pushDameroConnection(currentPos, oriented[0]);
+          }
+          for (const pt of oriented) {
+            pushDedup(pt);
+          }
+          currentPos = coords[coords.length - 1];
         }
-        currentPos = coords[coords.length - 1];
+      }
+    }
+
+    // Si los path_segments estaban vacíos o no alcanzaron a conectar paradas, conectar consecutivamente de forma ortogonal
+    if (coords.length < 2 && selectedRoute.stops.length > 1) {
+      for (let i = 1; i < selectedRoute.stops.length; i++) {
+        pushDameroConnection(coords[coords.length - 1], selectedRoute.stops[i].poi.coordinates);
       }
     }
 

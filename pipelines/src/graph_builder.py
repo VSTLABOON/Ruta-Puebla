@@ -314,6 +314,10 @@ def main():
         ("seg_analco_calle7ote_s", "n_analco_parque_e", "n_analco_calle7ote", "right", "barrio_analco", 0.75, 2.2, "concreto", False, True),  # Barrera: escalon
         ("seg_analco_taller_5ote", "n_analco_parque_w", "n_analco_5ote", "left", "barrio_analco", 1.25, 1.8, "adoquin_asentado", True, False),
         ("seg_analco_conn_norte", "n_analco_5ote", "n_luz_palafox", "crossing", "barrio_analco", 1.30, 2.0, "concreto", True, False),
+        ("seg_analco_vidrio", "n_analco_parque_w", "n_analco_vidrio", "left", "barrio_analco", 1.20, 2.0, "adoquin_asentado", True, False),
+        ("seg_analco_panaderia", "n_analco_parque_e", "n_analco_panaderia", "right", "barrio_analco", 1.25, 1.8, "adoquin_asentado", True, False),
+        ("seg_analco_12sur_7a9", "n_analco_calle7ote", "n_analco_vidrio", "right", "barrio_analco", 1.40, 1.8, "adoquin_asentado", True, False),
+        ("seg_analco_14sur_5a7", "n_analco_panaderia", "n_analco_calle7ote", "left", "barrio_analco", 1.35, 1.5, "adoquin_asentado", True, False),
         # Barrio de La Luz
         ("seg_luz_palafox_s", "n_luz_palafox", "n_luz_horno", "right", "barrio_la_luz", 0.85, 3.5, "laja_colonial", False, False),
         ("seg_luz_palafox_n", "n_luz_palafox", "n_luz_templo", "left", "barrio_la_luz", 1.30, 2.8, "concreto", True, False),
@@ -341,8 +345,6 @@ def main():
         ("seg_teatro_a_sanfco", "n_teatro_principal", "n_san_francisco_jardin", "crossing", "barrio_el_alto", 1.60, 1.8, "adoquin_asentado", True, False),
         ("seg_parian_bubas", "n_parian_6norte", "n_bubas_puente", "crossing", "barrio_analco", 1.40, 2.5, "laja_colonial", True, False),
         ("seg_bubas_analco", "n_bubas_puente", "n_analco_5ote", "crossing", "barrio_analco", 1.30, 3.0, "laja_colonial", True, False),
-        ("seg_analco_vidrio", "n_analco_parque_w", "n_analco_vidrio", "left", "barrio_analco", 1.20, 2.0, "adoquin_asentado", True, False),
-        ("seg_analco_panaderia", "n_analco_parque_e", "n_analco_panaderia", "right", "barrio_analco", 1.25, 1.8, "adoquin_asentado", True, False),
         ("seg_luz_cazuelas", "n_luz_horno", "n_luz_cazuelas", "right", "barrio_la_luz", 1.10, 3.0, "concreto", True, False),
         ("seg_luz_cazuelas_templo", "n_luz_templo", "n_luz_cazuelas", "left", "barrio_la_luz", 1.30, 2.5, "concreto", True, False),
         ("seg_sanfco_templo", "n_san_francisco_jardin", "n_sanfco_templo", "crossing", "barrio_el_alto", 1.80, 1.0, "adoquin_asentado", True, False),
@@ -351,29 +353,60 @@ def main():
 
     # Waypoints ortogonales explicitos para que ningun tramo corte manzanas o la Catedral en diagonal
     segment_waypoints = {
+        # Centro / Zocalo / Catedral
         "seg_zocalo_16sep_e": [[-98.1975, 19.0428]],
+        "seg_fuente_san_miguel": [[-98.1978, 19.0428]],
+        "seg_fuente_zocalo_ne": [[-98.1978, 19.0435]],
         "seg_palafox_5ote_s": [[-98.1983, 19.0424]],
-        "seg_palafox_5ote_n": [[-98.1983, 19.0424]],
+        "seg_palafox_5ote_n": [[-98.1983, 19.0428], [-98.1983, 19.0424]],
         "seg_amparo_2sur_w": [[-98.1991, 19.0416]],
         "seg_amparo_2sur_e": [[-98.1998, 19.0424]],
-        "seg_rosario_5mayo_e": [[-98.1990, 19.0435], [-98.1993, 19.0435]],
+        "seg_rosario_5mayo_w": [[-98.1990, 19.0453]],
+        "seg_rosario_5mayo_e": [[-98.1990, 19.0435], [-98.1990, 19.0453]],
+        "seg_santa_monica_5mayo": [[-98.1990, 19.0453], [-98.1990, 19.0490]],
         "seg_sapos_6sur_w": [[-98.1963, 19.0424]],
-        "seg_sapos_6sur_e": [[-98.1975, 19.0428], [-98.1975, 19.0411]],
+        "seg_sapos_6sur_e": [[-98.1975, 19.0428], [-98.1975, 19.0424], [-98.1963, 19.0424]],
+        "seg_callejon_sapos": [[-98.1963, 19.0405]],
+        # Puente de Ovando y Analco
         "seg_ovando_puente": [[-98.1945, 19.0411]],
-        "seg_ovando_a_analco": [[-98.1930, 19.0415]],
+        "seg_ovando_a_analco": [[-98.1931, 19.0415], [-98.1931, 19.0418]],
+        "seg_analco_taller_5ote": [[-98.1931, 19.0418]],
         "seg_analco_conn_norte": [[-98.1931, 19.0441]],
-        "seg_luz_a_sanfco": [[-98.1912, 19.0457]],
-        "seg_alto_sanfco_jardin": [[-98.1916, 19.0457]],
-        "seg_dulces_rosario": [[-98.1993, 19.0451]],
-        "seg_alfenique_4ote": [[-98.1972, 19.0445]],
-        "seg_parian_bubas": [[-98.1942, 19.0429]],
-        "seg_bubas_analco": [[-98.1931, 19.0429]],
+        "seg_analco_calle7ote_s": [[-98.1920, 19.0415]],
+        "seg_analco_vidrio": [[-98.1925, 19.0406]],
+        "seg_analco_panaderia": [[-98.1912, 19.0418]],
+        "seg_analco_12sur_7a9": [[-98.1920, 19.0415], [-98.1920, 19.0406]],
+        "seg_analco_14sur_5a7": [[-98.1912, 19.0415]],
+        # Barrio de La Luz
+        "seg_luz_palafox_n": [[-98.1912, 19.0441]],
+        "seg_luz_horno_acceso": [[-98.1905, 19.0446]],
         "seg_luz_cazuelas": [[-98.1882, 19.0441]],
         "seg_luz_cazuelas_templo": [[-98.1895, 19.0446], [-98.1895, 19.0426]],
+        "seg_luz_a_sanfco": [[-98.1912, 19.0457]],
+        # Barrio de El Alto
+        "seg_alto_sanfco_jardin": [[-98.1916, 19.0457]],
+        "seg_alto_mercado_14norte": [[-98.1916, 19.0480]],
         "seg_sanfco_templo": [[-98.1895, 19.0457]],
+        # Centro / Alfenique / Parian
+        "seg_munecos_2norte": [[-98.1972, 19.0435]],
+        "seg_dulces_6ote": [[-98.1972, 19.0451]],
+        "seg_dulces_rosario": [[-98.1990, 19.0453], [-98.1990, 19.0451]],
+        "seg_alfenique_4ote": [[-98.1972, 19.0445]],
+        "seg_parian_6norte": [[-98.1942, 19.0445]],
+        "seg_barrio_artistas_parian": [[-98.1942, 19.0435]],
+        "seg_teatro_principal_8norte": [[-98.1942, 19.0448]],
+        "seg_teatro_a_sanfco": [[-98.1928, 19.0448]],
+        "seg_parian_bubas": [[-98.1942, 19.0429]],
+        "seg_bubas_analco": [[-98.1931, 19.0429]],
         "seg_san_pedro_4norte": [[-98.1952, 19.0451]],
+        "seg_san_roque_parian": [[-98.1952, 19.0455]],
         "seg_san_jose_norte": [[-98.1950, 19.0455]],
-        "seg_xane_horno_pan": [[-98.1932, 19.0480]]
+        # Barrio de Xanenetla
+        "seg_xane_concordia_norte": [[-98.1901, 19.0480]],
+        "seg_xane_calle4norte_w": [[-98.1901, 19.0485]],
+        "seg_xane_callejuela_empedrada": [[-98.1910, 19.0485]],
+        "seg_xane_horno_pan": [[-98.1932, 19.0480]],
+        "seg_xane_mirador": [[-98.1901, 19.0504]]
     }
 
     def build_street_polyline(sid, coord_u, coord_v):
@@ -381,9 +414,9 @@ def main():
             return [coord_u, *segment_waypoints[sid], coord_v]
         dlon = abs(coord_u[0] - coord_v[0])
         dlat = abs(coord_u[1] - coord_v[1])
-        if dlon > 0.00035 and dlat > 0.00035:
-            # Codo ortogonal siguiendo la traza en damero
-            corner = [round(coord_v[0], 5), round(coord_u[1], 5)]
+        if dlon > 0.00005 and dlat > 0.00005:
+            # Trazo estrictamente ortogonal por calles en damero (cero diagonales a traves de edificios)
+            corner = [round(coord_u[0], 5), round(coord_v[1], 5)]
             return [coord_u, corner, coord_v]
         return [coord_u, coord_v]
 

@@ -78,12 +78,13 @@ export function calculateScoreBreakdown(
     }
   }
 
-  // 3. Bono de dispersion zonal
+  // 3. Bono de dispersion zonal modulado segun el balance clasica / local
   const isOutsideCore = poi.zone !== 'zocalo_centro_nucleo';
-  let dispersionBonus = isOutsideCore ? 1.0 : 0.2;
-  // Modulacion por control de clasica a local
   const localBias = request.balance_local_pct / 100.0;
-  dispersionBonus = dispersionBonus * (0.5 + 0.5 * localBias);
+  // Si balance_local es bajo (clásica), favorecer núcleo zócalo; si es alto, favorecer barrios tradicionales
+  const dispersionBonus = isOutsideCore
+    ? Math.max(0.15, localBias)
+    : Math.max(0.15, 1.0 - localBias);
 
   // 4. Bono por negocio pequeno / tradicional local (DENUE)
   const localBizBonus = poi.is_local_business ? 1.0 : 0.0;
@@ -184,15 +185,46 @@ export function solveOPTW(
     currentZoneCounts[startPoi.zone] = (currentZoneCounts[startPoi.zone] || 0) + 1;
 
     let routeOrder: number[] = [startIdx];
-    let currentTime = startTime + startPoi.visit_duration_min;
     let accumulatedBudget = startPoi.cost_mxn;
 
-    // Bucle voraz de insercion
+    // Evaluador de factibilidad temporal y presupuestal de un orden de paradas
+    function evaluateFeasibility(order: number[]) {
+      let t = startTime + startPoi.visit_duration_min;
+      let totalWalk = 0;
+      let budget = startPoi.cost_mxn;
+
+      for (let k = 1; k < order.length; k++) {
+        const u = order[k - 1];
+        const v = order[k];
+        const pV = pois.find(p => poiIndexMap.get(p.id) === v)!;
+        const wMin = profileMatrix.time_minutes[u][v];
+        if (wMin >= 999990) return null;
+        totalWalk += wMin;
+        budget += pV.cost_mxn;
+        if (budget > request.max_budget_mxn) return null;
+
+        const openT = parseTimeToMinutes(pV.hours.open);
+        const closeT = parseTimeToMinutes(pV.hours.close);
+        const arrT = Math.max(t + wMin, openT);
+        if (arrT > closeT) return null;
+        t = arrT + pV.visit_duration_min;
+      }
+
+      // Tiempo de regreso a start
+      const last = order[order.length - 1];
+      const retMin = profileMatrix.time_minutes[last][startIdx];
+      if (retMin >= 999990) return null;
+      if ((t + retMin - startTime) > request.max_time_min) return null;
+
+      return { totalTime: t + retMin - startTime, totalWalk, budget };
+    }
+
+    // Heuristica de insercion optima (Best-Insertion basada en desvio marginal de caminata)
     let finished = false;
     while (!finished) {
-      const currentIdx = routeOrder[routeOrder.length - 1];
-      let bestCandidateIdx = -1;
-      let bestRatio = -1;
+      let bestCandidate: { poi: POI; idx: number; scoreBreakdown: ScoreBreakdown } | null = null;
+      let bestInsertPos = -1;
+      let bestEfficiency = -1;
 
       for (const cand of candidates) {
         if (visitedIndices.has(cand.idx)) continue;
@@ -207,28 +239,7 @@ export function solveOPTW(
         const maxCap = zoneCaps[cand.poi.zone] || 4;
         if (zCount >= maxCap) continue;
 
-        // Costo monetario
         if (accumulatedBudget + cand.poi.cost_mxn > request.max_budget_mxn) continue;
-
-        // Traslado desde actual
-        const walkToCand = profileMatrix.time_minutes[currentIdx][cand.idx];
-        if (walkToCand >= 999990) continue;
-
-        const arrivalCand = currentTime + walkToCand;
-        const candOpen = parseTimeToMinutes(cand.poi.hours.open);
-        const candClose = parseTimeToMinutes(cand.poi.hours.close);
-
-        // Ventana de horario
-        if (arrivalCand > candClose) continue;
-        const effectiveArrival = Math.max(arrivalCand, candOpen);
-        const departureCand = effectiveArrival + cand.poi.visit_duration_min;
-
-        // Retorno al punto inicial
-        const walkBackStart = profileMatrix.time_minutes[cand.idx][startIdx];
-        if (walkBackStart >= 999990) continue;
-
-        const totalElapsedWithCand = (departureCand + walkBackStart) - startTime;
-        if (totalElapsedWithCand > request.max_time_min) continue;
 
         // Modulacion segun enfoque
         let score = cand.scoreBreakdown.total_s_i;
@@ -239,65 +250,62 @@ export function solveOPTW(
           score *= 1.25;
         }
 
-        const denom = walkToCand + cand.poi.visit_duration_min + 0.1;
-        const ratio = score / denom;
+        // Evaluar todas las posiciones posibles de insercion [1 .. routeOrder.length]
+        for (let pos = 1; pos <= routeOrder.length; pos++) {
+          const testOrder = [...routeOrder.slice(0, pos), cand.idx, ...routeOrder.slice(pos)];
+          const feas = evaluateFeasibility(testOrder);
+          if (!feas) continue;
 
-        if (ratio > bestRatio) {
-          bestRatio = ratio;
-          bestCandidateIdx = cand.idx;
+          // Desvio marginal en tiempo de caminata
+          let detourMin = 0;
+          if (pos === routeOrder.length) {
+            const last = routeOrder[routeOrder.length - 1];
+            detourMin = profileMatrix.time_minutes[last][cand.idx];
+          } else {
+            const u = routeOrder[pos - 1];
+            const w = routeOrder[pos];
+            detourMin = profileMatrix.time_minutes[u][cand.idx] + profileMatrix.time_minutes[cand.idx][w] - profileMatrix.time_minutes[u][w];
+          }
+
+          // Eficiencia espacial: ratio entre el valor cultural y el desvio marginal
+          const eff = score / Math.max(0.4, detourMin);
+          if (eff > bestEfficiency) {
+            bestEfficiency = eff;
+            bestCandidate = cand;
+            bestInsertPos = pos;
+          }
         }
       }
 
-      if (bestCandidateIdx !== -1) {
-        const nextPoi = pois.find(p => poiIndexMap.get(p.id) === bestCandidateIdx)!;
-        const walkMin = profileMatrix.time_minutes[currentIdx][bestCandidateIdx];
-        const arrTime = Math.max(currentTime + walkMin, parseTimeToMinutes(nextPoi.hours.open));
-        currentTime = arrTime + nextPoi.visit_duration_min;
-        accumulatedBudget += nextPoi.cost_mxn;
-
-        routeOrder.push(bestCandidateIdx);
-        visitedIndices.add(bestCandidateIdx);
-        currentZoneCounts[nextPoi.zone] = (currentZoneCounts[nextPoi.zone] || 0) + 1;
+      if (bestCandidate && bestInsertPos !== -1) {
+        routeOrder = [...routeOrder.slice(0, bestInsertPos), bestCandidate.idx, ...routeOrder.slice(bestInsertPos)];
+        visitedIndices.add(bestCandidate.idx);
+        accumulatedBudget += bestCandidate.poi.cost_mxn;
+        currentZoneCounts[bestCandidate.poi.zone] = (currentZoneCounts[bestCandidate.poi.zone] || 0) + 1;
       } else {
         finished = true;
       }
     }
 
-    // Busqueda local 2-opt si hay mas de 3 paradas
+    // Busqueda local 2-opt exhaustiva para desenredar cruces de ruta
     if (routeOrder.length > 3) {
       let improved = true;
       let iterations = 0;
-      while (improved && iterations < 10) {
+      while (improved && iterations < 25) {
         improved = false;
         iterations++;
         for (let i = 1; i < routeOrder.length - 1; i++) {
           for (let j = i + 1; j < routeOrder.length; j++) {
             // Intentar invertir segmento entre i y j
             const newOrder = [...routeOrder.slice(0, i), ...routeOrder.slice(i, j + 1).reverse(), ...routeOrder.slice(j + 1)];
-            
-            // Validar viabilidad temporal del nuevo orden
-            let t = startTime + startPoi.visit_duration_min;
-            let feasible = true;
-            for (let k = 0; k < newOrder.length - 1; k++) {
-              const u = newOrder[k];
-              const v = newOrder[k + 1];
-              const pV = pois.find(p => poiIndexMap.get(p.id) === v)!;
-              const wMin = profileMatrix.time_minutes[u][v];
-              if (wMin >= 999990) { feasible = false; break; }
-              t = Math.max(t + wMin, parseTimeToMinutes(pV.hours.open)) + pV.visit_duration_min;
-              if (t > parseTimeToMinutes(pV.hours.close)) { feasible = false; break; }
-            }
-            if (feasible) {
-              const returnStart = profileMatrix.time_minutes[newOrder[newOrder.length - 1]][startIdx];
-              if ((t + returnStart - startTime) <= request.max_time_min) {
-                // Calcular distancia caminada total
-                const oldWalk = calculateWalkDistance(routeOrder, profileMatrix);
-                const newWalk = calculateWalkDistance(newOrder, profileMatrix);
-                if (newWalk < oldWalk - 10) {
-                  routeOrder = newOrder;
-                  improved = true;
-                  break;
-                }
+            const feas = evaluateFeasibility(newOrder);
+            if (feas) {
+              const oldWalk = calculateWalkDistance(routeOrder, profileMatrix);
+              const newWalk = calculateWalkDistance(newOrder, profileMatrix);
+              if (newWalk < oldWalk - 0.5) {
+                routeOrder = newOrder;
+                improved = true;
+                break;
               }
             }
           }
@@ -368,10 +376,10 @@ export function solveOPTW(
             }
           }
         } else {
-          // Codo ortogonal limpio si algun tramo carece de lista de segmentos
+          // Trazo estrictamente ortogonal por calles para evitar cruzar edificios en tramos directos
           const dlon = Math.abs(currentPos[0] - poi.coordinates[0]);
           const dlat = Math.abs(currentPos[1] - poi.coordinates[1]);
-          if (dlon > 0.00035 && dlat > 0.00035) {
+          if (dlon > 0.00005 && dlat > 0.00005) {
             pushCoordDedup([poi.coordinates[0], currentPos[1]]);
           }
         }
@@ -445,7 +453,7 @@ export function solveOPTW(
       name: focus === 'clasica' ? 'Ruta Tradicional Zocalo' : focus === 'barrios_locales' ? 'Ruta Barrios Tradicionales' : 'Ruta Optimizada Accesible',
       focus,
       stops,
-      path_segments: uniqueSegs,
+      path_segments: pathSegments,
       metrics,
       geometry: {
         type: 'LineString',

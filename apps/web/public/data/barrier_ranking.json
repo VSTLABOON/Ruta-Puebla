@@ -34,28 +34,12 @@
         "poi_taller_talavera_analco",
         "poi_taller_vidrio_analco",
         "poi_teatro_principal",
+        "poi_templo_analco",
         "poi_templo_la_luz",
         "poi_templo_san_francisco"
       ],
       "blocked_segments": 4,
       "ranking": [
-        {
-          "segment_id": "seg_analco_calle7ote_s",
-          "zone": "barrio_analco",
-          "length_m": 39.4,
-          "barrier_causes": [
-            "ancho_insuficiente",
-            "escalon"
-          ],
-          "unlocked_pois": [
-            "poi_templo_analco"
-          ],
-          "unlocked_pois_count": 1,
-          "unlocked_local_business_count": 0,
-          "unlocked_zones": [
-            "barrio_analco"
-          ]
-        },
         {
           "segment_id": "seg_xane_mirador",
           "zone": "barrio_xanenetla",
@@ -73,9 +57,22 @@
           ]
         },
         {
+          "segment_id": "seg_analco_calle7ote_s",
+          "zone": "barrio_analco",
+          "length_m": 54.4,
+          "barrier_causes": [
+            "ancho_insuficiente",
+            "escalon"
+          ],
+          "unlocked_pois": [],
+          "unlocked_pois_count": 0,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": []
+        },
+        {
           "segment_id": "seg_xane_callejuela_empedrada",
           "zone": "barrio_xanenetla",
-          "length_m": 59.4,
+          "length_m": 76.6,
           "barrier_causes": [
             "escalon",
             "superficie_bloqueada"
@@ -132,29 +129,12 @@
         "poi_taller_talavera_analco",
         "poi_taller_vidrio_analco",
         "poi_teatro_principal",
+        "poi_templo_analco",
         "poi_templo_la_luz",
         "poi_templo_san_francisco"
       ],
       "blocked_segments": 7,
       "ranking": [
-        {
-          "segment_id": "seg_analco_calle7ote_s",
-          "zone": "barrio_analco",
-          "length_m": 39.4,
-          "barrier_causes": [
-            "ancho_insuficiente",
-            "escalon",
-            "sin_rampa"
-          ],
-          "unlocked_pois": [
-            "poi_templo_analco"
-          ],
-          "unlocked_pois_count": 1,
-          "unlocked_local_business_count": 0,
-          "unlocked_zones": [
-            "barrio_analco"
-          ]
-        },
         {
           "segment_id": "seg_xane_mirador",
           "zone": "barrio_xanenetla",
@@ -175,9 +155,23 @@
           ]
         },
         {
+          "segment_id": "seg_analco_calle7ote_s",
+          "zone": "barrio_analco",
+          "length_m": 54.4,
+          "barrier_causes": [
+            "ancho_insuficiente",
+            "escalon",
+            "sin_rampa"
+          ],
+          "unlocked_pois": [],
+          "unlocked_pois_count": 0,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": []
+        },
+        {
           "segment_id": "seg_xane_callejuela_empedrada",
           "zone": "barrio_xanenetla",
-          "length_m": 59.4,
+          "length_m": 76.6,
           "barrier_causes": [
             "ancho_insuficiente",
             "pendiente_excesiva",
@@ -220,7 +214,7 @@
         {
           "segment_id": "seg_palafox_5ote_n",
           "zone": "zocalo_centro_nucleo",
-          "length_m": 179.2,
+          "length_m": 212.7,
           "barrier_causes": [
             "sin_rampa"
           ],

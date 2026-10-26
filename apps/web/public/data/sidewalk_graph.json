@@ -523,12 +523,16 @@
             19.0433
           ],
           [
+            -98.1978,
+            19.0435
+          ],
+          [
             -98.1975,
             19.0435
           ]
         ]
       },
-      "length_m": 38.6,
+      "length_m": 53.8,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 0.5,
       "width_m": 2.2,
@@ -610,6 +614,10 @@
           ],
           [
             -98.1983,
+            19.0428
+          ],
+          [
+            -98.1983,
             19.0424
           ],
           [
@@ -618,7 +626,7 @@
           ]
         ]
       },
-      "length_m": 179.2,
+      "length_m": 212.7,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 2.1,
       "width_m": 1.2,
@@ -744,12 +752,16 @@
             19.0435
           ],
           [
+            -98.199,
+            19.0453
+          ],
+          [
             -98.1993,
             19.0453
           ]
         ]
       },
-      "length_m": 202.6,
+      "length_m": 231.7,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 0.8,
       "width_m": 1.8,
@@ -789,8 +801,8 @@
             19.0435
           ],
           [
-            -98.1993,
-            19.0435
+            -98.199,
+            19.0453
           ],
           [
             -98.1993,
@@ -834,8 +846,12 @@
             19.0453
           ],
           [
-            -98.1989,
+            -98.199,
             19.0453
+          ],
+          [
+            -98.199,
+            19.049
           ],
           [
             -98.1989,
@@ -929,7 +945,11 @@
           ],
           [
             -98.1975,
-            19.0411
+            19.0424
+          ],
+          [
+            -98.1963,
+            19.0424
           ],
           [
             -98.1963,
@@ -973,12 +993,16 @@
             19.0411
           ],
           [
+            -98.1963,
+            19.0405
+          ],
+          [
             -98.1965,
             19.0405
           ]
         ]
       },
-      "length_m": 70.0,
+      "length_m": 87.7,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 1.5,
       "width_m": 1.5,
@@ -1059,8 +1083,12 @@
             19.0415
           ],
           [
-            -98.193,
+            -98.1931,
             19.0415
+          ],
+          [
+            -98.1931,
+            19.0418
           ],
           [
             -98.1925,
@@ -1068,7 +1096,7 @@
           ]
         ]
       },
-      "length_m": 219.9,
+      "length_m": 243.6,
       "zone": "barrio_analco",
       "slope_pct": 2.0,
       "width_m": 1.5,
@@ -1186,12 +1214,16 @@
             19.0418
           ],
           [
+            -98.192,
+            19.0415
+          ],
+          [
             -98.1918,
             19.0415
           ]
         ]
       },
-      "length_m": 39.4,
+      "length_m": 54.4,
       "zone": "barrio_analco",
       "slope_pct": 2.2,
       "width_m": 0.75,
@@ -1304,6 +1336,190 @@
       "is_verified": false
     },
     {
+      "id": "seg_analco_vidrio",
+      "osm_way_id": "osm_seg_analco_vidrio",
+      "side": "left",
+      "from_node": "n_analco_parque_w",
+      "to_node": "n_analco_vidrio",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1925,
+            19.0418
+          ],
+          [
+            -98.1925,
+            19.0406
+          ],
+          [
+            -98.1922,
+            19.0406
+          ]
+        ]
+      },
+      "length_m": 165.0,
+      "zone": "barrio_analco",
+      "slope_pct": 2.0,
+      "width_m": 1.2,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_analco_panaderia",
+      "osm_way_id": "osm_seg_analco_panaderia",
+      "side": "right",
+      "from_node": "n_analco_parque_e",
+      "to_node": "n_analco_panaderia",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.192,
+            19.0418
+          ],
+          [
+            -98.1912,
+            19.0418
+          ],
+          [
+            -98.1912,
+            19.0421
+          ]
+        ]
+      },
+      "length_m": 117.4,
+      "zone": "barrio_analco",
+      "slope_pct": 1.8,
+      "width_m": 1.25,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_analco_12sur_7a9",
+      "osm_way_id": "osm_seg_analco_12sur_7a9",
+      "side": "right",
+      "from_node": "n_analco_calle7ote",
+      "to_node": "n_analco_vidrio",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1918,
+            19.0415
+          ],
+          [
+            -98.192,
+            19.0415
+          ],
+          [
+            -98.192,
+            19.0406
+          ],
+          [
+            -98.1922,
+            19.0406
+          ]
+        ]
+      },
+      "length_m": 142.1,
+      "zone": "barrio_analco",
+      "slope_pct": 1.8,
+      "width_m": 1.4,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
+      "id": "seg_analco_14sur_5a7",
+      "osm_way_id": "osm_seg_analco_14sur_5a7",
+      "side": "left",
+      "from_node": "n_analco_panaderia",
+      "to_node": "n_analco_calle7ote",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.1912,
+            19.0421
+          ],
+          [
+            -98.1912,
+            19.0415
+          ],
+          [
+            -98.1918,
+            19.0415
+          ]
+        ]
+      },
+      "length_m": 129.8,
+      "zone": "barrio_analco",
+      "slope_pct": 1.5,
+      "width_m": 1.35,
+      "surface": "adoquin_asentado",
+      "has_curb_ramp": true,
+      "has_steps": false,
+      "transitable": {
+        "sin_restriccion": true,
+        "movilidad_reducida": true,
+        "silla_de_ruedas": true
+      },
+      "compliance_norm": {
+        "nom_001_sedatu": null,
+        "nom_004_sedatu": false,
+        "ntdiu_puebla": null,
+        "estado_verificacion": "por_verificar_contra_dof"
+      },
+      "confidence": 0.15,
+      "audit_count": 0,
+      "is_verified": false
+    },
+    {
       "id": "seg_luz_palafox_s",
       "osm_way_id": "osm_seg_luz_palafox_s",
       "side": "right",
@@ -1359,11 +1575,15 @@
           ],
           [
             -98.1912,
+            19.0441
+          ],
+          [
+            -98.1912,
             19.0446
           ]
         ]
       },
-      "length_m": 63.9,
+      "length_m": 87.1,
       "zone": "barrio_la_luz",
       "slope_pct": 2.8,
       "width_m": 1.3,
@@ -1534,8 +1754,8 @@
             19.0468
           ],
           [
-            -98.191,
-            19.0468
+            -98.1916,
+            19.048
           ],
           [
             -98.191,
@@ -1624,8 +1844,8 @@
             19.0492
           ],
           [
-            -98.1908,
-            19.0492
+            -98.1901,
+            19.0485
           ],
           [
             -98.1908,
@@ -1669,12 +1889,16 @@
             19.048
           ],
           [
+            -98.191,
+            19.0485
+          ],
+          [
             -98.1908,
             19.0485
           ]
         ]
       },
-      "length_m": 59.4,
+      "length_m": 76.6,
       "zone": "barrio_xanenetla",
       "slope_pct": 6.5,
       "width_m": 0.8,
@@ -1756,11 +1980,15 @@
           ],
           [
             -98.1972,
+            19.0435
+          ],
+          [
+            -98.1972,
             19.0439
           ]
         ]
       },
-      "length_m": 54.5,
+      "length_m": 76.0,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 1.0,
       "width_m": 1.8,
@@ -1796,8 +2024,8 @@
             19.0439
           ],
           [
-            -98.1968,
-            19.0439
+            -98.1972,
+            19.0451
           ],
           [
             -98.1968,
@@ -1841,7 +2069,11 @@
             19.0453
           ],
           [
-            -98.1993,
+            -98.199,
+            19.0453
+          ],
+          [
+            -98.199,
             19.0451
           ],
           [
@@ -1931,12 +2163,16 @@
             19.044
           ],
           [
+            -98.1952,
+            19.0455
+          ],
+          [
             -98.1955,
             19.0455
           ]
         ]
       },
-      "length_m": 169.7,
+      "length_m": 198.3,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 1.5,
       "width_m": 1.5,
@@ -2063,11 +2299,15 @@
           ],
           [
             -98.1942,
+            19.0445
+          ],
+          [
+            -98.1942,
             19.0442
           ]
         ]
       },
-      "length_m": 80.8,
+      "length_m": 106.9,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 1.0,
       "width_m": 1.7,
@@ -2103,12 +2343,16 @@
             19.0442
           ],
           [
+            -98.1942,
+            19.0435
+          ],
+          [
             -98.1945,
             19.0435
           ]
         ]
       },
-      "length_m": 84.0,
+      "length_m": 109.4,
       "zone": "zocalo_centro_nucleo",
       "slope_pct": 1.0,
       "width_m": 1.75,
@@ -2144,12 +2388,16 @@
             19.0442
           ],
           [
+            -98.1942,
+            19.0448
+          ],
+          [
             -98.194,
             19.0448
           ]
         ]
       },
-      "length_m": 70.0,
+      "length_m": 87.7,
       "zone": "barrio_el_alto",
       "slope_pct": 1.4,
       "width_m": 1.65,
@@ -2289,88 +2537,6 @@
       "slope_pct": 3.0,
       "width_m": 1.3,
       "surface": "laja_colonial",
-      "has_curb_ramp": true,
-      "has_steps": false,
-      "transitable": {
-        "sin_restriccion": true,
-        "movilidad_reducida": true,
-        "silla_de_ruedas": true
-      },
-      "compliance_norm": {
-        "nom_001_sedatu": null,
-        "nom_004_sedatu": false,
-        "ntdiu_puebla": null,
-        "estado_verificacion": "por_verificar_contra_dof"
-      },
-      "confidence": 0.15,
-      "audit_count": 0,
-      "is_verified": false
-    },
-    {
-      "id": "seg_analco_vidrio",
-      "osm_way_id": "osm_seg_analco_vidrio",
-      "side": "left",
-      "from_node": "n_analco_parque_w",
-      "to_node": "n_analco_vidrio",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -98.1925,
-            19.0418
-          ],
-          [
-            -98.1922,
-            19.0406
-          ]
-        ]
-      },
-      "length_m": 137.1,
-      "zone": "barrio_analco",
-      "slope_pct": 2.0,
-      "width_m": 1.2,
-      "surface": "adoquin_asentado",
-      "has_curb_ramp": true,
-      "has_steps": false,
-      "transitable": {
-        "sin_restriccion": true,
-        "movilidad_reducida": true,
-        "silla_de_ruedas": true
-      },
-      "compliance_norm": {
-        "nom_001_sedatu": null,
-        "nom_004_sedatu": false,
-        "ntdiu_puebla": null,
-        "estado_verificacion": "por_verificar_contra_dof"
-      },
-      "confidence": 0.15,
-      "audit_count": 0,
-      "is_verified": false
-    },
-    {
-      "id": "seg_analco_panaderia",
-      "osm_way_id": "osm_seg_analco_panaderia",
-      "side": "right",
-      "from_node": "n_analco_parque_e",
-      "to_node": "n_analco_panaderia",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -98.192,
-            19.0418
-          ],
-          [
-            -98.1912,
-            19.0421
-          ]
-        ]
-      },
-      "length_m": 90.5,
-      "zone": "barrio_analco",
-      "slope_pct": 1.8,
-      "width_m": 1.25,
-      "surface": "adoquin_asentado",
       "has_curb_ramp": true,
       "has_steps": false,
       "transitable": {
@@ -2541,8 +2707,8 @@
             19.0492
           ],
           [
-            -98.1894,
-            19.0492
+            -98.1901,
+            19.0504
           ],
           [
             -98.1894,
