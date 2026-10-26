@@ -16,7 +16,9 @@ import {
   Hand,
   Gamepad2,
   Play,
-  Pause
+  Pause,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { createAvatar3D, Avatar3DController } from '../utils/avatar3d';
 
@@ -1069,6 +1071,8 @@ export const MapViewer: FC<MapViewerProps> = ({
   // Handlers de gestos para el Joystick Táctil Virtual (Móvil y Mouse)
   const joystickBaseRef = useRef<HTMLDivElement | null>(null);
   const isDraggingStickRef = useRef(false);
+  const [isDraggingStick, setIsDraggingStick] = useState(false);
+  const [isJoystickMinimized, setIsJoystickMinimized] = useState(false);
 
   const updateStickFromPointer = useCallback((clientX: number, clientY: number) => {
     if (!joystickBaseRef.current) return;
@@ -1103,6 +1107,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     e.stopPropagation();
     e.currentTarget.setPointerCapture(e.pointerId);
     isDraggingStickRef.current = true;
+    setIsDraggingStick(true);
     updateStickFromPointer(e.clientX, e.clientY);
   };
 
@@ -1115,6 +1120,7 @@ export const MapViewer: FC<MapViewerProps> = ({
   const handleStickPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     isDraggingStickRef.current = false;
+    setIsDraggingStick(false);
     setStickOffset({ x: 0, y: 0 });
     touchVectorRef.current = { x: 0, y: 0 };
   };
@@ -1435,75 +1441,121 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       {/* Joystick Virtual Táctil Flotante (Teléfono / Mouse / Indicador de Mando Xbox) */}
       {showJoystickPad && (
-        <div className="absolute bottom-24 right-3 z-20 flex flex-col items-center gap-1.5 pointer-events-auto">
-          {/* Selector de velocidad de exploración */}
-          <div className="flex items-center gap-1 bg-[#FAF6EE]/95 backdrop-blur-md px-2 py-1 rounded-xl border border-[#0F3078]/40 shadow-md text-[9px] font-black text-[#0F3078]">
-            {([1, 2, 4] as const).map((spd) => (
-              <button
-                key={spd}
-                type="button"
-                onClick={() => setWalkSpeedMultiplier(spd)}
-                className={`px-1.5 py-0.5 rounded-lg transition cursor-pointer ${
-                  walkSpeedMultiplier === spd
-                    ? 'bg-[#0F3078] text-[#FAF6EE]'
-                    : 'hover:bg-[#0F3078]/10 text-[#0F3078]'
-                }`}
-              >
-                {spd}x
-              </button>
-            ))}
-          </div>
-
-          {/* Pad Analógico Circular Talavera */}
-          <div
-            ref={joystickBaseRef}
-            onPointerDown={handleStickPointerDown}
-            onPointerMove={handleStickPointerMove}
-            onPointerUp={handleStickPointerUp}
-            onPointerCancel={handleStickPointerUp}
-            className="relative w-24 h-24 rounded-full bg-[#FAF6EE]/90 backdrop-blur-md border-2 border-[#0F3078] shadow-[0_8px_28px_rgba(15,48,120,0.4)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
-            title={
-              language === 'es'
-                ? 'Arrastra para caminar por Puebla (También puedes usar Mando Xbox o teclas WASD)'
-                : 'Drag to walk around Puebla (Xbox Controller & WASD also supported)'
-            }
-          >
-            {/* Anillo interior decorativo Talavera */}
-            <div className="w-16 h-16 rounded-full border border-dashed border-[#0F3078]/35 pointer-events-none flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-[#0F3078]/20" />
-            </div>
-
-            {/* Puntos cardinales */}
-            <span className="absolute top-1 text-[8px] font-black text-[#0F3078]/60 pointer-events-none">N</span>
-            <span className="absolute bottom-1 text-[8px] font-black text-[#0F3078]/60 pointer-events-none">S</span>
-            <span className="absolute left-1.5 text-[8px] font-black text-[#0F3078]/60 pointer-events-none">O</span>
-            <span className="absolute right-1.5 text-[8px] font-black text-[#0F3078]/60 pointer-events-none">E</span>
-
-            {/* Stick móvil */}
-            <div
-              style={{
-                transform: `translate(${stickOffset.x}px, ${stickOffset.y}px)`
-              }}
-              className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#0F3078] via-[#1B49AC] to-[#D48914] border-2 border-white shadow-lg flex items-center justify-center pointer-events-none transition-transform duration-75"
+        <div className="absolute bottom-24 sm:bottom-28 left-3 sm:left-4 z-30 pointer-events-auto">
+          {isJoystickMinimized ? (
+            <button
+              type="button"
+              onClick={() => setIsJoystickMinimized(false)}
+              className="h-9 px-3 rounded-2xl bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#0F3078] border-2 border-[#0F3078] shadow-lg backdrop-blur-md flex items-center gap-1.5 font-bold text-xs cursor-pointer transition-all duration-200 active:scale-95"
+              title={language === 'es' ? 'Abrir joystick de exploración' : 'Open exploration joystick'}
             >
-              <div className="w-4 h-4 rounded-full bg-[#FAF6EE]/90 border border-[#0F3078]" />
-            </div>
-          </div>
+              <Gamepad2 className="w-4 h-4 text-[#D48914]" />
+              <span className="text-[11px] font-black">{language === 'es' ? 'Control' : 'Joystick'}</span>
+              <ChevronUp className="w-3.5 h-3.5 text-[#0F3078]/70 ml-0.5" />
+            </button>
+          ) : (
+            <div className="bg-[#FAF6EE]/95 backdrop-blur-xl border-2 border-[#0F3078] shadow-[0_12px_32px_rgba(15,48,120,0.25)] rounded-3xl p-2.5 flex flex-col items-center gap-2 select-none w-36 transition-all duration-300">
+              {/* Header con título y botón de minimizar */}
+              <div className="w-full flex items-center justify-between pb-1 border-b border-[#0F3078]/15 px-0.5">
+                <div className="flex items-center gap-1.5 text-[#0F3078]">
+                  <Gamepad2 className="w-3.5 h-3.5 text-[#D48914]" />
+                  <span className="text-[10px] font-black uppercase tracking-wider">
+                    {language === 'es' ? 'Control' : 'Joystick'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsJoystickMinimized(true)}
+                  className="w-5 h-5 rounded-lg text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 flex items-center justify-center transition cursor-pointer"
+                  title={language === 'es' ? 'Minimizar control' : 'Minimize controller'}
+                  aria-label={language === 'es' ? 'Minimizar control' : 'Minimize controller'}
+                >
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
-          <span className="text-[9px] font-black text-[#0F3078] bg-[#FAF6EE]/95 px-2 py-0.5 rounded-full border border-[#0F3078]/30 shadow">
-            {gamepadConnectedName
-              ? language === 'es'
-                ? 'Xbox + Táctil'
-                : 'Xbox + Touch'
-              : language === 'es'
-              ? 'Joystick / WASD'
-              : 'Joystick / WASD'}
-          </span>
+              {/* Selector de velocidad de exploración */}
+              <div className="flex items-center w-full bg-[#0F3078]/8 p-0.5 rounded-xl border border-[#0F3078]/20">
+                {([1, 2, 4] as const).map((spd) => (
+                  <button
+                    key={spd}
+                    type="button"
+                    onClick={() => setWalkSpeedMultiplier(spd)}
+                    className={`flex-1 py-0.5 text-[10px] font-black rounded-lg transition cursor-pointer ${
+                      walkSpeedMultiplier === spd
+                        ? 'bg-[#0F3078] text-[#FAF6EE] shadow-sm'
+                        : 'text-[#0F3078]/70 hover:text-[#0F3078]'
+                    }`}
+                  >
+                    {spd}x
+                  </button>
+                ))}
+              </div>
+
+              {/* Pad Analógico Circular Talavera */}
+              <div
+                ref={joystickBaseRef}
+                onPointerDown={handleStickPointerDown}
+                onPointerMove={handleStickPointerMove}
+                onPointerUp={handleStickPointerUp}
+                onPointerCancel={handleStickPointerUp}
+                className="relative w-24 h-24 rounded-full bg-gradient-to-b from-[#FAF6EE] to-[#E9DFCF] border-2 border-[#0F3078] shadow-[inset_0_3px_8px_rgba(15,48,120,0.2),0_6px_16px_rgba(15,48,120,0.15)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
+                title={
+                  language === 'es'
+                    ? 'Arrastra para caminar (Compatible con Mando Xbox y WASD)'
+                    : 'Drag to walk (Xbox Controller & WASD supported)'
+                }
+              >
+                {/* Guía direccional Talavera */}
+                <div className="w-16 h-16 rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-[#0F3078]/25" />
+                </div>
+
+                {/* Flechas direccionales ortogonales */}
+                <span className="absolute top-1 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">▲</span>
+                <span className="absolute bottom-1 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">▼</span>
+                <span className="absolute left-1.5 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">◀</span>
+                <span className="absolute right-1.5 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">▶</span>
+
+                {/* Stick móvil con respuesta instantánea sin lag */}
+                <div
+                  style={{
+                    transform: `translate3d(${stickOffset.x}px, ${stickOffset.y}px, 0)`
+                  }}
+                  className={`w-10 h-10 rounded-full bg-gradient-to-tr from-[#0F3078] via-[#1B49AC] to-[#D48914] border-2 border-white shadow-[0_4px_12px_rgba(15,48,120,0.5)] flex items-center justify-center pointer-events-none ${
+                    isDraggingStick ? 'transition-none scale-105' : 'transition-transform duration-200 ease-out'
+                  }`}
+                >
+                  <div className="w-3.5 h-3.5 rounded-full bg-[#FAF6EE] border border-[#0F3078]/40 shadow-inner" />
+                </div>
+              </div>
+
+              {/* Indicador de hardware / estado de entrada */}
+              <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#0F3078] bg-[#0F3078]/8 px-2 py-0.5 rounded-full border border-[#0F3078]/15 max-w-full truncate">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    stickOffset.x !== 0 || stickOffset.y !== 0
+                      ? 'bg-emerald-500 animate-pulse'
+                      : gamepadConnectedName
+                      ? 'bg-emerald-500'
+                      : 'bg-[#D48914]'
+                  }`}
+                />
+                <span className="truncate">
+                  {gamepadConnectedName
+                    ? 'Xbox USB'
+                    : stickOffset.x !== 0 || stickOffset.y !== 0
+                    ? (language === 'es' ? 'Caminando' : 'Walking')
+                    : (language === 'es' ? 'Táctil / WASD' : 'Touch / WASD')}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* Guía del Mapa Poblano (Simbología Sincronizada con Avatar 3D y 4 Categorías) */}
-      <div className="absolute bottom-24 left-3 z-10 flex items-center gap-2">
+      <div className="absolute bottom-24 sm:bottom-28 right-3 sm:right-4 z-20 flex items-center gap-2">
         {showLegend ? (
           <div className="bg-[#FAF6EE]/98 backdrop-blur-md p-3.5 rounded-2xl border-2 border-[#0F3078] text-xs text-[#162035] shadow-2xl space-y-1.5 transition-all duration-300 max-w-[250px]">
             <div className="flex items-center justify-between font-bold text-[#0F3078] uppercase tracking-wider text-[10px] pb-1 border-b border-[#0F3078]/20 gap-4">
