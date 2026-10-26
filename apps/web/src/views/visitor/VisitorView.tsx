@@ -200,7 +200,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
     <div className="relative w-full h-full overflow-hidden flex flex-col">
       {/* Mapa 3D Vectorial Pantalla Completa Permanente */}
       {graph && (
-        <div className="absolute inset-0 w-full h-full z-0">
+        <div className="absolute inset-0 w-full h-full">
           <MapViewer
             segments={graph.edges}
             pois={pois}

@@ -1154,7 +1154,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       const rect = joystickBaseRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const maxRadius = 26;
+      const maxRadius = 24;
 
       const dx = clientX - centerX;
       const dy = clientY - centerY;
@@ -1506,7 +1506,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       {/* Joystick Analógico Circular Flotante con Iconos Vectoriales */}
       {showJoystickPad && (
         <div
-          className={`absolute bottom-[7.5rem] sm:bottom-24 lg:bottom-20 z-30 select-none transition-all duration-500 ${
+          className={`absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-28 lg:bottom-24 z-30 select-none transition-all duration-500 ${
             isDesktopPanelOpen ? 'left-3 sm:left-4 lg:left-[404px]' : 'left-3 sm:left-4'
           } ${
             isMobileSheetOpen
@@ -1549,7 +1549,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       )}
 
       {/* Guía del Mapa Poblano (Simbología Sincronizada con Avatar 3D y 4 Categorías) */}
-      <div className={`absolute bottom-[7.5rem] sm:bottom-24 lg:bottom-20 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
+      <div className={`absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-28 lg:bottom-24 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
         {showLegend ? (
           <div className="bg-[#FAF6EE]/98 backdrop-blur-md p-3.5 rounded-2xl border-2 border-[#0F3078] text-xs text-[#162035] shadow-2xl space-y-1.5 transition-all duration-300 max-w-[250px]">
             <div className="flex items-center justify-between font-bold text-[#0F3078] uppercase tracking-wider text-[10px] pb-1 border-b border-[#0F3078]/20 gap-4">

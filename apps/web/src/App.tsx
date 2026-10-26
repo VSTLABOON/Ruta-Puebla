@@ -336,7 +336,7 @@ function MainApp() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden talavera-bg-pattern text-[#162035] flex flex-col font-sans antialiased selection:bg-[#0F3078] selection:text-[#FAF6EE]">
+    <div className="h-screen h-[100dvh] max-h-[100dvh] w-screen overflow-hidden talavera-bg-pattern text-[#162035] flex flex-col font-sans antialiased selection:bg-[#0F3078] selection:text-[#FAF6EE]">
       {/* Cabecera Principal PopoGo estilo Azulejo de Talavera con Cenefa Policroma */}
       <header className="talavera-cobalt-pattern text-[#FAF6EE] z-40 flex-shrink-0 shadow-md">
         <div className="w-full px-3 sm:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3">
@@ -400,7 +400,7 @@ function MainApp() {
       </header>
 
       {/* Área Principal con Soporte para Vista Simulada 390x844 */}
-      <main className="flex-1 w-full relative overflow-hidden flex items-center justify-center">
+      <main className="flex-1 w-full relative overflow-hidden flex items-center justify-center min-h-0">
         <div
           className={
             viewportMode === 'mobile'

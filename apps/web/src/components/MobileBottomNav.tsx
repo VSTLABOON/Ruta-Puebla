@@ -308,7 +308,7 @@ export const MobileBottomNav: FC<MobileBottomNavProps> = ({
       {/* Dock Inferior Talavera Fijo */}
       <nav
         aria-label="Centro de mando táctico"
-        className="fixed bottom-3 inset-x-0 z-50 flex justify-center px-3 pointer-events-none select-none pb-[env(safe-area-inset-bottom,0px)]"
+        className="absolute bottom-3 inset-x-0 z-40 flex justify-center px-3 pointer-events-none select-none pb-[env(safe-area-inset-bottom,0px)]"
       >
         <div className="pointer-events-auto max-w-sm w-full bg-[#FAF6EE]/95 backdrop-blur-2xl border-2 border-[#0F3078] rounded-3xl p-1.5 shadow-[0_12px_40px_rgba(15,48,120,0.25)] flex items-center justify-between relative">
           {/* TAB 1: EXPLORAR (Mapa 3D) */}
