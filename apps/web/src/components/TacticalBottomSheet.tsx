@@ -14,7 +14,6 @@ import {
   ChevronRight,
   Accessibility,
   Store,
-  MessageSquare,
   Navigation,
   Ticket,
   Flame,
@@ -22,7 +21,8 @@ import {
   Landmark,
   Utensils,
   Compass,
-  ArrowRight
+  ArrowRight,
+  Route
 } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
@@ -39,6 +39,7 @@ interface TacticalBottomSheetProps {
   passportState: PassportState;
   onUnlockSecret: (poiId: string, badgeName: string) => void;
   onMoveUserHere?: (coords: [number, number]) => void;
+  onOpenItinerary?: () => void;
 }
 
 function getActivityMeta(poi: POI, language: Language) {
@@ -80,10 +81,11 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
   language,
   passportState,
   onUnlockSecret,
-  onMoveUserHere
+  onMoveUserHere,
+  onOpenItinerary
 }) => {
   const [sheetState, setSheetState] = useState<'peek' | 'half' | 'full'>('half');
-  const [activeTab, setActiveTab] = useState<'info' | 'accessibility' | 'badge' | 'memories'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'accessibility' | 'badge'>('info');
 
   const touchStartY = useRef<number | null>(null);
 
@@ -117,9 +119,6 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
   const ActivityIcon = activityMeta.Icon;
 
   const isSecretUnlocked = passportState.unlocked_secrets.includes(poi.id);
-  const hasStories =
-    (poi.community_memories && poi.community_memories.length > 0) ||
-    (poi.historical_figures && poi.historical_figures.length > 0);
 
   const formatTime = (min: number) => {
     const h = Math.floor(min / 60);
@@ -169,16 +168,17 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
     }
   };
 
+  // Alturas contenidas dentro del contenedor de vista para nunca rebasar la barra superior
   const heightClasses = {
-    peek: 'h-28',
-    half: 'h-[58vh] sm:h-[520px]',
-    full: 'h-[85vh] sm:h-[700px]'
+    peek: 'h-24 max-h-[calc(100%-5.5rem)]',
+    half: 'h-[48vh] max-h-[calc(100%-5.5rem)]',
+    full: 'h-[70vh] max-h-[calc(100%-5.5rem)]'
   }[sheetState];
 
   return (
     <div
       aria-hidden={!isOpen}
-      className={`fixed inset-x-0 bottom-0 z-40 flex flex-col justify-end pb-20 sm:pb-24 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end pb-20 sm:pb-24 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isOpen
           ? 'translate-y-0 opacity-100 pointer-events-none'
           : 'translate-y-full opacity-0 pointer-events-none'
@@ -199,7 +199,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           <div className="w-10 h-1 rounded-full bg-white/40" />
         </div>
 
-        <header className="bg-[#0F3078] text-[#FAF6EE] px-4 pb-3 pt-1 flex items-center justify-between gap-2.5 flex-shrink-0">
+        <header className="bg-[#0F3078] text-[#FAF6EE] px-4 pb-3 pt-1 flex items-center justify-between gap-2 flex-shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-xl bg-white/15 border border-white/25 font-serif font-black text-xs flex items-center justify-center flex-shrink-0">
               {standalonePoi ? <MapPin className="w-4 h-4 text-[#F0B43A]" /> : currentStop?.stop_order || 1}
@@ -225,6 +225,21 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           </div>
 
           <div className="flex items-center gap-1 flex-shrink-0">
+            {onOpenItinerary && (
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  onOpenItinerary();
+                }}
+                className="px-2 py-1.5 rounded-xl bg-[#B84A2C] hover:bg-[#D66544] text-white text-[10px] font-bold flex items-center gap-1 transition cursor-pointer"
+                title={language === 'es' ? 'Elegir o armar ruta' : 'Choose or build route'}
+              >
+                <Route className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">{language === 'es' ? 'Ruta' : 'Route'}</span>
+              </button>
+            )}
+
             {stops.length > 0 && stopIndex >= 0 && (
               <div className="flex items-center bg-white/10 rounded-xl p-0.5 border border-white/15">
                 <button
@@ -275,9 +290,9 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
           </div>
         </header>
 
-        {/* 2. Selector Segmentado Unificado */}
+        {/* 2. Selector Segmentado Unificado (3 pestañas limpias) */}
         <div className="px-3.5 py-2 bg-[#F2EBDC] border-b border-[#0F3078]/15 flex-shrink-0">
-          <div className={`grid ${hasStories ? 'grid-cols-4' : 'grid-cols-3'} gap-1 bg-white/80 p-1 rounded-xl border border-[#0F3078]/15 text-xs font-bold`}>
+          <div className="grid grid-cols-3 gap-1 bg-white/80 p-1 rounded-xl border border-[#0F3078]/15 text-xs font-bold">
             <button
               type="button"
               onClick={() => {
@@ -325,24 +340,6 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
               <Award className="w-3.5 h-3.5 flex-shrink-0" />
               <span className="truncate">{language === 'es' ? 'Sello' : 'Stamp'}</span>
             </button>
-
-            {hasStories && (
-              <button
-                type="button"
-                onClick={() => {
-                  tacticalAudio.playTacticalClick();
-                  setActiveTab('memories');
-                }}
-                className={`py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition cursor-pointer ${
-                  activeTab === 'memories'
-                    ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
-                    : 'text-[#0F3078]/75 hover:text-[#0F3078]'
-                }`}
-              >
-                <MessageSquare className="w-3.5 h-3.5 flex-shrink-0" />
-                <span className="truncate">{language === 'es' ? 'Relatos' : 'Stories'}</span>
-              </button>
-            )}
           </div>
         </div>
 
@@ -540,37 +537,6 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                 }}
                 language={language}
               />
-            </div>
-          )}
-
-          {activeTab === 'memories' && (
-            <div className="space-y-2.5 text-xs">
-              {poi.historical_figures?.map((hf, idx) => (
-                <div
-                  key={`hf-${idx}`}
-                  className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs"
-                >
-                  <div className="flex items-center justify-between">
-                    <strong className="text-[#0F3078] text-xs">{hf.nombre}</strong>
-                    <span className="text-[10px] text-[#0F3078]/60">{hf.epoca}</span>
-                  </div>
-                  <div className="text-[11px] text-[#B84A2C] font-semibold">{hf.rol}</div>
-                  <p className="text-[#162035]/80 leading-relaxed">{hf.relato}</p>
-                </div>
-              ))}
-
-              {poi.community_memories?.map((cm, idx) => (
-                <div
-                  key={`cm-${idx}`}
-                  className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs"
-                >
-                  <div className="flex items-center justify-between">
-                    <strong className="text-[#1D6B52]">{cm.autor}</strong>
-                    <span className="text-[10px] text-[#162035]/60">{cm.procedencia}</span>
-                  </div>
-                  <p className="text-[#162035]/85 italic leading-relaxed">&ldquo;{cm.testimonio}&rdquo;</p>
-                </div>
-              ))}
             </div>
           )}
         </div>

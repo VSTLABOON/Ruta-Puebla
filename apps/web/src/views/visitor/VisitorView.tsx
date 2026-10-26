@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import type { FC } from 'react';
 import {
   POI,
@@ -94,6 +94,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
 
   const [activeRoute, setActiveRoute] = useState<RouteAlternative | null>(null);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const pulseCycleRef = useRef(0);
 
   const handleUpdateReq = (updated: Partial<RouteRequest>) => {
     setRequest((prev) => ({ ...prev, ...updated }));
@@ -116,9 +117,31 @@ export const VisitorView: FC<VisitorViewProps> = ({
   const handleTriggerUrbanPulse = () => {
     setIsPulseActive(true);
     tacticalAudio.playUrbanPulse();
+
+    if (pois.length > 0) {
+      const sortedByDistance = [...pois]
+        .map((poi) => {
+          const dx = poi.coordinates[0] - userLocation[0];
+          const dy = poi.coordinates[1] - userLocation[1];
+          return { poi, distSq: dx * dx + dy * dy };
+        })
+        .sort((a, b) => a.distSq - b.distSq);
+
+      const topCount = Math.min(3, sortedByDistance.length);
+      const target = sortedByDistance[pulseCycleRef.current % topCount]?.poi;
+      pulseCycleRef.current = (pulseCycleRef.current + 1) % topCount;
+
+      if (target) {
+        setCommandTab('explore');
+        setSelectedStopPoiId(target.id);
+        setIsBottomSheetOpen(true);
+        setIsDesktopPanelOpen(true);
+      }
+    }
+
     setTimeout(() => {
       setIsPulseActive(false);
-    }, 2800);
+    }, 2200);
   };
 
   const handleInspectStop = (poiId: string) => {
@@ -129,8 +152,12 @@ export const VisitorView: FC<VisitorViewProps> = ({
 
   const handleSelectTab = (tab: CommandTab) => {
     if (tab === 'itinerary') {
-      setIsBottomSheetOpen((prev) => !prev);
-      setIsDesktopPanelOpen(true);
+      if (!activeRoute) {
+        setIsWizardOpen(true);
+      } else {
+        setIsBottomSheetOpen((prev) => !prev);
+        setIsDesktopPanelOpen(true);
+      }
       setCommandTab('explore');
     } else {
       setCommandTab(tab);
@@ -187,7 +214,6 @@ export const VisitorView: FC<VisitorViewProps> = ({
             userLocation={userLocation}
             onUserLocationChange={onUserLocationChange}
             onClearRoute={handleClearRoute}
-            onOpenCustomizer={() => setIsWizardOpen(true)}
             onOpenFilters={() => setIsFilterDrawerOpen(true)}
             onExportRoute={activeRoute ? handleExportRoute : undefined}
             isDesktopPanelOpen={hasSidePanelVisible}
@@ -215,6 +241,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
               passportState={passportState}
               onUnlockSecret={onUnlockSecret}
               onMoveUserHere={(coords) => onUserLocationChange(coords)}
+              onOpenItinerary={() => setIsWizardOpen(true)}
             />
           </div>
 
@@ -294,6 +321,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
             passportState={passportState}
             onUnlockSecret={onUnlockSecret}
             onMoveUserHere={(coords) => onUserLocationChange(coords)}
+            onOpenItinerary={() => setIsWizardOpen(true)}
           />
         </div>
       )}
@@ -328,7 +356,9 @@ export const VisitorView: FC<VisitorViewProps> = ({
         onClose={() => setIsWizardOpen(false)}
         onSelectRoute={(route) => {
           setActiveRoute(route);
-          setSelectedStopPoiId(null);
+          setSelectedStopPoiId(route.stops[0]?.poi.id || null);
+          setIsBottomSheetOpen(true);
+          setIsDesktopPanelOpen(true);
           setIsWizardOpen(false);
         }}
       />

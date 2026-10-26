@@ -11,14 +11,21 @@ import {
   Moon,
   Sun,
   Navigation,
-  Sparkles,
   X,
   Hand,
   Gamepad2,
   Play,
   Pause,
   SlidersHorizontal,
-  Download
+  Download,
+  Flame,
+  Utensils,
+  Compass,
+  Landmark,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { createAvatar3D, Avatar3DController } from '../utils/avatar3d';
 
@@ -35,7 +42,6 @@ interface MapViewerProps {
   userLocation: [number, number];
   onUserLocationChange: (coords: [number, number]) => void;
   onClearRoute?: () => void;
-  onOpenCustomizer?: () => void;
   onOpenFilters?: () => void;
   onExportRoute?: () => void;
   isDesktopPanelOpen?: boolean;
@@ -147,7 +153,6 @@ export const MapViewer: FC<MapViewerProps> = ({
   userLocation,
   onUserLocationChange,
   onClearRoute,
-  onOpenCustomizer,
   onOpenFilters,
   onExportRoute,
   isDesktopPanelOpen = false,
@@ -168,9 +173,6 @@ export const MapViewer: FC<MapViewerProps> = ({
   // Estados de geolocalización y radar de proximidad
   const [isGpsTracking, setIsGpsTracking] = useState(false);
   const [proximityAlert, setProximityAlert] = useState<{ poi: POI; distanceM: number } | null>(null);
-  const [isAlertMinimized, setIsAlertMinimized] = useState(false);
-  const alertTimerRef = useRef<number | null>(null);
-  const currentAlertPoiIdRef = useRef<string | null>(null);
 
   // Estados de Controladores de Demostración:
   // 1) Joystick Táctil Virtual (Móvil / Pantalla)
@@ -1210,37 +1212,6 @@ export const MapViewer: FC<MapViewerProps> = ({
     }
   }, [isPulseActive, pois, userLocation]);
 
-  // Minimización automática del aviso de proximidad a burbuja después de 3.5 segundos
-  useEffect(() => {
-    if (proximityAlert) {
-      if (currentAlertPoiIdRef.current !== proximityAlert.poi.id) {
-        currentAlertPoiIdRef.current = proximityAlert.poi.id;
-        setIsAlertMinimized(false);
-        if (alertTimerRef.current !== null) {
-          window.clearTimeout(alertTimerRef.current);
-        }
-        alertTimerRef.current = window.setTimeout(() => {
-          setIsAlertMinimized(true);
-        }, 3500);
-      }
-    } else {
-      currentAlertPoiIdRef.current = null;
-      setIsAlertMinimized(false);
-      if (alertTimerRef.current !== null) {
-        window.clearTimeout(alertTimerRef.current);
-        alertTimerRef.current = null;
-      }
-    }
-  }, [proximityAlert]);
-
-  useEffect(() => {
-    return () => {
-      if (alertTimerRef.current !== null) {
-        window.clearTimeout(alertTimerRef.current);
-      }
-    };
-  }, []);
-
   return (
     <div className="relative w-full h-full overflow-hidden bg-[var(--surface-solid)] select-none">
       {/* Lienzo de mapa de pantalla completa */}
@@ -1248,7 +1219,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       {/* Alerta en Tiempo Real de Barrera Peatonal (Demostración de Poda de Grafo IA) */}
       {barrierWarning && (
-        <div className={`absolute top-28 left-3 right-16 sm:right-auto sm:max-w-xs z-20 pointer-events-none animate-fade-slide transition-all duration-500 ${isDesktopPanelOpen ? 'sm:left-4 lg:left-[404px]' : 'sm:left-4'}`}>
+        <div className={`absolute top-24 left-3 right-16 sm:right-auto sm:max-w-xs z-20 pointer-events-none animate-fade-slide transition-all duration-500 ${isDesktopPanelOpen ? 'sm:left-4 lg:left-[404px]' : 'sm:left-4'}`}>
           <div className="bg-red-950/95 text-white px-3 py-2 rounded-2xl border-2 border-red-500 shadow-xl flex items-center gap-2.5 backdrop-blur-md">
             <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 animate-bounce" />
             <div className="text-[11px] leading-tight">
@@ -1265,83 +1236,57 @@ export const MapViewer: FC<MapViewerProps> = ({
         </div>
       )}
 
-      {/* Banner de Proximidad Inteligente con minimización automática a burbuja */}
+      {/* Burbuja de Lugar Cercano con ícono acorde a su categoría */}
       <div
-        className={`absolute top-16 left-3 right-16 sm:right-auto sm:max-w-sm z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${isDesktopPanelOpen ? 'sm:left-4 lg:left-[404px]' : 'sm:left-4'} ${
+        className={`absolute top-14 left-3 right-16 sm:right-auto z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${isDesktopPanelOpen ? 'sm:left-4 lg:left-[404px]' : 'sm:left-4'} ${
           proximityAlert
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-4 pointer-events-none'
         }`}
       >
-        {proximityAlert &&
-          (isAlertMinimized ? (
-            <div
+        {proximityAlert && (() => {
+          const theme = getPoiVisualTheme(proximityAlert.poi);
+          const CategoryIcon =
+            theme.id === 'artesania'
+              ? Flame
+              : theme.id === 'gastronomia'
+              ? Utensils
+              : theme.id === 'espacio_publico'
+              ? Compass
+              : Landmark;
+
+          return (
+            <button
+              type="button"
               onClick={() => {
                 onSelectPoi(proximityAlert.poi.id);
                 if (onInspectStop) onInspectStop(proximityAlert.poi.id);
               }}
-              className="bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#162035] p-2 px-3.5 rounded-full border-2 border-[#0F3078] shadow-[0_6px_25px_rgba(15,48,120,0.35)] backdrop-blur-xl flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide"
+              className="bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#162035] py-1.5 pl-2 pr-3.5 rounded-full border-2 border-[#0F3078] shadow-[0_6px_22px_rgba(15,48,120,0.3)] backdrop-blur-xl inline-flex items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide max-w-full"
               title={language === 'es' ? 'Toca para abrir la ficha de este lugar' : 'Tap to open place details'}
             >
-              <div className="w-6 h-6 rounded-full bg-[#0F3078] text-[#FAF6EE] flex items-center justify-center flex-shrink-0 shadow">
-                <Sparkles className="w-3.5 h-3.5" />
+              <div
+                className="w-7 h-7 rounded-full text-white flex items-center justify-center flex-shrink-0 shadow-xs border border-white/60"
+                style={{ backgroundColor: theme.hex }}
+              >
+                <CategoryIcon className="w-3.5 h-3.5" />
               </div>
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-extrabold text-xs text-[#0F3078] truncate max-w-[140px] sm:max-w-[200px]">
+                <span className="font-extrabold text-xs text-[#0F3078] truncate max-w-[160px] sm:max-w-[220px]">
                   {proximityAlert.poi.name}
                 </span>
-                <span className="text-[10px] font-bold text-[#B84A2C] bg-[#B84A2C]/10 px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-[#B84A2C] bg-[#B84A2C]/10 px-2 py-0.5 rounded-full flex-shrink-0">
                   {proximityAlert.distanceM}m
                 </span>
               </div>
-            </div>
-          ) : (
-            <div className="bg-[#FAF6EE]/98 backdrop-blur-md text-[#162035] p-3 rounded-2xl border-2 border-[#0F3078] shadow-2xl flex items-center justify-between gap-3 sm:max-w-sm animate-fade-slide">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-[#0F3078] text-[#FAF6EE] flex items-center justify-center flex-shrink-0 shadow">
-                  <Sparkles className="w-4 h-4 text-[#F0B43A]" />
-                </div>
-                <div className="text-xs min-w-0">
-                  <span className="font-black uppercase tracking-wider text-[10px] block text-[#B84A2C]">
-                    {language === 'es' ? 'Lugar cercano a ti' : 'Nearby location'}
-                  </span>
-                  <span className="font-extrabold text-sm truncate block text-[#0F3078]">
-                    {proximityAlert.poi.name}
-                  </span>
-                  <span className="text-[#162035]/80 font-semibold text-[11px]">
-                    {language === 'es'
-                      ? `A ${proximityAlert.distanceM} metros de tu ubicación`
-                      : `${proximityAlert.distanceM}m away`}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onSelectPoi(proximityAlert.poi.id);
-                    if (onInspectStop) onInspectStop(proximityAlert.poi.id);
-                  }}
-                  className="px-3 py-1.5 bg-[#0F3078] text-[#FAF6EE] font-bold rounded-xl text-xs shadow hover:bg-[#1B49AC] transition whitespace-nowrap cursor-pointer"
-                >
-                  {language === 'es' ? 'Ver lugar' : 'Open'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAlertMinimized(true)}
-                  className="p-1 rounded-lg bg-[#0F3078]/10 hover:bg-[#0F3078]/20 text-[#0F3078] cursor-pointer"
-                  title={language === 'es' ? 'Minimizar a burbuja' : 'Minimize to bubble'}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
+            </button>
+          );
+        })()}
       </div>
 
       {/* HUD Flotante Superior Talavera */}
       <div className={`absolute top-3 right-3 z-10 flex items-start justify-between pointer-events-none transition-all duration-500 ${isDesktopPanelOpen ? 'left-3 lg:left-[404px]' : 'left-3'}`}>
-        {/* Lado Izquierdo: Insignia de Estado, Ruta Activa e Indicador de Mando Xbox */}
+        {/* Lado Izquierdo: Ruta Activa, Filtros e Indicador de Mando Xbox */}
         <div className="flex flex-col gap-1.5 pointer-events-auto max-w-[calc(100%-60px)]">
           {selectedRoute ? (
             <div className="flex items-center gap-2 bg-[#FAF6EE]/95 backdrop-blur-md px-3 py-1.5 rounded-2xl border-2 border-[#0F3078] shadow-xl">
@@ -1403,24 +1348,8 @@ export const MapViewer: FC<MapViewerProps> = ({
               )}
             </div>
           ) : (
-            <div className="flex flex-wrap items-center gap-1.5">
-              <div className="flex items-center gap-2 bg-[#FAF6EE]/95 backdrop-blur-md px-3 py-2 rounded-2xl border-2 border-[#0F3078] shadow-xl">
-                <span className="w-2 h-2 rounded-full bg-[#0F3078] flex-shrink-0 shadow-[0_0_8px_rgba(15,48,120,0.8)]" />
-                <span className="text-xs font-black text-[#0F3078] whitespace-nowrap">
-                  {language === 'es' ? `Puebla (${pois.length} lugares)` : `Puebla (${pois.length} places)`}
-                </span>
-              </div>
-              {onOpenCustomizer && (
-                <button
-                  type="button"
-                  onClick={onOpenCustomizer}
-                  className="flex items-center gap-1.5 bg-[#B84A2C] hover:bg-[#D66544] text-white font-black text-xs px-3 py-2 rounded-2xl shadow-md border border-white/30 transition active:scale-95 cursor-pointer whitespace-nowrap"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#F0B43A] flex-shrink-0" />
-                  <span>{language === 'es' ? 'Personalizar' : 'Customize'}</span>
-                </button>
-              )}
-              {onOpenFilters && (
+            onOpenFilters && (
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   type="button"
                   onClick={onOpenFilters}
@@ -1429,8 +1358,8 @@ export const MapViewer: FC<MapViewerProps> = ({
                   <SlidersHorizontal className="w-3.5 h-3.5 text-[#B84A2C] flex-shrink-0" />
                   <span>{language === 'es' ? 'Filtros' : 'Filters'}</span>
                 </button>
-              )}
-            </div>
+              </div>
+            )
           )}
 
           {gamepadConnectedName && (
@@ -1528,27 +1457,35 @@ export const MapViewer: FC<MapViewerProps> = ({
         </div>
       </div>
 
-      {/* Joystick Analógico Circular Flotante Minimalista */}
+      {/* Joystick Analógico Circular Flotante con Iconos Vectoriales */}
       {showJoystickPad && (
-        <div className={`absolute bottom-24 sm:bottom-28 z-30 select-none transition-all duration-500 ${isDesktopPanelOpen ? 'left-3 sm:left-4 lg:left-[404px]' : 'left-3 sm:left-4'} ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
+        <div
+          className={`absolute bottom-20 sm:bottom-16 z-30 select-none transition-all duration-500 ${
+            isDesktopPanelOpen ? 'left-3 sm:left-4 lg:left-[404px]' : 'left-3 sm:left-4'
+          } ${
+            isMobileSheetOpen
+              ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto'
+              : 'opacity-100 pointer-events-auto'
+          }`}
+        >
           <div
             ref={joystickBaseRef}
             onPointerDown={handleStickPointerDown}
             onPointerMove={handleStickPointerMove}
             onPointerUp={handleStickPointerUp}
             onPointerCancel={handleStickPointerUp}
-            className="relative w-24 h-24 rounded-full bg-[#FAF6EE]/88 backdrop-blur-xl border-2 border-[#0F3078] shadow-[inset_0_3px_10px_rgba(15,48,120,0.22),0_10px_28px_rgba(15,48,120,0.28)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
+            className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-[#FAF6EE]/95 backdrop-blur-xl border-2 border-[#0F3078] shadow-[inset_0_2px_8px_rgba(15,48,120,0.18),0_8px_24px_rgba(15,48,120,0.28)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
           >
             {/* Anillo interior sutil Talavera */}
-            <div className="w-16 h-16 rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-[#0F3078]/20" />
+            <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#0F3078]/25" />
             </div>
 
-            {/* Guías direccionales discretas */}
-            <span className="absolute top-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">▲</span>
-            <span className="absolute bottom-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">▼</span>
-            <span className="absolute left-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">◀</span>
-            <span className="absolute right-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">▶</span>
+            {/* Guías direccionales vectoriales */}
+            <ChevronUp className="absolute top-1 w-3 h-3 text-[#0F3078]/45 pointer-events-none" />
+            <ChevronDown className="absolute bottom-1 w-3 h-3 text-[#0F3078]/45 pointer-events-none" />
+            <ChevronLeft className="absolute left-1 w-3 h-3 text-[#0F3078]/45 pointer-events-none" />
+            <ChevronRight className="absolute right-1 w-3 h-3 text-[#0F3078]/45 pointer-events-none" />
 
             {/* Pomo analógico con respuesta DOM directa a 120fps */}
             <div
@@ -1557,16 +1494,16 @@ export const MapViewer: FC<MapViewerProps> = ({
                 transform: 'translate3d(0px, 0px, 0) scale(1)',
                 transition: 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
               }}
-              className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#0F3078] via-[#1B49AC] to-[#D48914] border-2 border-white shadow-[0_4px_14px_rgba(15,48,120,0.5)] flex items-center justify-center pointer-events-none will-change-transform"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0F3078] border-2 border-white shadow-[0_4px_12px_rgba(15,48,120,0.45)] flex items-center justify-center pointer-events-none will-change-transform"
             >
-              <div className="w-4 h-4 rounded-full bg-[#FAF6EE] border border-[#0F3078]/40 shadow-inner" />
+              <div className="w-3 h-3 rounded-full bg-[#F0B43A] border border-white/80" />
             </div>
           </div>
         </div>
       )}
 
       {/* Guía del Mapa Poblano (Simbología Sincronizada con Avatar 3D y 4 Categorías) */}
-      <div className={`absolute bottom-24 sm:bottom-28 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
+      <div className={`absolute bottom-20 sm:bottom-16 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
         {showLegend ? (
           <div className="bg-[#FAF6EE]/98 backdrop-blur-md p-3.5 rounded-2xl border-2 border-[#0F3078] text-xs text-[#162035] shadow-2xl space-y-1.5 transition-all duration-300 max-w-[250px]">
             <div className="flex items-center justify-between font-bold text-[#0F3078] uppercase tracking-wider text-[10px] pb-1 border-b border-[#0F3078]/20 gap-4">

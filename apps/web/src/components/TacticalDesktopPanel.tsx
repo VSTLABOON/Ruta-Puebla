@@ -11,7 +11,6 @@ import {
   ChevronRight,
   Accessibility,
   Store,
-  MessageSquare,
   Navigation,
   Ticket,
   Flame,
@@ -19,7 +18,8 @@ import {
   Landmark,
   Utensils,
   Compass,
-  ArrowRight
+  ArrowRight,
+  Route
 } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
@@ -34,6 +34,7 @@ interface TacticalDesktopPanelProps {
   passportState: PassportState;
   onUnlockSecret: (poiId: string, badgeName: string) => void;
   onMoveUserHere?: (coords: [number, number]) => void;
+  onOpenItinerary?: () => void;
 }
 
 function getActivityMeta(poi: POI, language: Language) {
@@ -73,9 +74,10 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
   language,
   passportState,
   onUnlockSecret,
-  onMoveUserHere
+  onMoveUserHere,
+  onOpenItinerary
 }) => {
-  const [activeTab, setActiveTab] = useState<'info' | 'accessibility' | 'badge' | 'memories'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'accessibility' | 'badge'>('info');
 
   if (stops.length === 0 && pois.length === 0) return null;
 
@@ -107,9 +109,6 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
   const ActivityIcon = activityMeta.Icon;
 
   const isSecretUnlocked = passportState.unlocked_secrets.includes(poi.id);
-  const hasStories =
-    (poi.community_memories && poi.community_memories.length > 0) ||
-    (poi.historical_figures && poi.historical_figures.length > 0);
 
   const formatTime = (min: number) => {
     const h = Math.floor(min / 60);
@@ -134,7 +133,7 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
   return (
     <div className="talavera-plate-card h-full flex flex-col rounded-3xl shadow-2xl overflow-hidden">
       {/* 1. Cabecera Fija */}
-      <header className="p-3.5 bg-[#0F3078] text-[#FAF6EE] flex items-center justify-between gap-2.5 flex-shrink-0">
+      <header className="p-3.5 bg-[#0F3078] text-[#FAF6EE] flex items-center justify-between gap-2 flex-shrink-0">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-8 h-8 rounded-xl bg-white/15 border border-white/25 font-serif font-black text-xs flex items-center justify-center flex-shrink-0">
             {standalonePoi ? <MapPin className="w-4 h-4 text-[#F0B43A]" /> : currentStop?.stop_order || 1}
@@ -159,36 +158,53 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
           </div>
         </div>
 
-        {stops.length > 0 && stopIndex >= 0 && (
-          <div className="flex items-center bg-white/10 rounded-xl p-0.5 border border-white/15 flex-shrink-0">
+        <div className="flex items-center gap-1 flex-shrink-0">
+          {onOpenItinerary && (
             <button
               type="button"
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
-              className="p-1 rounded-lg text-[#FAF6EE] disabled:opacity-30 hover:bg-white/15 transition cursor-pointer"
-              title={language === 'es' ? 'Anterior' : 'Previous'}
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                onOpenItinerary();
+              }}
+              className="px-2 py-1.5 rounded-xl bg-[#B84A2C] hover:bg-[#D66544] text-white text-[10px] font-bold flex items-center gap-1 transition cursor-pointer"
+              title={language === 'es' ? 'Elegir o armar ruta' : 'Choose or build route'}
             >
-              <ChevronLeft className="w-4 h-4" />
+              <Route className="w-3.5 h-3.5" />
+              <span>{language === 'es' ? 'Ruta' : 'Route'}</span>
             </button>
-            <span className="text-[10px] font-bold px-1.5">
-              {currentIndex + 1}/{stops.length}
-            </span>
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={currentIndex === stops.length - 1}
-              className="p-1 rounded-lg text-[#FAF6EE] disabled:opacity-30 hover:bg-white/15 transition cursor-pointer"
-              title={language === 'es' ? 'Siguiente' : 'Next'}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+          )}
+
+          {stops.length > 0 && stopIndex >= 0 && (
+            <div className="flex items-center bg-white/10 rounded-xl p-0.5 border border-white/15 flex-shrink-0">
+              <button
+                type="button"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+                className="p-1 rounded-lg text-[#FAF6EE] disabled:opacity-30 hover:bg-white/15 transition cursor-pointer"
+                title={language === 'es' ? 'Anterior' : 'Previous'}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <span className="text-[10px] font-bold px-1.5">
+                {currentIndex + 1}/{stops.length}
+              </span>
+              <button
+                type="button"
+                onClick={handleNext}
+                disabled={currentIndex === stops.length - 1}
+                className="p-1 rounded-lg text-[#FAF6EE] disabled:opacity-30 hover:bg-white/15 transition cursor-pointer"
+                title={language === 'es' ? 'Siguiente' : 'Next'}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
-      {/* 2. Control Segmentado Unificado */}
+      {/* 2. Control Segmentado Unificado (3 pestañas limpias) */}
       <div className="px-3.5 py-2 bg-[#F2EBDC] border-b border-[#0F3078]/15 flex-shrink-0">
-        <div className={`grid ${hasStories ? 'grid-cols-4' : 'grid-cols-3'} gap-1 bg-white/80 p-1 rounded-xl border border-[#0F3078]/15 text-xs font-bold`}>
+        <div className="grid grid-cols-3 gap-1 bg-white/80 p-1 rounded-xl border border-[#0F3078]/15 text-xs font-bold">
           <button
             type="button"
             onClick={() => {
@@ -236,24 +252,6 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
             <Award className="w-3.5 h-3.5 flex-shrink-0" />
             <span className="truncate">{language === 'es' ? 'Sello' : 'Stamp'}</span>
           </button>
-
-          {hasStories && (
-            <button
-              type="button"
-              onClick={() => {
-                tacticalAudio.playTacticalClick();
-                setActiveTab('memories');
-              }}
-              className={`py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition cursor-pointer ${
-                activeTab === 'memories'
-                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
-                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
-              }`}
-            >
-              <MessageSquare className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="truncate">{language === 'es' ? 'Relatos' : 'Stories'}</span>
-            </button>
-          )}
         </div>
       </div>
 
@@ -451,37 +449,6 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
               }}
               language={language}
             />
-          </div>
-        )}
-
-        {activeTab === 'memories' && (
-          <div className="space-y-2.5 text-xs">
-            {poi.historical_figures?.map((hf, idx) => (
-              <div
-                key={`hf-${idx}`}
-                className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs"
-              >
-                <div className="flex items-center justify-between">
-                  <strong className="text-[#0F3078] text-xs">{hf.nombre}</strong>
-                  <span className="text-[10px] text-[#0F3078]/60">{hf.epoca}</span>
-                </div>
-                <div className="text-[11px] text-[#B84A2C] font-semibold">{hf.rol}</div>
-                <p className="text-[#162035]/80 leading-relaxed">{hf.relato}</p>
-              </div>
-            ))}
-
-            {poi.community_memories?.map((cm, idx) => (
-              <div
-                key={`cm-${idx}`}
-                className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs"
-              >
-                <div className="flex items-center justify-between">
-                  <strong className="text-[#1D6B52]">{cm.autor}</strong>
-                  <span className="text-[10px] text-[#162035]/60">{cm.procedencia}</span>
-                </div>
-                <p className="text-[#162035]/85 italic leading-relaxed">&ldquo;{cm.testimonio}&rdquo;</p>
-              </div>
-            ))}
           </div>
         )}
       </div>
