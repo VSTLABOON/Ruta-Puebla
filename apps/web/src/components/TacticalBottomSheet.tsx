@@ -168,26 +168,31 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
     }
   };
 
-  // Alturas contenidas dentro del contenedor de vista para nunca rebasar la barra superior
+  // Al deslizar hacia arriba (full) la ficha cubre la pantalla completa
+  const isFull = sheetState === 'full';
   const heightClasses = {
-    peek: 'h-24 max-h-[calc(100%-5.5rem)]',
-    half: 'h-[48vh] max-h-[calc(100%-5.5rem)]',
-    full: 'h-[70vh] max-h-[calc(100%-5.5rem)]'
+    peek: 'h-28',
+    half: 'h-[56vh] sm:h-[500px]',
+    full: 'h-full'
   }[sheetState];
 
   return (
     <div
       aria-hidden={!isOpen}
-      className={`absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end pb-20 sm:pb-24 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`fixed inset-x-0 bottom-0 flex flex-col justify-end transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        isFull ? 'top-0 z-[60] pb-0' : 'z-40 pb-20 sm:pb-24'
+      } ${
         isOpen
           ? 'translate-y-0 opacity-100 pointer-events-none'
           : 'translate-y-full opacity-0 pointer-events-none'
       }`}
     >
       <div
-        className={`w-full max-w-lg mx-auto bg-[#FAF6EE] border-t-4 border-x-2 border-[#0F3078] rounded-t-[28px] shadow-[0_-15px_45px_rgba(15,48,120,0.25)] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
-          isOpen ? 'pointer-events-auto' : 'pointer-events-none'
-        } ${heightClasses}`}
+        className={`w-full mx-auto bg-[#FAF6EE] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
+          isFull
+            ? 'max-w-none rounded-none border-0 pt-[env(safe-area-inset-top,0px)]'
+            : 'max-w-lg border-t-4 border-x-2 border-[#0F3078] rounded-t-[28px] shadow-[0_-15px_45px_rgba(15,48,120,0.25)]'
+        } ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'} ${heightClasses}`}
       >
         {/* 1. Tirador deslizable y Cabecera compacta */}
         <div

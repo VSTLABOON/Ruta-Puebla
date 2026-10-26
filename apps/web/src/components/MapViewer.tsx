@@ -173,6 +173,11 @@ export const MapViewer: FC<MapViewerProps> = ({
   // Estados de geolocalización y radar de proximidad
   const [isGpsTracking, setIsGpsTracking] = useState(false);
   const [proximityAlert, setProximityAlert] = useState<{ poi: POI; distanceM: number } | null>(null);
+  const [isBubbleExpanded, setIsBubbleExpanded] = useState(false);
+  const proximityPoiId = proximityAlert?.poi.id ?? null;
+  useEffect(() => {
+    setIsBubbleExpanded(false);
+  }, [proximityPoiId]);
 
   // Estados de Controladores de Demostración:
   // 1) Joystick Táctil Virtual (Móvil / Pantalla)
@@ -648,7 +653,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         el.innerHTML = `
           ${
             isSelected || isNearby
-              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-[#FAF6EE]/98 border-2 text-[10px] font-black text-[#0F3078] shadow-[0_6px_20px_rgba(15,48,120,0.35)] whitespace-nowrap animate-bounce flex items-center gap-1.5" style="border-color: ${theme.hex};">
+              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-[#FAF6EE]/98 border-2 text-[10px] font-black text-[#0F3078] shadow-[0_6px_20px_rgba(15,48,120,0.35)] whitespace-nowrap poi-soft-float flex items-center gap-1.5" style="border-color: ${theme.hex};">
                   <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: ${theme.hex};"></span>
                   <span>${stop.poi.name}</span>
                 </div>`
@@ -657,7 +662,7 @@ export const MapViewer: FC<MapViewerProps> = ({
           <div class="relative flex flex-col items-center">
             <div class="relative flex items-center justify-center">
               <div class="absolute -inset-1.5 rounded-full blur-sm ${
-                isSelected || isNearby ? 'animate-pulse' : ''
+                isSelected || isNearby ? 'poi-soft-glow' : ''
               }" style="background-color: ${theme.hex}44;"></div>
               <div class="w-10 h-10 rounded-full p-0.5 shadow-[0_6px_18px_rgba(15,48,120,0.45)] flex items-center justify-center border-2 border-white transform transition-transform ${
                 isSelected ? 'scale-110' : ''
@@ -676,7 +681,7 @@ export const MapViewer: FC<MapViewerProps> = ({
             <div class="w-1 h-5 shadow-[0_0_8px_rgba(15,48,120,0.6)]" style="background: linear-gradient(to bottom, ${theme.hex}, #0F3078);"></div>
 
             <div class="relative w-4 h-4 flex items-center justify-center">
-              <div class="absolute inset-0 rounded-full animate-ping" style="background-color: ${theme.hex}55;"></div>
+              <div class="absolute inset-0 rounded-full poi-soft-glow" style="background-color: ${theme.hex}55;"></div>
               <div class="w-2.5 h-2.5 rounded-full border-2 border-[#FAF6EE] shadow" style="background-color: ${theme.hex};"></div>
             </div>
           </div>
@@ -715,7 +720,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         <div class="relative flex items-center justify-center p-0.5">
           ${
             isSelected || isNearby
-              ? `<div class="absolute -inset-1 rounded-full animate-ping" style="background-color: ${theme.hex}66;"></div>`
+              ? `<div class="absolute -inset-1 rounded-full poi-soft-glow" style="background-color: ${theme.hex}66;"></div>`
               : ''
           }
           <div class="w-6 h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center ring-1 ring-black/15" style="background-color: ${theme.hex};">
@@ -1149,7 +1154,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       const rect = joystickBaseRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const maxRadius = 32;
+      const maxRadius = 26;
 
       const dx = clientX - centerX;
       const dy = clientY - centerY;
@@ -1255,31 +1260,72 @@ export const MapViewer: FC<MapViewerProps> = ({
               ? Compass
               : Landmark;
 
-          return (
-            <button
-              type="button"
-              onClick={() => {
-                onSelectPoi(proximityAlert.poi.id);
-                if (onInspectStop) onInspectStop(proximityAlert.poi.id);
-              }}
-              className="bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#162035] py-1.5 pl-2 pr-3.5 rounded-full border-2 border-[#0F3078] shadow-[0_6px_22px_rgba(15,48,120,0.3)] backdrop-blur-xl inline-flex items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-slide max-w-full"
-              title={language === 'es' ? 'Toca para abrir la ficha de este lugar' : 'Tap to open place details'}
-            >
-              <div
-                className="w-7 h-7 rounded-full text-white flex items-center justify-center flex-shrink-0 shadow-xs border border-white/60"
+          if (!isBubbleExpanded) {
+            // Burbuja literal: solo una bolita con el ícono de la categoría
+            return (
+              <button
+                type="button"
+                onClick={() => setIsBubbleExpanded(true)}
+                className="relative w-12 h-12 rounded-full border-[3px] border-white text-white flex items-center justify-center shadow-[0_6px_20px_rgba(15,48,120,0.4)] cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
                 style={{ backgroundColor: theme.hex }}
+                aria-label={
+                  language === 'es'
+                    ? `Lugar cercano: ${proximityAlert.poi.name}. Toca para ver`
+                    : `Nearby: ${proximityAlert.poi.name}. Tap to view`
+                }
+                title={proximityAlert.poi.name}
               >
-                <CategoryIcon className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-extrabold text-xs text-[#0F3078] truncate max-w-[160px] sm:max-w-[220px]">
-                  {proximityAlert.poi.name}
-                </span>
-                <span className="text-[10px] font-bold text-[#B84A2C] bg-[#B84A2C]/10 px-2 py-0.5 rounded-full flex-shrink-0">
+                <span
+                  className="absolute -inset-1 rounded-full poi-soft-glow pointer-events-none"
+                  style={{ backgroundColor: `${theme.hex}55` }}
+                />
+                <CategoryIcon className="relative w-5 h-5" />
+                <span className="absolute -bottom-1 -right-1 min-w-[22px] h-[18px] px-1 rounded-full bg-[#FAF6EE] text-[#B84A2C] border border-[#0F3078]/30 text-[9px] font-black flex items-center justify-center">
                   {proximityAlert.distanceM}m
                 </span>
+              </button>
+            );
+          }
+
+          return (
+            <div className="bg-[#FAF6EE]/98 text-[#162035] p-1.5 pr-2 rounded-full border-2 border-[#0F3078] shadow-[0_6px_22px_rgba(15,48,120,0.3)] backdrop-blur-xl inline-flex items-center gap-2 animate-fade-slide max-w-full">
+              <button
+                type="button"
+                onClick={() => setIsBubbleExpanded(false)}
+                className="w-9 h-9 rounded-full text-white flex items-center justify-center flex-shrink-0 border-2 border-white cursor-pointer"
+                style={{ backgroundColor: theme.hex }}
+                title={language === 'es' ? 'Contraer' : 'Collapse'}
+              >
+                <CategoryIcon className="w-4 h-4" />
+              </button>
+              <div className="flex flex-col min-w-0 leading-tight">
+                <span className="font-extrabold text-xs text-[#0F3078] truncate max-w-[150px] sm:max-w-[220px]">
+                  {proximityAlert.poi.name}
+                </span>
+                <span className="text-[10px] font-bold text-[#B84A2C]">
+                  {language === 'es' ? `A ${proximityAlert.distanceM} m de ti` : `${proximityAlert.distanceM} m away`}
+                </span>
               </div>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectPoi(proximityAlert.poi.id);
+                  if (onInspectStop) onInspectStop(proximityAlert.poi.id);
+                  setIsBubbleExpanded(false);
+                }}
+                className="px-3 py-1.5 rounded-full bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] text-[11px] font-bold flex-shrink-0 cursor-pointer transition"
+              >
+                {language === 'es' ? 'Ver' : 'Open'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBubbleExpanded(false)}
+                className="p-1 rounded-full text-[#0F3078]/70 hover:bg-[#0F3078]/10 flex-shrink-0 cursor-pointer"
+                aria-label={language === 'es' ? 'Contraer' : 'Collapse'}
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
           );
         })()}
       </div>
@@ -1460,7 +1506,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       {/* Joystick Analógico Circular Flotante con Iconos Vectoriales */}
       {showJoystickPad && (
         <div
-          className={`absolute bottom-20 sm:bottom-16 z-30 select-none transition-all duration-500 ${
+          className={`absolute bottom-[7.5rem] sm:bottom-24 lg:bottom-20 z-30 select-none transition-all duration-500 ${
             isDesktopPanelOpen ? 'left-3 sm:left-4 lg:left-[404px]' : 'left-3 sm:left-4'
           } ${
             isMobileSheetOpen
@@ -1474,10 +1520,10 @@ export const MapViewer: FC<MapViewerProps> = ({
             onPointerMove={handleStickPointerMove}
             onPointerUp={handleStickPointerUp}
             onPointerCancel={handleStickPointerUp}
-            className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-[#FAF6EE]/95 backdrop-blur-xl border-2 border-[#0F3078] shadow-[inset_0_2px_8px_rgba(15,48,120,0.18),0_8px_24px_rgba(15,48,120,0.28)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
+            className="relative w-[88px] h-[88px] rounded-full bg-[#FAF6EE]/95 backdrop-blur-xl border-2 border-[#0F3078] shadow-[inset_0_2px_8px_rgba(15,48,120,0.18),0_8px_24px_rgba(15,48,120,0.28)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
           >
             {/* Anillo interior sutil Talavera */}
-            <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
+            <div className="w-[56px] h-[56px] rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
               <div className="w-1.5 h-1.5 rounded-full bg-[#0F3078]/25" />
             </div>
 
@@ -1494,7 +1540,7 @@ export const MapViewer: FC<MapViewerProps> = ({
                 transform: 'translate3d(0px, 0px, 0) scale(1)',
                 transition: 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
               }}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0F3078] border-2 border-white shadow-[0_4px_12px_rgba(15,48,120,0.45)] flex items-center justify-center pointer-events-none will-change-transform"
+              className="w-10 h-10 rounded-full bg-[#0F3078] border-2 border-white shadow-[0_4px_12px_rgba(15,48,120,0.45)] flex items-center justify-center pointer-events-none will-change-transform"
             >
               <div className="w-3 h-3 rounded-full bg-[#F0B43A] border border-white/80" />
             </div>
@@ -1503,7 +1549,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       )}
 
       {/* Guía del Mapa Poblano (Simbología Sincronizada con Avatar 3D y 4 Categorías) */}
-      <div className={`absolute bottom-20 sm:bottom-16 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
+      <div className={`absolute bottom-[7.5rem] sm:bottom-24 lg:bottom-20 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
         {showLegend ? (
           <div className="bg-[#FAF6EE]/98 backdrop-blur-md p-3.5 rounded-2xl border-2 border-[#0F3078] text-xs text-[#162035] shadow-2xl space-y-1.5 transition-all duration-300 max-w-[250px]">
             <div className="flex items-center justify-between font-bold text-[#0F3078] uppercase tracking-wider text-[10px] pb-1 border-b border-[#0F3078]/20 gap-4">
