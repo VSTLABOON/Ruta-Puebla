@@ -16,7 +16,9 @@ import {
   Hand,
   Gamepad2,
   Play,
-  Pause
+  Pause,
+  SlidersHorizontal,
+  Download
 } from 'lucide-react';
 import { createAvatar3D, Avatar3DController } from '../utils/avatar3d';
 
@@ -34,6 +36,10 @@ interface MapViewerProps {
   onUserLocationChange: (coords: [number, number]) => void;
   onClearRoute?: () => void;
   onOpenCustomizer?: () => void;
+  onOpenFilters?: () => void;
+  onExportRoute?: () => void;
+  isDesktopPanelOpen?: boolean;
+  isMobileSheetOpen?: boolean;
 }
 
 type MapStyleKey = 'dark' | 'voyager' | 'positron';
@@ -141,7 +147,11 @@ export const MapViewer: FC<MapViewerProps> = ({
   userLocation,
   onUserLocationChange,
   onClearRoute,
-  onOpenCustomizer
+  onOpenCustomizer,
+  onOpenFilters,
+  onExportRoute,
+  isDesktopPanelOpen = false,
+  isMobileSheetOpen = false
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -1238,7 +1248,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       {/* Alerta en Tiempo Real de Barrera Peatonal (Demostración de Poda de Grafo IA) */}
       {barrierWarning && (
-        <div className="absolute top-28 left-3 right-16 sm:left-4 sm:right-auto sm:max-w-xs z-20 pointer-events-none animate-fade-slide">
+        <div className={`absolute top-28 left-3 right-16 sm:right-auto sm:max-w-xs z-20 pointer-events-none animate-fade-slide transition-all duration-500 ${isDesktopPanelOpen ? 'sm:left-4 lg:left-[404px]' : 'sm:left-4'}`}>
           <div className="bg-red-950/95 text-white px-3 py-2 rounded-2xl border-2 border-red-500 shadow-xl flex items-center gap-2.5 backdrop-blur-md">
             <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 animate-bounce" />
             <div className="text-[11px] leading-tight">
@@ -1257,7 +1267,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       {/* Banner de Proximidad Inteligente con minimización automática a burbuja */}
       <div
-        className={`absolute top-16 left-3 right-16 sm:left-4 sm:right-auto sm:max-w-sm z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute top-16 left-3 right-16 sm:right-auto sm:max-w-sm z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${isDesktopPanelOpen ? 'sm:left-4 lg:left-[404px]' : 'sm:left-4'} ${
           proximityAlert
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-4 pointer-events-none'
@@ -1330,7 +1340,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       </div>
 
       {/* HUD Flotante Superior Talavera */}
-      <div className="absolute top-3 left-3 right-3 z-10 flex items-start justify-between pointer-events-none">
+      <div className={`absolute top-3 right-3 z-10 flex items-start justify-between pointer-events-none transition-all duration-500 ${isDesktopPanelOpen ? 'left-3 lg:left-[404px]' : 'left-3'}`}>
         {/* Lado Izquierdo: Insignia de Estado, Ruta Activa e Indicador de Mando Xbox */}
         <div className="flex flex-col gap-1.5 pointer-events-auto max-w-[calc(100%-60px)]">
           {selectedRoute ? (
@@ -1368,6 +1378,16 @@ export const MapViewer: FC<MapViewerProps> = ({
                   <span>{isAutoWalking ? 'Pausa' : 'Simular'}</span>
                 </button>
               )}
+              {onExportRoute && (
+                <button
+                  type="button"
+                  onClick={onExportRoute}
+                  className="hidden sm:flex p-1.5 rounded-lg bg-[#0F3078]/10 hover:bg-[#0F3078]/20 text-[#0F3078] transition cursor-pointer"
+                  title={language === 'es' ? 'Descargar guía en texto' : 'Download route guide'}
+                >
+                  <Download className="w-3.5 h-3.5" />
+                </button>
+              )}
               {onClearRoute && (
                 <button
                   type="button"
@@ -1383,10 +1403,10 @@ export const MapViewer: FC<MapViewerProps> = ({
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               <div className="flex items-center gap-2 bg-[#FAF6EE]/95 backdrop-blur-md px-3 py-2 rounded-2xl border-2 border-[#0F3078] shadow-xl">
                 <span className="w-2 h-2 rounded-full bg-[#0F3078] flex-shrink-0 shadow-[0_0_8px_rgba(15,48,120,0.8)]" />
-                <span className="text-xs font-black text-[#0F3078]">
+                <span className="text-xs font-black text-[#0F3078] whitespace-nowrap">
                   {language === 'es' ? `Puebla (${pois.length} lugares)` : `Puebla (${pois.length} places)`}
                 </span>
               </div>
@@ -1394,10 +1414,20 @@ export const MapViewer: FC<MapViewerProps> = ({
                 <button
                   type="button"
                   onClick={onOpenCustomizer}
-                  className="flex items-center gap-1.5 bg-[#B84A2C] hover:bg-[#D66544] text-white font-black text-xs px-3.5 py-2 rounded-2xl shadow-md border border-white/30 transition active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 bg-[#B84A2C] hover:bg-[#D66544] text-white font-black text-xs px-3 py-2 rounded-2xl shadow-md border border-white/30 transition active:scale-95 cursor-pointer whitespace-nowrap"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-[#F0B43A]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#F0B43A] flex-shrink-0" />
                   <span>{language === 'es' ? 'Personalizar' : 'Customize'}</span>
+                </button>
+              )}
+              {onOpenFilters && (
+                <button
+                  type="button"
+                  onClick={onOpenFilters}
+                  className="hidden sm:flex items-center gap-1.5 bg-[#FAF6EE]/95 hover:bg-white text-[#0F3078] font-bold text-xs px-3 py-2 rounded-2xl shadow-md border-2 border-[#0F3078] transition cursor-pointer whitespace-nowrap"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#B84A2C] flex-shrink-0" />
+                  <span>{language === 'es' ? 'Filtros' : 'Filters'}</span>
                 </button>
               )}
             </div>
@@ -1500,7 +1530,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       {/* Joystick Analógico Circular Flotante Minimalista */}
       {showJoystickPad && (
-        <div className="absolute bottom-24 sm:bottom-28 left-3 sm:left-4 z-30 pointer-events-auto select-none">
+        <div className={`absolute bottom-24 sm:bottom-28 z-30 select-none transition-all duration-500 ${isDesktopPanelOpen ? 'left-3 sm:left-4 lg:left-[404px]' : 'left-3 sm:left-4'} ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
           <div
             ref={joystickBaseRef}
             onPointerDown={handleStickPointerDown}
@@ -1536,7 +1566,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       )}
 
       {/* Guía del Mapa Poblano (Simbología Sincronizada con Avatar 3D y 4 Categorías) */}
-      <div className="absolute bottom-24 sm:bottom-28 right-3 sm:right-4 z-20 flex items-center gap-2">
+      <div className={`absolute bottom-24 sm:bottom-28 right-3 sm:right-4 z-20 flex items-center gap-2 transition-opacity duration-300 ${isMobileSheetOpen ? 'opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto' : 'opacity-100 pointer-events-auto'}`}>
         {showLegend ? (
           <div className="bg-[#FAF6EE]/98 backdrop-blur-md p-3.5 rounded-2xl border-2 border-[#0F3078] text-xs text-[#162035] shadow-2xl space-y-1.5 transition-all duration-300 max-w-[250px]">
             <div className="flex items-center justify-between font-bold text-[#0F3078] uppercase tracking-wider text-[10px] pb-1 border-b border-[#0F3078]/20 gap-4">

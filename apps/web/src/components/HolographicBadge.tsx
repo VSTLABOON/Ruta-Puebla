@@ -437,8 +437,8 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                       <WifiOff className="w-3 h-3" />
                       <span>
                         {language === 'es'
-                          ? 'Verificación Criptográfica Offline (FNV-1a)'
-                          : 'Offline Cryptographic Verification (FNV-1a)'}
+                          ? 'Código del mostrador'
+                          : 'Workshop counter code'}
                       </span>
                     </div>
                     <p className="text-[11px] text-[#162035]/80 leading-snug">
@@ -463,12 +463,12 @@ export const HolographicBadge: FC<HolographicBadgeProps> = ({
                         }
                       }}
                       placeholder="Ej. ABC-1234"
-                      className="flex-1 bg-white border border-[#0F3078]/30 rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#162035] uppercase placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0F3078]"
+                      className="flex-1 min-w-0 bg-white border border-[#0F3078]/30 rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#162035] uppercase placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0F3078]"
                     />
                     <button
                       type="button"
                       onClick={handleVerifyOfflineCode}
-                      className="px-3 py-1.5 rounded-lg bg-[#B84A2C] hover:bg-[#96381F] text-[#FAF6EE] font-bold text-xs transition cursor-pointer flex items-center gap-1 font-serif shadow-xs"
+                      className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-[#B84A2C] hover:bg-[#96381F] text-[#FAF6EE] font-bold text-xs transition cursor-pointer flex items-center gap-1 font-serif shadow-xs"
                     >
                       <QrCode className="w-3.5 h-3.5" />
                       <span>{language === 'es' ? 'Validar' : 'Verify'}</span>

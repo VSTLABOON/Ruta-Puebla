@@ -71,9 +71,9 @@ export const PoiCulturalContextCard: FC<PoiCulturalContextCardProps> = ({ poi, l
               <div className="px-3 pb-2.5 pt-1 border-t border-[#0F3078]/10 space-y-1.5">
                 <p className="text-[#162035] leading-relaxed">{ctx.dato_curioso}</p>
                 {ctx.citas_documentales && (
-                  <div className="flex items-center gap-1.5 text-[10px] text-[#0F3078]/70 pt-0.5 font-medium">
-                    <BookOpen className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate">{ctx.citas_documentales}</span>
+                  <div className="flex items-start gap-1.5 text-[10px] text-[#0F3078]/70 pt-0.5 font-medium min-w-0">
+                    <BookOpen className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                    <span className="break-words">{ctx.citas_documentales}</span>
                   </div>
                 )}
               </div>

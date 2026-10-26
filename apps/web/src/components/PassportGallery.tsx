@@ -342,12 +342,12 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
                   ? 'Código de taller (ej. HOR-1234)...'
                   : 'Workshop code (e.g. HOR-1234)...'
               }
-              className="flex-1 bg-white border border-[#0F3078]/25 rounded-xl px-3 py-2 text-xs font-mono text-[#162035] uppercase placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0F3078]"
+              className="flex-1 min-w-0 bg-white border border-[#0F3078]/25 rounded-xl px-3 py-2 text-xs font-mono text-[#162035] uppercase placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0F3078]"
             />
             <button
               type="button"
               onClick={handleQuickCodeVerify}
-              className="px-3.5 py-2 rounded-xl bg-[#B84A2C] hover:bg-[#96381F] text-[#FAF6EE] font-bold text-xs flex items-center gap-1.5 transition cursor-pointer font-serif shadow-xs"
+              className="flex-shrink-0 px-3.5 py-2 rounded-xl bg-[#B84A2C] hover:bg-[#96381F] text-[#FAF6EE] font-bold text-xs flex items-center gap-1.5 transition cursor-pointer font-serif shadow-xs"
             >
               <QrCode className="w-3.5 h-3.5" />
               <span>{language === 'es' ? 'Canjear' : 'Redeem'}</span>
@@ -390,7 +390,7 @@ export const PassportGallery: FC<PassportGalleryProps> = ({
       {/* Inspect Modal if a badge is tapped */}
       {inspectingPoi && (
         <div className="fixed inset-0 z-50 bg-[#162035]/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-5 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="w-full max-w-sm max-h-[90dvh] overflow-y-auto bg-[#FAF6EE] border-4 border-[#0F3078] rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-2 border-b-2 border-[#0F3078]/15">
               <span className="text-xs font-serif font-black text-[#0F3078] uppercase tracking-wider">
                 {language === 'es' ? 'Ficha de Talavera' : 'Talavera Plate Card'}

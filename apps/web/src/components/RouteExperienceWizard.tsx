@@ -51,7 +51,6 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
   const [interest, setInterest] = useState<InterestCategory>('artisans');
   const [profile, setProfile] = useState<MobilityProfile>('sin_restriccion');
 
-  // Generación inteligente de 3 rutas curadas con "El Por Qué"
   const suggestions = useMemo(() => {
     if (!graph || !matrices || pois.length === 0) return [];
 
@@ -73,7 +72,6 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
       free_text: ''
     };
 
-    // 1. Ruta Barrial y de Oficios
     const solLocal = solveOPTW(
       { ...baseReq, balance_local_pct: 90 },
       pois,
@@ -82,7 +80,6 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
     );
     const routeLocal = solLocal.main_route;
 
-    // 2. Ruta Monumental y Patrimonio
     const solHeritage = solveOPTW(
       {
         ...baseReq,
@@ -95,7 +92,6 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
     );
     const routeHeritage = solHeritage.main_route;
 
-    // 3. Ruta Exprés de Callejones y Murales
     const solExpress = solveOPTW(
       {
         ...baseReq,
@@ -116,13 +112,13 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
           language === 'es'
             ? 'Ruta Oficios Vivos de Analco y La Luz'
             : 'Living Crafts of Analco & La Luz',
-        badge: language === 'es' ? '★ Más Auténtica' : '★ Most Authentic',
-        badgeColor: 'border-amber-400/50 bg-amber-500/15 text-amber-300',
+        badge: language === 'es' ? '★ Recomendada' : '★ Recommended',
+        badgeColor: 'border-[#B84A2C]/30 bg-[#B84A2C]/10 text-[#B84A2C]',
         route: routeLocal,
         why:
           language === 'es'
-            ? `Se adapta a tus ${timeMin} min y presupuesto de $${budget} MXN. Te lleva directamente a talleres en activo de alfarería y hojalata donde maestros artesanos trabajan en vivo, evitando calles con tráfico pesado y priorizando tramos con sombra.`
-            : `Tailored to your ${timeMin} min and $${budget} MXN budget. Takes you directly to active pottery and tinsmith workshops with live demonstrations, avoiding busy vehicular traffic and maximizing shady walkways.`
+            ? `Ajustada a ${timeMin} min y $${budget} MXN. Conecta talleres de alfarería y talavera en activo por calles tranquilas.`
+            : `Tailored to ${timeMin} min and $${budget} MXN. Connects active pottery and Talavera workshops via quiet streets.`
       },
       {
         id: 'sug_heritage',
@@ -130,27 +126,27 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
           language === 'es'
             ? 'Ruta Tesoros Virreinales y Plazuelas'
             : 'Viceregal Treasures & Plazas',
-        badge: language === 'es' ? 'Historia y Arquitectura' : 'Heritage & History',
-        badgeColor: 'border-sky-400/50 bg-sky-500/15 text-sky-300',
+        badge: language === 'es' ? 'Historia' : 'Heritage',
+        badgeColor: 'border-[#0F3078]/30 bg-[#0F3078]/10 text-[#0F3078]',
         route: routeHeritage,
         why:
           language === 'es'
-            ? `Maximiza el valor cultural y arquitectónico a muy bajo costo ($0 - $50 MXN). Conecta los claustros, fuentes barrocas y el Barrio del Artista mediante banquetas amplias con desniveles suaves.`
-            : `Maximizes cultural and architectural depth with minimal entry costs ($0 - $50 MXN). Links colonial cloisters, baroque fountains, and the Artists' Quarter via wide sidewalks with gentle slopes.`
+            ? 'Recorre claustros, fuentes barrocas y el Barrio del Artista por banquetas amplias con pendientes suaves.'
+            : 'Links colonial cloisters, baroque fountains, and the Artists Quarter via wide sidewalks.'
       },
       {
         id: 'sug_express',
         name:
           language === 'es'
             ? 'Paseo Exprés de Callejones y Murales'
-            : 'Express Alleys & Street Murals Walk',
-        badge: language === 'es' ? 'Rápida y Panorámica' : 'Quick & Scenic',
-        badgeColor: 'border-emerald-400/50 bg-emerald-500/15 text-emerald-300',
+            : 'Express Alleys & Murals Walk',
+        badge: language === 'es' ? 'Corta' : 'Express',
+        badgeColor: 'border-[#1D6B52]/30 bg-[#1D6B52]/10 text-[#1D6B52]',
         route: routeExpress,
         why:
           language === 'es'
-            ? `Ideal si buscas una caminata fluida y sin prisas de menos de una hora. Disfruta de la plazuela de Los Sapos y los murales comunitarios de Xanenetla sin consumos obligatorios.`
-            : `Perfect for a relaxed walking stroll under an hour. Enjoy Los Sapos flea market and Xanenetla neighborhood murals with zero mandatory fees.`
+            ? 'Ideal para una caminata ligera de menos de una hora por Los Sapos y los murales de Xanenetla.'
+            : 'Ideal for a relaxed walk under an hour through Los Sapos and Xanenetla murals.'
       }
     ];
   }, [graph, matrices, pois, language, budget, timeMin, interest, profile]);
@@ -161,281 +157,263 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 bg-[#162035]/70 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#0A1E4A]/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-slide"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-[#FAF6EE] border-4 border-[#0F3078] rounded-t-3xl sm:rounded-3xl p-5 sm:p-7 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto animate-in fade-in slide-in-from-bottom-6 duration-300"
+        className="w-full max-w-xl bg-[#FAF6EE] border-t-4 sm:border-4 border-[#0F3078] rounded-t-[28px] sm:rounded-3xl shadow-2xl max-h-[90dvh] flex flex-col overflow-hidden text-[#162035]"
       >
-        {/* Encabezado */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b-2 border-[#0F3078]/15">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="p-2 rounded-xl bg-[#0F3078] text-[#FAF6EE] shadow-xs">
-                <Compass className="w-5 h-5" />
-              </span>
-              <h2 className="text-lg sm:text-xl font-black text-[#0F3078] font-serif">
-                {language === 'es'
-                  ? 'Personaliza tu Recorrido en Puebla'
-                  : 'Customize Your Walking Route'}
+        {/* 1. Cabecera Fija */}
+        <header className="px-5 py-3.5 bg-[#0F3078] text-[#FAF6EE] flex items-center justify-between gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="w-9 h-9 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center flex-shrink-0">
+              <Compass className="w-4 h-4 text-[#F0B43A]" />
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-sm sm:text-base font-black text-[#FAF6EE] font-serif truncate">
+                {language === 'es' ? 'Armar mi Recorrido' : 'Build My Walk'}
               </h2>
+              <p className="text-[11px] text-[#DCE6F9] truncate">
+                {language === 'es'
+                  ? 'Elige tu tiempo y preferencias para ver opciones'
+                  : 'Choose your time and preferences to see options'}
+              </p>
             </div>
-            <p className="text-xs text-[#0F3078]/70">
-              {language === 'es'
-                ? 'Elige tus preferencias y te sugerimos las mejores rutas con la explicación del por qué.'
-                : 'Choose your preferences and we suggest curated routes with a clear rationale.'}
-            </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-white border border-[#0F3078]/20 text-[#0F3078] hover:bg-[#FAF6EE] transition cursor-pointer shadow-xs"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF6EE] transition cursor-pointer flex-shrink-0"
             aria-label={language === 'es' ? 'Cerrar' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>
-        </div>
+        </header>
 
-        {/* 1. Selectores Rápidos e Intuitivos */}
-        <div className="space-y-4">
-          {/* Presupuesto */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-serif font-black text-[#0F3078] flex items-center gap-1.5">
-                <Coins className="w-4 h-4 text-[#B84A2C]" />
-                {language === 'es' ? 'Presupuesto Estimado' : 'Estimated Budget'}
-              </span>
-              <span className="font-mono font-black text-[#B84A2C] bg-white px-2 py-0.5 rounded-lg border border-[#B84A2C]/30 shadow-xs">
-                ${budget} MXN
-              </span>
+        {/* 2. Cuerpo con Scroll Propio */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+          <div className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-3.5 shadow-xs">
+            {/* Presupuesto y Tiempo */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#0F3078] flex items-center gap-1">
+                    <Coins className="w-3.5 h-3.5 text-[#B84A2C]" />
+                    {language === 'es' ? 'Gasto' : 'Budget'}
+                  </span>
+                  <span className="font-mono font-bold text-[#B84A2C]">${budget} MXN</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { label: language === 'es' ? 'Gratis' : 'Free', val: 0 },
+                    { label: '$150', val: 150 },
+                    { label: '$300', val: 300 }
+                  ].map((b) => (
+                    <button
+                      key={b.val}
+                      type="button"
+                      onClick={() => {
+                        tacticalAudio.playTacticalClick();
+                        setBudget(b.val);
+                      }}
+                      className={`py-1.5 px-2 rounded-lg text-xs font-bold transition cursor-pointer truncate ${
+                        budget === b.val
+                          ? 'bg-[#0F3078] text-[#FAF6EE]'
+                          : 'bg-[#FAF6EE] text-[#0F3078] border border-[#0F3078]/15'
+                      }`}
+                    >
+                      {b.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#0F3078] flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-[#0F3078]" />
+                    {language === 'es' ? 'Tiempo' : 'Time'}
+                  </span>
+                  <span className="font-mono font-bold text-[#0F3078]">{timeMin} min</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { label: '45 min', val: 45 },
+                    { label: '90 min', val: 90 },
+                    { label: '150 min', val: 150 }
+                  ].map((t) => (
+                    <button
+                      key={t.val}
+                      type="button"
+                      onClick={() => {
+                        tacticalAudio.playTacticalClick();
+                        setTimeMin(t.val);
+                      }}
+                      className={`py-1.5 px-2 rounded-lg text-xs font-bold transition cursor-pointer truncate ${
+                        timeMin === t.val
+                          ? 'bg-[#0F3078] text-[#FAF6EE]'
+                          : 'bg-[#FAF6EE] text-[#0F3078] border border-[#0F3078]/15'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: language === 'es' ? '$0 (Gratis)' : '$0 (Free)', val: 0 },
-                { label: language === 'es' ? '$150 (Moderado)' : '$150 (Modest)', val: 150 },
-                { label: language === 'es' ? '$300 (Completo)' : '$300 (Full)', val: 300 }
-              ].map((b) => (
-                <button
-                  key={b.val}
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setBudget(b.val);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer select-none font-serif ${
-                    budget === b.val
-                      ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md font-black border border-[#0F3078]'
-                      : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
-                  }`}
-                >
-                  {b.label}
-                </button>
-              ))}
+
+            {/* Interés Principal */}
+            <div className="space-y-1.5">
+              <span className="font-bold text-[#0F3078] text-xs block">
+                {language === 'es' ? 'Tema principal' : 'Main interest'}
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {[
+                  {
+                    id: 'artisans' as InterestCategory,
+                    icon: Flame,
+                    label: language === 'es' ? 'Talleres' : 'Workshops'
+                  },
+                  {
+                    id: 'heritage' as InterestCategory,
+                    icon: Compass,
+                    label: language === 'es' ? 'Historia' : 'Heritage'
+                  },
+                  {
+                    id: 'street_art' as InterestCategory,
+                    icon: Sparkles,
+                    label: language === 'es' ? 'Murales' : 'Murals'
+                  },
+                  {
+                    id: 'gastronomy' as InterestCategory,
+                    icon: HeartHandshake,
+                    label: language === 'es' ? 'Sabores' : 'Food'
+                  }
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const isSelected = interest === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        tacticalAudio.playTacticalClick();
+                        setInterest(item.id);
+                      }}
+                      className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer min-w-0 ${
+                        isSelected
+                          ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                          : 'bg-[#FAF6EE] text-[#0F3078] border border-[#0F3078]/15'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Movilidad */}
+            <div className="space-y-1.5">
+              <span className="font-bold text-[#0F3078] text-xs block">
+                {language === 'es' ? 'Tipo de paso' : 'Mobility'}
+              </span>
+              <div className="grid grid-cols-3 gap-1.5">
+                {[
+                  {
+                    id: 'sin_restriccion' as MobilityProfile,
+                    icon: Footprints,
+                    label: language === 'es' ? 'Estándar' : 'Standard'
+                  },
+                  {
+                    id: 'silla_de_ruedas' as MobilityProfile,
+                    icon: Accessibility,
+                    label: language === 'es' ? 'Sin escalón' : 'Step-free'
+                  },
+                  {
+                    id: 'movilidad_reducida' as MobilityProfile,
+                    icon: ShieldCheck,
+                    label: language === 'es' ? 'Tranquilo' : 'Gentle'
+                  }
+                ].map((p) => {
+                  const Icon = p.icon;
+                  const isSelected = profile === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        tacticalAudio.playTacticalClick();
+                        setProfile(p.id);
+                      }}
+                      className={`py-2 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer min-w-0 ${
+                        isSelected
+                          ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                          : 'bg-[#FAF6EE] text-[#0F3078] border border-[#0F3078]/15'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="truncate">{p.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          {/* Tiempo disponible */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-serif font-black text-[#0F3078] flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-[#0F3078]" />
-                {language === 'es' ? 'Tiempo Disponible' : 'Available Time'}
-              </span>
-              <span className="font-mono font-black text-[#0F3078] bg-white px-2 py-0.5 rounded-lg border border-[#0F3078]/25 shadow-xs">
-                {timeMin} min
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: language === 'es' ? '45m (Paseo Corto)' : '45m (Quick)', val: 45 },
-                { label: language === 'es' ? '90m (Recomendado)' : '90m (Standard)', val: 90 },
-                { label: language === 'es' ? '150m (Tarde Libre)' : '150m (Extended)', val: 150 }
-              ].map((t) => (
-                <button
-                  key={t.val}
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setTimeMin(t.val);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer select-none font-serif ${
-                    timeMin === t.val
-                      ? 'bg-[#0F3078] text-[#FAF6EE] shadow-md font-black border border-[#0F3078]'
-                      : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Interés Principal */}
-          <div className="space-y-2">
-            <span className="font-serif font-black text-[#0F3078] text-xs flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#B84A2C]" />
-              {language === 'es' ? '¿Qué quieres descubrir hoy?' : 'What do you want to experience?'}
-            </span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {[
-                {
-                  id: 'artisans' as InterestCategory,
-                  icon: Flame,
-                  label: language === 'es' ? 'Talleres Vivos' : 'Artisans'
-                },
-                {
-                  id: 'heritage' as InterestCategory,
-                  icon: Compass,
-                  label: language === 'es' ? 'Patrimonio' : 'Heritage'
-                },
-                {
-                  id: 'street_art' as InterestCategory,
-                  icon: Sparkles,
-                  label: language === 'es' ? 'Murales y Callejón' : 'Street Art'
-                },
-                {
-                  id: 'gastronomy' as InterestCategory,
-                  icon: HeartHandshake,
-                  label: language === 'es' ? 'Sabores y Dulces' : 'Flavors'
-                }
-              ].map((item) => {
-                const Icon = item.icon;
-                const isSelected = interest === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      tacticalAudio.playTacticalClick();
-                      setInterest(item.id);
-                    }}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold flex flex-col items-center gap-1.5 transition cursor-pointer select-none font-serif ${
-                      isSelected
-                        ? 'bg-[#B84A2C] text-[#FAF6EE] font-black shadow-md border border-[#B84A2C]'
-                        : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Accesibilidad y Paso */}
-          <div className="space-y-2">
-            <span className="font-serif font-black text-[#0F3078] text-xs flex items-center gap-1.5">
-              <Accessibility className="w-4 h-4 text-[#1D6B52]" />
-              {language === 'es' ? 'Paso y Accesibilidad Peatonal' : 'Mobility & Step'}
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                {
-                  id: 'sin_restriccion' as MobilityProfile,
-                  icon: Footprints,
-                  label: language === 'es' ? 'Estándar' : 'Standard'
-                },
-                {
-                  id: 'silla_de_ruedas' as MobilityProfile,
-                  icon: Accessibility,
-                  label: language === 'es' ? 'Sin Escalones' : 'Accessible'
-                },
-                {
-                  id: 'movilidad_reducida' as MobilityProfile,
-                  icon: ShieldCheck,
-                  label: language === 'es' ? 'Paso Tranquilo' : 'Gentle Pace'
-                }
-              ].map((p) => {
-                const Icon = p.icon;
-                const isSelected = profile === p.id;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      tacticalAudio.playTacticalClick();
-                      setProfile(p.id);
-                    }}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer select-none font-serif ${
-                      isSelected
-                        ? 'bg-[#1D6B52] text-[#FAF6EE] font-black shadow-md border border-[#1D6B52]'
-                        : 'bg-white/80 hover:bg-white text-[#0F3078] border border-[#0F3078]/15'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span className="truncate">{p.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Rutas Sugeridas con "El Por Qué" */}
-        <div className="space-y-3 pt-2 border-t-2 border-[#0F3078]/15">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-serif font-black uppercase tracking-wider text-[#0F3078] flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#B84A2C]" />
-              {language === 'es' ? 'Rutas Sugeridas para Ti' : 'Suggested Routes for You'}
+          {/* 3. Opciones de Ruta */}
+          <div className="space-y-2.5">
+            <h3 className="text-xs font-bold text-[#0F3078] uppercase tracking-wider">
+              {language === 'es' ? 'Rutas recomendadas' : 'Recommended routes'}
             </h3>
-            <span className="text-[10px] text-[#0F3078]/70 font-serif">
-              {suggestions.length} {language === 'es' ? 'opciones calculadas' : 'options ready'}
-            </span>
-          </div>
 
-          <div className="space-y-3">
             {suggestions.map((sug) => {
               const r = sug.route;
               return (
                 <div
                   key={sug.id}
-                  className="bg-white/95 border-2 border-[#0F3078]/25 rounded-2xl p-4 sm:p-5 shadow-md space-y-3 hover:border-[#0F3078] transition-all duration-300"
+                  className="bg-white border border-[#0F3078]/20 rounded-2xl p-3.5 shadow-xs space-y-2.5"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] font-serif px-2 py-0.5 rounded-full border font-bold ${sug.badgeColor}`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded-full border font-bold flex-shrink-0 ${sug.badgeColor}`}
+                      >
                         {sug.badge}
                       </span>
-                      <h4 className="font-serif font-black text-sm sm:text-base text-[#0F3078]">
+                      <h4 className="font-serif font-black text-sm text-[#0F3078] truncate">
                         {sug.name}
                       </h4>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-serif text-[#0F3078]">
-                      <span className="bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/20 font-bold">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0F3078]">
+                      <span className="bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/15">
                         {r.stops.length} {language === 'es' ? 'paradas' : 'stops'}
                       </span>
-                      <span className="bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/20 font-bold">
+                      <span className="bg-[#FAF6EE] px-2 py-0.5 rounded-lg border border-[#0F3078]/15">
                         {r.metrics.total_time_min}m
                       </span>
-                      <span className="bg-[#B84A2C]/15 text-[#B84A2C] px-2 py-0.5 rounded-lg border border-[#B84A2C]/30 font-bold">
-                        ${r.metrics.total_cost_mxn} MXN
+                      <span className="bg-[#B84A2C]/10 text-[#B84A2C] px-2 py-0.5 rounded-lg">
+                        ${r.metrics.total_cost_mxn}
                       </span>
                     </div>
                   </div>
 
-                  {/* EL POR QUÉ (The Why) */}
-                  <div className="bg-[#FAF6EE] border-2 border-[#F0B43A]/40 rounded-xl p-3 text-xs text-[#162035] space-y-1">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#B84A2C] font-serif">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#B84A2C] flex-shrink-0" />
-                      <span>{language === 'es' ? '¿Por qué te sugerimos esta ruta?' : 'Why we suggest this route:'}</span>
-                    </div>
-                    <p className="text-[11px] text-[#162035]/80 leading-relaxed pl-5 font-sans">
-                      {sug.why}
-                    </p>
-                  </div>
+                  <p className="text-xs text-[#162035]/80 leading-relaxed flex items-start gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#1D6B52] flex-shrink-0 mt-0.5" />
+                    <span>{sug.why}</span>
+                  </p>
 
-                  {/* Lugares incluidos */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
+                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
                     {r.stops.map((stop) => (
                       <span
                         key={stop.poi.id}
-                        className="text-[10px] whitespace-nowrap bg-white border border-[#0F3078]/20 px-2 py-1 rounded-lg text-[#0F3078] flex items-center gap-1 font-serif shadow-2xs"
+                        className="text-[10px] whitespace-nowrap bg-[#FAF6EE] border border-[#0F3078]/15 px-2 py-1 rounded-lg text-[#0F3078] flex items-center gap-1 font-medium"
                       >
-                        <span className="w-3.5 h-3.5 rounded-full bg-[#0F3078] text-[#FAF6EE] font-black flex items-center justify-center text-[9px]">
+                        <span className="w-3.5 h-3.5 rounded-full bg-[#0F3078] text-[#FAF6EE] font-bold flex items-center justify-center text-[9px] flex-shrink-0">
                           {stop.stop_order}
                         </span>
                         <span className="truncate max-w-[120px]">{stop.poi.name}</span>
@@ -443,7 +421,6 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                     ))}
                   </div>
 
-                  {/* Botón de Selección */}
                   <button
                     type="button"
                     onClick={() => {
@@ -451,10 +428,10 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                       onSelectRoute(r);
                       onClose();
                     }}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] active:scale-[0.99] text-[#FAF6EE] font-serif font-black text-xs flex items-center justify-center gap-2 shadow-md border border-[#FAF6EE]/20 transition cursor-pointer select-none"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition cursor-pointer"
                   >
-                    <span>{language === 'es' ? 'Aceptar y Trazar esta Ruta' : 'Accept & Trace this Route'}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>{language === 'es' ? 'Elegir esta ruta' : 'Select this route'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               );

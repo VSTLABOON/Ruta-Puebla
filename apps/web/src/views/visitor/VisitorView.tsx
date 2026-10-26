@@ -18,7 +18,6 @@ import { TacticalDesktopPanel } from '../../components/TacticalDesktopPanel';
 import { PassportGallery } from '../../components/PassportGallery';
 import { ArtisanDirectory } from '../../components/ArtisanDirectory';
 import {
-  Download,
   SlidersHorizontal,
   X,
   PanelLeftClose,
@@ -167,43 +166,11 @@ export const VisitorView: FC<VisitorViewProps> = ({
     URL.revokeObjectURL(url);
   };
 
+  const hasSidePanelVisible =
+    Boolean(activeRoute || selectedStopPoiId) && isDesktopPanelOpen && commandTab === 'explore';
+
   return (
     <div className="relative w-full h-full overflow-hidden flex flex-col">
-      {/* Controles flotantes en pantalla grande (En móvil se eliminan por completo para dejar el mapa limpio) */}
-      <div className="hidden sm:flex absolute top-3 left-4 right-4 z-20 items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-2 pointer-events-auto">
-          {activeRoute && (
-            <div className="bg-[#FAF6EE]/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl border-2 border-[#0F3078] text-xs font-semibold text-[#162035] shadow-lg flex items-center gap-2">
-              <span className="font-black text-[#B84A2C]">
-                {activeRoute.stops.length} {language === 'es' ? 'paradas' : 'stops'}
-              </span>
-              <span className="text-[#0F3078] font-bold">• {activeRoute.metrics.total_time_min}m</span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <button
-            type="button"
-            onClick={() => setIsFilterDrawerOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#0F3078] border-2 border-[#0F3078] text-xs font-bold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5 text-[#B84A2C]" />
-            <span>{language === 'es' ? 'Filtros' : 'Tune'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleExportRoute}
-            className="p-2 px-3 rounded-xl bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] border-2 border-white text-xs font-semibold flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all duration-300 cursor-pointer"
-            title={language === 'es' ? 'Descargar guía' : 'Save route'}
-          >
-            <Download className="w-3.5 h-3.5 text-[#F0B43A]" />
-            <span>{language === 'es' ? 'Guardar' : 'Save'}</span>
-          </button>
-        </div>
-      </div>
-
       {/* Mapa 3D Vectorial Pantalla Completa Permanente */}
       {graph && (
         <div className="absolute inset-0 w-full h-full z-0">
@@ -221,6 +188,10 @@ export const VisitorView: FC<VisitorViewProps> = ({
             onUserLocationChange={onUserLocationChange}
             onClearRoute={handleClearRoute}
             onOpenCustomizer={() => setIsWizardOpen(true)}
+            onOpenFilters={() => setIsFilterDrawerOpen(true)}
+            onExportRoute={activeRoute ? handleExportRoute : undefined}
+            isDesktopPanelOpen={hasSidePanelVisible}
+            isMobileSheetOpen={isBottomSheetOpen && Boolean(activeRoute || selectedStopPoiId)}
           />
         </div>
       )}
@@ -229,10 +200,10 @@ export const VisitorView: FC<VisitorViewProps> = ({
       {(activeRoute || selectedStopPoiId) && (
         <>
           <div
-            className={`hidden lg:block absolute top-16 left-4 bottom-24 w-[390px] z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`hidden lg:block absolute top-3 left-4 bottom-24 w-[380px] z-20 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isDesktopPanelOpen && commandTab === 'explore'
                 ? 'translate-x-0 opacity-100 pointer-events-auto'
-                : '-translate-x-[420px] opacity-0 pointer-events-none'
+                : '-translate-x-[410px] opacity-0 pointer-events-none'
             }`}
           >
             <TacticalDesktopPanel
@@ -251,7 +222,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
             <button
               type="button"
               onClick={() => setIsDesktopPanelOpen((v) => !v)}
-              className="hidden lg:flex fixed bottom-6 left-4 z-30 px-3.5 py-2 rounded-2xl bg-[#FAF6EE] hover:bg-[#FFFDF9] text-[#0F3078] border-2 border-[#0F3078] shadow-2xl items-center gap-2 text-xs font-black transition-all duration-300 cursor-pointer"
+              className="hidden lg:flex fixed bottom-6 left-4 z-30 px-3.5 py-2 rounded-2xl bg-[#FAF6EE] hover:bg-[#FFFDF9] text-[#0F3078] border-2 border-[#0F3078] shadow-xl items-center gap-2 text-xs font-black transition-all duration-300 cursor-pointer"
             >
               {isDesktopPanelOpen ? (
                 <>
@@ -327,7 +298,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
         </div>
       )}
 
-      {/* Barra Inferior de Navegación Táctica con Menú ClickUp integrado */}
+      {/* Barra Inferior de Navegación */}
       <MobileBottomNav
         activeTab={commandTab}
         onSelectTab={handleSelectTab}
@@ -347,7 +318,7 @@ export const VisitorView: FC<VisitorViewProps> = ({
         viewportMode={viewportMode}
       />
 
-      {/* Asistente Intuitivo de Experiencia Peatonal con Sugerencias y "El Por Qué" */}
+      {/* Asistente Intuitivo de Experiencia Peatonal */}
       <RouteExperienceWizard
         pois={pois}
         graph={graph}
@@ -362,42 +333,44 @@ export const VisitorView: FC<VisitorViewProps> = ({
         }}
       />
 
-      {/* Drawer Deslizable de Filtros de Ruta Talavera */}
+      {/* Drawer Deslizable de Filtros de Ruta */}
       <div
-        className={`fixed inset-0 z-50 bg-[#0F3078]/40 backdrop-blur-sm flex justify-end transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-0 z-50 bg-[#0A1E4A]/65 backdrop-blur-sm flex justify-end transition-opacity duration-300 ${
           isFilterDrawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsFilterDrawerOpen(false)}
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`w-full max-w-md bg-[#FAF6EE] border-l-4 border-[#0F3078] text-[#162035] h-full overflow-y-auto p-5 shadow-2xl space-y-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`w-full max-w-md bg-[#FAF6EE] border-l-4 border-[#0F3078] text-[#162035] h-full flex flex-col shadow-2xl transition-transform duration-300 ${
             isFilterDrawerOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className="flex items-center justify-between pb-3 border-b border-[#0F3078]/20">
+          <header className="px-5 py-3.5 bg-[#0F3078] text-[#FAF6EE] flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-[#B84A2C]" />
-              <h3 className="font-black text-sm text-[#0F3078] uppercase tracking-wider font-serif">
-                {language === 'es' ? 'Personalizar Recorrido' : 'Customize Walk'}
+              <SlidersHorizontal className="w-4 h-4 text-[#F0B43A]" />
+              <h3 className="font-serif font-black text-sm text-[#FAF6EE]">
+                {language === 'es' ? 'Ajustar Filtros de Ruta' : 'Adjust Route Filters'}
               </h3>
             </div>
             <button
               type="button"
               onClick={() => setIsFilterDrawerOpen(false)}
-              className="p-1.5 rounded-xl bg-[#0F3078]/10 text-[#0F3078] hover:bg-[#0F3078] hover:text-white transition cursor-pointer"
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF6EE] transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
+          </header>
 
-          <RouteForm
-            request={request}
-            onChangeRequest={handleUpdateReq}
-            onGenerate={handleGenerate}
-            pois={pois}
-            language={language}
-          />
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+            <RouteForm
+              request={request}
+              onChangeRequest={handleUpdateReq}
+              onGenerate={handleGenerate}
+              pois={pois}
+              language={language}
+            />
+          </div>
         </div>
       </div>
     </div>
