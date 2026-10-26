@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
-import { TalaveraFrieze } from './TalaveraOrnament';
 import { PoiCulturalContextCard } from './PoiCulturalContextCard';
 
 interface TacticalBottomSheetProps {
@@ -56,7 +55,6 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
 
   if (stops.length === 0 && pois.length === 0) return null;
 
-  // Buscar si el lugar seleccionado es parte de las paradas de la ruta o cualquier otro POI del mapa
   const stopIndex = stops.findIndex((s) => s.poi.id === selectedStopPoiId);
   const currentStop = stopIndex >= 0 ? stops[stopIndex] : stops[0] || null;
   const standalonePoi =
@@ -69,6 +67,9 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
 
   const currentIndex = stopIndex >= 0 ? stopIndex : 0;
   const isSecretUnlocked = passportState.unlocked_secrets.includes(poi.id);
+  const hasStories =
+    (poi.community_memories && poi.community_memories.length > 0) ||
+    (poi.historical_figures && poi.historical_figures.length > 0);
 
   const formatTime = (min: number) => {
     const h = Math.floor(min / 60);
@@ -101,8 +102,7 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
   const toggleExpand = () => {
     tacticalAudio.playTacticalClick();
     if (sheetState === 'full') setSheetState('half');
-    else if (sheetState === 'half') setSheetState('full');
-    else setSheetState('half');
+    else setSheetState('full');
   };
 
   const handlePrev = () => {
@@ -120,9 +120,9 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
   };
 
   const heightClasses = {
-    peek: 'h-32',
-    half: 'h-[56vh] sm:h-[500px]',
-    full: 'h-[84vh] sm:h-[700px]'
+    peek: 'h-28',
+    half: 'h-[58vh] sm:h-[520px]',
+    full: 'h-[85vh] sm:h-[700px]'
   }[sheetState];
 
   return (
@@ -135,60 +135,32 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
       }`}
     >
       <div
-        className={`w-full max-w-lg mx-auto bg-[#FAF6EE] border-t-4 border-x-2 border-[#0F3078] rounded-t-3xl shadow-[0_-15px_45px_rgba(15,48,120,0.25)] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
+        className={`w-full max-w-lg mx-auto bg-[#FAF6EE] border-t-4 border-x-2 border-[#0F3078] rounded-t-[28px] shadow-[0_-15px_45px_rgba(15,48,120,0.25)] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
           isOpen ? 'pointer-events-auto' : 'pointer-events-none'
         } ${heightClasses}`}
       >
-        {/* Barra superior deslizable */}
+        {/* 1. Tirador deslizable y Cabecera compacta */}
         <div
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onClick={toggleExpand}
-          className="w-full pt-2.5 pb-1 flex flex-col items-center justify-center cursor-pointer select-none group bg-[#FAF6EE]"
+          className="w-full pt-2 pb-1 flex items-center justify-center cursor-pointer select-none bg-[#0F3078]"
         >
-          <div className="w-12 h-1.5 rounded-full bg-[#0F3078]/40 group-hover:bg-[#B84A2C] transition-colors duration-300" />
-          <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-[#0F3078]/70 mt-1">
-            <span>
-              {sheetState === 'full'
-                ? language === 'es'
-                  ? 'Toca o desliza para reducir'
-                  : 'Swipe down to compact'
-                : language === 'es'
-                ? 'Toca o desliza para ver más detalles'
-                : 'Swipe up for more details'}
-            </span>
-            {sheetState === 'full' ? (
-              <ChevronDown className="w-3 h-3 text-[#0F3078]" />
-            ) : (
-              <ChevronUp className="w-3 h-3 text-[#0F3078]" />
-            )}
-          </div>
+          <div className="w-10 h-1 rounded-full bg-white/40" />
         </div>
 
-        {/* Cabecera del lugar con azul cobalto y greca de talavera */}
-        <div className="bg-[#0F3078] text-[#FAF6EE] px-4 py-2.5 flex items-center justify-between gap-3 flex-shrink-0 shadow-inner">
+        <header className="bg-[#0F3078] text-[#FAF6EE] px-4 pb-3 pt-1 flex items-center justify-between gap-2.5 flex-shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div
-              className={`w-9 h-9 rounded-xl font-serif font-black text-sm flex items-center justify-center shadow-md flex-shrink-0 ${
-                standalonePoi
-                  ? 'bg-[#B84A2C] text-[#FAF6EE] border border-[#FAF6EE]/40'
-                  : 'bg-[#FAF6EE] text-[#0F3078] border-2 border-[#0F3078]'
-              }`}
-            >
-              {standalonePoi ? <MapPin className="w-4 h-4" /> : currentStop?.stop_order || 1}
+            <div className="w-8 h-8 rounded-xl bg-white/15 border border-white/25 font-serif font-black text-xs flex items-center justify-center flex-shrink-0">
+              {standalonePoi ? <MapPin className="w-4 h-4 text-[#F0B43A]" /> : currentStop?.stop_order || 1}
             </div>
 
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <h3 className="font-serif font-black text-sm text-[#FAF6EE] truncate tracking-wide">
-                  {poi.name}
-                </h3>
-                <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-[#F0B43A]/20 text-[#FAF6EE] border border-[#F0B43A]/40 font-semibold">
-                  {poi.zone.replace(/_/g, ' ')}
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5 text-[11px] text-[#FAF6EE]/80 mt-0.5">
-                <span className="flex items-center gap-1 text-[#F0B43A] font-medium">
+              <h3 className="font-serif font-black text-sm text-[#FAF6EE] truncate">
+                {poi.name}
+              </h3>
+              <div className="flex items-center gap-2 text-[11px] text-[#DCE6F9] truncate">
+                <span className="flex items-center gap-1 text-[#F0B43A] font-semibold flex-shrink-0">
                   <Clock className="w-3 h-3" />
                   {standalonePoi || !currentStop
                     ? `${poi.hours.open} - ${poi.hours.close}`
@@ -196,137 +168,147 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                         currentStop.departure_time_min
                       )}`}
                 </span>
-                <span className="truncate">{poi.address}</span>
+                <span>•</span>
+                <span className="truncate capitalize">{poi.zone.replace(/_/g, ' ')}</span>
               </div>
             </div>
           </div>
 
-          {/* Controles de navegación entre paradas y cerrar */}
           <div className="flex items-center gap-1 flex-shrink-0">
-            {stops.length > 0 && (
-              <>
+            {stops.length > 0 && stopIndex >= 0 && (
+              <div className="flex items-center bg-white/10 rounded-xl p-0.5 border border-white/15">
                 <button
                   type="button"
                   onClick={handlePrev}
                   disabled={currentIndex === 0}
-                  className="p-1.5 rounded-xl bg-[#FAF6EE]/15 border border-[#FAF6EE]/30 text-[#FAF6EE] disabled:opacity-30 hover:bg-[#FAF6EE]/30 transition cursor-pointer"
-                  title={language === 'es' ? 'Parada anterior' : 'Previous stop'}
+                  className="p-1 rounded-lg text-[#FAF6EE] disabled:opacity-30 hover:bg-white/15 transition cursor-pointer"
+                  title={language === 'es' ? 'Anterior' : 'Previous'}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="text-[11px] font-bold text-[#FAF6EE] px-1 font-serif">
-                  {stopIndex >= 0 ? `${currentIndex + 1}/${stops.length}` : 'Mapa'}
+                <span className="text-[10px] font-bold px-1.5">
+                  {currentIndex + 1}/{stops.length}
                 </span>
                 <button
                   type="button"
                   onClick={handleNext}
                   disabled={currentIndex === stops.length - 1}
-                  className="p-1.5 rounded-xl bg-[#FAF6EE]/15 border border-[#FAF6EE]/30 text-[#FAF6EE] disabled:opacity-30 hover:bg-[#FAF6EE]/30 transition cursor-pointer"
-                  title={language === 'es' ? 'Siguiente parada' : 'Next stop'}
+                  className="p-1 rounded-lg text-[#FAF6EE] disabled:opacity-30 hover:bg-white/15 transition cursor-pointer"
+                  title={language === 'es' ? 'Siguiente' : 'Next'}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
-              </>
+              </div>
             )}
+
+            <button
+              type="button"
+              onClick={toggleExpand}
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF6EE] transition cursor-pointer"
+              title={sheetState === 'full' ? 'Reducir' : 'Ampliar'}
+            >
+              {sheetState === 'full' ? (
+                <ChevronDown className="w-4 h-4" />
+              ) : (
+                <ChevronUp className="w-4 h-4" />
+              )}
+            </button>
+
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 ml-1 rounded-xl bg-[#FAF6EE]/15 hover:bg-[#FAF6EE]/30 text-[#FAF6EE] transition cursor-pointer"
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF6EE] transition cursor-pointer"
               title={language === 'es' ? 'Cerrar' : 'Close'}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
-        </div>
+        </header>
 
-        {/* Greca Talavera ornamental decorativa */}
-        <TalaveraFrieze compact />
-
-        {/* Pestañas claras y amigables para el visitante con pigmentos de Talavera */}
-        <div className="px-4 py-2 border-b border-[#0F3078]/10 bg-[#FAF6EE]/90 flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
-          <button
-            type="button"
-            onClick={() => {
-              tacticalAudio.playTacticalClick();
-              setActiveTab('info');
-            }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-              activeTab === 'info'
-                ? 'bg-[#0F3078] text-[#FAF6EE] shadow-sm font-serif border border-[#0F3078]'
-                : 'text-[#0F3078] hover:text-[#0F3078] bg-white/70 border border-[#0F3078]/15'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{language === 'es' ? 'Sobre el Lugar' : 'About'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              tacticalAudio.playTacticalClick();
-              setActiveTab('accessibility');
-            }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-              activeTab === 'accessibility'
-                ? 'bg-[#1D6B52] text-[#FAF6EE] shadow-sm font-serif border border-[#1D6B52]'
-                : 'text-[#1D6B52] hover:text-[#1D6B52] bg-white/70 border border-[#1D6B52]/15'
-            }`}
-          >
-            <Accessibility className="w-3.5 h-3.5" />
-            <span>{language === 'es' ? 'Paso Peatonal' : 'Accessibility'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              tacticalAudio.playTacticalClick();
-              setActiveTab('badge');
-            }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-              activeTab === 'badge'
-                ? 'bg-[#B84A2C] text-[#FAF6EE] shadow-sm font-serif border border-[#B84A2C]'
-                : 'text-[#B84A2C] hover:text-[#B84A2C] bg-white/70 border border-[#B84A2C]/15'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>{language === 'es' ? 'Sello y Secreto' : 'Badge & Secret'}</span>
-          </button>
-
-          {((poi.community_memories && poi.community_memories.length > 0) ||
-            (poi.historical_figures && poi.historical_figures.length > 0)) && (
+        {/* 2. Selector Segmentado Unificado */}
+        <div className="px-3.5 py-2 bg-[#F2EBDC] border-b border-[#0F3078]/15 flex-shrink-0">
+          <div className={`grid ${hasStories ? 'grid-cols-4' : 'grid-cols-3'} gap-1 bg-white/80 p-1 rounded-xl border border-[#0F3078]/15 text-xs font-bold`}>
             <button
               type="button"
               onClick={() => {
                 tacticalAudio.playTacticalClick();
-                setActiveTab('memories');
+                setActiveTab('info');
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                activeTab === 'memories'
-                  ? 'bg-[#6D438A] text-[#FAF6EE] shadow-sm font-serif border border-[#6D438A]'
-                  : 'text-[#6D438A] hover:text-[#6D438A] bg-white/70 border border-[#6D438A]/15'
+              className={`py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition cursor-pointer ${
+                activeTab === 'info'
+                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
               }`}
             >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>{language === 'es' ? 'Historias' : 'Stories'}</span>
+              <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{language === 'es' ? 'Resumen' : 'Overview'}</span>
             </button>
-          )}
+
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                setActiveTab('accessibility');
+              }}
+              className={`py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition cursor-pointer ${
+                activeTab === 'accessibility'
+                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
+              }`}
+            >
+              <Accessibility className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{language === 'es' ? 'Acceso' : 'Access'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                setActiveTab('badge');
+              }}
+              className={`py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition cursor-pointer ${
+                activeTab === 'badge'
+                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
+              }`}
+            >
+              <Award className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{language === 'es' ? 'Sello' : 'Stamp'}</span>
+            </button>
+
+            {hasStories && (
+              <button
+                type="button"
+                onClick={() => {
+                  tacticalAudio.playTacticalClick();
+                  setActiveTab('memories');
+                }}
+                className={`py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition cursor-pointer ${
+                  activeTab === 'memories'
+                    ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                    : 'text-[#0F3078]/75 hover:text-[#0F3078]'
+                }`}
+              >
+                <MessageSquare className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">{language === 'es' ? 'Relatos' : 'Stories'}</span>
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Contenido principal con scroll suave */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#FAF6EE]/50">
-          {/* PESTAÑA 1: INFORMACIÓN PRÁCTICA DEL LUGAR */}
+        {/* 3. Cuerpo con Scroll Propio */}
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3 bg-[#FAF6EE]">
           {activeTab === 'info' && (
-            <div className="space-y-3 animate-fade-slide">
+            <div className="space-y-3">
               <PoiCulturalContextCard poi={poi} language={language} />
-              {/* Descripción principal */}
-              <div className="bg-white/95 rounded-2xl p-3.5 border-2 border-[#0F3078]/15 text-xs sm:text-sm text-[#162035] leading-relaxed shadow-sm">
+
+              <div className="bg-white rounded-2xl p-3.5 border border-[#0F3078]/15 text-xs text-[#162035] leading-relaxed shadow-xs">
                 {poi.description[language] || poi.description.es}
               </div>
 
-              {/* Datos prácticos para el visitante */}
               <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="bg-white/95 p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
-                  <span className="text-[10px] text-[#0F3078]/70 block font-medium">
+                <div className="bg-white p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
+                  <span className="text-[10px] text-[#0F3078]/70 block font-semibold">
                     {language === 'es' ? 'Horario' : 'Hours'}
                   </span>
                   <span className="font-bold text-[#162035] mt-0.5 block">
@@ -334,23 +316,23 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                   </span>
                 </div>
 
-                <div className="bg-white/95 p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
-                  <span className="text-[10px] text-[#0F3078]/70 flex items-center gap-1 font-medium">
+                <div className="bg-white p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
+                  <span className="text-[10px] text-[#0F3078]/70 flex items-center gap-1 font-semibold">
                     <Ticket className="w-3 h-3 text-[#B84A2C]" />
-                    {language === 'es' ? 'Entrada' : 'Admission'}
+                    {language === 'es' ? 'Entrada' : 'Entry'}
                   </span>
                   <span className="font-bold text-[#B84A2C] mt-0.5 block">
                     {poi.cost_mxn === 0
                       ? language === 'es'
-                        ? 'Entrada libre'
-                        : 'Free entry'
+                        ? 'Libre'
+                        : 'Free'
                       : `$${poi.cost_mxn} MXN`}
                   </span>
                 </div>
 
-                <div className="bg-white/95 p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
-                  <span className="text-[10px] text-[#0F3078]/70 block font-medium">
-                    {language === 'es' ? 'Estancia sugerida' : 'Suggested stay'}
+                <div className="bg-white p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
+                  <span className="text-[10px] text-[#0F3078]/70 block font-semibold">
+                    {language === 'es' ? 'Duración' : 'Stay'}
                   </span>
                   <span className="font-bold text-[#162035] mt-0.5 block">
                     {poi.visit_duration_min} min
@@ -358,22 +340,20 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                 </div>
               </div>
 
-              {/* Si es taller artesanal, mostrar ficha del maestro artesano */}
               {poi.artisan_profile && (
-                <div className="bg-[#FAF6EE] rounded-2xl p-3.5 border-2 border-[#B84A2C]/40 space-y-2 shadow-sm">
+                <div className="bg-white rounded-2xl p-3.5 border border-[#B84A2C]/35 space-y-1.5 shadow-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#B84A2C] flex items-center gap-1.5 font-serif">
+                    <span className="text-[11px] font-bold text-[#B84A2C] flex items-center gap-1.5">
                       <Store className="w-3.5 h-3.5" />
-                      {language === 'es' ? 'Taller Tradicional de Barrio' : 'Neighborhood Workshop'}
+                      {language === 'es' ? 'Taller artesanal' : 'Local workshop'}
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#B84A2C]/15 text-[#B84A2C] font-semibold border border-[#B84A2C]/30">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#B84A2C]/10 text-[#B84A2C] font-bold">
                       {poi.artisan_profile.oficio}
                     </span>
                   </div>
                   <div className="text-xs text-[#162035]">
                     <strong>{poi.artisan_profile.maestro_artesano}</strong> •{' '}
-                    {language === 'es' ? 'Fundado en' : 'Founded in'}{' '}
-                    {poi.artisan_profile.fundacion_anio}
+                    {language === 'es' ? 'Desde' : 'Since'} {poi.artisan_profile.fundacion_anio}
                   </div>
                   <div className="text-xs text-[#B84A2C] font-medium flex items-center gap-1.5">
                     <Flame className="w-3.5 h-3.5 flex-shrink-0" />
@@ -381,105 +361,75 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
                   </div>
                 </div>
               )}
-
-              {/* Botón para simular/moverse a este punto */}
-              {onMoveUserHere && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    onMoveUserHere(poi.coordinates);
-                  }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#0A2255] text-[#FAF6EE] border border-[#FAF6EE]/20 font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-md cursor-pointer"
-                >
-                  <Navigation className="w-3.5 h-3.5" />
-                  <span>
-                    {language === 'es'
-                      ? 'Marcar que estoy aquí en el mapa'
-                      : 'Set my current location here'}
-                  </span>
-                </button>
-              )}
             </div>
           )}
 
-          {/* PESTAÑA 2: ACCESIBILIDAD EN LENGUAJE CLARO (CERO PORCENTAJES) */}
           {activeTab === 'accessibility' && (
-            <div className="space-y-3 animate-fade-slide">
+            <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                <div className="bg-white/95 p-3.5 rounded-2xl border-2 border-[#0F3078]/15 space-y-1 shadow-sm">
-                  <span className="text-[11px] text-[#0F3078]/70 font-medium">
-                    {language === 'es' ? 'Acceso en la entrada' : 'Entrance access'}
+                <div className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs">
+                  <span className="text-[11px] text-[#0F3078]/70 font-semibold">
+                    {language === 'es' ? 'Entrada al lugar' : 'Entrance'}
                   </span>
-                  <div className="font-bold text-sm">
+                  <div className="font-bold text-xs">
                     {poi.entrance_accessible ? (
                       <span className="text-[#1D6B52] flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-                        {language === 'es'
-                          ? 'Entrada plana sin escalones'
-                          : 'Flat step-free entrance'}
+                        {language === 'es' ? 'Entrada plana sin escalones' : 'Step-free entrance'}
                       </span>
                     ) : (
                       <span className="text-[#B84A2C] flex items-center gap-1.5">
                         <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                        {language === 'es'
-                          ? 'Cuenta con escalón en la entrada'
-                          : 'Has entrance step'}
+                        {language === 'es' ? 'Con escalón en la entrada' : 'Has entrance step'}
                       </span>
                     )}
                   </div>
                 </div>
 
-                <div className="bg-white/95 p-3.5 rounded-2xl border-2 border-[#0F3078]/15 space-y-1 shadow-sm">
-                  <span className="text-[11px] text-[#0F3078]/70 font-medium">
-                    {language === 'es' ? 'Sanitario para visitantes' : 'Visitor restroom'}
+                <div className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs">
+                  <span className="text-[11px] text-[#0F3078]/70 font-semibold">
+                    {language === 'es' ? 'Sanitario' : 'Restroom'}
                   </span>
-                  <div className="font-bold text-sm">
+                  <div className="font-bold text-xs">
                     {poi.restroom_accessible ? (
                       <span className="text-[#1D6B52] flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-                        {language === 'es' ? 'Baño accesible disponible' : 'Accessible restroom'}
+                        {language === 'es' ? 'Sanitario adaptado disponible' : 'Accessible restroom'}
                       </span>
                     ) : (
                       <span className="text-[#162035]/60 flex items-center gap-1.5">
-                        {language === 'es'
-                          ? 'Sin sanitario adaptado'
-                          : 'No adapted restroom'}
+                        {language === 'es' ? 'Sin sanitario adaptado' : 'No adapted restroom'}
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/95 p-3.5 rounded-2xl border-2 border-[#1D6B52]/30 text-xs text-[#162035] space-y-1 shadow-sm">
-                <span className="font-bold text-[#1D6B52] block font-serif">
-                  {language === 'es'
-                    ? 'Recomendación para tu caminata:'
-                    : 'Walking recommendation:'}
-                </span>
+              <div className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 text-xs text-[#162035] space-y-1 shadow-xs">
+                <strong className="text-[#0F3078] block">
+                  {language === 'es' ? 'Nota sobre el camino:' : 'Sidewalk note:'}
+                </strong>
                 <p className="leading-relaxed text-[#162035]/80">
                   {currentStop
-                    ? currentStop.accessibility_notes[language] ||
-                      currentStop.accessibility_notes.es
+                    ? currentStop.accessibility_notes[language] || currentStop.accessibility_notes.es
                     : poi.entrance_accessible
                     ? language === 'es'
-                      ? 'Acceso cómodo a nivel de banqueta. Ideal para recorrer a pie o con silla de ruedas.'
+                      ? 'Acceso cómodo a nivel de banqueta para recorrer a pie o en silla de ruedas.'
                       : 'Comfortable street-level access suitable for wheelchairs and strollers.'
                     : language === 'es'
-                    ? 'Este inmueble histórico tiene escalón en su acceso principal; puedes solicitar apoyo del personal.'
+                    ? 'Este edificio histórico tiene escalón en su entrada principal.'
                     : 'This historic building has a step at the main entrance.'}
                 </p>
               </div>
             </div>
           )}
 
-          {/* PESTAÑA 3: INSIGNIA HOLOGRÁFICA Y SECRETO */}
           {activeTab === 'badge' && (
-            <div className="space-y-3 animate-fade-slide">
+            <div className="space-y-3">
               {poi.secret_to_unlock?.pista && !isSecretUnlocked && (
-                <div className="bg-[#FAF6EE] border-2 border-[#F0B43A]/60 rounded-2xl p-3 text-xs text-[#7A4B00] shadow-sm">
-                  <strong className="block text-[#B84A2C] mb-0.5 font-serif">
-                    {language === 'es' ? 'Pista para descubrir el secreto:' : 'Clue to unlock:'}
+                <div className="bg-white border border-[#D48914]/50 rounded-2xl p-3 text-xs text-[#162035] shadow-xs">
+                  <strong className="block text-[#B84A2C] mb-0.5">
+                    {language === 'es' ? 'Pista:' : 'Clue:'}
                   </strong>
                   {poi.secret_to_unlock.pista}
                 </div>
@@ -501,54 +451,56 @@ export const TacticalBottomSheet: FC<TacticalBottomSheetProps> = ({
             </div>
           )}
 
-          {/* PESTAÑA 4: HISTORIAS Y PERSONAJES */}
           {activeTab === 'memories' && (
-            <div className="space-y-3 text-xs animate-fade-slide">
-              {poi.historical_figures && poi.historical_figures.length > 0 && (
-                <div className="space-y-2">
-                  <span className="font-bold text-[#0F3078] uppercase text-[11px] tracking-wider block font-serif">
-                    {language === 'es' ? 'Personajes Históricos' : 'Historical Figures'}
-                  </span>
-                  {poi.historical_figures.map((hf, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white/95 p-3 rounded-2xl border-2 border-[#0F3078]/15 space-y-1 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between">
-                        <strong className="text-[#0F3078] font-serif text-sm">{hf.nombre}</strong>
-                        <span className="text-[11px] text-[#0F3078]/60">{hf.epoca}</span>
-                      </div>
-                      <div className="text-[11px] text-[#B84A2C] font-semibold">{hf.rol}</div>
-                      <p className="text-xs text-[#162035]/80 leading-relaxed">{hf.relato}</p>
-                    </div>
-                  ))}
+            <div className="space-y-2.5 text-xs">
+              {poi.historical_figures?.map((hf, idx) => (
+                <div
+                  key={`hf-${idx}`}
+                  className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs"
+                >
+                  <div className="flex items-center justify-between">
+                    <strong className="text-[#0F3078] text-xs">{hf.nombre}</strong>
+                    <span className="text-[10px] text-[#0F3078]/60">{hf.epoca}</span>
+                  </div>
+                  <div className="text-[11px] text-[#B84A2C] font-semibold">{hf.rol}</div>
+                  <p className="text-[#162035]/80 leading-relaxed">{hf.relato}</p>
                 </div>
-              )}
+              ))}
 
-              {poi.community_memories && poi.community_memories.length > 0 && (
-                <div className="space-y-2">
-                  <span className="font-bold text-[#1D6B52] uppercase text-[11px] tracking-wider block font-serif">
-                    {language === 'es' ? 'Experiencias de Visitantes' : 'Visitor Stories'}
-                  </span>
-                  {poi.community_memories.map((cm, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white/95 p-3 rounded-2xl border-2 border-[#1D6B52]/20 space-y-1 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between">
-                        <strong className="text-[#1D6B52] font-serif">{cm.autor}</strong>
-                        <span className="text-[11px] text-[#162035]/60">{cm.procedencia}</span>
-                      </div>
-                      <p className="text-xs text-[#162035]/90 italic leading-relaxed">
-                        &quot;{cm.testimonio}&quot;
-                      </p>
-                    </div>
-                  ))}
+              {poi.community_memories?.map((cm, idx) => (
+                <div
+                  key={`cm-${idx}`}
+                  className="bg-white p-3.5 rounded-2xl border border-[#0F3078]/15 space-y-1 shadow-xs"
+                >
+                  <div className="flex items-center justify-between">
+                    <strong className="text-[#1D6B52]">{cm.autor}</strong>
+                    <span className="text-[10px] text-[#162035]/60">{cm.procedencia}</span>
+                  </div>
+                  <p className="text-[#162035]/85 italic leading-relaxed">&ldquo;{cm.testimonio}&rdquo;</p>
                 </div>
-              )}
+              ))}
             </div>
           )}
         </div>
+
+        {/* 4. Footer Fijo */}
+        {onMoveUserHere && sheetState !== 'peek' && (
+          <footer className="px-4 py-2.5 bg-white border-t border-[#0F3078]/15 flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                tacticalAudio.playTacticalClick();
+                onMoveUserHere(poi.coordinates);
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] font-bold text-xs flex items-center justify-center gap-2 transition shadow-xs cursor-pointer"
+            >
+              <Navigation className="w-3.5 h-3.5" />
+              <span>
+                {language === 'es' ? 'Ir a este punto en el mapa' : 'Move to this point on map'}
+              </span>
+            </button>
+          </footer>
+        )}
       </div>
     </div>
   );

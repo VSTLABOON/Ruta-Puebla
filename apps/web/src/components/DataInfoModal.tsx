@@ -1,5 +1,5 @@
 import { useState, useEffect, type FC } from 'react';
-import { X, BookOpen, Scale, Database, Filter, CheckCircle2 } from 'lucide-react';
+import { X, BookOpen, Scale, Database, Filter, ChevronDown } from 'lucide-react';
 
 interface DataInfoModalProps {
   isOpen: boolean;
@@ -17,7 +17,7 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    fetch('/data/data_cleaning_funnel.json?v=3')
+    fetch('/data/data_cleaning_funnel.json?v=4')
       .then((r) => r.json())
       .then((data) => setFunnelData(data))
       .catch(() => {});
@@ -26,21 +26,21 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
   if (!isOpen) return null;
 
   const defaultSteps = [
-    { etapa: 1, nombre: 'Universo Total Estatal', desc: 'Archivo censal INEGI del Estado de Puebla', reg: '410,693', pct: '100.0%' },
-    { etapa: 2, nombre: 'Municipio de Puebla', desc: 'Clave municipal cve_mun == 114 (Capital)', reg: '107,087', pct: '26.07%' },
-    { etapa: 3, nombre: 'Polígono Piloto Centro y Barrios', desc: 'BBOX Centro, Analco, La Luz, El Alto, Xanenetla', reg: '4,456', pct: '1.08%' },
-    { etapa: 4, nombre: 'Pertinencia Cultural y Artesanal', desc: 'SCIAN artesanías, alfarería, talavera, gastronomía típica, museos', reg: '742', pct: '0.18%' },
-    { etapa: 5, nombre: 'Microescala Económica Local', desc: 'Estratos de 0 a 5 y 6 a 10 empleados', reg: '676', pct: '0.16%' },
-    { etapa: 6, nombre: 'Depuración de Cadenas Masivas', desc: 'Exclusión por palabras corporativas (OXXO, cadenas de comida rápida)', reg: '676', pct: '0.16%' }
+    { etapa: 1, nombre: 'Total de unidades en el estado', desc: 'Censo INEGI del Estado de Puebla', reg: '410,693', pct: '100%', width: 100 },
+    { etapa: 2, nombre: 'Municipio de Puebla', desc: 'Capital del estado (cve_mun 114)', reg: '107,087', pct: '26.1%', width: 65 },
+    { etapa: 3, nombre: 'Centro Histórico y Barrios', desc: 'Zócalo, Analco, La Luz, El Alto y Xanenetla', reg: '4,456', pct: '1.08%', width: 38 },
+    { etapa: 4, nombre: 'Giro cultural y artesanal', desc: 'Talavera, alfarería, gastronomía típica y museos', reg: '742', pct: '0.18%', width: 22 },
+    { etapa: 5, nombre: 'Comercios y talleres locales', desc: 'Microempresas locales (sin cadenas comerciales)', reg: '676', pct: '0.16%', width: 15 }
   ];
 
   const funnelSteps = funnelData?.funnel_steps
-    ? funnelData.funnel_steps.map((s: any) => ({
+    ? funnelData.funnel_steps.map((s: any, idx: number) => ({
         etapa: s.stage,
         nombre: s.name,
         desc: s.criterion,
         reg: Number(s.records_remaining).toLocaleString('en-US'),
-        pct: `${s.pct_of_total}%`
+        pct: `${s.pct_of_total}%`,
+        width: Math.max(12, 100 - idx * 17)
       }))
     : defaultSteps;
 
@@ -53,233 +53,238 @@ export const DataInfoModal: FC<DataInfoModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#FAF6EE] rounded-3xl border-4 border-[#0F3078] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-5 text-[#162035]">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-[#0F3078] font-serif" />
-            <h2 className="text-base font-bold text-[#0F3078] font-serif">
-              {language === 'es' ? 'Metodología de Datos, Limpieza y Marco Normativo' : 'Data Methodology, Cleaning & Legal Norms'}
-            </h2>
+    <div className="fixed inset-0 z-50 bg-[#0A1E4A]/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-slide">
+      <div className="bg-[#FAF6EE] border-t-4 sm:border-4 border-[#0F3078] text-[#162035] rounded-t-[28px] sm:rounded-3xl max-w-2xl w-full max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden">
+        {/* 1. Cabecera Fija */}
+        <header className="px-5 py-3.5 bg-[#0F3078] text-[#FAF6EE] flex items-center justify-between gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-4 h-4 text-[#F0B43A]" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="font-serif font-black text-sm sm:text-base text-[#FAF6EE] truncate">
+                {language === 'es' ? 'Sobre los Datos y Accesibilidad' : 'About Data & Accessibility'}
+              </h2>
+              <p className="text-[11px] text-[#DCE6F9] truncate">
+                {language === 'es'
+                  ? 'Cómo seleccionamos los talleres y evaluamos las banquetas'
+                  : 'How we select local workshops and evaluate sidewalks'}
+              </p>
+            </div>
           </div>
+
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 text-[var(--muted)] hover:text-[var(--muted)] rounded-lg hover:bg-[var(--well)]"
-            aria-label="Cerrar modal"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF6EE] transition cursor-pointer flex-shrink-0"
+            aria-label={language === 'es' ? 'Cerrar' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>
+        </header>
+
+        {/* 2. Control Segmentado Unificado */}
+        <div className="px-4 py-2.5 bg-[#F2EBDC] border-b border-[#0F3078]/15 flex-shrink-0">
+          <div className="grid grid-cols-3 gap-1 bg-white/80 p-1 rounded-xl border border-[#0F3078]/15 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setActiveTab('funnel')}
+              className={`py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                activeTab === 'funnel'
+                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              <span className="truncate">{language === 'es' ? 'Lugares' : 'Places'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('norms')}
+              className={`py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                activeTab === 'norms'
+                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
+              }`}
+            >
+              <Scale className="w-3.5 h-3.5" />
+              <span className="truncate">{language === 'es' ? 'Accesibilidad' : 'Access'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('sources')}
+              className={`py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                activeTab === 'sources'
+                  ? 'bg-[#0F3078] text-[#FAF6EE] shadow-xs'
+                  : 'text-[#0F3078]/75 hover:text-[#0F3078]'
+              }`}
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span className="truncate">{language === 'es' ? 'Fuentes' : 'Sources'}</span>
+            </button>
+          </div>
         </div>
 
-        {/* Selector de Pestañas del Modal */}
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-2 text-xs">
-          <button
-            type="button"
-            onClick={() => setActiveTab('funnel')}
-            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition ${
-              activeTab === 'funnel'
-                ? 'bg-[#0F3078] text-[#FAF6EE] shadow-sm font-serif font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Filter className="w-3.5 h-3.5" />
-            {language === 'es' ? 'Embudo de Purga DENUE' : 'DENUE Cleaning Funnel'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('norms')}
-            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition ${
-              activeTab === 'norms'
-                ? 'bg-[var(--well)] text-[var(--ink)] shadow-sm'
-                : 'text-[var(--muted)] hover:bg-[var(--well)]'
-            }`}
-          >
-            <Scale className="w-3.5 h-3.5" />
-            {language === 'es' ? 'Estatus Normativo (NOMs)' : 'Normative Status (NOMs)'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('sources')}
-            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition ${
-              activeTab === 'sources'
-                ? 'bg-[var(--well)] text-[var(--ink)] shadow-sm'
-                : 'text-[var(--muted)] hover:bg-[var(--well)]'
-            }`}
-          >
-            <Database className="w-3.5 h-3.5" />
-            {language === 'es' ? 'Inventario de Fuentes' : 'Data Inventory'}
-          </button>
-        </div>
-
-        {/* PESTAÑA 1: EMBUDO DE PURGA Y LIMPIEZA */}
-        {activeTab === 'funnel' && (
-          <div className="space-y-4">
-            <div className="bg-[var(--accent-soft)] border border-[var(--line)] p-3.5 rounded-lg text-xs text-[var(--ink)] space-y-1">
-              <div className="font-bold flex items-center gap-1.5">
-                <Filter className="w-4 h-4 text-[var(--brand)]" />
-                {language === 'es' ? 'Embudo Cuantitativo de Selección de Datos (Data Funnel)' : 'Data Selection Funnel'}
-              </div>
-              <p className="text-[11px] text-[var(--muted)]">
+        {/* 3. Cuerpo con Scroll Propio */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+          {activeTab === 'funnel' && (
+            <div className="space-y-4">
+              <p className="text-xs text-[#162035]/80 leading-relaxed">
                 {language === 'es'
-                  ? 'Filtro metodológico reproducible a partir del DENUE oficial de INEGI (edición 2026). Garantiza que las rutas derramen a talleres auténticos y no a franquicias.'
-                  : 'Reproducible methodological filter from official INEGI DENUE (2026). Ensures spending targets traditional workshops rather than corporate chains.'}
+                  ? 'Partimos del directorio oficial de INEGI (DENUE) para incluir únicamente talleres familiares, panaderías de barrio y espacios culturales auténticos, dejando fuera a las cadenas comerciales.'
+                  : 'We filter the official INEGI business directory to include authentic family workshops and cultural sites, excluding corporate chains.'}
               </p>
-            </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border border-[var(--line)] rounded-lg">
-                <thead className="bg-[var(--well)] text-[var(--ink)] font-bold border-b border-[var(--line)]">
-                  <tr>
-                    <th className="p-2.5">Etapa</th>
-                    <th className="p-2.5">Criterio de Filtrado</th>
-                    <th className="p-2.5">Descripción</th>
-                    <th className="p-2.5 text-right">Unidades</th>
-                    <th className="p-2.5 text-right">% Retenido</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-[var(--muted)] text-[11px]">
-                  {funnelSteps.map((s: { etapa: number; nombre: string; desc: string; reg: string; pct: string }) => (
-                    <tr key={s.etapa} className="hover:bg-slate-50/80">
-                      <td className="p-2.5 font-bold text-[#0F3078] font-serif">#{s.etapa}</td>
-                      <td className="p-2.5 font-semibold text-[#0F3078] font-serif">{s.nombre}</td>
-                      <td className="p-2.5 text-slate-500">{s.desc}</td>
-                      <td className="p-2.5 font-mono text-right font-bold text-slate-800">{s.reg}</td>
-                      <td className="p-2.5 font-mono text-right font-semibold text-amber-800">{s.pct}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+              {/* Lista visual de etapas con barra proporcional */}
+              <div className="space-y-2.5">
+                {funnelSteps.map((s: any) => (
+                  <div
+                    key={s.etapa}
+                    className="p-3 rounded-2xl bg-white border border-[#0F3078]/15 shadow-xs space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-bold text-[#0F3078]">
+                        {s.etapa}. {s.nombre}
+                      </span>
+                      <span className="font-mono font-black text-[#0F3078]">
+                        {s.reg}{' '}
+                        <span className="text-[10px] font-semibold text-[#B84A2C]">({s.pct})</span>
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#162035]/70">{s.desc}</p>
+                    <div className="w-full bg-[#F2EBDC] h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-[#0F3078] h-full rounded-full"
+                        style={{ width: `${s.width}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-            {/* Distribucion Zonal */}
-            <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-100 space-y-2 text-xs">
-              <span className="font-bold text-[#0F3078] font-serif">Distribución de las unidades culturales en polígono piloto:</span>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-[11px]">
-                <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-[#0F3078] font-serif text-sm">{zonalDist.barrio_analco ?? 389}</div>
-                  <div className="text-slate-500">Barrio de Analco</div>
-                </div>
-                <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-[#0F3078] font-serif text-sm">{zonalDist.zocalo_centro_nucleo ?? 236}</div>
-                  <div className="text-slate-500">Centro Núcleo</div>
-                </div>
-                <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-[#0F3078] font-serif text-sm">{zonalDist.barrio_la_luz ?? 34}</div>
-                  <div className="text-slate-500">Barrio de La Luz</div>
-                </div>
-                <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-[#0F3078] font-serif text-sm">{zonalDist.barrio_el_alto ?? 14}</div>
-                  <div className="text-slate-500">Barrio de El Alto</div>
-                </div>
-                <div className="bg-white p-2 rounded border border-slate-200">
-                  <div className="font-bold text-[#0F3078] font-serif text-sm">{zonalDist.barrio_xanenetla ?? 3}</div>
-                  <div className="text-slate-500">Barrio Xanenetla</div>
+              {/* Resumen por barrio */}
+              <div className="p-3.5 rounded-2xl bg-white border border-[#0F3078]/15 space-y-2.5">
+                <span className="text-xs font-bold text-[#0F3078] block">
+                  {language === 'es'
+                    ? 'Talleres y comercios culturales por zona:'
+                    : 'Cultural workshops and businesses by neighborhood:'}
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-[11px]">
+                  <div className="bg-[#FAF6EE] p-2 rounded-xl border border-[#0F3078]/10">
+                    <div className="font-black text-[#0F3078] text-sm">{zonalDist.barrio_analco ?? 389}</div>
+                    <div className="text-[#162035]/70">Analco</div>
+                  </div>
+                  <div className="bg-[#FAF6EE] p-2 rounded-xl border border-[#0F3078]/10">
+                    <div className="font-black text-[#0F3078] text-sm">{zonalDist.zocalo_centro_nucleo ?? 236}</div>
+                    <div className="text-[#162035]/70">Zócalo</div>
+                  </div>
+                  <div className="bg-[#FAF6EE] p-2 rounded-xl border border-[#0F3078]/10">
+                    <div className="font-black text-[#0F3078] text-sm">{zonalDist.barrio_la_luz ?? 34}</div>
+                    <div className="text-[#162035]/70">La Luz</div>
+                  </div>
+                  <div className="bg-[#FAF6EE] p-2 rounded-xl border border-[#0F3078]/10">
+                    <div className="font-black text-[#0F3078] text-sm">{zonalDist.barrio_el_alto ?? 14}</div>
+                    <div className="text-[#162035]/70">El Alto</div>
+                  </div>
+                  <div className="bg-[#FAF6EE] p-2 rounded-xl border border-[#0F3078]/10">
+                    <div className="font-black text-[#0F3078] text-sm">{zonalDist.barrio_xanenetla ?? 3}</div>
+                    <div className="text-[#162035]/70">Xanenetla</div>
+                  </div>
                 </div>
               </div>
             </div>
+          )}
 
-            {/* Respuestas Jurado */}
-            <div className="space-y-1.5 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <div className="font-bold text-[#0F3078] font-serif flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                {language === 'es' ? 'Respuestas a Preguntas Frecuentes del Jurado:' : 'Jury FAQ Answers:'}
+          {activeTab === 'norms' && (
+            <div className="space-y-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                <div className="p-3.5 rounded-2xl bg-white border border-[#0F3078]/15 space-y-1">
+                  <strong className="text-[#0F3078] block">
+                    {language === 'es' ? 'Paso práctico en calle' : 'Real sidewalk conditions'}
+                  </strong>
+                  <p className="text-[#162035]/75 leading-relaxed">
+                    {language === 'es'
+                      ? 'Evaluamos el ancho libre de banqueta, el estado de las lajas, la pendiente y si existen rampas en los cruces.'
+                      : 'We evaluate actual sidewalk width, stone surface smoothness, slope, and curb ramps.'}
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white border border-[#0F3078]/15 space-y-1">
+                  <strong className="text-[#1D6B52] block">
+                    {language === 'es' ? 'Rutas según tu movilidad' : 'Tailored to your mobility'}
+                  </strong>
+                  <p className="text-[#162035]/75 leading-relaxed">
+                    {language === 'es'
+                      ? 'Al elegir silla de ruedas o paso tranquilo, el mapa evita escalones y prioriza calles planas con cruces seguros.'
+                      : 'Selecting wheelchair or gentle pace automatically avoids steps and steep streets.'}
+                  </p>
+                </div>
               </div>
-              <p className="text-[11px] leading-relaxed">
-                <strong>¿Cómo se conectaron a la red peatonal?</strong> Se aplicó un algoritmo de <em>snapping</em> ortogonal que desplaza las coordenadas originales del DENUE hacia la arista de acera más cercana, calculando distancias sobre banquetas reales y no sobre el arroyo vehicular.
-              </p>
-            </div>
-          </div>
-        )}
 
-        {/* PESTAÑA 2: ESTATUS NORMATIVO */}
-        {activeTab === 'norms' && (
-          <div className="space-y-4">
-            <div className="bg-[var(--well)] border border-[var(--line)] p-4 rounded-lg text-xs text-[var(--ink)] space-y-2">
-              <div className="font-bold flex items-center gap-1.5">
-                <Scale className="w-4 h-4 text-[var(--muted)]" />
-                {language === 'es'
-                  ? 'Distinción Conceptual: Cumplimiento Normativo vs Transitabilidad Funcional'
-                  : 'Conceptual Distinction: Regulatory Compliance vs Functional Transitability'}
+              {/* Acordeón desplegable para referencias técnicas NOM */}
+              <details className="group bg-white rounded-2xl border border-[#0F3078]/15 overflow-hidden">
+                <summary className="px-4 py-3 text-xs font-bold text-[#0F3078] flex items-center justify-between cursor-pointer select-none list-none">
+                  <span>
+                    {language === 'es'
+                      ? 'Ver normas técnicas de referencia (NOM-001 y NOM-004)'
+                      : 'View technical reference standards (NOM-001 & NOM-004)'}
+                  </span>
+                  <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="px-4 pb-3.5 pt-1 border-t border-[#0F3078]/10 text-[11px] space-y-2 text-[#162035]/80">
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span className="font-semibold text-[#0F3078]">NOM-004-SEDATU-2023</span>
+                    <span>Ancho mínimo en centro histórico: 1.50 m</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span className="font-semibold text-[#0F3078]">NOM-004-SEDATU-2023</span>
+                    <span>Pendiente máxima en rampas: 5% a 8%</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span className="font-semibold text-[#0F3078]">NOM-001-SEDATU-2021</span>
+                    <span>Altura libre de paso peatonal: 2.10 m</span>
+                  </div>
+                </div>
+              </details>
+            </div>
+          )}
+
+          {activeTab === 'sources' && (
+            <div className="space-y-2.5 text-xs">
+              <div className="p-3.5 rounded-2xl bg-white border border-[#0F3078]/15 space-y-1">
+                <strong className="text-[#0F3078] block">INEGI • DENUE</strong>
+                <p className="text-[#162035]/75">
+                  Directorio Nacional de Unidades Económicas del Municipio de Puebla (datos abiertos oficiales).
+                </p>
               </div>
-              <p className="text-[11px] text-[var(--muted)]">
-                Las normas técnicas regulan diseño y rehabilitación; no dictan por sí solas si una banqueta virreinal consolidada es transitable. El sistema separa dos niveles:
-              </p>
-              <ul className="list-disc list-inside space-y-1 pl-1 text-[11px] text-[var(--muted)]">
-                <li><strong>Nivel 1 (Cumplimiento normativo):</strong> Apego documental a NOM-001, NOM-004 y NTDIU Puebla.</li>
-                <li><strong>Nivel 2 (Transitabilidad funcional):</strong> Criterio físico real evaluado por el motor de ruteo (ancho continuo, ausencia de escalones, rampas obligatorias en silla de ruedas).</li>
-              </ul>
+              <div className="p-3.5 rounded-2xl bg-white border border-[#0F3078]/15 space-y-1">
+                <strong className="text-[#0F3078] block">OpenStreetMap (OSM)</strong>
+                <p className="text-[#162035]/75">
+                  Traza de calles y banquetas del Centro Histórico de Puebla bajo licencia abierta ODbL.
+                </p>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-white border border-[#0F3078]/15 space-y-1">
+                <strong className="text-[#0F3078] block">Acervo Histórico y Cultural</strong>
+                <p className="text-[#162035]/75">
+                  Catálogos públicos del INAH, declaratorias UNESCO y entrevistas con talleres de La Luz y Analco.
+                </p>
+              </div>
             </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border border-[var(--line)] rounded-lg">
-                <thead className="bg-[var(--well)] text-[var(--muted)] font-semibold border-b border-[var(--line)]">
-                  <tr>
-                    <th className="p-2">Norma</th>
-                    <th className="p-2">Parámetro</th>
-                    <th className="p-2">Valor preliminar</th>
-                    <th className="p-2">Estatus</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-[var(--muted)] text-[11px]">
-                  <tr>
-                    <td className="p-2 font-medium text-[var(--ink)]">NOM-001-SEDATU-2021</td>
-                    <td className="p-2">Altura libre de paso</td>
-                    <td className="p-2">2.10 m</td>
-                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 font-medium text-[var(--ink)]">NOM-004-SEDATU-2023</td>
-                    <td className="p-2">Franja peatonal general</td>
-                    <td className="p-2">1.80 m</td>
-                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 font-medium text-[var(--ink)]">NOM-004-SEDATU-2023</td>
-                    <td className="p-2">Franja peatonal en zonas históricas</td>
-                    <td className="p-2">1.50 m</td>
-                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 font-medium text-[var(--ink)]">NOM-004-SEDATU-2023</td>
-                    <td className="p-2">Pendiente de rampas</td>
-                    <td className="p-2">5% a 8%</td>
-                    <td className="p-2 text-[var(--brand)] font-semibold">Por verificar contra texto íntegro DOF</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 font-medium text-[var(--ink)]">NTDIU Puebla</td>
-                    <td className="p-2">Zona de Monumentos Históricos</td>
-                    <td className="p-2">Directriz municipal</td>
-                    <td className="p-2 text-[var(--muted)]">Supeditada a INAH y Gerencia del Centro Histórico</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* PESTAÑA 3: FUENTES */}
-        {activeTab === 'sources' && (
-          <div className="space-y-3 text-xs text-[var(--muted)]">
-            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
-              <span className="font-bold text-[var(--ink)]">INEGI DENUE:</span> Directorio Nacional de Unidades Económicas 2026 (cve_mun: 114). Uso público oficial.
-            </div>
-            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
-              <span className="font-bold text-[var(--ink)]">OpenStreetMap (OSM):</span> Red vial y geometría base. Licencia ODbL 1.0. Atribución: (c) Colaboradores de OpenStreetMap.
-            </div>
-            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
-              <span className="font-bold text-[var(--ink)]">Corpus de Patrimonio Cultural:</span> Textos e inventarios históricos verificados de INAH, UNESCO y relatos orales de maestros artesanos de La Luz y Analco.
-            </div>
-            <div className="p-2.5 rounded border border-slate-100 bg-[var(--well)]">
-              <span className="font-bold text-[var(--ink)]">Auditoría de Accesibilidad en Campo:</span> Mediciones directas en tramos piloto con control de concordancia inter-auditor. Licencia abierta CC BY 4.0.
-            </div>
-          </div>
-        )}
-
-        <div className="text-[11px] text-[var(--muted)] text-center border-t border-slate-100 pt-3">
-          Todos los umbrales funcionales y coeficientes econométricos son ajustables tras las pruebas de campo.
+          )}
         </div>
+
+        {/* 4. Footer Fijo */}
+        <footer className="p-3.5 sm:px-5 bg-white border-t border-[#0F3078]/15 flex justify-end flex-shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#0F3078] hover:bg-[#1B49AC] text-[#FAF6EE] font-bold text-xs shadow-sm transition cursor-pointer"
+          >
+            {language === 'es' ? 'Entendido' : 'Got it'}
+          </button>
+        </footer>
       </div>
     </div>
   );
