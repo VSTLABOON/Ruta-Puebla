@@ -21,7 +21,9 @@ import {
   HeartHandshake,
   Flame,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Landmark,
+  Utensils
 } from 'lucide-react';
 import { tacticalAudio } from '../utils/tacticalAudio';
 
@@ -36,6 +38,38 @@ interface RouteExperienceWizardProps {
 }
 
 type InterestCategory = 'artisans' | 'heritage' | 'street_art' | 'gastronomy';
+
+function getRouteTimeBreakdown(route: RouteAlternative) {
+  const walkMin = Math.max(1, route.metrics.walking_time_min);
+  let tourismMin = 0;
+  let workshopMin = 0;
+  let foodMin = 0;
+
+  for (const s of route.stops) {
+    const dur = s.poi.visit_duration_min;
+    const cat = s.poi.category;
+    if (cat === 'artesania' || s.poi.artisan_profile) {
+      workshopMin += dur;
+    } else if (cat === 'gastronomia' || cat === 'comercio_local') {
+      foodMin += dur;
+    } else {
+      tourismMin += dur;
+    }
+  }
+
+  const total = Math.max(1, walkMin + tourismMin + workshopMin + foodMin);
+  return {
+    walkMin,
+    tourismMin,
+    workshopMin,
+    foodMin,
+    total,
+    walkPct: Math.round((walkMin / total) * 100),
+    tourismPct: Math.round((tourismMin / total) * 100),
+    workshopPct: Math.round((workshopMin / total) * 100),
+    foodPct: Math.round((foodMin / total) * 100)
+  };
+}
 
 export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
   pois,
@@ -112,7 +146,7 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
           language === 'es'
             ? 'Ruta Oficios Vivos de Analco y La Luz'
             : 'Living Crafts of Analco & La Luz',
-        badge: language === 'es' ? '★ Recomendada' : '★ Recommended',
+        badge: language === 'es' ? 'Recomendada' : 'Recommended',
         badgeColor: 'border-[#B84A2C]/30 bg-[#B84A2C]/10 text-[#B84A2C]',
         route: routeLocal,
         why:
@@ -364,7 +398,7 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
             </div>
           </div>
 
-          {/* 3. Opciones de Ruta */}
+          {/* 3. Opciones de Ruta con Desglose de Tiempo por Actividad y Trayecto */}
           <div className="space-y-2.5">
             <h3 className="text-xs font-bold text-[#0F3078] uppercase tracking-wider">
               {language === 'es' ? 'Rutas recomendadas' : 'Recommended routes'}
@@ -372,6 +406,8 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
 
             {suggestions.map((sug) => {
               const r = sug.route;
+              const tb = getRouteTimeBreakdown(r);
+
               return (
                 <div
                   key={sug.id}
@@ -380,9 +416,10 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full border font-bold flex-shrink-0 ${sug.badgeColor}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-full border font-bold inline-flex items-center gap-1 flex-shrink-0 ${sug.badgeColor}`}
                       >
-                        {sug.badge}
+                        <Sparkles className="w-2.5 h-2.5" />
+                        <span>{sug.badge}</span>
                       </span>
                       <h4 className="font-serif font-black text-sm text-[#0F3078] truncate">
                         {sug.name}
@@ -402,23 +439,103 @@ export const RouteExperienceWizard: FC<RouteExperienceWizardProps> = ({
                     </div>
                   </div>
 
+                  {/* Barra de distribución del tiempo (Caminata, Turismo, Talleres, Comida) */}
+                  <div className="bg-[#FAF6EE] p-2.5 rounded-xl border border-[#0F3078]/10 space-y-1.5">
+                    <div className="h-2 w-full rounded-full overflow-hidden flex bg-slate-200">
+                      {tb.walkMin > 0 && (
+                        <div
+                          className="bg-[#1D6B52] h-full"
+                          style={{ width: `${tb.walkPct}%` }}
+                          title={language === 'es' ? 'Traslado a pie' : 'Walking'}
+                        />
+                      )}
+                      {tb.tourismMin > 0 && (
+                        <div
+                          className="bg-[#0F3078] h-full"
+                          style={{ width: `${tb.tourismPct}%` }}
+                          title={language === 'es' ? 'Turismo y patrimonio' : 'Sightseeing'}
+                        />
+                      )}
+                      {tb.workshopMin > 0 && (
+                        <div
+                          className="bg-[#D48914] h-full"
+                          style={{ width: `${tb.workshopPct}%` }}
+                          title={language === 'es' ? 'Talleres' : 'Workshops'}
+                        />
+                      )}
+                      {tb.foodMin > 0 && (
+                        <div
+                          className="bg-[#B84A2C] h-full"
+                          style={{ width: `${tb.foodPct}%` }}
+                          title={language === 'es' ? 'Comida y dulces' : 'Food & sweets'}
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold">
+                      <span className="inline-flex items-center gap-1 text-[#1D6B52]">
+                        <Footprints className="w-3 h-3" />
+                        <span>
+                          {tb.walkMin}m {language === 'es' ? 'trayecto' : 'walk'}
+                        </span>
+                      </span>
+                      {tb.tourismMin > 0 && (
+                        <span className="inline-flex items-center gap-1 text-[#0F3078]">
+                          <Landmark className="w-3 h-3" />
+                          <span>
+                            {tb.tourismMin}m {language === 'es' ? 'turismo' : 'sights'}
+                          </span>
+                        </span>
+                      )}
+                      {tb.workshopMin > 0 && (
+                        <span className="inline-flex items-center gap-1 text-[#9E650C]">
+                          <Flame className="w-3 h-3" />
+                          <span>
+                            {tb.workshopMin}m {language === 'es' ? 'talleres' : 'crafts'}
+                          </span>
+                        </span>
+                      )}
+                      {tb.foodMin > 0 && (
+                        <span className="inline-flex items-center gap-1 text-[#B84A2C]">
+                          <Utensils className="w-3 h-3" />
+                          <span>
+                            {tb.foodMin}m {language === 'es' ? 'comida' : 'food'}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
                   <p className="text-xs text-[#162035]/80 leading-relaxed flex items-start gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#1D6B52] flex-shrink-0 mt-0.5" />
                     <span>{sug.why}</span>
                   </p>
 
-                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
-                    {r.stops.map((stop) => (
-                      <span
-                        key={stop.poi.id}
-                        className="text-[10px] whitespace-nowrap bg-[#FAF6EE] border border-[#0F3078]/15 px-2 py-1 rounded-lg text-[#0F3078] flex items-center gap-1 font-medium"
-                      >
-                        <span className="w-3.5 h-3.5 rounded-full bg-[#0F3078] text-[#FAF6EE] font-bold flex items-center justify-center text-[9px] flex-shrink-0">
-                          {stop.stop_order}
-                        </span>
-                        <span className="truncate max-w-[120px]">{stop.poi.name}</span>
-                      </span>
-                    ))}
+                  {/* Secuencia de paradas con tiempo de traslado entre cada una */}
+                  <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
+                    {r.stops.map((stop, idx) => {
+                      const prevStop = idx > 0 ? r.stops[idx - 1] : null;
+                      const legWalkMin = prevStop
+                        ? Math.max(1, Math.round(stop.arrival_time_min - prevStop.departure_time_min))
+                        : 0;
+
+                      return (
+                        <div key={stop.poi.id} className="flex items-center gap-1 flex-shrink-0">
+                          {prevStop && (
+                            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#1D6B52] px-1">
+                              <Footprints className="w-2.5 h-2.5" />
+                              <span>{legWalkMin}m</span>
+                            </span>
+                          )}
+                          <span className="text-[10px] whitespace-nowrap bg-[#FAF6EE] border border-[#0F3078]/15 px-2 py-1 rounded-lg text-[#0F3078] flex items-center gap-1 font-medium">
+                            <span className="w-3.5 h-3.5 rounded-full bg-[#0F3078] text-[#FAF6EE] font-bold flex items-center justify-center text-[9px] flex-shrink-0">
+                              {stop.stop_order}
+                            </span>
+                            <span className="truncate max-w-[110px]">{stop.poi.name}</span>
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <button

@@ -14,7 +14,12 @@ import {
   MessageSquare,
   Navigation,
   Ticket,
-  Flame
+  Flame,
+  Footprints,
+  Landmark,
+  Utensils,
+  Compass,
+  ArrowRight
 } from 'lucide-react';
 import { HolographicBadge } from './HolographicBadge';
 import { tacticalAudio } from '../utils/tacticalAudio';
@@ -29,6 +34,35 @@ interface TacticalDesktopPanelProps {
   passportState: PassportState;
   onUnlockSecret: (poiId: string, badgeName: string) => void;
   onMoveUserHere?: (coords: [number, number]) => void;
+}
+
+function getActivityMeta(poi: POI, language: Language) {
+  if (poi.category === 'artesania' || poi.artisan_profile) {
+    return {
+      Icon: Flame,
+      color: 'text-[#D48914]',
+      label: language === 'es' ? 'Taller y oficio en vivo' : 'Live craft workshop'
+    };
+  }
+  if (poi.category === 'gastronomia' || poi.category === 'comercio_local') {
+    return {
+      Icon: Utensils,
+      color: 'text-[#B84A2C]',
+      label: language === 'es' ? 'Degustación y comida' : 'Tasting & food'
+    };
+  }
+  if (poi.category === 'espacio_publico') {
+    return {
+      Icon: Compass,
+      color: 'text-[#1D6B52]',
+      label: language === 'es' ? 'Paseo y descanso' : 'Stroll & rest'
+    };
+  }
+  return {
+    Icon: Landmark,
+    color: 'text-[#0F3078]',
+    label: language === 'es' ? 'Visita cultural' : 'Cultural visit'
+  };
 }
 
 export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
@@ -56,6 +90,22 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
   if (!poi) return null;
 
   const currentIndex = stopIndex >= 0 ? stopIndex : 0;
+  const prevStop = !standalonePoi && stops.length > 1 && currentIndex > 0 ? stops[currentIndex - 1] : null;
+  const nextStop =
+    !standalonePoi && stops.length > 1 && currentIndex < stops.length - 1 ? stops[currentIndex + 1] : null;
+
+  const walkFromPrevMin =
+    prevStop && currentStop
+      ? Math.max(1, Math.round(currentStop.arrival_time_min - prevStop.departure_time_min))
+      : null;
+  const walkToNextMin =
+    nextStop && currentStop
+      ? Math.max(1, Math.round(nextStop.arrival_time_min - currentStop.departure_time_min))
+      : null;
+
+  const activityMeta = getActivityMeta(poi, language);
+  const ActivityIcon = activityMeta.Icon;
+
   const isSecretUnlocked = passportState.unlocked_secrets.includes(poi.id);
   const hasStories =
     (poi.community_memories && poi.community_memories.length > 0) ||
@@ -211,6 +261,47 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
       <div className="flex-1 overflow-y-auto p-3.5 space-y-3 bg-[#FAF6EE]">
         {activeTab === 'info' && (
           <div className="space-y-3">
+            {/* Conector de trayecto entre paradas de la ruta */}
+            {!standalonePoi && (prevStop || nextStop) && (
+              <div className="bg-white rounded-2xl p-2.5 border border-[#0F3078]/15 shadow-xs flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                {prevStop && walkFromPrevMin !== null ? (
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    className="inline-flex items-center gap-1.5 text-[#0F3078] hover:text-[#B84A2C] font-semibold transition cursor-pointer min-w-0"
+                  >
+                    <Footprints className="w-3.5 h-3.5 text-[#1D6B52] flex-shrink-0" />
+                    <span className="truncate">
+                      {language === 'es'
+                        ? `A ${walkFromPrevMin} min de ${prevStop.poi.name}`
+                        : `${walkFromPrevMin} min from ${prevStop.poi.name}`}
+                    </span>
+                  </button>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-[#1D6B52] font-bold">
+                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{language === 'es' ? 'Punto de inicio' : 'Starting point'}</span>
+                  </span>
+                )}
+
+                {nextStop && walkToNextMin !== null && (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="inline-flex items-center gap-1 text-[#0F3078] hover:text-[#B84A2C] font-bold bg-[#FAF6EE] px-2 py-1 rounded-lg border border-[#0F3078]/15 transition cursor-pointer min-w-0 ml-auto"
+                  >
+                    <Footprints className="w-3 h-3 text-[#1D6B52] flex-shrink-0" />
+                    <span className="truncate max-w-[130px]">
+                      {language === 'es'
+                        ? `Sigue a ${walkToNextMin} min: ${nextStop.poi.name}`
+                        : `Next (${walkToNextMin}m): ${nextStop.poi.name}`}
+                    </span>
+                    <ArrowRight className="w-3 h-3 flex-shrink-0" />
+                  </button>
+                )}
+              </div>
+            )}
+
             <PoiCulturalContextCard poi={poi} language={language} />
 
             <div className="bg-white rounded-2xl p-3.5 border border-[#0F3078]/15 text-xs text-[#162035] leading-relaxed shadow-xs">
@@ -242,8 +333,9 @@ export const TacticalDesktopPanel: FC<TacticalDesktopPanelProps> = ({
               </div>
 
               <div className="bg-white p-2.5 rounded-xl border border-[#0F3078]/15 shadow-xs">
-                <span className="text-[10px] text-[#0F3078]/70 block font-semibold">
-                  {language === 'es' ? 'Duración' : 'Stay'}
+                <span className="text-[10px] text-[#0F3078]/70 flex items-center gap-1 font-semibold">
+                  <ActivityIcon className={`w-3 h-3 ${activityMeta.color}`} />
+                  <span className="truncate">{activityMeta.label}</span>
                 </span>
                 <span className="font-bold text-[#162035] mt-0.5 block">
                   {poi.visit_duration_min} min

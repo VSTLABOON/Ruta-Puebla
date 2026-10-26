@@ -1581,7 +1581,7 @@ export const MapViewer: FC<MapViewerProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded-full bg-[#0F3078] text-[#EDE28E] border border-[#EDE28E] inline-flex items-center justify-center text-[9px] font-black">
-                🐱
+                <Navigation className="w-2.5 h-2.5 fill-current" />
               </span>
               <span className="text-[11px] font-bold text-[#0F3078]">
                 {language === 'es' ? 'Tu Avatar 3D (Gatito Talavera)' : 'Your 3D Avatar'}
