@@ -174,7 +174,8 @@ export function solveOPTW(
     focus: 'clasica' | 'barrios_locales' | 'mas_accesible',
     localBiasOverride?: number
   ): RouteAlternative {
-    const bias = localBiasOverride ?? request.balance_local_pct;
+    const _bias = localBiasOverride ?? request.balance_local_pct;
+    void _bias;
     const currentZoneCounts: Record<string, number> = {};
     for (const z of Object.keys(zoneCaps)) currentZoneCounts[z] = 0;
 

@@ -5,7 +5,7 @@
   "description": "Sistema de generacion de rutas peatonales accesibles y turismo sostenible en Puebla",
   "packageManager": "pnpm@11.1.1",
   "scripts": {
-    "build": "pnpm --filter \"./packages/*\" --filter \"./apps/*\" run build && node -e \"const fs=require('fs'); fs.cpSync('apps/web/dist', 'dist', {recursive: true});\"",
+    "build": "pnpm --filter @ruta-abierta/shared-types run build && pnpm --filter web run build && node -e \"const fs=require('fs'); fs.cpSync('apps/web/dist', 'dist', {recursive: true});\"",
     "test": "pnpm --filter \"./packages/*\" --filter \"./apps/*\" run test",
     "lint": "pnpm --filter \"./packages/*\" --filter \"./apps/*\" run lint",
     "dev": "pnpm --filter web dev"

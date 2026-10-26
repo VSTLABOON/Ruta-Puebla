@@ -44,13 +44,28 @@ export function createAvatar3D(
   camera.position.set(0, 1.1, 3.2);
   camera.lookAt(0, 0.65, 0);
 
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    alpha: true,
-    antialias: true
-  });
-  renderer.setSize(width, height, false);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  let renderer: THREE.WebGLRenderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true
+    });
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  } catch {
+    canvas.remove();
+    const fallbackEl = document.createElement('div');
+    fallbackEl.className =
+      'w-8 h-8 rounded-full bg-[#0F3078] border-2 border-[#EDE28E] text-[#EDE28E] flex items-center justify-center text-sm shadow-lg';
+    fallbackEl.textContent = '🐱';
+    container.appendChild(fallbackEl);
+    return {
+      container,
+      setHeading: () => {},
+      destroy: () => {}
+    };
+  }
 
   // Iluminación estilo cerámica Talavera (luz cálida y reflejos cobalto)
   const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
@@ -277,15 +292,16 @@ export function createAvatar3D(
     );
   }
 
-  // Ciclo de animación WebGL a 60 FPS
+  // Ciclo de animación WebGL a 60 FPS con rotación angular suavizada
   const clock = new THREE.Clock();
   let animId: number;
+  let smoothedRad = 0;
 
   const animate = () => {
     if (isDestroyed) return;
     animId = requestAnimationFrame(animate);
 
-    const delta = clock.getDelta();
+    const delta = Math.min(0.05, clock.getDelta());
     if (mixer) {
       mixer.update(delta);
     } else if (characterMesh) {
@@ -295,7 +311,11 @@ export function createAvatar3D(
 
     if (characterMesh) {
       const targetRad = (currentHeading * Math.PI) / 180;
-      characterMesh.rotation.y = targetRad;
+      let diff = targetRad - smoothedRad;
+      while (diff > Math.PI) diff -= Math.PI * 2;
+      while (diff < -Math.PI) diff += Math.PI * 2;
+      smoothedRad += diff * Math.min(1, delta * 12);
+      characterMesh.rotation.y = smoothedRad;
     }
 
     renderer.render(scene, camera);

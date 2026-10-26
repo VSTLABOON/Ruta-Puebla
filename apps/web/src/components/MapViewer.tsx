@@ -16,9 +16,7 @@ import {
   Hand,
   Gamepad2,
   Play,
-  Pause,
-  ChevronDown,
-  ChevronUp
+  Pause
 } from 'lucide-react';
 import { createAvatar3D, Avatar3DController } from '../utils/avatar3d';
 
@@ -168,23 +166,33 @@ export const MapViewer: FC<MapViewerProps> = ({
   // 1) Joystick Táctil Virtual (Móvil / Pantalla)
   // 2) Mando Xbox USB/Bluetooth (Gamepad API) + Teclado WASD
   const [showJoystickPad, setShowJoystickPad] = useState(true);
-  const [walkSpeedMultiplier, setWalkSpeedMultiplier] = useState<1 | 2 | 4>(2);
   const [isAutoWalking, setIsAutoWalking] = useState(false);
   const [gamepadConnectedName, setGamepadConnectedName] = useState<string | null>(null);
-  const [stickOffset, setStickOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [barrierWarning, setBarrierWarning] = useState<{
     segmentId: string;
     reasonEs: string;
     reasonEn: string;
   } | null>(null);
 
-  // Referencias mutables para el bucle de 60fps de físicas de movimiento
+  // Referencias mutables para el bucle de 60fps de físicas de movimiento (Cero re-renders por frame)
   const touchVectorRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const smoothVelRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const keysPressedRef = useRef<Set<string>>(new Set());
   const userLocationRef = useRef<[number, number]>(userLocation);
+  const lastSyncTimeRef = useRef<number>(0);
   const lastButtonPressRef = useRef<Record<number, number>>({});
   const lastRumbleTimeRef = useRef<number>(0);
   const autoWalkProgressRef = useRef<{ legIdx: number; t: number }>({ legIdx: 0, t: 0 });
+  const proximityAlertRef = useRef(proximityAlert);
+  const barrierWarningRef = useRef(barrierWarning);
+
+  useEffect(() => {
+    proximityAlertRef.current = proximityAlert;
+  }, [proximityAlert]);
+
+  useEffect(() => {
+    barrierWarningRef.current = barrierWarning;
+  }, [barrierWarning]);
 
   useEffect(() => {
     userLocationRef.current = userLocation;
@@ -268,6 +276,11 @@ export const MapViewer: FC<MapViewerProps> = ({
 
     return () => {
       ro.disconnect();
+      if (avatarCtrlRef.current) {
+        avatarCtrlRef.current.destroy();
+        avatarCtrlRef.current = null;
+      }
+      userMarkerRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -546,7 +559,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       userMarkerRef.current.setLngLat(userLocation);
     }
 
-    // 1. Evaluar proximidad a lugares cercanos (< 85m)
+    // 1. Evaluar proximidad a lugares cercanos (< 85m) evitando recrear estado si no cambia
     let closest: { poi: POI; distanceM: number } | null = null;
     pois.forEach((poi) => {
       const dist = getDistanceMeters(userLocation, poi.coordinates);
@@ -556,7 +569,14 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
       }
     });
-    setProximityAlert(closest);
+    setProximityAlert((prev) => {
+      if (!closest && !prev) return prev;
+      if (!closest || !prev) return closest;
+      if (prev.poi.id === closest.poi.id && Math.abs(prev.distanceM - closest.distanceM) < 3) {
+        return prev;
+      }
+      return closest;
+    });
 
     // 2. Evaluar si el usuario se acerca a un tramo bloqueado según su perfil de movilidad (< 25m)
     let foundBarrier: { segmentId: string; reasonEs: string; reasonEn: string } | null = null;
@@ -579,8 +599,15 @@ export const MapViewer: FC<MapViewerProps> = ({
         if (foundBarrier) break;
       }
     }
-    setBarrierWarning(foundBarrier);
+    setBarrierWarning((prev) => {
+      if (!foundBarrier && !prev) return prev;
+      if (!foundBarrier || !prev) return foundBarrier;
+      if (prev.segmentId === foundBarrier.segmentId) return prev;
+      return foundBarrier;
+    });
   }, [userLocation, isLoaded, language, pois, segments, activeProfile]);
+
+  const nearbyPoiId = proximityAlert?.poi.id ?? null;
 
   // Marcadores interactivos con Paleta Semántica Talavera y Micro-Iconografía SVG
   useEffect(() => {
@@ -598,7 +625,7 @@ export const MapViewer: FC<MapViewerProps> = ({
     if (selectedRoute) {
       selectedRoute.stops.forEach((stop) => {
         const isSelected = stop.poi.id === selectedStopPoiId;
-        const isNearby = proximityAlert?.poi.id === stop.poi.id;
+        const isNearby = nearbyPoiId === stop.poi.id;
         const theme = getPoiVisualTheme(stop.poi);
 
         const el = document.createElement('div');
@@ -664,7 +691,7 @@ export const MapViewer: FC<MapViewerProps> = ({
       if (stopsByPoiId.has(poi.id)) return;
 
       const isSelected = poi.id === selectedStopPoiId;
-      const isNearby = proximityAlert?.poi.id === poi.id;
+      const isNearby = nearbyPoiId === poi.id;
       const theme = getPoiVisualTheme(poi);
 
       const el = document.createElement('div');
@@ -706,7 +733,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       markersRef.current.push(marker);
     });
-  }, [pois, selectedRoute, selectedStopPoiId, proximityAlert, isLoaded, onSelectPoi, onInspectStop]);
+  }, [pois, selectedRoute, selectedStopPoiId, nearbyPoiId, isLoaded, onSelectPoi, onInspectStop]);
 
   // Botón "¿Dónde estoy?"
   const handleWhereAmI = useCallback(() => {
@@ -850,7 +877,23 @@ export const MapViewer: FC<MapViewerProps> = ({
     };
   }, []);
 
-  // Bucle de 60fps para Joystick Virtual, Mando de Xbox (Gamepad API), Teclado y Auto-Walk IA
+  // Handlers de gestos para el Joystick Táctil Virtual (Móvil y Mouse) con actualización DOM directa a 120fps
+  const joystickBaseRef = useRef<HTMLDivElement | null>(null);
+  const stickKnobRef = useRef<HTMLDivElement | null>(null);
+  const isDraggingStickRef = useRef(false);
+
+  const setKnobTransform = useCallback((ox: number, oy: number, smoothReturn = false) => {
+    const knob = stickKnobRef.current;
+    if (!knob) return;
+    knob.style.transition = smoothReturn
+      ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
+      : 'none';
+    knob.style.transform = `translate3d(${ox.toFixed(1)}px, ${oy.toFixed(1)}px, 0) scale(${
+      smoothReturn ? 1 : 1.06
+    })`;
+  }, []);
+
+  // Bucle de 60/120fps con inercia suave para Joystick Virtual, Mando Xbox y Teclado (Cero re-renders por frame)
   useEffect(() => {
     let animFrameId: number;
     let lastTime = performance.now();
@@ -881,7 +924,7 @@ export const MapViewer: FC<MapViewerProps> = ({
           setGamepadConnectedName(activePad.id || 'Xbox Controller');
         }
 
-        const deadzone = 0.16;
+        const deadzone = 0.14;
         const lx = activePad.axes[0] || 0;
         const ly = activePad.axes[1] || 0;
         const rx = activePad.axes[2] || 0;
@@ -890,32 +933,31 @@ export const MapViewer: FC<MapViewerProps> = ({
         if (Math.hypot(lx, ly) > deadzone) {
           vx += lx;
           vy += ly;
-          setStickOffset({
-            x: Math.max(-34, Math.min(34, lx * 34)),
-            y: Math.max(-34, Math.min(34, ly * 34))
-          });
-        } else if (touchVectorRef.current.x === 0 && touchVectorRef.current.y === 0) {
-          // D-Pad (botones 12=Up, 13=Down, 14=Left, 15=Right)
+          if (!isDraggingStickRef.current) {
+            setKnobTransform(
+              Math.max(-32, Math.min(32, lx * 32)),
+              Math.max(-32, Math.min(32, ly * 32)),
+              false
+            );
+          }
+        } else if (!isDraggingStickRef.current) {
           if (activePad.buttons[12]?.pressed) vy -= 1;
           if (activePad.buttons[13]?.pressed) vy += 1;
           if (activePad.buttons[14]?.pressed) vx -= 1;
           if (activePad.buttons[15]?.pressed) vx += 1;
           if (vx === 0 && vy === 0) {
-            setStickOffset({ x: 0, y: 0 });
+            setKnobTransform(0, 0, true);
           }
         }
 
-        // Stick derecho: Rotación orbital 3D de la cámara (Bearing y Pitch)
         if (Math.abs(rx) > deadzone) camYawDelta = rx * 75 * dt;
         if (Math.abs(ry) > deadzone) camPitchDelta = -ry * 45 * dt;
 
-        // Gatillos LT (6) y RT (7): Zoom Out / Zoom In
         const lt = activePad.buttons[6]?.value || 0;
         const rt = activePad.buttons[7]?.value || 0;
         if (lt > 0.1) zoomDelta -= lt * 1.8 * dt;
         if (rt > 0.1) zoomDelta += rt * 1.8 * dt;
 
-        // Botones de acción con debounce de 320ms
         const canPress = (btnIdx: number) => {
           const prev = lastButtonPressRef.current[btnIdx] || 0;
           if (now - prev > 320) {
@@ -925,22 +967,19 @@ export const MapViewer: FC<MapViewerProps> = ({
           return false;
         };
 
-        // Botón A (0): Inspeccionar lugar cercano
-        if (activePad.buttons[0]?.pressed && canPress(0) && proximityAlert) {
-          onSelectPoi(proximityAlert.poi.id);
-          if (onInspectStop) onInspectStop(proximityAlert.poi.id);
+        const currentProx = proximityAlertRef.current;
+        if (activePad.buttons[0]?.pressed && canPress(0) && currentProx) {
+          onSelectPoi(currentProx.poi.id);
+          if (onInspectStop) onInspectStop(currentProx.poi.id);
         }
-        // Botón X (2): Centrar cámara en el avatar
         if (activePad.buttons[2]?.pressed && canPress(2)) {
           handleWhereAmI();
         }
-        // Botón Y (3): Alternar vista 3D / 2D
         if (activePad.buttons[3]?.pressed && canPress(3)) {
           toggle3D();
         }
       }
 
-      // Aplicar rotación de cámara o zoom del mando Xbox si hubo entrada en stick derecho / gatillos
       const map = mapRef.current;
       if (map && (camYawDelta !== 0 || camPitchDelta !== 0 || zoomDelta !== 0)) {
         map.jumpTo({
@@ -960,7 +999,7 @@ export const MapViewer: FC<MapViewerProps> = ({
         const pA = orderedRouteCoords[prog.legIdx];
         const pB = orderedRouteCoords[prog.legIdx + 1];
         const segDistM = Math.max(1, getDistanceMeters(pA, pB));
-        const speedMps = 18 * walkSpeedMultiplier;
+        const speedMps = 28;
         prog.t += (speedMps * dt) / segDistM;
 
         if (prog.t >= 1) {
@@ -985,67 +1024,93 @@ export const MapViewer: FC<MapViewerProps> = ({
         }
 
         userLocationRef.current = nextCoords;
-        onUserLocationChange(nextCoords);
+        if (userMarkerRef.current) {
+          userMarkerRef.current.setLngLat(nextCoords);
+        }
         if (map) {
           map.jumpTo({ center: nextCoords });
         }
-      } else if (Math.hypot(vx, vy) > 0.05) {
-        // Si el usuario mueve el joystick o mando manualmente, pausar auto-walk
-        if (isAutoWalking) setIsAutoWalking(false);
-
-        const mag = Math.min(1, Math.hypot(vx, vy));
-        const normX = vx / Math.hypot(vx, vy);
-        const normY = vy / Math.hypot(vx, vy);
-
-        // Orientar el movimiento respecto al ángulo actual de la cámara (bearing)
-        const bearingRad = map ? (map.getBearing() * Math.PI) / 180 : 0;
-        // En pantalla: normX > 0 es derecha (+Este), normY < 0 es arriba (+Norte)
-        const forwardNorth = -normY;
-        const rightEast = normX;
-
-        const worldEast = rightEast * Math.cos(bearingRad) + forwardNorth * Math.sin(bearingRad);
-        const worldNorth = -rightEast * Math.sin(bearingRad) + forwardNorth * Math.cos(bearingRad);
-
-        // Velocidad base ~ 18 m/s en demo (ajustable con multiplicador 1x, 2x, 4x)
-        const metersPerSec = 16 * walkSpeedMultiplier * mag;
-        const dLat = ((worldNorth * metersPerSec * dt) / 111320);
-        const dLng =
-          ((worldEast * metersPerSec * dt) /
-            (111320 * Math.cos((userLocationRef.current[1] * Math.PI) / 180)));
-
-        const nextCoords: [number, number] = [
-          userLocationRef.current[0] + dLng,
-          userLocationRef.current[1] + dLat
-        ];
-
-        const headingDeg = (Math.atan2(worldEast, worldNorth) * 180) / Math.PI;
-        if (avatarCtrlRef.current) {
-          avatarCtrlRef.current.setHeading(headingDeg);
+        if (now - lastSyncTimeRef.current > 260) {
+          lastSyncTimeRef.current = now;
+          onUserLocationChange(nextCoords);
         }
+      } else {
+        // Suavizado exponencial de velocidad (inercia fluida al arrancar, girar y frenar)
+        const rawMag = Math.hypot(vx, vy);
+        const targetX = rawMag > 0.03 ? (vx / Math.max(1, rawMag)) : 0;
+        const targetY = rawMag > 0.03 ? (vy / Math.max(1, rawMag)) : 0;
 
-        userLocationRef.current = nextCoords;
-        onUserLocationChange(nextCoords);
+        const smoothFactor = 1 - Math.exp(-11 * dt);
+        smoothVelRef.current.x += (targetX - smoothVelRef.current.x) * smoothFactor;
+        smoothVelRef.current.y += (targetY - smoothVelRef.current.y) * smoothFactor;
 
-        if (map) {
-          map.jumpTo({ center: nextCoords });
-        }
+        const svx = smoothVelRef.current.x;
+        const svy = smoothVelRef.current.y;
+        const smoothMag = Math.hypot(svx, svy);
 
-        // Vibración háptica en el mando Xbox si topa con una barrera en silla de ruedas
-        if (
-          activePad &&
-          (activePad as any).vibrationActuator &&
-          barrierWarning &&
-          now - lastRumbleTimeRef.current > 1200
-        ) {
-          lastRumbleTimeRef.current = now;
-          (activePad as any).vibrationActuator
-            .playEffect('dual-rumble', {
-              startDelay: 0,
-              duration: 180,
-              weakMagnitude: 0.5,
-              strongMagnitude: 0.8
-            })
-            .catch(() => {});
+        if (smoothMag > 0.008) {
+          if (isAutoWalking && rawMag > 0.05) setIsAutoWalking(false);
+
+          const clampedMag = Math.min(1, smoothMag);
+          const curvedMag = Math.pow(clampedMag, 1.15);
+          const normX = svx / smoothMag;
+          const normY = svy / smoothMag;
+
+          const bearingRad = map ? (map.getBearing() * Math.PI) / 180 : 0;
+          const forwardNorth = -normY;
+          const rightEast = normX;
+
+          const worldEast = rightEast * Math.cos(bearingRad) + forwardNorth * Math.sin(bearingRad);
+          const worldNorth = -rightEast * Math.sin(bearingRad) + forwardNorth * Math.cos(bearingRad);
+
+          const metersPerSec = 26 * curvedMag;
+          const dLat = (worldNorth * metersPerSec * dt) / 111320;
+          const dLng =
+            (worldEast * metersPerSec * dt) /
+            (111320 * Math.cos((userLocationRef.current[1] * Math.PI) / 180));
+
+          const nextCoords: [number, number] = [
+            userLocationRef.current[0] + dLng,
+            userLocationRef.current[1] + dLat
+          ];
+
+          if (rawMag > 0.04 && avatarCtrlRef.current) {
+            const headingDeg = (Math.atan2(worldEast, worldNorth) * 180) / Math.PI;
+            avatarCtrlRef.current.setHeading(headingDeg);
+          }
+
+          userLocationRef.current = nextCoords;
+          if (userMarkerRef.current) {
+            userMarkerRef.current.setLngLat(nextCoords);
+          }
+          if (map) {
+            map.jumpTo({ center: nextCoords });
+          }
+
+          if (now - lastSyncTimeRef.current > 260) {
+            lastSyncTimeRef.current = now;
+            onUserLocationChange(nextCoords);
+          }
+
+          if (
+            activePad &&
+            (activePad as any).vibrationActuator &&
+            barrierWarningRef.current &&
+            now - lastRumbleTimeRef.current > 1200
+          ) {
+            lastRumbleTimeRef.current = now;
+            (activePad as any).vibrationActuator
+              .playEffect('dual-rumble', {
+                startDelay: 0,
+                duration: 180,
+                weakMagnitude: 0.5,
+                strongMagnitude: 0.8
+              })
+              .catch(() => {});
+          }
+        } else {
+          smoothVelRef.current.x = 0;
+          smoothVelRef.current.y = 0;
         }
       }
 
@@ -1055,59 +1120,53 @@ export const MapViewer: FC<MapViewerProps> = ({
     animFrameId = requestAnimationFrame(stepLoop);
     return () => cancelAnimationFrame(animFrameId);
   }, [
-    walkSpeedMultiplier,
     isAutoWalking,
     orderedRouteCoords,
     gamepadConnectedName,
-    proximityAlert,
-    barrierWarning,
     onUserLocationChange,
     onSelectPoi,
     onInspectStop,
     handleWhereAmI,
-    toggle3D
+    toggle3D,
+    setKnobTransform
   ]);
 
-  // Handlers de gestos para el Joystick Táctil Virtual (Móvil y Mouse)
-  const joystickBaseRef = useRef<HTMLDivElement | null>(null);
-  const isDraggingStickRef = useRef(false);
-  const [isDraggingStick, setIsDraggingStick] = useState(false);
-  const [isJoystickMinimized, setIsJoystickMinimized] = useState(false);
+  const updateStickFromPointer = useCallback(
+    (clientX: number, clientY: number) => {
+      if (!joystickBaseRef.current) return;
+      const rect = joystickBaseRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const maxRadius = 32;
 
-  const updateStickFromPointer = useCallback((clientX: number, clientY: number) => {
-    if (!joystickBaseRef.current) return;
-    const rect = joystickBaseRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const maxRadius = 34;
+      const dx = clientX - centerX;
+      const dy = clientY - centerY;
+      const dist = Math.hypot(dx, dy);
 
-    const dx = clientX - centerX;
-    const dy = clientY - centerY;
-    const dist = Math.hypot(dx, dy);
+      if (dist === 0) {
+        setKnobTransform(0, 0, false);
+        touchVectorRef.current = { x: 0, y: 0 };
+        return;
+      }
 
-    if (dist === 0) {
-      setStickOffset({ x: 0, y: 0 });
-      touchVectorRef.current = { x: 0, y: 0 };
-      return;
-    }
+      const clampedDist = Math.min(maxRadius, dist);
+      const angle = Math.atan2(dy, dx);
+      const ox = Math.cos(angle) * clampedDist;
+      const oy = Math.sin(angle) * clampedDist;
 
-    const clampedDist = Math.min(maxRadius, dist);
-    const angle = Math.atan2(dy, dx);
-    const ox = Math.cos(angle) * clampedDist;
-    const oy = Math.sin(angle) * clampedDist;
-
-    setStickOffset({ x: ox, y: oy });
-    touchVectorRef.current = {
-      x: ox / maxRadius,
-      y: oy / maxRadius
-    };
-  }, []);
+      setKnobTransform(ox, oy, false);
+      touchVectorRef.current = {
+        x: ox / maxRadius,
+        y: oy / maxRadius
+      };
+    },
+    [setKnobTransform]
+  );
 
   const handleStickPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.currentTarget.setPointerCapture(e.pointerId);
     isDraggingStickRef.current = true;
-    setIsDraggingStick(true);
     updateStickFromPointer(e.clientX, e.clientY);
   };
 
@@ -1120,9 +1179,9 @@ export const MapViewer: FC<MapViewerProps> = ({
   const handleStickPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     isDraggingStickRef.current = false;
-    setIsDraggingStick(false);
-    setStickOffset({ x: 0, y: 0 });
+    setKnobTransform(0, 0, true);
     touchVectorRef.current = { x: 0, y: 0 };
+    onUserLocationChange(userLocationRef.current);
   };
 
   // Pulso Urbano: busca el lugar más cercano al usuario
@@ -1439,118 +1498,40 @@ export const MapViewer: FC<MapViewerProps> = ({
         </div>
       </div>
 
-      {/* Joystick Virtual Táctil Flotante (Teléfono / Mouse / Indicador de Mando Xbox) */}
+      {/* Joystick Analógico Circular Flotante Minimalista */}
       {showJoystickPad && (
-        <div className="absolute bottom-24 sm:bottom-28 left-3 sm:left-4 z-30 pointer-events-auto">
-          {isJoystickMinimized ? (
-            <button
-              type="button"
-              onClick={() => setIsJoystickMinimized(false)}
-              className="h-9 px-3 rounded-2xl bg-[#FAF6EE]/95 hover:bg-[#FFFDF9] text-[#0F3078] border-2 border-[#0F3078] shadow-lg backdrop-blur-md flex items-center gap-1.5 font-bold text-xs cursor-pointer transition-all duration-200 active:scale-95"
-              title={language === 'es' ? 'Abrir joystick de exploración' : 'Open exploration joystick'}
-            >
-              <Gamepad2 className="w-4 h-4 text-[#D48914]" />
-              <span className="text-[11px] font-black">{language === 'es' ? 'Control' : 'Joystick'}</span>
-              <ChevronUp className="w-3.5 h-3.5 text-[#0F3078]/70 ml-0.5" />
-            </button>
-          ) : (
-            <div className="bg-[#FAF6EE]/95 backdrop-blur-xl border-2 border-[#0F3078] shadow-[0_12px_32px_rgba(15,48,120,0.25)] rounded-3xl p-2.5 flex flex-col items-center gap-2 select-none w-36 transition-all duration-300">
-              {/* Header con título y botón de minimizar */}
-              <div className="w-full flex items-center justify-between pb-1 border-b border-[#0F3078]/15 px-0.5">
-                <div className="flex items-center gap-1.5 text-[#0F3078]">
-                  <Gamepad2 className="w-3.5 h-3.5 text-[#D48914]" />
-                  <span className="text-[10px] font-black uppercase tracking-wider">
-                    {language === 'es' ? 'Control' : 'Joystick'}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsJoystickMinimized(true)}
-                  className="w-5 h-5 rounded-lg text-[#0F3078]/70 hover:text-[#0F3078] hover:bg-[#0F3078]/10 flex items-center justify-center transition cursor-pointer"
-                  title={language === 'es' ? 'Minimizar control' : 'Minimize controller'}
-                  aria-label={language === 'es' ? 'Minimizar control' : 'Minimize controller'}
-                >
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Selector de velocidad de exploración */}
-              <div className="flex items-center w-full bg-[#0F3078]/8 p-0.5 rounded-xl border border-[#0F3078]/20">
-                {([1, 2, 4] as const).map((spd) => (
-                  <button
-                    key={spd}
-                    type="button"
-                    onClick={() => setWalkSpeedMultiplier(spd)}
-                    className={`flex-1 py-0.5 text-[10px] font-black rounded-lg transition cursor-pointer ${
-                      walkSpeedMultiplier === spd
-                        ? 'bg-[#0F3078] text-[#FAF6EE] shadow-sm'
-                        : 'text-[#0F3078]/70 hover:text-[#0F3078]'
-                    }`}
-                  >
-                    {spd}x
-                  </button>
-                ))}
-              </div>
-
-              {/* Pad Analógico Circular Talavera */}
-              <div
-                ref={joystickBaseRef}
-                onPointerDown={handleStickPointerDown}
-                onPointerMove={handleStickPointerMove}
-                onPointerUp={handleStickPointerUp}
-                onPointerCancel={handleStickPointerUp}
-                className="relative w-24 h-24 rounded-full bg-gradient-to-b from-[#FAF6EE] to-[#E9DFCF] border-2 border-[#0F3078] shadow-[inset_0_3px_8px_rgba(15,48,120,0.2),0_6px_16px_rgba(15,48,120,0.15)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
-                title={
-                  language === 'es'
-                    ? 'Arrastra para caminar (Compatible con Mando Xbox y WASD)'
-                    : 'Drag to walk (Xbox Controller & WASD supported)'
-                }
-              >
-                {/* Guía direccional Talavera */}
-                <div className="w-16 h-16 rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-[#0F3078]/25" />
-                </div>
-
-                {/* Flechas direccionales ortogonales */}
-                <span className="absolute top-1 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">▲</span>
-                <span className="absolute bottom-1 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">▼</span>
-                <span className="absolute left-1.5 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">◀</span>
-                <span className="absolute right-1.5 text-[8px] font-black text-[#0F3078]/40 pointer-events-none select-none">▶</span>
-
-                {/* Stick móvil con respuesta instantánea sin lag */}
-                <div
-                  style={{
-                    transform: `translate3d(${stickOffset.x}px, ${stickOffset.y}px, 0)`
-                  }}
-                  className={`w-10 h-10 rounded-full bg-gradient-to-tr from-[#0F3078] via-[#1B49AC] to-[#D48914] border-2 border-white shadow-[0_4px_12px_rgba(15,48,120,0.5)] flex items-center justify-center pointer-events-none ${
-                    isDraggingStick ? 'transition-none scale-105' : 'transition-transform duration-200 ease-out'
-                  }`}
-                >
-                  <div className="w-3.5 h-3.5 rounded-full bg-[#FAF6EE] border border-[#0F3078]/40 shadow-inner" />
-                </div>
-              </div>
-
-              {/* Indicador de hardware / estado de entrada */}
-              <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#0F3078] bg-[#0F3078]/8 px-2 py-0.5 rounded-full border border-[#0F3078]/15 max-w-full truncate">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    stickOffset.x !== 0 || stickOffset.y !== 0
-                      ? 'bg-emerald-500 animate-pulse'
-                      : gamepadConnectedName
-                      ? 'bg-emerald-500'
-                      : 'bg-[#D48914]'
-                  }`}
-                />
-                <span className="truncate">
-                  {gamepadConnectedName
-                    ? 'Xbox USB'
-                    : stickOffset.x !== 0 || stickOffset.y !== 0
-                    ? (language === 'es' ? 'Caminando' : 'Walking')
-                    : (language === 'es' ? 'Táctil / WASD' : 'Touch / WASD')}
-                </span>
-              </div>
+        <div className="absolute bottom-24 sm:bottom-28 left-3 sm:left-4 z-30 pointer-events-auto select-none">
+          <div
+            ref={joystickBaseRef}
+            onPointerDown={handleStickPointerDown}
+            onPointerMove={handleStickPointerMove}
+            onPointerUp={handleStickPointerUp}
+            onPointerCancel={handleStickPointerUp}
+            className="relative w-24 h-24 rounded-full bg-[#FAF6EE]/88 backdrop-blur-xl border-2 border-[#0F3078] shadow-[inset_0_3px_10px_rgba(15,48,120,0.22),0_10px_28px_rgba(15,48,120,0.28)] flex items-center justify-center touch-none cursor-grab active:cursor-grabbing"
+          >
+            {/* Anillo interior sutil Talavera */}
+            <div className="w-16 h-16 rounded-full border border-dashed border-[#0F3078]/25 pointer-events-none flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-[#0F3078]/20" />
             </div>
-          )}
+
+            {/* Guías direccionales discretas */}
+            <span className="absolute top-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">▲</span>
+            <span className="absolute bottom-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">▼</span>
+            <span className="absolute left-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">◀</span>
+            <span className="absolute right-1.5 text-[7px] font-black text-[#0F3078]/35 pointer-events-none">▶</span>
+
+            {/* Pomo analógico con respuesta DOM directa a 120fps */}
+            <div
+              ref={stickKnobRef}
+              style={{
+                transform: 'translate3d(0px, 0px, 0) scale(1)',
+                transition: 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
+              }}
+              className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#0F3078] via-[#1B49AC] to-[#D48914] border-2 border-white shadow-[0_4px_14px_rgba(15,48,120,0.5)] flex items-center justify-center pointer-events-none will-change-transform"
+            >
+              <div className="w-4 h-4 rounded-full bg-[#FAF6EE] border border-[#0F3078]/40 shadow-inner" />
+            </div>
+          </div>
         </div>
       )}
 

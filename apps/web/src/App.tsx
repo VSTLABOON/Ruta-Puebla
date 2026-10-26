@@ -195,10 +195,10 @@ function MainApp() {
       try {
         const fetchOpts: RequestInit = { cache: 'no-store' };
         const [poisRes, graphRes, matricesRes, weightsRes] = await Promise.all([
-          fetch('/data/pois.json?v=3', fetchOpts).then((r) => r.json()),
-          fetch('/data/sidewalk_graph.json?v=3', fetchOpts).then((r) => r.json()),
-          fetch('/data/time_matrices.json?v=3', fetchOpts).then((r) => r.json()),
-          fetch('/data/choice_model_weights.json?v=3', fetchOpts).then((r) => r.json())
+          fetch('/data/pois.json?v=4', fetchOpts).then((r) => r.json()),
+          fetch('/data/sidewalk_graph.json?v=4', fetchOpts).then((r) => r.json()),
+          fetch('/data/time_matrices.json?v=4', fetchOpts).then((r) => r.json()),
+          fetch('/data/choice_model_weights.json?v=4', fetchOpts).then((r) => r.json())
         ]);
 
         setPois(poisRes);
