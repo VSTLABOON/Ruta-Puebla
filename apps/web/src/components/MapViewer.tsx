@@ -549,15 +549,19 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       const markerWrapper = document.createElement('div');
       markerWrapper.className =
-        'relative flex flex-col items-center justify-center pointer-events-none z-40 transition-transform duration-150 ease-out';
+        'relative flex flex-col items-center justify-center pointer-events-none z-40';
       markerWrapper.style.transformOrigin = 'bottom center';
-      markerWrapper.appendChild(avatarCtrl.container);
+
+      const scaleWrapper = document.createElement('div');
+      scaleWrapper.className = 'flex flex-col items-center justify-center';
+      scaleWrapper.appendChild(avatarCtrl.container);
+      markerWrapper.appendChild(scaleWrapper);
 
       const updateZoomScale = () => {
         if (!mapRef.current) return;
         const currentZoom = mapRef.current.getZoom();
         const factor = Math.max(0.65, Math.min(1.3, Math.pow(1.15, currentZoom - 15.5)));
-        markerWrapper.style.transform = `scale(${factor.toFixed(2)})`;
+        scaleWrapper.style.transform = `scale(${factor.toFixed(2)})`;
       };
       updateZoomScale();
       map.on('zoom', updateZoomScale);
@@ -624,8 +628,6 @@ export const MapViewer: FC<MapViewerProps> = ({
     });
   }, [userLocation, isLoaded, language, pois, segments, activeProfile]);
 
-  const nearbyPoiId = proximityAlert?.poi.id ?? null;
-
   // Marcadores interactivos con Paleta Semántica Talavera y Micro-Iconografía SVG
   useEffect(() => {
     const map = mapRef.current;
@@ -642,31 +644,30 @@ export const MapViewer: FC<MapViewerProps> = ({
     if (selectedRoute) {
       selectedRoute.stops.forEach((stop) => {
         const isSelected = stop.poi.id === selectedStopPoiId;
-        const isNearby = nearbyPoiId === stop.poi.id;
         const theme = getPoiVisualTheme(stop.poi);
 
         const el = document.createElement('div');
-        el.className = `flex flex-col items-center cursor-pointer select-none transition-all duration-300 ease-out ${
-          isSelected || isNearby ? 'scale-115 z-40' : 'hover:scale-105 z-30'
+        el.className = `flex flex-col items-center cursor-pointer select-none ${
+          isSelected ? 'z-40' : 'z-30'
         }`;
 
         el.innerHTML = `
           ${
-            isSelected || isNearby
-              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-[#FAF6EE]/98 border-2 text-[10px] font-black text-[#0F3078] shadow-[0_6px_20px_rgba(15,48,120,0.35)] whitespace-nowrap poi-soft-float flex items-center gap-1.5" style="border-color: ${theme.hex};">
+            isSelected
+              ? `<div class="mb-1.5 px-3 py-1 rounded-xl bg-[#FAF6EE]/98 border-2 text-[10px] font-black text-[#0F3078] shadow-[0_6px_20px_rgba(15,48,120,0.35)] whitespace-nowrap flex items-center gap-1.5" style="border-color: ${theme.hex};">
                   <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: ${theme.hex};"></span>
                   <span>${stop.poi.name}</span>
                 </div>`
               : ''
           }
-          <div class="relative flex flex-col items-center">
+          <div class="relative flex flex-col items-center ${isSelected ? 'scale-110' : ''}">
             <div class="relative flex items-center justify-center">
-              <div class="absolute -inset-1.5 rounded-full blur-sm ${
-                isSelected || isNearby ? 'poi-soft-glow' : ''
-              }" style="background-color: ${theme.hex}44;"></div>
-              <div class="w-10 h-10 rounded-full p-0.5 shadow-[0_6px_18px_rgba(15,48,120,0.45)] flex items-center justify-center border-2 border-white transform transition-transform ${
-                isSelected ? 'scale-110' : ''
-              }" style="background: linear-gradient(135deg, #0F3078, ${theme.hex});">
+              ${
+                isSelected
+                  ? `<div class="absolute -inset-1.5 rounded-full blur-sm poi-soft-glow" style="background-color: ${theme.hex}44;"></div>`
+                  : ''
+              }
+              <div class="w-10 h-10 rounded-full p-0.5 shadow-[0_6px_18px_rgba(15,48,120,0.45)] flex items-center justify-center border-2 border-white" style="background: linear-gradient(135deg, #0F3078, ${theme.hex});">
                 <div class="w-full h-full rounded-full bg-[#FAF6EE] p-0.5 flex items-center justify-center border" style="border-color: ${theme.hex};">
                   <div class="w-full h-full rounded-full border border-dashed flex items-center justify-center font-black text-sm text-[#0F3078] shadow-inner font-serif" style="border-color: ${theme.hex}88;">
                     <span>${stop.stop_order}</span>
@@ -681,7 +682,6 @@ export const MapViewer: FC<MapViewerProps> = ({
             <div class="w-1 h-5 shadow-[0_0_8px_rgba(15,48,120,0.6)]" style="background: linear-gradient(to bottom, ${theme.hex}, #0F3078);"></div>
 
             <div class="relative w-4 h-4 flex items-center justify-center">
-              <div class="absolute inset-0 rounded-full poi-soft-glow" style="background-color: ${theme.hex}55;"></div>
               <div class="w-2.5 h-2.5 rounded-full border-2 border-[#FAF6EE] shadow" style="background-color: ${theme.hex};"></div>
             </div>
           </div>
@@ -708,28 +708,29 @@ export const MapViewer: FC<MapViewerProps> = ({
       if (stopsByPoiId.has(poi.id)) return;
 
       const isSelected = poi.id === selectedStopPoiId;
-      const isNearby = nearbyPoiId === poi.id;
       const theme = getPoiVisualTheme(poi);
 
       const el = document.createElement('div');
-      el.className = `flex flex-col items-center cursor-pointer transition-transform duration-300 ease-out ${
-        isSelected || isNearby ? 'scale-125 z-30' : 'hover:scale-110 z-10'
+      el.className = `flex flex-col items-center cursor-pointer select-none ${
+        isSelected ? 'z-30' : 'z-10'
       }`;
 
       el.innerHTML = `
         <div class="relative flex items-center justify-center p-0.5">
           ${
-            isSelected || isNearby
+            isSelected
               ? `<div class="absolute -inset-1 rounded-full poi-soft-glow" style="background-color: ${theme.hex}66;"></div>`
               : ''
           }
-          <div class="w-6 h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center ring-1 ring-black/15" style="background-color: ${theme.hex};">
+          <div class="w-6 h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center ring-1 ring-black/15 ${
+            isSelected ? 'scale-125' : ''
+          }" style="background-color: ${theme.hex};">
             ${theme.svgIcon}
           </div>
         </div>
         ${
-          isSelected || isNearby
-            ? `<div class="mt-0.5 px-2.5 py-0.5 rounded-lg border-2 bg-[#FAF6EE]/95 text-[9px] font-black shadow-xl whitespace-nowrap animate-fade-slide" style="color: ${theme.hex}; border-color: ${theme.hex};">
+          isSelected
+            ? `<div class="mt-0.5 px-2.5 py-0.5 rounded-lg border-2 bg-[#FAF6EE]/95 text-[9px] font-black shadow-xl whitespace-nowrap" style="color: ${theme.hex}; border-color: ${theme.hex};">
                 ${poi.name}
               </div>`
             : ''
@@ -750,7 +751,7 @@ export const MapViewer: FC<MapViewerProps> = ({
 
       markersRef.current.push(marker);
     });
-  }, [pois, selectedRoute, selectedStopPoiId, nearbyPoiId, isLoaded, onSelectPoi, onInspectStop]);
+  }, [pois, selectedRoute, selectedStopPoiId, isLoaded, onSelectPoi, onInspectStop]);
 
   // Botón "¿Dónde estoy?"
   const handleWhereAmI = useCallback(() => {
