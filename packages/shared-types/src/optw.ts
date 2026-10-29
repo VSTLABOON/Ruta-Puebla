@@ -187,10 +187,25 @@ export function solveOPTW(
     let routeOrder: number[] = [startIdx];
     let accumulatedBudget = startPoi.cost_mxn;
 
-    // Evaluador de factibilidad temporal y presupuestal de un orden de paradas
+    const getEffectiveVisitMin = (poi: POI, isStart: boolean): number => {
+      if (isStart && request.max_time_min <= 100) {
+        return Math.min(poi.visit_duration_min, Math.max(10, Math.round(request.max_time_min * 0.24)));
+      }
+      if (request.max_time_min <= 60) {
+        return Math.max(10, Math.round(poi.visit_duration_min * 0.5));
+      }
+      if (request.max_time_min <= 100) {
+        return Math.max(12, Math.round(poi.visit_duration_min * 0.7));
+      }
+      return poi.visit_duration_min;
+    };
+
+    // Evaluador de factibilidad temporal y presupuestal de un orden de paradas (recorrido abierto sin retorno cruzado)
     function evaluateFeasibility(order: number[]) {
-      let t = startTime + startPoi.visit_duration_min;
+      const startVisit = getEffectiveVisitMin(startPoi, true);
+      let t = startTime + startVisit;
       let totalWalk = 0;
+      let totalVisit = startVisit;
       let budget = startPoi.cost_mxn;
 
       for (let k = 1; k < order.length; k++) {
@@ -207,16 +222,18 @@ export function solveOPTW(
         const closeT = parseTimeToMinutes(pV.hours.close);
         const arrT = Math.max(t + wMin, openT);
         if (arrT > closeT) return null;
-        t = arrT + pV.visit_duration_min;
+        const visitDur = getEffectiveVisitMin(pV, false);
+        totalVisit += visitDur;
+        t = arrT + visitDur;
       }
 
-      // Tiempo de regreso a start
+      // Verificar conectividad del nodo final en la componente conexa del perfil
       const last = order[order.length - 1];
       const retMin = profileMatrix.time_minutes[last][startIdx];
       if (retMin >= 999990) return null;
-      if ((t + retMin - startTime) > request.max_time_min) return null;
+      if (Math.round(totalWalk + totalVisit) > request.max_time_min) return null;
 
-      return { totalTime: t + retMin - startTime, totalWalk, budget };
+      return { totalTime: Math.round(totalWalk + totalVisit), totalWalk, budget };
     }
 
     // Heuristica de insercion optima (Best-Insertion basada en desvio marginal de caminata)
@@ -338,6 +355,68 @@ export function solveOPTW(
       }
     };
 
+    const findShortestSidewalkSegments = (fromCoord: [number, number], toCoord: [number, number]): string[] => {
+      const nodeEntries = Object.entries(graph.nodes || {});
+      if (nodeEntries.length === 0) return [];
+      let startNode = nodeEntries[0][0];
+      let endNode = nodeEntries[0][0];
+      let bestStartD = Infinity;
+      let bestEndD = Infinity;
+      for (const [nid, nd] of nodeEntries) {
+        const ds = sqDist(fromCoord, nd.coordinates);
+        if (ds < bestStartD) {
+          bestStartD = ds;
+          startNode = nid;
+        }
+        const de = sqDist(toCoord, nd.coordinates);
+        if (de < bestEndD) {
+          bestEndD = de;
+          endNode = nid;
+        }
+      }
+      if (startNode === endNode) return [];
+      const adj = new Map<string, { to: string; len: number; segId: string }[]>();
+      for (const e of graph.edges) {
+        if (!e.transitable[request.profile]) continue;
+        if (!adj.has(e.from_node)) adj.set(e.from_node, []);
+        if (!adj.has(e.to_node)) adj.set(e.to_node, []);
+        adj.get(e.from_node)!.push({ to: e.to_node, len: e.length_m, segId: e.id });
+        adj.get(e.to_node)!.push({ to: e.from_node, len: e.length_m, segId: e.id });
+      }
+      const dist = new Map<string, number>([[startNode, 0]]);
+      const prev = new Map<string, { node: string; segId: string }>();
+      const visited = new Set<string>();
+      while (visited.size < nodeEntries.length) {
+        let u: string | null = null;
+        let best = Infinity;
+        for (const [n, d] of dist.entries()) {
+          if (!visited.has(n) && d < best) {
+            best = d;
+            u = n;
+          }
+        }
+        if (!u || u === endNode) break;
+        visited.add(u);
+        for (const edge of adj.get(u) || []) {
+          const nd = best + edge.len;
+          if (nd < (dist.get(edge.to) ?? Infinity)) {
+            dist.set(edge.to, nd);
+            prev.set(edge.to, { node: u, segId: edge.segId });
+          }
+        }
+      }
+      const out: string[] = [];
+      let cur = endNode;
+      while (cur !== startNode) {
+        const p = prev.get(cur);
+        if (!p) return [];
+        out.push(p.segId);
+        cur = p.node;
+      }
+      out.reverse();
+      return out;
+    };
+
     for (let i = 0; i < routeOrder.length; i++) {
       const idx = routeOrder[i];
       const poi = pois.find(p => poiIndexMap.get(p.id) === idx)!;
@@ -351,13 +430,17 @@ export function solveOPTW(
         const prevPoi = pois.find(p => poiIndexMap.get(p.id) === prevIdx)!;
         walkMin = profileMatrix.time_minutes[prevIdx][idx];
         const walkM = profileMatrix.distance_meters[prevIdx][idx];
-        const segs = profileMatrix.path_segments?.[prevIdx]?.[idx];
+        const matrixSegs = profileMatrix.path_segments?.[prevIdx]?.[idx];
+        const segs =
+          Array.isArray(matrixSegs) && matrixSegs.length > 0
+            ? matrixSegs
+            : findShortestSidewalkSegments(prevPoi.coordinates, poi.coordinates);
         totalWalkingMin += walkMin;
         totalWalkMeters += walkM;
         let currentPos: [number, number] =
           routeCoords.length > 0 ? routeCoords[routeCoords.length - 1] : prevPoi.coordinates;
 
-        if (Array.isArray(segs) && segs.length > 0) {
+        if (segs.length > 0) {
           pathSegments.push(...segs);
           for (const sid of segs) {
             const seg = edgeMap.get(sid);
@@ -375,20 +458,14 @@ export function solveOPTW(
               currentPos = routeCoords[routeCoords.length - 1];
             }
           }
-        } else {
-          // Trazo estrictamente ortogonal por calles para evitar cruzar edificios en tramos directos
-          const dlon = Math.abs(currentPos[0] - poi.coordinates[0]);
-          const dlat = Math.abs(currentPos[1] - poi.coordinates[1]);
-          if (dlon > 0.00005 && dlat > 0.00005) {
-            pushCoordDedup([poi.coordinates[0], currentPos[1]]);
-          }
         }
         pushCoordDedup(poi.coordinates);
         arrivalT = Math.max(currentT + walkMin, parseTimeToMinutes(poi.hours.open));
       }
 
-      const departureT = arrivalT + poi.visit_duration_min;
-      totalVisitMin += poi.visit_duration_min;
+      const visitDur = getEffectiveVisitMin(poi, i === 0);
+      const departureT = arrivalT + visitDur;
+      totalVisitMin += visitDur;
       totalCost += poi.cost_mxn;
       currentT = departureT;
 

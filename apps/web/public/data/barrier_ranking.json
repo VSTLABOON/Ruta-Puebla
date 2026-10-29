@@ -43,7 +43,7 @@
         {
           "segment_id": "seg_xane_mirador",
           "zone": "barrio_xanenetla",
-          "length_m": 207.0,
+          "length_m": 200.4,
           "barrier_causes": [
             "escalon"
           ],
@@ -59,7 +59,7 @@
         {
           "segment_id": "seg_analco_calle7ote_s",
           "zone": "barrio_analco",
-          "length_m": 54.4,
+          "length_m": 34.9,
           "barrier_causes": [
             "ancho_insuficiente",
             "escalon"
@@ -72,7 +72,7 @@
         {
           "segment_id": "seg_xane_callejuela_empedrada",
           "zone": "barrio_xanenetla",
-          "length_m": 76.6,
+          "length_m": 70.5,
           "barrier_causes": [
             "escalon",
             "superficie_bloqueada"
@@ -85,7 +85,7 @@
         {
           "segment_id": "seg_luz_horno_acceso",
           "zone": "barrio_la_luz",
-          "length_m": 129.2,
+          "length_m": 290.4,
           "barrier_causes": [
             "escalon"
           ],
@@ -138,7 +138,7 @@
         {
           "segment_id": "seg_xane_mirador",
           "zone": "barrio_xanenetla",
-          "length_m": 207.0,
+          "length_m": 200.4,
           "barrier_causes": [
             "pendiente_excesiva",
             "escalon",
@@ -157,7 +157,7 @@
         {
           "segment_id": "seg_analco_calle7ote_s",
           "zone": "barrio_analco",
-          "length_m": 54.4,
+          "length_m": 34.9,
           "barrier_causes": [
             "ancho_insuficiente",
             "escalon",
@@ -171,7 +171,7 @@
         {
           "segment_id": "seg_xane_callejuela_empedrada",
           "zone": "barrio_xanenetla",
-          "length_m": 76.6,
+          "length_m": 70.5,
           "barrier_causes": [
             "ancho_insuficiente",
             "pendiente_excesiva",
@@ -187,7 +187,7 @@
         {
           "segment_id": "seg_luz_palafox_s",
           "zone": "barrio_la_luz",
-          "length_m": 105.1,
+          "length_m": 186.0,
           "barrier_causes": [
             "ancho_insuficiente",
             "sin_rampa"
@@ -198,9 +198,21 @@
           "unlocked_zones": []
         },
         {
+          "segment_id": "seg_palafox_5ote_n",
+          "zone": "zocalo_centro_nucleo",
+          "length_m": 229.1,
+          "barrier_causes": [
+            "sin_rampa"
+          ],
+          "unlocked_pois": [],
+          "unlocked_pois_count": 0,
+          "unlocked_local_business_count": 0,
+          "unlocked_zones": []
+        },
+        {
           "segment_id": "seg_luz_horno_acceso",
           "zone": "barrio_la_luz",
-          "length_m": 129.2,
+          "length_m": 290.4,
           "barrier_causes": [
             "escalon",
             "sin_rampa",
@@ -212,21 +224,9 @@
           "unlocked_zones": []
         },
         {
-          "segment_id": "seg_palafox_5ote_n",
-          "zone": "zocalo_centro_nucleo",
-          "length_m": 212.7,
-          "barrier_causes": [
-            "sin_rampa"
-          ],
-          "unlocked_pois": [],
-          "unlocked_pois_count": 0,
-          "unlocked_local_business_count": 0,
-          "unlocked_zones": []
-        },
-        {
           "segment_id": "seg_sapos_6sur_w",
           "zone": "zocalo_centro_nucleo",
-          "length_m": 438.9,
+          "length_m": 328.3,
           "barrier_causes": [
             "sin_rampa"
           ],

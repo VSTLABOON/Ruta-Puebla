@@ -46,7 +46,7 @@ function getRouteTimeBreakdown(route: RouteAlternative) {
   let foodMin = 0;
 
   for (const s of route.stops) {
-    const dur = s.poi.visit_duration_min;
+    const dur = Math.max(5, Math.round(s.departure_time_min - s.arrival_time_min));
     const cat = s.poi.category;
     if (cat === 'artesania' || s.poi.artisan_profile) {
       workshopMin += dur;

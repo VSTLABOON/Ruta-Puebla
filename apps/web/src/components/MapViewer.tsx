@@ -376,23 +376,80 @@ export const MapViewer: FC<MapViewerProps> = ({
       return coords;
     }
 
-    // Reconstrucción orientada desde path_segments si no había geometry.coordinates
+    // Reconstrucción orientada desde path_segments sobre la red real de banquetas (cero trazos a través de edificios)
     const edgeMap = new Map(segments.map((s) => [s.id, s]));
     let currentPos = selectedRoute.stops[0].poi.coordinates;
     pushDedup(currentPos);
 
-    const pushDameroConnection = (from: [number, number], to: [number, number]) => {
-      const dLon = Math.abs(from[0] - to[0]);
-      const dLat = Math.abs(from[1] - to[1]);
-      if (dLon > 0.00006 && dLat > 0.00006) {
-        // En damero ortogonal de Puebla, trazar esquina en ángulo recto
-        pushDedup([to[0], from[1]]);
+    const findSidewalkChain = (from: [number, number], to: [number, number]): string[] => {
+      if (segments.length === 0) return [];
+      const nodeCoords = new Map<string, [number, number]>();
+      const adj = new Map<string, { to: string; len: number; segId: string }[]>();
+      for (const s of segments) {
+        if (!s.geometry?.coordinates || s.geometry.coordinates.length < 2) continue;
+        const cStart = s.geometry.coordinates[0];
+        const cEnd = s.geometry.coordinates[s.geometry.coordinates.length - 1];
+        nodeCoords.set(s.from_node, cStart);
+        nodeCoords.set(s.to_node, cEnd);
+        if (!adj.has(s.from_node)) adj.set(s.from_node, []);
+        if (!adj.has(s.to_node)) adj.set(s.to_node, []);
+        const w = s.transitable[activeProfile] ? s.length_m : s.length_m * 10;
+        adj.get(s.from_node)!.push({ to: s.to_node, len: w, segId: s.id });
+        adj.get(s.to_node)!.push({ to: s.from_node, len: w, segId: s.id });
       }
-      pushDedup(to);
+      let startN = '';
+      let endN = '';
+      let bestS = Infinity;
+      let bestE = Infinity;
+      for (const [nid, nc] of nodeCoords.entries()) {
+        const ds = sqDist(from, nc);
+        if (ds < bestS) {
+          bestS = ds;
+          startN = nid;
+        }
+        const de = sqDist(to, nc);
+        if (de < bestE) {
+          bestE = de;
+          endN = nid;
+        }
+      }
+      if (!startN || !endN || startN === endN) return [];
+      const dist = new Map<string, number>([[startN, 0]]);
+      const prev = new Map<string, { node: string; segId: string }>();
+      const visited = new Set<string>();
+      while (visited.size < nodeCoords.size) {
+        let u: string | null = null;
+        let best = Infinity;
+        for (const [n, d] of dist.entries()) {
+          if (!visited.has(n) && d < best) {
+            best = d;
+            u = n;
+          }
+        }
+        if (!u || u === endN) break;
+        visited.add(u);
+        for (const e of adj.get(u) || []) {
+          const nd = best + e.len;
+          if (nd < (dist.get(e.to) ?? Infinity)) {
+            dist.set(e.to, nd);
+            prev.set(e.to, { node: u, segId: e.segId });
+          }
+        }
+      }
+      const out: string[] = [];
+      let cur = endN;
+      while (cur !== startN) {
+        const p = prev.get(cur);
+        if (!p) return [];
+        out.push(p.segId);
+        cur = p.node;
+      }
+      out.reverse();
+      return out;
     };
 
-    if (selectedRoute.path_segments && selectedRoute.path_segments.length > 0) {
-      for (const segId of selectedRoute.path_segments) {
+    const appendSegmentIds = (segIds: string[]) => {
+      for (const segId of segIds) {
         const seg = edgeMap.get(segId);
         if (seg && seg.geometry?.coordinates && seg.geometry.coordinates.length > 0) {
           const raw = seg.geometry.coordinates;
@@ -400,26 +457,31 @@ export const MapViewer: FC<MapViewerProps> = ({
           const lastPt = raw[raw.length - 1];
           const oriented =
             sqDist(currentPos, lastPt) < sqDist(currentPos, firstPt) ? [...raw].reverse() : raw;
-          if (sqDist(currentPos, oriented[0]) > 1e-8) {
-            pushDameroConnection(currentPos, oriented[0]);
-          }
           for (const pt of oriented) {
             pushDedup(pt);
           }
           currentPos = coords[coords.length - 1];
         }
       }
+    };
+
+    if (selectedRoute.path_segments && selectedRoute.path_segments.length > 0) {
+      appendSegmentIds(selectedRoute.path_segments);
     }
 
-    // Si los path_segments estaban vacíos o no alcanzaron a conectar paradas, conectar consecutivamente de forma ortogonal
+    // Si los path_segments estaban vacíos, conectar las paradas siguiendo estrictamente las banquetas del grafo
     if (coords.length < 2 && selectedRoute.stops.length > 1) {
       for (let i = 1; i < selectedRoute.stops.length; i++) {
-        pushDameroConnection(coords[coords.length - 1], selectedRoute.stops[i].poi.coordinates);
+        const nextPt = selectedRoute.stops[i].poi.coordinates;
+        const chain = findSidewalkChain(currentPos, nextPt);
+        appendSegmentIds(chain);
+        pushDedup(nextPt);
+        currentPos = coords[coords.length - 1];
       }
     }
 
     return coords;
-  }, [selectedRoute, segments]);
+  }, [selectedRoute, segments, activeProfile]);
 
   const routeGeoJSON = useMemo(() => {
     if (!selectedRoute || orderedRouteCoords.length < 2) {

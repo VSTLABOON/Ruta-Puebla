@@ -4,8 +4,8 @@
     "name": "Catedral Basilica de Nuestra Senora de la Inmaculada Concepcion",
     "category": "iglesia",
     "coordinates": [
-      -98.1983,
-      19.0428
+      -98.19808,
+      19.04318
     ],
     "hours": {
       "open": "09:00",
@@ -87,8 +87,8 @@
     "name": "Biblioteca Palafoxiana",
     "category": "museo",
     "coordinates": [
-      -98.1991,
-      19.0424
+      -98.19897,
+      19.042629
     ],
     "hours": {
       "open": "10:00",
@@ -162,8 +162,8 @@
     "name": "Museo Amparo",
     "category": "museo",
     "coordinates": [
-      -98.1998,
-      19.0416
+      -98.200173,
+      19.041799
     ],
     "hours": {
       "open": "10:00",
@@ -231,8 +231,8 @@
     "name": "Capilla del Rosario (Templo de Santo Domingo)",
     "category": "iglesia",
     "coordinates": [
-      -98.1993,
-      19.0453
+      -98.19908,
+      19.045677
     ],
     "hours": {
       "open": "09:30",
@@ -300,8 +300,8 @@
     "name": "Bazar los Sapos y Talleres Tradicionales",
     "category": "artesania",
     "coordinates": [
-      -98.1963,
-      19.0411
+      -98.196242,
+      19.041193
     ],
     "hours": {
       "open": "10:30",
@@ -379,8 +379,8 @@
     "name": "Parque y Tianguis Artesanal de Analco",
     "category": "espacio_publico",
     "coordinates": [
-      -98.1925,
-      19.0418
+      -98.192571,
+      19.041819
     ],
     "hours": {
       "open": "09:00",
@@ -448,8 +448,8 @@
     "name": "Templo del Santo Angel Custodio de Analco",
     "category": "iglesia",
     "coordinates": [
-      -98.1918,
-      19.0415
+      -98.191624,
+      19.041791
     ],
     "hours": {
       "open": "08:00",
@@ -523,8 +523,8 @@
     "name": "Taller Familiar de Ceramica y Talavera Analco",
     "category": "comercio_local",
     "coordinates": [
-      -98.1931,
-      19.0425
+      -98.193069,
+      19.042554
     ],
     "hours": {
       "open": "10:00",
@@ -602,8 +602,8 @@
     "name": "Alfareria Tradicional del Barrio de La Luz",
     "category": "artesania",
     "coordinates": [
-      -98.1905,
-      19.0441
+      -98.191353,
+      19.043051
     ],
     "hours": {
       "open": "09:00",
@@ -680,8 +680,8 @@
     "name": "Templo de Nuestra Senora de la Luz",
     "category": "iglesia",
     "coordinates": [
-      -98.1912,
-      19.0446
+      -98.191565,
+      19.044787
     ],
     "hours": {
       "open": "08:30",
@@ -761,8 +761,8 @@
     "name": "Mercado El Alto (Plaza de las Cocinas y Garibaldi Poblano)",
     "category": "gastronomia",
     "coordinates": [
-      -98.1916,
-      19.0468
+      -98.191661,
+      19.046708
     ],
     "hours": {
       "open": "08:00",
@@ -840,8 +840,8 @@
     "name": "Manantial y Lavaderos Historicos de Almoloya",
     "category": "historico",
     "coordinates": [
-      -98.1928,
-      19.0457
+      -98.192911,
+      19.045504
     ],
     "hours": {
       "open": "09:00",
@@ -917,8 +917,8 @@
     "name": "Proyecto Ciudad Mural Xanenetla",
     "category": "espacio_publico",
     "coordinates": [
-      -98.1901,
-      19.0492
+      -98.190107,
+      19.049188
     ],
     "hours": {
       "open": "08:00",
@@ -996,8 +996,8 @@
     "name": "Cocina y Antojeria Familiar de Barrio Xanenetla",
     "category": "comercio_local",
     "coordinates": [
-      -98.1908,
-      19.0485
+      -98.190692,
+      19.048444
     ],
     "hours": {
       "open": "11:00",
@@ -1088,8 +1088,8 @@
     "name": "Mercado de Artesanias El Parian",
     "category": "artesania",
     "coordinates": [
-      -98.1942,
-      19.0442
+      -98.194214,
+      19.044176
     ],
     "hours": {
       "open": "10:00",
@@ -1175,8 +1175,8 @@
     "name": "Calle de los Dulces Tipicos de Santa Clara",
     "category": "gastronomia",
     "coordinates": [
-      -98.1968,
-      19.0451
+      -98.196629,
+      19.045397
     ],
     "hours": {
       "open": "09:30",
@@ -1268,8 +1268,8 @@
     "name": "Museo Casa del Alfenique",
     "category": "museo",
     "coordinates": [
-      -98.1949,
-      19.0445
+      -98.194898,
+      19.044503
     ],
     "hours": {
       "open": "10:00",
@@ -1351,8 +1351,8 @@
     "name": "Puente de Bubas y Pasaje Historico Subterraneo",
     "category": "historico",
     "coordinates": [
-      -98.1924,
-      19.0429
+      -98.192352,
+      19.042891
     ],
     "hours": {
       "open": "10:00",
@@ -1434,8 +1434,8 @@
     "name": "Museo Universitario Casa de los Munecos",
     "category": "museo",
     "coordinates": [
-      -98.1972,
-      19.0439
+      -98.197072,
+      19.043829
     ],
     "hours": {
       "open": "10:00",
@@ -1517,8 +1517,8 @@
     "name": "Taller de Vidrio Soplado y Vitrales Analco",
     "category": "artesania",
     "coordinates": [
-      -98.1922,
-      19.0406
+      -98.192375,
+      19.040264
     ],
     "hours": {
       "open": "10:00",
@@ -1610,8 +1610,8 @@
     "name": "Horno Tradicional de Pan de Agua y Cemitas Analco",
     "category": "gastronomia",
     "coordinates": [
-      -98.1912,
-      19.0421
+      -98.191174,
+      19.042148
     ],
     "hours": {
       "open": "08:30",
@@ -1702,8 +1702,8 @@
     "name": "Templo Conventual de las Llagas de San Francisco",
     "category": "iglesia",
     "coordinates": [
-      -98.1895,
-      19.0449
+      -98.189451,
+      19.045207
     ],
     "hours": {
       "open": "08:00",
@@ -1785,8 +1785,8 @@
     "name": "Taller de Cazuelas de Mole del Barrio de La Luz",
     "category": "artesania",
     "coordinates": [
-      -98.1882,
-      19.0426
+      -98.188168,
+      19.042445
     ],
     "hours": {
       "open": "09:30",
@@ -1878,8 +1878,8 @@
     "name": "Mirador de las Cupulas y Plaza de Xanenetla",
     "category": "espacio_publico",
     "coordinates": [
-      -98.1894,
-      19.0504
+      -98.189402,
+      19.050398
     ],
     "hours": {
       "open": "07:00",
@@ -1961,8 +1961,8 @@
     "name": "Plaza y Barrio del Artista",
     "category": "plaza_historica",
     "coordinates": [
-      -98.1945,
-      19.0435
+      -98.194589,
+      19.043349
     ],
     "hours": {
       "open": "10:00",
@@ -2053,8 +2053,8 @@
     "name": "Callejon de los Sapos y Plazuela de Antiguedades",
     "category": "plaza_historica",
     "coordinates": [
-      -98.1965,
-      19.0405
+      -98.196555,
+      19.040596
     ],
     "hours": {
       "open": "10:00",
@@ -2145,8 +2145,8 @@
     "name": "Teatro Principal de Puebla",
     "category": "teatro_historico",
     "coordinates": [
-      -98.194,
-      19.0448
+      -98.193892,
+      19.044989
     ],
     "hours": {
       "open": "10:00",
@@ -2228,8 +2228,8 @@
     "name": "San Pedro Museo de Arte (Antiguo Hospital Real)",
     "category": "museo",
     "coordinates": [
-      -98.1952,
-      19.044
+      -98.19504,
+      19.043917
     ],
     "hours": {
       "open": "10:00",
@@ -2311,8 +2311,8 @@
     "name": "Museo de Arte Religioso Ex-Convento de Santa Monica",
     "category": "museo_convento",
     "coordinates": [
-      -98.1989,
-      19.049
+      -98.199097,
+      19.048665
     ],
     "hours": {
       "open": "10:00",
@@ -2394,8 +2394,8 @@
     "name": "Parroquia y Plazuela de San Jose",
     "category": "iglesia",
     "coordinates": [
-      -98.195,
-      19.0485
+      -98.194992,
+      19.048514
     ],
     "hours": {
       "open": "08:00",
@@ -2477,8 +2477,8 @@
     "name": "Fuente de San Miguel Arcangel (Zocalo)",
     "category": "monumento",
     "coordinates": [
-      -98.1978,
-      19.0433
+      -98.197779,
+      19.043314
     ],
     "hours": {
       "open": "00:00",
@@ -2560,8 +2560,8 @@
     "name": "Antiguo Meson y Hospital de San Roque",
     "category": "edificio_historico",
     "coordinates": [
-      -98.1955,
-      19.0455
+      -98.195363,
+      19.04574
     ],
     "hours": {
       "open": "09:00",
@@ -2643,8 +2643,8 @@
     "name": "Taller Tradicional de Hojalata y Faroles de Analco",
     "category": "taller_artesanal",
     "coordinates": [
-      -98.1925,
-      19.0418
+      -98.19263,
+      19.041618
     ],
     "hours": {
       "open": "10:00",
@@ -2734,8 +2734,8 @@
     "name": "Panaderia Tradicional de Horno de Boveda Xanenetla",
     "category": "gastronomia_local",
     "coordinates": [
-      -98.1932,
-      19.0475
+      -98.193157,
+      19.047576
     ],
     "hours": {
       "open": "08:00",

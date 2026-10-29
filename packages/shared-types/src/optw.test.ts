@@ -103,4 +103,34 @@ describe('OPTW Heuristic & Scoring', () => {
     expect(solution.explanation.es).toContain('verificacion presencial');
     expect(solution.main_route.stops[0].score_breakdown).toBeDefined();
   });
+
+  it('genera rutas multiparada con geometria continua sobre banquetas incluso en recorridos cortos (45-90 min)', () => {
+    const validVerts = new Set<string>();
+    for (const edge of graph.edges) {
+      for (const [lon, lat] of edge.geometry.coordinates) {
+        validVerts.add(`${lon.toFixed(6)},${lat.toFixed(6)}`);
+      }
+    }
+
+    for (const maxTime of [45, 60, 90]) {
+      const req: RouteRequest = {
+        profile: 'sin_restriccion',
+        max_time_min: maxTime,
+        max_budget_mxn: 150,
+        interests: ['alfareria', 'talavera', 'artesanias', 'vidrio'],
+        language: 'es',
+        start_poi_id: 'poi_catedral',
+        balance_local_pct: 85
+      };
+
+      const sol = solveOPTW(req, pois, matrices, graph);
+      expect(sol.main_route.stops.length).toBeGreaterThanOrEqual(3);
+      expect(sol.main_route.metrics.total_time_min).toBeLessThanOrEqual(maxTime);
+      expect(sol.main_route.geometry.coordinates.length).toBeGreaterThanOrEqual(4);
+
+      for (const [lon, lat] of sol.main_route.geometry.coordinates) {
+        expect(validVerts.has(`${lon.toFixed(6)},${lat.toFixed(6)}`)).toBe(true);
+      }
+    }
+  });
 });

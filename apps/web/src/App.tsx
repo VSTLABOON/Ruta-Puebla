@@ -120,7 +120,7 @@ function MainApp() {
   } | null>(null);
 
   // Ubicación del usuario en el mapa (por defecto: Zócalo de Puebla)
-  const [userLocation, setUserLocation] = useState<[number, number]>([-98.198, 19.0431]);
+  const [userLocation, setUserLocation] = useState<[number, number]>([-98.19808, 19.04318]);
 
   // Datos
   const [pois, setPois] = useState<POI[]>([]);
@@ -195,10 +195,10 @@ function MainApp() {
       try {
         const fetchOpts: RequestInit = { cache: 'no-store' };
         const [poisRes, graphRes, matricesRes, weightsRes] = await Promise.all([
-          fetch('/data/pois.json?v=4', fetchOpts).then((r) => r.json()),
-          fetch('/data/sidewalk_graph.json?v=4', fetchOpts).then((r) => r.json()),
-          fetch('/data/time_matrices.json?v=4', fetchOpts).then((r) => r.json()),
-          fetch('/data/choice_model_weights.json?v=4', fetchOpts).then((r) => r.json())
+          fetch('/data/pois.json?v=5', fetchOpts).then((r) => r.json()),
+          fetch('/data/sidewalk_graph.json?v=5', fetchOpts).then((r) => r.json()),
+          fetch('/data/time_matrices.json?v=5', fetchOpts).then((r) => r.json()),
+          fetch('/data/choice_model_weights.json?v=5', fetchOpts).then((r) => r.json())
         ]);
 
         setPois(poisRes);

@@ -218,15 +218,7 @@ def generate_route(req: RouteRequestModel):
         used_segs.extend(prof_mat["path_segments"][last_idx][c_idx])
         remaining.pop(best_idx_in_rem)
 
-    # Segmento de retorno
-    if len(visited) > 1:
-        ret_last = visited[-1]
-        ret_min = prof_mat["time_minutes"][ret_last][start_idx]
-        ret_dist = prof_mat["distance_meters"][ret_last][start_idx]
-        curr_dist += ret_dist
-        walk_min_accum += ret_min
-        used_segs.extend(prof_mat["path_segments"][ret_last][start_idx])
-
+    # Recorrido abierto sin retorno cruzado (consistente con el optimizador OPTW del cliente)
     # Construccion de paradas
     stops_list: List[StopModel] = []
     t_cursor = 600
@@ -248,7 +240,7 @@ def generate_route(req: RouteRequestModel):
             poi=poi_item
         ))
 
-    # Construcción de polilínea continua y ortogonal
+    # Construcción de polilínea continua sobre la red peatonal de banquetas (cero cruces por edificaciones)
     route_coords: List[List[float]] = []
     def push_coord(c: List[float]):
         if not route_coords:
@@ -257,11 +249,6 @@ def generate_route(req: RouteRequestModel):
         last = route_coords[-1]
         if abs(last[0] - c[0]) > 1e-6 or abs(last[1] - c[1]) > 1e-6:
             route_coords.append(c)
-
-    def push_damero(c_from: List[float], c_to: List[float]):
-        if abs(c_from[0] - c_to[0]) > 0.00006 and abs(c_from[1] - c_to[1]) > 0.00006:
-            push_coord([c_to[0], c_from[1]])
-        push_coord(c_to)
 
     curr_pos = start_poi["coordinates"]
     push_coord(curr_pos)
@@ -274,15 +261,9 @@ def generate_route(req: RouteRequestModel):
                 d_first = (curr_pos[0] - raw[0][0])**2 + (curr_pos[1] - raw[0][1])**2
                 d_last = (curr_pos[0] - raw[-1][0])**2 + (curr_pos[1] - raw[-1][1])**2
                 oriented = list(reversed(raw)) if d_last < d_first else raw
-                if (curr_pos[0] - oriented[0][0])**2 + (curr_pos[1] - oriented[0][1])**2 > 1e-8:
-                    push_damero(curr_pos, oriented[0])
                 for pt in oriented:
                     push_coord(pt)
                 curr_pos = route_coords[-1]
-
-    if len(route_coords) < 2 and len(visited) > 1:
-        for idx_p in visited[1:]:
-            push_damero(route_coords[-1], pois_data[idx_p]["coordinates"])
 
     unique_segs = list(set(used_segs))
     tot_len = sum(edge_map[s]["length_m"] for s in unique_segs if s in edge_map)

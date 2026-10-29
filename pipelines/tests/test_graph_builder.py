@@ -95,3 +95,24 @@ def test_triangle_inequality_on_reachable_nodes(processed_data):
                     assert d_ik <= d_ij + d_jk + epsilon, (
                         f"Violacion de desigualdad triangular: d({i},{k})={d_ik} > d({i},{j})={d_ij} + d({j},{k})={d_jk}"
                     )
+
+def test_sidewalk_nodes_and_edges_topological_alignment(processed_data):
+    graph = processed_data["graph"]
+    pois = processed_data["pois"]
+    nodes = graph["nodes"]
+    node_coords = {tuple(nd["coordinates"]) for nd in nodes.values()}
+
+    for p in pois:
+        assert tuple(p["coordinates"]) in node_coords, (
+            f"POI {p['id']} no coincide con un nodo de banqueta peatonal del grafo"
+        )
+
+    for e in graph["edges"]:
+        coords = e["geometry"]["coordinates"]
+        assert len(coords) >= 2, f"Arista {e['id']} tiene menos de 2 vertices"
+        assert coords[0] == nodes[e["from_node"]]["coordinates"], (
+            f"Inicio de arista {e['id']} no coincide con nodo {e['from_node']}"
+        )
+        assert coords[-1] == nodes[e["to_node"]]["coordinates"], (
+            f"Fin de arista {e['id']} no coincide con nodo {e['to_node']}"
+        )

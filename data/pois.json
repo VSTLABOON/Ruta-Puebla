@@ -4,8 +4,8 @@
     "name": "Catedral Basilica de Nuestra Senora de la Inmaculada Concepcion",
     "category": "iglesia",
     "coordinates": [
-      -98.1983,
-      19.0428
+      -98.19808,
+      19.04318
     ],
     "hours": {
       "open": "09:00",
@@ -30,8 +30,8 @@
       "monumento"
     ],
     "description": {
-      "es": "Catedral virreinal del siglo XVII con las torres mas altas de Mexico y altar de los Reyes de Manuel Tolsa.",
-      "en": "17th century viceregal cathedral featuring the tallest church towers in Mexico and the Kings altar by Manuel Tolsa."
+      "es": "Joya cumbre del barroco herreriano y neoclasico novohispano, consagrada en 1649 por el obispo Juan de Palafox y Mendoza. Sus torres gemelas de 70 metros son las mas altas de las catedrales coloniales de America Latina, custodiando el cipres neoclasico de Manuel Tolsa, dos organos monumentales del siglo XVIII y la sillería del coro tallada en maderas preciosas.",
+      "en": "Masterpiece of Herrerian Baroque and Neoclassical Viceregal architecture consecrated in 1649 by Bishop Juan de Palafox y Mendoza. Its 70-meter twin towers are the tallest among colonial cathedrals in Latin America, housing Manuel Tolsa’s Neoclassical main altar and 18th-century monumental pipe organs."
     },
     "address": "Calle 16 de Septiembre s/n, Centro Historico",
     "secret_to_unlock": {
@@ -71,15 +71,24 @@
         "testimonio": "Escuchar el repique de las campanas a mediodia frente al zocalo es un momento inolvidable.",
         "perfil": "sin_restriccion"
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI–XVII (1575–1649)",
+      "estilo_arquitectonico": "Renacentista Herreriano, Barroco Novohispano y Neoclásico",
+      "patrimonio_inmaterial": "Toque manual de campanas históricas, archivo musical virreinal y procesión de Corpus Christi",
+      "dato_curioso": "La torre norte (1678) es la única que alberga campanas, incluyendo la legendaria \"Campana María\" de más de 8 toneladas; la torre sur se edificó medio siglo después (1731).",
+      "citas_documentales": "Declaratoria Patrimonio Mundial UNESCO (1987) • Catálogo Nacional de Monumentos Históricos INAH"
+    },
+    "image_url": "/images/pois/poi_catedral.svg",
+    "image_caption": "Catedral Basilica de Nuestra Senora de la Inmaculada Concepcion — Siglo XVI–XVII (1575–1649) (Renacentista Herreriano, Barroco Novohispano y Neoclásico)"
   },
   {
     "id": "poi_palafoxiana",
     "name": "Biblioteca Palafoxiana",
     "category": "museo",
     "coordinates": [
-      -98.1991,
-      19.0424
+      -98.19897,
+      19.042629
     ],
     "hours": {
       "open": "10:00",
@@ -104,8 +113,8 @@
       "unesco"
     ],
     "description": {
-      "es": "Primera biblioteca publica de America, fundada en 1646 por el obispo Juan de Palafox y Mendoza, inscrita en Memoria del Mundo de la UNESCO.",
-      "en": "First public library in the Americas, founded in 1646 by Bishop Juan de Palafox y Mendoza, registered in UNESCO Memory of the World."
+      "es": "Fundada el 5 de septiembre de 1646 tras la donacion de 5,000 volumenes del obispo Juan de Palafox y Mendoza, es reconocida por la UNESCO como la primera biblioteca publica de todo el continente americano. Su nave abovedada resguarda 45,059 volumenes antiguos, 9 incunables del siglo XV y tres niveles de estanteria barroca en cedro, ayacahuite y coloyote.",
+      "en": "Founded on September 5, 1646 when Bishop Juan de Palafox y Mendoza donated 5,000 volumes for universal public access, recognized by UNESCO as the first public library in the Americas. Its vaulted hall preserves 45,059 antique books and 9 15th-century incunabula in three-tier cedar bookcases."
     },
     "address": "Av. 5 Oriente 5, Centro Historico",
     "secret_to_unlock": {
@@ -137,15 +146,24 @@
         "testimonio": "El aroma a papel antiguo y madera de cedro se conserva intacto. Cuenta con rampa de acceso desde el patio central de Casa de la Cultura.",
         "perfil": "movilidad_reducida"
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII (1646)",
+      "estilo_arquitectonico": "Barroco Poblano en ebanistería de cedro, ayacahuite y retablo dorado",
+      "patrimonio_inmaterial": "Memoria del Mundo por la UNESCO (2005) y tradición bibliográfica humanista novohispana",
+      "dato_curioso": "Sus estanterías de cedro rojo emiten un aroma natural que durante casi 400 años ha repelido polillas y xilófagos, conservando intactos pergaminos y papel de trapo.",
+      "citas_documentales": "Registro Memoria del Mundo UNESCO (2005) • Fondo Antiguo Biblioteca Palafoxiana"
+    },
+    "image_url": "/images/pois/poi_palafoxiana.svg",
+    "image_caption": "Biblioteca Palafoxiana — Siglo XVII (1646) (Barroco Poblano en ebanistería de cedro, ayacahuite y retablo dorado)"
   },
   {
     "id": "poi_amparo",
     "name": "Museo Amparo",
     "category": "museo",
     "coordinates": [
-      -98.1998,
-      19.0416
+      -98.200173,
+      19.041799
     ],
     "hours": {
       "open": "10:00",
@@ -170,8 +188,8 @@
       "terraza"
     ],
     "description": {
-      "es": "Museo de arte prehispanico, virreinal y contemporaneo con terraza panoramica hacia las cupulas de la ciudad.",
-      "en": "Pre-Hispanic, viceregal, and contemporary art museum with a scenic rooftop terrace looking over city domes."
+      "es": "Instalado en el antiguo Hospital Real de San Juan de Letran (1538), el Museo Amparo articula dos solares virreinales con museografia contemporanea diseñada por Ten Arquitectos. Reune una de las colecciones de arte mesoamericano, virreinal y contemporaneo mas importantes de Mexico, coronado por una terraza panoramica con vista de 360 grados a las cupulas de Puebla.",
+      "en": "Housed in the former Royal Hospital of San Juan de Letran (1538), the Amparo Museum bridges two colonial buildings with contemporary museum architecture. It holds one of Mexico’s premier collections of Pre-Hispanic, Viceregal, and modern art, topped by a 360-degree rooftop terrace."
     },
     "address": "Calle 2 Sur 708, Centro Historico",
     "secret_to_unlock": {
@@ -197,15 +215,24 @@
         "testimonio": "Excelente accesibilidad para carriolas y sillas de ruedas; elevadores amplios en todas las salas.",
         "perfil": "movilidad_reducida"
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI (Inmueble 1538) / Museo (1991)",
+      "estilo_arquitectonico": "Arquitectura Civil Virreinal intervenida con Minimalismo Contemporáneo",
+      "patrimonio_inmaterial": "Curaduría de arte prehispánico, laca novohispana y diálogo artístico contemporáneo",
+      "dato_curioso": "El edificio funcionó primero como hospital para mujeres y niños en el siglo XVI y posteriormente como el primer colegio para niñas de la ciudad bajo el impulso de Palafox.",
+      "citas_documentales": "Fundación Amparo (1991) • Catálogo de Monumentos Históricos INAH Puebla"
+    },
+    "image_url": "/images/pois/poi_amparo.svg",
+    "image_caption": "Museo Amparo — Siglo XVI (Inmueble 1538) / Museo (1991) (Arquitectura Civil Virreinal intervenida con Minimalismo Contemporáneo)"
   },
   {
     "id": "poi_capilla_rosario",
     "name": "Capilla del Rosario (Templo de Santo Domingo)",
     "category": "iglesia",
     "coordinates": [
-      -98.1993,
-      19.0453
+      -98.19908,
+      19.045677
     ],
     "hours": {
       "open": "09:30",
@@ -230,8 +257,8 @@
       "patrimonio"
     ],
     "description": {
-      "es": "Obra cumbre del barroco novohispano del siglo XVII revestida con lamina de oro de 24 quilates y yeseria.",
-      "en": "Masterpiece of 17th-century New Spanish baroque decorated with 24-karat gold leaf and intricate plasterwork."
+      "es": "Consagrada en 1690 dentro del Templo de Santo Domingo y aclamada desde su epoca como \"La Octava Maravilla del Nuevo Mundo\". Es el pinaculo del barroco estípite y yeseria sobredorada en lamina de oro de 24 quilates, donde cada relieve simboliza las letanias lauretanas, las virtudes teologales y un coro celestial de 60 angeles musicos en la boveda.",
+      "en": "Consecrated in 1690 inside the Church of Santo Domingo and celebrated since colonial times as the \"Eighth Wonder of the New World.\" It is the pinnacle of gilded Baroque plasterwork covered in 24-karat gold leaf, featuring 60 musical angels around its celestial dome."
     },
     "address": "Calle 5 de Mayo y 4 Poniente, Centro Historico",
     "secret_to_unlock": {
@@ -257,15 +284,24 @@
         "testimonio": "El resplandor dorado es inigualable en todo el continente americano.",
         "perfil": "sin_restriccion"
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII (1650–1690)",
+      "estilo_arquitectonico": "Barroco Exuberante Poblano con yesería sobredorada y zoclo de Talavera",
+      "patrimonio_inmaterial": "Iconografía teológica dominica, música sacra barroca y maestría en estuco dorado",
+      "dato_curioso": "El coro de 60 ángeles esculpidos alrededor del tambor de la cúpula sostiene instrumentos musicales reales del siglo XVII (vihuelas, arpas, bajones y chirimías) dispuestos como una orquesta sinfónica celestial.",
+      "citas_documentales": "Crónica de Fray Diego de Gorozpe (1690) • Archivo Histórico de la Orden de Predicadores"
+    },
+    "image_url": "/images/pois/poi_capilla_rosario.svg",
+    "image_caption": "Capilla del Rosario (Templo de Santo Domingo) — Siglo XVII (1650–1690) (Barroco Exuberante Poblano con yesería sobredorada y zoclo de Talavera)"
   },
   {
     "id": "poi_sapo_antiguedades",
     "name": "Bazar los Sapos y Talleres Tradicionales",
     "category": "artesania",
     "coordinates": [
-      -98.1963,
-      19.0411
+      -98.196242,
+      19.041193
     ],
     "hours": {
       "open": "10:30",
@@ -290,8 +326,8 @@
       "callejon"
     ],
     "description": {
-      "es": "Plazuela y callejon tradicional con anticuarios, librerias de viejo y cafeterias de barrio en fincas coloniales.",
-      "en": "Traditional alleyway and square with antique dealers, second-hand books, and neighborhood cafes in colonial estates."
+      "es": "Corazon bohemio y anticuario de la Calle 6 Sur, antiguamente bordeado por la ribera del Rio San Francisco donde se instalaban los molinos virreinales. Sus casonas de fachadas coloridas con balcones de hierro forjado albergan talleres de ebanisteria, restauracion de arte sacro, numismatica y el tradicional tianguis cultural de fin de semana.",
+      "en": "Bohemian and antique heart along 6 Sur Street, once bordering the San Francisco River where colonial mills stood. Its colorful mansions with wrought-iron balconies host fine woodworking studios, sacred art restoration, and the iconic weekend antique bazaar."
     },
     "address": "Calle 6 Sur y 5 Oriente, Los Sapos",
     "secret_to_unlock": {
@@ -327,15 +363,24 @@
       "horario_demostracion": "Sabados y Domingos 12:00 a 14:00",
       "tecnica_ancestral": "Restauracion tradicional en madera de cedro y nogal novohispano",
       "sello_artesanal": "Sello Los Sapos 1968"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII–XVIII",
+      "estilo_arquitectonico": "Arquitectura Doméstica Virreinal con portadas de cantera y balconería de forja",
+      "patrimonio_inmaterial": "Oficio de anticuarios, ebanistería de rescate, trova poblana y gastronomía de pasaje",
+      "dato_curioso": "Recibe su nombre porque durante la época colonial las crecidas del cercano Río San Francisco inundaban la plazuela, dejando charcas donde proliferaban cientos de sapos.",
+      "citas_documentales": "Las Calles de Puebla, Hugo Leicht (1934) • Padrón Cultural DENUE INEGI"
+    },
+    "image_url": "/images/pois/poi_sapo_antiguedades.svg",
+    "image_caption": "Bazar los Sapos y Talleres Tradicionales — Siglo XVII–XVIII (Arquitectura Doméstica Virreinal con portadas de cantera y balconería de forja)"
   },
   {
     "id": "poi_parque_analco",
     "name": "Parque y Tianguis Artesanal de Analco",
     "category": "espacio_publico",
     "coordinates": [
-      -98.1925,
-      19.0418
+      -98.192571,
+      19.041819
     ],
     "hours": {
       "open": "09:00",
@@ -360,8 +405,8 @@
       "barrio_tradicional"
     ],
     "description": {
-      "es": "Plaza historica del barrio indigena de Analco fundada en el siglo XVI, sede de productores artesanales y dulceria poblana.",
-      "en": "Historic square of the 16th-century indigenous quarter of Analco, home to traditional craft producers and regional confectionery."
+      "es": "Plaza fundacional de uno de los barrios indigenas mas antiguos de Puebla (establecido hacia 1531 por tlaxcaltecas y mixtecos que edificaron la traza española). Su nombre nahuatl \"Atl-nal-co\" significa \"Al otro lado del rio\". Cada fin de semana despliega un corredor vivo de artesanos de vidrio soplado, barro policromado, pan de cazuela y tamales tradicionales.",
+      "en": "Foundational plaza of one of Puebla’s oldest indigenous neighborhoods, settled around 1531 by Tlaxcalan and Mixtec builders. Its Nahuatl name \"Analco\" means \"On the other side of the river.\" Every weekend it hosts a vibrant market of blown glass, clay crafts, and traditional cuisine."
     },
     "address": "Calle 10 Sur y 3 Oriente, Barrio de Analco",
     "secret_to_unlock": {
@@ -387,15 +432,24 @@
         "testimonio": "Llevo 42 anos vendiendo camotes y borrachitos en Analco; aqui el dulce poblano se elabora en cazo de cobre.",
         "perfil": "sin_restriccion"
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI (1531–1560)",
+      "estilo_arquitectonico": "Traza de Barrio Indígena Virreinal con fuente colonial de cantera",
+      "patrimonio_inmaterial": "Tianguis dominical de oficios ancestrales, panadería en horno de leña y herbolaria tradicional",
+      "dato_curioso": "En el centro de la plazuela se conserva una fuente colonial de piedra de cantera que abastecía de agua potable a las familias indígenas antes de que existieran tuberías domésticas.",
+      "citas_documentales": "Códices y Crónicas del Barrio de Analco • Gerencia del Centro Histórico de Puebla"
+    },
+    "image_url": "/images/pois/poi_parque_analco.svg",
+    "image_caption": "Parque y Tianguis Artesanal de Analco — Siglo XVI (1531–1560) (Traza de Barrio Indígena Virreinal con fuente colonial de cantera)"
   },
   {
     "id": "poi_templo_analco",
     "name": "Templo del Santo Angel Custodio de Analco",
     "category": "iglesia",
     "coordinates": [
-      -98.1918,
-      19.0415
+      -98.191624,
+      19.041791
     ],
     "hours": {
       "open": "08:00",
@@ -418,8 +472,8 @@
       "siglo_xvi"
     ],
     "description": {
-      "es": "Parroquia virreinal representativa del asentamiento indigena de Analco al oriente del rio San Francisco.",
-      "en": "Viceregal parish representative of the indigenous Analco settlement east of the San Francisco river."
+      "es": "Edificado por manos indigenas en el siglo XVII bajo la direccion franciscana y secularizado en 1640 por Palafox. Dedicado al Santo Angel Custodio, su atrio amurallado con almenas invertidas y su fachada de cantera gris custodian una imagen patronal de 1627 y la famosa escultura del Arcangel San Miguel venciendo al demonio en la esquina atrial.",
+      "en": "Built by indigenous craftsmen in the 17th century and dedicated to the Guardian Angel. Its walled atrium with inverted battlements and gray stone facade guard a 1627 patron sculpture and the famous stone statue of Archangel Michael on its corner."
     },
     "address": "Calle 7 Oriente 1202, Barrio de Analco",
     "secret_to_unlock": {
@@ -435,15 +489,42 @@
         "epoca": "Siglo XVII",
         "relato": "Mantuvo la custodia de la capilla y sus campanas con limosnas de las panaderias de trigo."
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI–XVII (Ermita 1560 / Templo 1618)",
+      "estilo_arquitectonico": "Barroco Sobrio Indígena-Poblano en cantera gris y argamasa",
+      "patrimonio_inmaterial": "Fiesta patronal del Santo Ángel Custodio (2 de octubre) y danzas tradicionales de barrio",
+      "dato_curioso": "En su torre se fundió en 1632 una de las campanas más antiguas de los barrios indígenas, cuyo sonido marcaba el toque de queda para cruzar el puente sobre el Río San Francisco.",
+      "citas_documentales": "Archivo Parroquial del Santo Ángel de Analco • Catálogo INAH"
+    },
+    "community_memories": [
+      {
+        "id": "mem_poi_templo_analco_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Templo del Santo Angel Custodio de Analco conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_templo_analco_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_templo_analco.svg",
+    "image_caption": "Templo del Santo Angel Custodio de Analco — Siglo XVI–XVII (Ermita 1560 / Templo 1618) (Barroco Sobrio Indígena-Poblano en cantera gris y argamasa)"
   },
   {
     "id": "poi_taller_talavera_analco",
     "name": "Taller Familiar de Ceramica y Talavera Analco",
     "category": "comercio_local",
     "coordinates": [
-      -98.1931,
-      19.0425
+      -98.193069,
+      19.042554
     ],
     "hours": {
       "open": "10:00",
@@ -468,8 +549,8 @@
       "taller"
     ],
     "description": {
-      "es": "Microtaller artesanal de elaboracion de ceramica con denominacion de origen Talavera de Puebla.",
-      "en": "Family-run micro-workshop making certified Puebla Talavera ceramic pottery."
+      "es": "Obrador familiar que preserva la tecnica hispano-morisca e indigena de la mayolica poblana introducida en el siglo XVI. Cada pieza se modela a mano sin moldes industriales, se cubre con esmalte estañifero blanco lechoso y se decora con pincel de pelo de mula usando seis pigmentos minerales naturales (cobalto, antimonio, cobre, hierro, manganeso y zacatle).",
+      "en": "Family workshop preserving the 16th-century Hispano-Moorish and indigenous technique of Puebla Talavera majolica. Each piece is hand-thrown, dipped in tin-lead white glaze, and painted with mule-hair brushes using six natural mineral pigments."
     },
     "address": "Calle 5 Oriente 1004, Barrio de Analco",
     "secret_to_unlock": {
@@ -505,15 +586,24 @@
       "horario_demostracion": "Lunes a Viernes 11:30 y 16:00",
       "tecnica_ancestral": "Doble horneado a 1,050 °C y uso exclusivo de oxidos minerales naturales",
       "sello_artesanal": "Talavera Analco D.O. 1924"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Tradición Gremial Siglo XVI (Ordenanzas de Loceros 1653)",
+      "estilo_arquitectonico": "Casa-taller de patio virreinal con tinas de decantación y horno de ladrillo",
+      "patrimonio_inmaterial": "Procesos artesanales de la Talavera de Puebla y Tlaxcala (Patrimonio Inmaterial UNESCO 2019)",
+      "dato_curioso": "Al golpear suavemente una pieza auténtica de Talavera con los nudillos, emite un timbre metálico cristalino único producto de su doble cocción a más de 1,050 °C.",
+      "citas_documentales": "Lista Representativa del Patrimonio Cultural Inmaterial UNESCO (2019) • Norma Oficial NOM-132-SCFI"
+    },
+    "image_url": "/images/pois/poi_taller_talavera_analco.svg",
+    "image_caption": "Taller Familiar de Ceramica y Talavera Analco — Tradición Gremial Siglo XVI (Ordenanzas de Loceros 1653) (Casa-taller de patio virreinal con tinas de decantación y horno de ladrillo)"
   },
   {
     "id": "poi_horno_la_luz",
     "name": "Alfareria Tradicional del Barrio de La Luz",
     "category": "artesania",
     "coordinates": [
-      -98.1905,
-      19.0441
+      -98.191353,
+      19.043051
     ],
     "hours": {
       "open": "09:00",
@@ -537,8 +627,8 @@
       "barrio_tradicional"
     ],
     "description": {
-      "es": "Unico complejo de hornos de lena arabes de barro vidriado y loza colorada en operacion continua desde el siglo XVIII.",
-      "en": "Sole historic complex of 18th-century wood-fired pottery kilns in continuous operation producing traditional red earthenware."
+      "es": "Santuario vivo de la alfareria poblana en el Barrio de La Luz, donde dinastias de maestros loceros modelan cazuelas moleras monumentales, sahumerios de Día de Muertos e incensarios de barro bruñido. Su horno comunal de tiro abierto, construido en ladrillo refractario del siglo XIX, alcanza temperaturas incandescentes alimentado con madera de encino.",
+      "en": "Living sanctuary of Puebla pottery in the Barrio de La Luz, where generations of master potters hand-shape monumental mole cazuelas and black clay incense burners fired in a historic 19th-century communal brick kiln."
     },
     "address": "Calle Juan de Palafox y Mendoza 1403, Barrio de La Luz",
     "secret_to_unlock": {
@@ -574,15 +664,24 @@
       "horario_demostracion": "Diario 10:30 a 13:00",
       "tecnica_ancestral": "Horno de lena de tipologia arabe con camara subterranea y vidriado libre de plomo",
       "sello_artesanal": "Alfareria La Luz - Siglo XVIII"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII–XIX",
+      "estilo_arquitectonico": "Arquitectura vernácula industrial de hornos abovedados de adobe y ladrillo cocido",
+      "patrimonio_inmaterial": "Alfarería de barro bruñido, vidriado libre de plomo y elaboración de sahumerios rituales",
+      "dato_curioso": "Las grandes cazuelas de barro donde se cocina el Mole Poblano para fiestas de 200 personas tardan hasta tres semanas en secarse a la sombra antes de entrar al fuego para no estallar.",
+      "citas_documentales": "Memoria de Loceros del Barrio de La Luz • Directorio Artesanal SECIHTI / DENUE"
+    },
+    "image_url": "/images/pois/poi_horno_la_luz.svg",
+    "image_caption": "Alfareria Tradicional del Barrio de La Luz — Siglo XVIII–XIX (Arquitectura vernácula industrial de hornos abovedados de adobe y ladrillo cocido)"
   },
   {
     "id": "poi_templo_la_luz",
     "name": "Templo de Nuestra Senora de la Luz",
     "category": "iglesia",
     "coordinates": [
-      -98.1912,
-      19.0446
+      -98.191565,
+      19.044787
     ],
     "hours": {
       "open": "08:30",
@@ -605,8 +704,8 @@
       "barrio_tradicional"
     ],
     "description": {
-      "es": "Iglesia de barrio del siglo XVIII con fachada de argamasa y azulejo poblano, corazon historico de los alfareros.",
-      "en": "18th-century neighborhood church with plaster mortar and Puebla tile facade, the historic heart of the potters quarter."
+      "es": "Joya del barroco tardio edificada entre 1761 y 1805 por el gremio de alfareros y loceros del oriente de la ciudad. Su portada combina ladrillo rojo cortado en petatillo con paneles de azulejo de Talavera que narran pasajes marianos, mientras su interior conserva el camarin octagonal de la Virgen de la Luz y retablos neoclasicos dorados.",
+      "en": "Late Baroque gem built between 1761 and 1805 by the potters guild on the eastern edge of the historic center. Its facade blends red petatillo brickwork with Talavera tile panels and houses an octagonal camarín dedicated to Our Lady of Light."
     },
     "address": "Av. 2 Oriente y 14 Norte, Barrio de La Luz",
     "secret_to_unlock": {
@@ -614,15 +713,56 @@
       "descripcion": "Los propios alfareros de La Luz decoraron el frontispicio de su templo con azulejos rojos y amarillos simulando un petate de barro tejido.",
       "pista": "Examina la pared lateral sobre la calle Juan de Palafox y Mendoza.",
       "insignia_nombre": "Devoto de La Luz"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII (1761–1805)",
+      "estilo_arquitectonico": "Barroco Poblano de Ladrillo y Azulejo con Camarín Octagonal",
+      "patrimonio_inmaterial": "Fiesta de los alfareros en mayo con alfombras de aserrín y bendición de barro",
+      "dato_curioso": "Los propios maestros alfareros del barrio donaron los miles de ladrillos y azulejos vidriados de la fachada cocidos en sus hornos familiares como ofrenda gremial.",
+      "citas_documentales": "Archivo Histórico Diocesano de Puebla • Catálogo de Monumentos INAH"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Templo de Nuestra Senora de la Luz, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_templo_la_luz_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Templo de Nuestra Senora de la Luz conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_templo_la_luz_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_templo_la_luz.svg",
+    "image_caption": "Templo de Nuestra Senora de la Luz — Siglo XVIII (1761–1805) (Barroco Poblano de Ladrillo y Azulejo con Camarín Octagonal)"
   },
   {
     "id": "poi_mercado_el_alto",
     "name": "Mercado El Alto (Plaza de las Cocinas y Garibaldi Poblano)",
     "category": "gastronomia",
     "coordinates": [
-      -98.1916,
-      19.0468
+      -98.191661,
+      19.046708
     ],
     "hours": {
       "open": "08:00",
@@ -647,8 +787,8 @@
       "comercio_local"
     ],
     "description": {
-      "es": "Mercado gastronomico tradicional edificado en 1930 en el sitio fundacional de la ciudad, famoso por cemitas poblanas y musica vernacular.",
-      "en": "Traditional food market built in 1930 at the city founding site, renowned for authentic cemitas sandwiches and traditional music."
+      "es": "Epicentro gastronomico y musical ubicado en el solar fundacional de Puebla, donde en abril de 1531 se celebro la primera misa bajo una enramada en las laderas del cerro. Hoy el Mercado El Alto (construido en 1930 y famoso como \"Garibaldi Poblano\") congrega cocinas tradicionales de mole de olla, pipian verde, cemitas, chalupas y agrupaciones de mariachi.",
+      "en": "Culinary and musical epicenter standing near the foundational site where Puebla’s first Mass was held in April 1531. Today, Mercado El Alto brings together traditional kitchens serving mole, pipián, chalupas, and live mariachi music."
     },
     "address": "Calle 14 Norte 1208, Barrio de El Alto",
     "secret_to_unlock": {
@@ -684,15 +824,24 @@
       "horario_demostracion": "Diario 12:00 a 17:00",
       "tecnica_ancestral": "Coccion lenta en cazuela de barro de La Luz con manteca de cerdo y chocolate de tablilla",
       "sello_artesanal": "Cocina Tipica El Alto 1952"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Solar Fundacional 1531 / Mercado 1930",
+      "estilo_arquitectonico": "Arquitectura de Mercado Popular del Siglo XX en entorno barrial virreinal",
+      "patrimonio_inmaterial": "Cocina tradicional poblana de fogón de barro y tradición de mariachis de El Alto",
+      "dato_curioso": "En esta zona elevada se asentaron los primeros españoles en 1531 antes de trasladar la traza principal hacia el actual Zócalo para resguardarse de las avenidas de agua del cerro.",
+      "citas_documentales": "Historia de la Fundación de Puebla, Motolinía • Crónicas del Barrio de El Alto"
+    },
+    "image_url": "/images/pois/poi_mercado_el_alto.svg",
+    "image_caption": "Mercado El Alto (Plaza de las Cocinas y Garibaldi Poblano) — Solar Fundacional 1531 / Mercado 1930 (Arquitectura de Mercado Popular del Siglo XX en entorno barrial virreinal)"
   },
   {
     "id": "poi_casa_aguada",
     "name": "Manantial y Lavaderos Historicos de Almoloya",
     "category": "historico",
     "coordinates": [
-      -98.1928,
-      19.0457
+      -98.192911,
+      19.045504
     ],
     "hours": {
       "open": "09:00",
@@ -717,8 +866,8 @@
       "patrimonio"
     ],
     "description": {
-      "es": "Vestigios hidraulicos del manantial de Almoloya donde se celebro la primera misa de fundacion de la Puebla de los Angeles en 1531.",
-      "en": "Hydraulic heritage of the Almoloya spring where the first founding mass of Puebla de los Angeles was held in 1531."
+      "es": "Vestigio hidraulico virreinal donde brotaban los manantiales de aguas sulfurosas y dulces que dieron vida a los barrios de El Alto y San Francisco. Sus antiguos lavaderos publicos abovedados del siglo XVIII fueron punto de encuentro comunitario de las lavanderas poblanas y leyenda viva del nacimiento de la autentica chalupa poblana.",
+      "en": "Viceregal hydraulic site where natural springs fed the neighborhoods of El Alto and San Francisco. Its 18th-century vaulted communal washbasins were a social hub for local washerwomen and the legendary birthplace of Puebla’s chalupas."
     },
     "address": "Calle 10 Norte y 14 Oriente, Paseo de San Francisco",
     "secret_to_unlock": {
@@ -734,15 +883,42 @@
         "epoca": "Siglo XIX",
         "relato": "Utilizaban las 36 piletas de piedra como espacio de ayuda mutua e intercambio de cantos populares."
       }
-    ]
+    ],
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII (1705–1780)",
+      "estilo_arquitectonico": "Ingeniería Hidráulica Virreinal en piedra de cantera, bóveda y ladrillo",
+      "patrimonio_inmaterial": "Memoria oral de las lavanderas de Almoloya y origen culinario de la chalupa en manteca",
+      "dato_curioso": "Su nombre náhuatl \"Almoloya\" significa \"Lugar donde mana el agua\"; al pie de estos lavaderos los frailes franciscanos y vecinas freían tortillas en cazuelas dando origen a las chalupas.",
+      "citas_documentales": "Gerencia del Centro Histórico y Patrimonio Cultural • INAH Puebla"
+    },
+    "community_memories": [
+      {
+        "id": "mem_poi_casa_aguada_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Manantial y Lavaderos Historicos de Almoloya conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_casa_aguada_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_casa_aguada.svg",
+    "image_caption": "Manantial y Lavaderos Historicos de Almoloya — Siglo XVIII (1705–1780) (Ingeniería Hidráulica Virreinal en piedra de cantera, bóveda y ladrillo)"
   },
   {
     "id": "poi_ciudad_mural",
     "name": "Proyecto Ciudad Mural Xanenetla",
     "category": "espacio_publico",
     "coordinates": [
-      -98.1901,
-      19.0492
+      -98.190107,
+      19.049188
     ],
     "hours": {
       "open": "08:00",
@@ -767,8 +943,8 @@
       "barrio_tradicional"
     ],
     "description": {
-      "es": "Galeria comunitaria al aire libre con mas de 50 murales colectivos en las fachadas de un barrio de ladrilleros del siglo XVI.",
-      "en": "Community open-air art gallery featuring over 50 collective murals painted across a 16th-century brickmakers quarter."
+      "es": "Museo comunitario a cielo abierto en el historico Barrio de Xanenetla (del nahuatl \"Xalnene-tla\", lugar de piedra volcanica porosa o xalnene). Mas de 75 murales monumentales pintados en colaboracion entre artistas nacionales y las familias del barrio narran la historia de los ladrilleros, las leyendas del cerro de Loreto y la memoria obrera poblana.",
+      "en": "Open-air community museum in the historic Barrio de Xanenetla (\"place of volcanic xalnene stone\" in Nahuatl). Over 75 monumental murals created alongside local families tell the story of brickmakers, legends of Loreto hill, and working-class heritage."
     },
     "address": "Calle 4 Norte y 28 Oriente, Barrio de Xanenetla",
     "secret_to_unlock": {
@@ -804,15 +980,24 @@
       "horario_demostracion": "Sabados 11:00 a 13:00",
       "tecnica_ancestral": "Integracion de relatos orales de las familias del callejon en murales a gran escala",
       "sello_artesanal": "Xanenetla Ciudad Mural 2011"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Barrio Siglo XVI / Proyecto Mural (2010–Presente)",
+      "estilo_arquitectonico": "Casonas vernáculas de piedra xalnene y adobe intervenidas con Muralismo Contemporáneo",
+      "patrimonio_inmaterial": "Muralismo participativo comunitario, crónica oral vecinal y rescate del espacio público",
+      "dato_curioso": "De las canteras de este barrio se extrajo la piedra \"xalnene\" (toba volcánica ligera) con la que se rellenaron las bóvedas de casi todas las iglesias del Centro Histórico para aligerar su peso sísmico.",
+      "citas_documentales": "Colectivo Tomate & Vecinos de Xanenetla • Archivo Municipal de Puebla"
+    },
+    "image_url": "/images/pois/poi_ciudad_mural.svg",
+    "image_caption": "Proyecto Ciudad Mural Xanenetla — Barrio Siglo XVI / Proyecto Mural (2010–Presente) (Casonas vernáculas de piedra xalnene y adobe intervenidas con Muralismo Contemporáneo)"
   },
   {
     "id": "poi_antojeria_xanenetla",
     "name": "Cocina y Antojeria Familiar de Barrio Xanenetla",
     "category": "comercio_local",
     "coordinates": [
-      -98.1908,
-      19.0485
+      -98.190692,
+      19.048444
     ],
     "hours": {
       "open": "11:00",
@@ -836,8 +1021,8 @@
       "comercio_local"
     ],
     "description": {
-      "es": "Microcomercio familiar de preparacion de chalupas, molotes y antojitos tradicionales poblanos atendido por vecinas del barrio.",
-      "en": "Family micro-eatery preparing traditional Puebla chalupas and handmade regional snacks run by neighborhood residents."
+      "es": "Cocina de humo y comal de barro atendida por tres generaciones de cocineras tradicionales en el corazon de Xanenetla. Especializada en chalupas doradas en manteca con salsa verde y roja martajada en molcajete, molotes crujientes de tinga y requeson, y cafe de olla aromatizado con canela, piloncillo de la Sierra Norte y clavo.",
+      "en": "Three-generation family kitchen in the heart of Xanenetla using traditional clay griddles. Renowned for chalupas with stone-ground red and green salsas, crispy molotes filled with tinga and fresh cheese, and spiced café de olla."
     },
     "address": "Calle 2 Norte 2604, Barrio de Xanenetla",
     "secret_to_unlock": {
@@ -855,15 +1040,56 @@
       "horario_demostracion": "Viernes a Domingo 13:00 a 19:00",
       "tecnica_ancestral": "Salsa cocida en molcajete de piedra y fritura rapida en manteca sobre comal caliente",
       "sello_artesanal": "Chalupas Xanenetla 1974"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Tradición Familiar (1968)",
+      "estilo_arquitectonico": "Cocina tradicional de barrio con fogón de talavera y comal de barro curado con cal",
+      "patrimonio_inmaterial": "Gastronomía antojera poblana nocturna y molienda manual en metate y molcajete",
+      "dato_curioso": "El comal de barro se cura antes del primer uso con una mezcla de agua de cal y hojas de maíz para sellar sus poros y otorgar un sabor ahumado imposible de replicar en metal.",
+      "citas_documentales": "Recetario Patrimonial de los Barrios de Puebla • Censo DENUE INEGI"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Dona Beatriz Perez",
+        "rol": "Cocinera tradicional de chalupas y molotes",
+        "epoca": "Fundación 1974",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en barrio xanenetla."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Cocina y Antojeria Familiar de Barrio Xanenetla, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_antojeria_xanenetla_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Cocina y Antojeria Familiar de Barrio Xanenetla conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_antojeria_xanenetla_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_antojeria_xanenetla.svg",
+    "image_caption": "Cocina y Antojeria Familiar de Barrio Xanenetla — Tradición Familiar (1968) (Cocina tradicional de barrio con fogón de talavera y comal de barro curado con cal)"
   },
   {
     "id": "poi_mercado_parian",
     "name": "Mercado de Artesanias El Parian",
     "category": "artesania",
     "coordinates": [
-      -98.1942,
-      19.0442
+      -98.194214,
+      19.044176
     ],
     "hours": {
       "open": "10:00",
@@ -888,8 +1114,8 @@
       "comercio_local"
     ],
     "description": {
-      "es": "Primer mercado artesanal de Puebla levantado en 1801 sobre la antigua plazuela de San Roque, con 112 locales de talavera, palma, cobre y bordados.",
-      "en": "Puebla's historic craft market built in 1801, featuring 112 stalls with traditional Talavera pottery, copperware, and regional textiles."
+      "es": "Instalado sobre la antigua Plazuela de San Roque desde 1801 como punto de intercambio de las mercaderias que llegaban en la Nao de China (Galeon de Manila) desde Filipinas hacia Veracruz y la Ciudad de Mexico. Sus 112 locales de ladrillo y azulejo exhiben textiles bordados de Cuetzalan, papel amate de Pahuatlan, onix de Tecali y talavera.",
+      "en": "Established in 1801 on the former San Roque square as a trading post for goods arriving via the Manila Galleon route. Its 112 brick-and-tile stalls showcase embroidered textiles from Cuetzalan, amate bark paper, Tecali onyx, and Talavera."
     },
     "address": "Calle 6 Norte y 2 Oriente, Centro Historico",
     "secret_to_unlock": {
@@ -915,15 +1141,42 @@
       "horario_demostracion": "Todos los dias 11:00 a 18:00",
       "tecnica_ancestral": "Tejido en telar de cintura e hilos teñidos con grana cochinilla y añil",
       "sello_artesanal": "El Parian Tradicion 1801"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII–XIX (1796–1801)",
+      "estilo_arquitectonico": "Arquitectura Comercial Neoclásica y Poblana en ladrillo petatillo y talavera",
+      "patrimonio_inmaterial": "Comercio histórico de la Ruta del Galeón de Manila y artesanías de las 7 regiones de Puebla",
+      "dato_curioso": "La palabra \"Parián\" proviene del barrio de comerciantes chinos de Manila (Filipinas); de ahí llegó a Puebla la leyenda de Catarina de San Juan, la \"China Poblana\".",
+      "citas_documentales": "Archivo General de Indias • Las Calles de Puebla, Hugo Leicht"
+    },
+    "community_memories": [
+      {
+        "id": "mem_poi_mercado_parian_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Mercado de Artesanias El Parian conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_mercado_parian_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_mercado_parian.svg",
+    "image_caption": "Mercado de Artesanias El Parian — Siglo XVIII–XIX (1796–1801) (Arquitectura Comercial Neoclásica y Poblana en ladrillo petatillo y talavera)"
   },
   {
     "id": "poi_calle_dulces",
     "name": "Calle de los Dulces Tipicos de Santa Clara",
     "category": "gastronomia",
     "coordinates": [
-      -98.1968,
-      19.0451
+      -98.196629,
+      19.045397
     ],
     "hours": {
       "open": "09:30",
@@ -948,8 +1201,8 @@
       "comercio_local"
     ],
     "description": {
-      "es": "Corredor historico frente al antiguo Convento de Santa Clara donde las familias dulceras elaboran tortitas de Santa Clara, camotes, borrachitos y jamoncillos.",
-      "en": "Historic sweet street outside the former Santa Clara Convent where family confectioners craft pumpkin-seed cookies, sweet potato candies, and traditional treats."
+      "es": "En la antigua calle de Santa Clara (hoy Avenida 6 Oriente), frente al ex-convento de monjas clarisas fundado en 1607, las dulcerias centenarias elaboran mas de 300 variedades de confiteria conventual: tortitas de Santa Clara con pepita de calabaza, camotes enmielados, borrachitos, muéganos, jamoncillos de leche quemada y macarrones.",
+      "en": "Along historic Santa Clara Street (6 Oriente), facing the 1607 Poor Clares convent, century-old sweet shops craft over 300 varieties of convent confectionery: Santa Clara shortbread cookies topped with pumpkin seed glaze, candied sweet potatoes, and milk fudge."
     },
     "address": "Av. 6 Oriente entre 5 de Mayo y 4 Norte, Centro Historico",
     "secret_to_unlock": {
@@ -967,15 +1220,56 @@
       "horario_demostracion": "Lunes a Domingo 10:30 a 19:00",
       "tecnica_ancestral": "Punteo de jarabe en cazo de cobre martillado y molienda fina de semilla criolla",
       "sello_artesanal": "Confiteria Real Santa Clara"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII (Tradición Conventual Clarisas 1607)",
+      "estilo_arquitectonico": "Corredor de Casonas Virreinales con vitrinas de botica y dulcería decimonónica",
+      "patrimonio_inmaterial": "Repostería conventual novohispana en casos de cobre martillado",
+      "dato_curioso": "La receta original de la Tortita de Santa Clara combina manteca de cerdo, tequesquite (sal mineral prehispánica) y pasta de pepita de calabaza, uniendo ingredientes indígenas y españoles.",
+      "citas_documentales": "Recetarios del Convento de Santa Clara de Asís (Siglo XVII) • Patrimonio Gastronómico de Puebla"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Familia Ortiz Sarmiento",
+        "rol": "Dulceria conventual poblana en cazo de cobre",
+        "epoca": "Fundación 1892",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en zocalo centro nucleo."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Calle de los Dulces Tipicos de Santa Clara, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_calle_dulces_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Calle de los Dulces Tipicos de Santa Clara conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_calle_dulces_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_calle_dulces.svg",
+    "image_caption": "Calle de los Dulces Tipicos de Santa Clara — Siglo XVII (Tradición Conventual Clarisas 1607) (Corredor de Casonas Virreinales con vitrinas de botica y dulcería decimonónica)"
   },
   {
     "id": "poi_casa_alfenique",
     "name": "Museo Casa del Alfenique",
     "category": "museo",
     "coordinates": [
-      -98.1949,
-      19.0445
+      -98.194898,
+      19.044503
     ],
     "hours": {
       "open": "10:00",
@@ -1000,8 +1294,8 @@
       "patrimonio"
     ],
     "description": {
-      "es": "Joya de la arquitectura barroca poblana de 1790 cuya fachada está decorada con argamasa blanca que semeja el dulce de azucar llamado alfenique.",
-      "en": "1790 baroque architectural gem adorned with intricate white mortar scrollwork resembling traditional spun sugar candy."
+      "es": "Construida en 1790 por el maestro arquitecto Antonio de Santa Maria Inchaurregui para el maestro herrero Juan Ignacio Morales. Su fachada de tres niveles es el maximo exponente del barroco \"alfeñique\", llamada asi porque sus filigranas de argamasa blanca sobre ladrillo y azulejo recuerdan los encajes de azucar hilada de la confiteria poblana.",
+      "en": "Built in 1790 by master architect Antonio de Santa María Inchaurregui. Its three-story facade is the supreme example of \"Alfeñique\" Baroque, named because its intricate white mortar scrollwork over red brick resembles spun sugar."
     },
     "address": "Av. 4 Oriente 416, Centro Historico",
     "secret_to_unlock": {
@@ -1009,15 +1303,56 @@
       "descripcion": "El maestro Antonio de Santa Maria Inchaurregui encargo esta casona para su prometida; los artesanos moldearon la argamasa a mano como si fuera merengue real.",
       "pista": "Observa los doseles blancos que coronan los balcones de esquina.",
       "insignia_nombre": "Arquitecto del Alfeñique"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII (1790) / Primer Museo Regional (1926)",
+      "estilo_arquitectonico": "Barroco Tardío Poblano (Estilo Alfeñique) con dosel de argamasa y petatillo",
+      "patrimonio_inmaterial": "Maestría en yesería exterior, carruajes históricos y traje original de la China Poblana",
+      "dato_curioso": "La argamasa blanca de sus balcones se preparaba mezclando cal apagada, arena fina, baba de nopal y claras de huevo para resistir siglos de lluvias sin desprenderse.",
+      "citas_documentales": "Museo Regional Casa de Alfeñique (1926) • Catálogo Monumental INAH"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Museo Casa del Alfenique, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_casa_alfenique_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Museo Casa del Alfenique conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_casa_alfenique_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_casa_alfenique.svg",
+    "image_caption": "Museo Casa del Alfenique — Siglo XVIII (1790) / Primer Museo Regional (1926) (Barroco Tardío Poblano (Estilo Alfeñique) con dosel de argamasa y petatillo)"
   },
   {
     "id": "poi_puente_bubas",
     "name": "Puente de Bubas y Pasaje Historico Subterraneo",
     "category": "historico",
     "coordinates": [
-      -98.1924,
-      19.0429
+      -98.192352,
+      19.042891
     ],
     "hours": {
       "open": "10:00",
@@ -1042,8 +1377,8 @@
       "puente_colonial"
     ],
     "description": {
-      "es": "Antiguo puente virreinal de 1682 que cruzaba el rio San Francisco hacia Analco y permanecio oculto bajo el pavimento durante mas de medio siglo.",
-      "en": "1682 viceregal stone bridge that once spanned the San Francisco River toward Analco and remained buried underground for over half a century."
+      "es": "Puente virreinal edificado en 1682 con piedra de cantera y bóveda de ladrillo para cruzar el antiguo cauce del Rio San Francisco y comunicar el centro español con el Hospital de San Lazaro (donde se atendia a enfermos de \"bubas\"). Rescatado arqueologicamente en 2015, permite recorrer bajo tierra la estructura hidráulica original del siglo XVII.",
+      "en": "Viceregal bridge built in 1682 of stone and brick vaulting to cross the former San Francisco River toward the Hospital of San Lázaro. Archaeologically excavated in 2015, visitors can walk underground beneath its original 17th-century arches."
     },
     "address": "Av. 2 Oriente 1003, Esquina Blvd. 5 de Mayo, Analco",
     "secret_to_unlock": {
@@ -1051,15 +1386,56 @@
       "descripcion": "El puente conectaba la ciudad espanola con el Hospital de las Bubas en el barrio indigena de Analco antes de que el rio fuera entubado en 1964.",
       "pista": "Asomate al mirador de cristal a nivel de banqueta para ver los arcos de piedra sumergidos.",
       "insignia_nombre": "Explorador Subterráneo"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII (1682) / Rescate Subterráneo (2015)",
+      "estilo_arquitectonico": "Ingeniería de Puentes Virreinales de arco de medio punto y tajamares de piedra",
+      "patrimonio_inmaterial": "Arqueología urbana subterránea y memoria hidrográfica del Río San Francisco",
+      "dato_curioso": "Durante la pavimentación del Boulevard 5 de Mayo en 1964 el puente no fue demolido, sino sepultado intacto bajo el asfalto; permaneció oculto durante más de 50 años.",
+      "citas_documentales": "Proyecto Secretos de Puebla / INAH • Archivo General Municipal (1682)"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Puente de Bubas y Pasaje Historico Subterraneo, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_puente_bubas_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Puente de Bubas y Pasaje Historico Subterraneo conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_puente_bubas_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "Aunque es un inmueble virreinal con escalón en el umbral, el personal brinda apoyo inmediato y la visita vale totalmente la pena.",
+        "perfil": "movilidad_reducida"
+      }
+    ],
+    "image_url": "/images/pois/poi_puente_bubas.svg",
+    "image_caption": "Puente de Bubas y Pasaje Historico Subterraneo — Siglo XVII (1682) / Rescate Subterráneo (2015) (Ingeniería de Puentes Virreinales de arco de medio punto y tajamares de piedra)"
   },
   {
     "id": "poi_casa_munecos",
     "name": "Museo Universitario Casa de los Munecos",
     "category": "museo",
     "coordinates": [
-      -98.1972,
-      19.0439
+      -98.197072,
+      19.043829
     ],
     "hours": {
       "open": "10:00",
@@ -1084,8 +1460,8 @@
       "ciencia"
     ],
     "description": {
-      "es": "Casona del siglo XVIII famosa por sus dieciseis tableros de azulejo de talavera con figuras humanas grotescas que satirizan a los regidores de la epoca.",
-      "en": "18th-century mansion famous for its 16 life-size Talavera tile panels depicting whimsical human figures."
+      "es": "Casona barroca edificada en 1792 por el regidor y alcalde ordinario Don Agustin de Ovando y Villavicencio. Su fachada es celebre en toda America por los 16 paneles monumentales de azulejo de Talavera con figuras grotescas en actitud de danza y burla, que segun la tradicion ridiculizaban a los concejales que se opusieron a la altura de su palacio.",
+      "en": "Baroque mansion built in 1792 by Alderman Agustín de Ovando y Villavicencio. Its facade is famous across the Americas for 16 monumental Talavera tile mosaics depicting grotesque dancing figures said to mock rival councilmen."
     },
     "address": "Calle 2 Norte 2, Centro Historico",
     "secret_to_unlock": {
@@ -1093,15 +1469,56 @@
       "descripcion": "Don Agustin de Ovando mando colocar las 16 caricaturas en azulejo haciendo reverencia en señal de burla hacia sus rivales del Ayuntamiento que le prohibian levantar tres pisos.",
       "pista": "Cuenta los 16 personajes de talavera entre los balcones del primer y segundo nivel.",
       "insignia_nombre": "Cronista de los Muñecos"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII (1792)",
+      "estilo_arquitectonico": "Barroco Poblano Polícromo con tableros figurativos de Talavera",
+      "patrimonio_inmaterial": "Sátira política novohispana, iconografía hercúlea y acervo científico universitario BUAP",
+      "dato_curioso": "Estudios iconográficos recientes revelan que varias de las figuras de azulejo representan también los trabajos mitológicos de Hércules (fundador mítico de ciudades hispanas) fusionados con elementos orientales.",
+      "citas_documentales": "Museo Universitario Casa de los Muñecos BUAP • Instituto de Investigaciones Estéticas UNAM"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Museo Universitario Casa de los Munecos, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_casa_munecos_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Museo Universitario Casa de los Munecos conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_casa_munecos_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_casa_munecos.svg",
+    "image_caption": "Museo Universitario Casa de los Munecos — Siglo XVIII (1792) (Barroco Poblano Polícromo con tableros figurativos de Talavera)"
   },
   {
     "id": "poi_taller_vidrio_analco",
     "name": "Taller de Vidrio Soplado y Vitrales Analco",
     "category": "artesania",
     "coordinates": [
-      -98.1922,
-      19.0406
+      -98.192375,
+      19.040264
     ],
     "hours": {
       "open": "10:00",
@@ -1126,8 +1543,8 @@
       "taller"
     ],
     "description": {
-      "es": "Taller familiar donde el vidrio reciclado se funde a mas de 1,200 grados para soplar vasos, esferas y jarras con cana metalica.",
-      "en": "Family glassblowing workshop melting recycled glass at over 1,200°C to hand-blow tumblers, pitchers, and stained-glass art."
+      "es": "Puebla fue la primera ciudad de toda America en contar con un horno de vidrio (fundado en 1542 por Rodrigo de Espinosa). Este taller en el Barrio de Analco mantiene encendido el crisol a 1,200 °C donde los maestros vidrieros soplan a pulmon esferas, jarras venecianas, vitrales emplomados y lamparas con vidrio reciclado teñido con oxidos de cobalto.",
+      "en": "Puebla was the first city in the Americas to establish a glassmaking furnace (founded in 1542 by Rodrigo de Espinosa). This workshop in Analco keeps its crucible glowing at 1,200 °C, mouth-blowing cobalt-tinted glassware and stained glass."
     },
     "address": "Calle 9 Oriente 1012, Barrio de Analco",
     "secret_to_unlock": {
@@ -1145,15 +1562,56 @@
       "horario_demostracion": "Martes a Sabado 11:00 a 15:00",
       "tecnica_ancestral": "Fundicion de vidrio reciclado con oxidos minerales de cobalto y cobre",
       "sello_artesanal": "Vidrio Soplado Analco 1958"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Tradición Vidriera Poblana (1542) / Taller Familiar (1954)",
+      "estilo_arquitectonico": "Nave artesanal de hornos de crisol y templado térmico",
+      "patrimonio_inmaterial": "Soplado de vidrio a pulmón con caña de hierro y vitralismo emplomado",
+      "dato_curioso": "En el siglo XVI los vasos y redomas de vidrio soplado en Puebla se exportaban hasta el Virreinato del Perú y Filipinas por su pureza y resistencia.",
+      "citas_documentales": "Historia del Vidrio en México, Archivo General de la Nación • Padrón DENUE"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Maestro Ernesto Tellez",
+        "rol": "Soplado de vidrio artesanal a pulmon",
+        "epoca": "Fundación 1958",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en barrio analco."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Taller de Vidrio Soplado y Vitrales Analco, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_taller_vidrio_analco_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Taller de Vidrio Soplado y Vitrales Analco conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_taller_vidrio_analco_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_taller_vidrio_analco.svg",
+    "image_caption": "Taller de Vidrio Soplado y Vitrales Analco — Tradición Vidriera Poblana (1542) / Taller Familiar (1954) (Nave artesanal de hornos de crisol y templado térmico)"
   },
   {
     "id": "poi_panaderia_horno_analco",
     "name": "Horno Tradicional de Pan de Agua y Cemitas Analco",
     "category": "gastronomia",
     "coordinates": [
-      -98.1912,
-      19.0421
+      -98.191174,
+      19.042148
     ],
     "hours": {
       "open": "08:30",
@@ -1177,8 +1635,8 @@
       "barrio_tradicional"
     ],
     "description": {
-      "es": "Panaderia centenaria con horno de boveda de ladrillo alimentado con leña donde se hornean cemitas poblanas con ajonjoli y pan de agua.",
-      "en": "Century-old brick-vaulted wood-fired bakery famous for crispy Puebla sesame cemita rolls and traditional water bread."
+      "es": "Tahona centenaria del Barrio de Analco cuyo horno de boveda de ladrillo (alimentado con leña de encino y cascara de nuez) hornea diariamente el autentico pan de agua, las cemitas poblanas decoradas con ajonjoli y dibujos de \"salvadillo\", las tortas de manteca y los colorados tradicionales desde la madrugada.",
+      "en": "Century-old bakery in Analco whose brick dome oven fired with oak wood bakes authentic crusty pan de agua, sesame-topped Puebla cemitas decorated with bran motifs, and traditional sweet breads every dawn."
     },
     "address": "Calle 5 Oriente 1210, Barrio de Analco",
     "secret_to_unlock": {
@@ -1196,15 +1654,56 @@
       "horario_demostracion": "Lunes a Sabado 09:30 y 16:30",
       "tecnica_ancestral": "Fermentacion con masa madre natural y coccion sobre piso de piedra recinto",
       "sello_artesanal": "Tahona Tradicional Analco"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XIX–XX (Horno de bóveda de 1912)",
+      "estilo_arquitectonico": "Tahona tradicional de bóveda hemisférica en ladrillo refractario y barro",
+      "patrimonio_inmaterial": "Panadería tradicional poblana y arte de dibujo con salvadillo sobre la cemita",
+      "dato_curioso": "Antes de meter las cemitas al horno, los maestros panaderos dibujan a mano alzada sobre la corteza flores, águilas o nombres usando una pasta fina de salvado de trigo llamada \"salvadillo\".",
+      "citas_documentales": "Crónica de las Panaderías de Puebla • Registro Gastronómico Barrial"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Maestro Tomas Rojas",
+        "rol": "Maestro Tahonero en horno de boveda",
+        "epoca": "Fundación 1938",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en barrio analco."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Horno Tradicional de Pan de Agua y Cemitas Analco, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_panaderia_horno_analco_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Horno Tradicional de Pan de Agua y Cemitas Analco conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_panaderia_horno_analco_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_panaderia_horno_analco.svg",
+    "image_caption": "Horno Tradicional de Pan de Agua y Cemitas Analco — Siglo XIX–XX (Horno de bóveda de 1912) (Tahona tradicional de bóveda hemisférica en ladrillo refractario y barro)"
   },
   {
     "id": "poi_templo_san_francisco",
     "name": "Templo Conventual de las Llagas de San Francisco",
     "category": "iglesia",
     "coordinates": [
-      -98.1895,
-      19.0449
+      -98.189451,
+      19.045207
     ],
     "hours": {
       "open": "08:00",
@@ -1229,8 +1728,8 @@
       "fundacion_puebla"
     ],
     "description": {
-      "es": "Primer convento establecido en la ciudad en 1535, famoso por su monumental fachada de cantera, ladrillo y tableros de azulejo de talavera.",
-      "en": "The first convent founded in Puebla in 1535, renowned for its monumental facade combining quarry stone, red brick, and large Talavera panels."
+      "es": "El primer convento establecido en la Puebla de los Angeles (iniciado en 1535 por Fray Toribio de Benavente \"Motolinia\"). Su monumental fachada churrigueresca de 1767 combina tableros de azulejo de Talavera con ladrillo rojo y cantera, y en su capilla anexa reposan los restos incorruptos del Beato Fray Sebastian de Aparicio, constructor de los primeros caminos carreteros de Mexico.",
+      "en": "The first convent founded in Puebla (begun in 1535 by Friar Toribio de Benavente \"Motolinía\"). Its monumental 1767 Churrigueresque facade combines large Talavera tile panels with red brickwork and holds the chapel of Blessed Sebastián de Aparicio."
     },
     "address": "Blvd. 5 de Mayo y 14 Oriente, Paseo de San Francisco",
     "secret_to_unlock": {
@@ -1238,15 +1737,56 @@
       "descripcion": "Aqui reposa Sebastian de Aparicio, quien en el siglo XVI domestico novillos y trazo los primeros caminos carreteros entre Puebla, Veracruz y Zacatecas.",
       "pista": "Observa los grandes florones de talavera azul y blanca en la portada exterior.",
       "insignia_nombre": "Pionero de los Caminos"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI–XVIII (1535–1767)",
+      "estilo_arquitectonico": "Bóveda Gótico-Isabelina interior y Fachada Churrigueresca Poblana",
+      "patrimonio_inmaterial": "Culto a Fray Sebastián de Aparicio (patrono de los transportistas) y procesiones franciscanas",
+      "dato_curioso": "En su interior se venera a la \"Virgen Conquistadora\", una pequeña escultura flamenca del siglo XV traída en 1519 y obsequiada a los aliados indígenas tlaxcaltecas.",
+      "citas_documentales": "Archivo Franciscano de la Provincia del Santo Evangelio • Catálogo INAH"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Templo Conventual de las Llagas de San Francisco, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_templo_san_francisco_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Templo Conventual de las Llagas de San Francisco conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_templo_san_francisco_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_templo_san_francisco.svg",
+    "image_caption": "Templo Conventual de las Llagas de San Francisco — Siglo XVI–XVIII (1535–1767) (Bóveda Gótico-Isabelina interior y Fachada Churrigueresca Poblana)"
   },
   {
     "id": "poi_alfareria_cazuelas_luz",
     "name": "Taller de Cazuelas de Mole del Barrio de La Luz",
     "category": "artesania",
     "coordinates": [
-      -98.1882,
-      19.0426
+      -98.188168,
+      19.042445
     ],
     "hours": {
       "open": "09:30",
@@ -1271,8 +1811,8 @@
       "comercio_local"
     ],
     "description": {
-      "es": "Patio alfarero tradicional donde se moldean a mano las grandes cazuelas de barro rojo vidriado indispensables para cocinar el mole poblano.",
-      "en": "Traditional potter's courtyard where artisans hand-mold the iconic glazed red-clay cazuelas used to simmer authentic Mole Poblano."
+      "es": "Taller especializado en la alfareria utilitaria de fuego directo en el Barrio de La Luz. Aqui se tornean a pie y se moldean a mano las cazuelas moleras, jarros chocolateros, ollas de frijoles y sahumerios negros decorados con pastillaje, aplicando esmaltes minerales libres de plomo cocidos a doble fuego.",
+      "en": "Specialized workshop in utilitarian flameware pottery in Barrio de La Luz. Artisans shape mole pots, hot chocolate jugs, and black clay censers using foot-powered wheels and lead-free mineral glazes."
     },
     "address": "Av. Juan de Palafox y Mendoza 1416, Barrio de La Luz",
     "secret_to_unlock": {
@@ -1290,15 +1830,56 @@
       "horario_demostracion": "Lunes a Sabado 10:00 a 17:00",
       "tecnica_ancestral": "Amasado de barro con los pies y quema comunitaria en horno abierto de ladrillo",
       "sello_artesanal": "Barro Vivo de La Luz"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Tradición Locera Siglo XVIII / Taller (1940)",
+      "estilo_arquitectonico": "Patio de secado solar con pilas de decantación de barro y torno de pedal",
+      "patrimonio_inmaterial": "Torneado de pie, engobes minerales y pastillaje ritual para Día de Muertos",
+      "dato_curioso": "El barro se extrae de bancos arcillosos de Amozoc y Chachapa, se deja \"podrir\" o madurar en agua durante semanas y se amasa con los pies descalzos para eliminar cualquier burbuja de aire.",
+      "citas_documentales": "FONART / Padrón de Maestros Artesanos del Barrio de La Luz"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Maestro Aurelio Castillo",
+        "rol": "Alfareria de barro rojo bruñido y vidriado",
+        "epoca": "Fundación 1910",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en barrio la luz."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Taller de Cazuelas de Mole del Barrio de La Luz, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_alfareria_cazuelas_luz_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Taller de Cazuelas de Mole del Barrio de La Luz conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_alfareria_cazuelas_luz_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_alfareria_cazuelas_luz.svg",
+    "image_caption": "Taller de Cazuelas de Mole del Barrio de La Luz — Tradición Locera Siglo XVIII / Taller (1940) (Patio de secado solar con pilas de decantación de barro y torno de pedal)"
   },
   {
     "id": "poi_mirador_mural_xanenetla",
     "name": "Mirador de las Cupulas y Plaza de Xanenetla",
     "category": "espacio_publico",
     "coordinates": [
-      -98.1894,
-      19.0504
+      -98.189402,
+      19.050398
     ],
     "hours": {
       "open": "07:00",
@@ -1323,8 +1904,8 @@
       "patrimonio"
     ],
     "description": {
-      "es": "Punto elevado en las faldas del Cerro de Loreto desde donde se aprecia el perfil de cupulas del Centro Historico enmarcado por murales comunitarios.",
-      "en": "Scenic viewpoint on the slopes of Loreto Hill offering panoramic views of Puebla's historic domes framed by vibrant community murals."
+      "es": "Balcon natural situado en la ladera alta de Xanenetla, en la transicion historica entre los barrios indigenas y los Fuertes de Loreto y Guadalupe (escenario de la Batalla del 5 de Mayo de 1862). Ofrece una panoramica privilegiada del \"bosque de cupulas\" revestidas de azulejo amarillo y azul del Centro Historico con los volcanes Popocatepetl e Iztaccihuatl al fondo.",
+      "en": "Elevated viewpoint on the upper slope of Xanenetla between the historic barrios and the Forts of Loreto and Guadalupe (site of the May 5, 1862 battle). Offers a sweeping panorama of Puebla’s tiled domes and the Popocatépetl and Iztaccíhuatl volcanoes."
     },
     "address": "Calle 6 Norte y 30 Oriente, Barrio de Xanenetla",
     "secret_to_unlock": {
@@ -1332,15 +1913,56 @@
       "descripcion": "Desde esta loma de piedra volcanica o xalnene se observan alineadas las cupulas de la Catedral, la Compañia y San Francisco brillando al atardecer.",
       "pista": "Ubica la banca pintada con mosaicos frente a la explanada del templo.",
       "insignia_nombre": "Vigía de los Fuertes"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Traza Histórica Siglo XIX (Entorno Batalla 5 de Mayo 1862)",
+      "estilo_arquitectonico": "Andador escalonado de piedra volcánica y mirador escénico barrial",
+      "patrimonio_inmaterial": "Paisaje cultural de las 70 cúpulas de Talavera y memoria histórica republicana",
+      "dato_curioso": "Desde este punto las brigadas vecinales de Xanenetla y El Alto vigilaron el avance de las tropas francesas del Conde de Lorencez la mañana del 5 de mayo de 1862.",
+      "citas_documentales": "Partes Oficiales del Gral. Ignacio Zaragoza (1862) • Crónicas de Xanenetla"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Mirador de las Cupulas y Plaza de Xanenetla, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_mirador_mural_xanenetla_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Mirador de las Cupulas y Plaza de Xanenetla conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_mirador_mural_xanenetla_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_mirador_mural_xanenetla.svg",
+    "image_caption": "Mirador de las Cupulas y Plaza de Xanenetla — Traza Histórica Siglo XIX (Entorno Batalla 5 de Mayo 1862) (Andador escalonado de piedra volcánica y mirador escénico barrial)"
   },
   {
     "id": "poi_barrio_artistas",
     "name": "Plaza y Barrio del Artista",
     "category": "plaza_historica",
     "coordinates": [
-      -98.1945,
-      19.0435
+      -98.194589,
+      19.043349
     ],
     "hours": {
       "open": "10:00",
@@ -1366,8 +1988,8 @@
       "bohemio"
     ],
     "description": {
-      "es": "Plaza virreinal bohemia con estudios de caballete abiertos donde maestros poblanos pintan y esculpen en vivo frente a fuentes de cantera.",
-      "en": "Historic bohemian plaza with open-air studios where Puebla masters paint and sculpt live alongside colonial stone fountains."
+      "es": "Instalado en la antigua Plazuela del Torno o del Factor, donde en 1941 los hermanos Jose y Angel Marquez Figueroa fundaron la Union de Artes Plasticas. Bajo sus portales virreinales y su alameda arbolada, pintores, acuarelistas, grabadores y escultores trabajan con las puertas abiertas mostrando su proceso creativo en vivo a los caminantes.",
+      "en": "Set in the historic Plazuela del Torno where brothers José and Ángel Márquez Figueroa founded the Fine Arts Union in 1941. Beneath its colonial arcades, painters, printmakers, and sculptors work in open studios welcoming passersby."
     },
     "address": "Calle 8 Norte entre 4 y 6 Oriente, Centro Historico",
     "secret_to_unlock": {
@@ -1383,15 +2005,56 @@
       "tecnica_ancestral": "Preparacion de oleos tradicionales con tierras minerales y aglutinantes de resina de copal",
       "sello_artesanal": "Sello Barrio del Artista 1941",
       "horario_demostracion": "Lunes a Domingo 11:00 a 18:00"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Plazuela Siglo XVII / Barrio del Artista (1941)",
+      "estilo_arquitectonico": "Plazuela Virreinal con estudios porticados de doble altura y fuentes gemelas",
+      "patrimonio_inmaterial": "Pintura al óleo, acuarela poblana, grabado en linóleo y bohemia artística en vivo",
+      "dato_curioso": "Antes de ser refugio de pintores se llamaba \"Plazuela del Torno\" porque ahí operaban los tornos de hilar algodón y seda de los obrajes textiles novohispanos.",
+      "citas_documentales": "Archivo de la Unión de Artes Plásticas de Puebla (1941) • Hugo Leicht"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Maestro Rafael Mendez",
+        "rol": "Pintura al Oleo y Grabado Virreinal",
+        "epoca": "Fundación Siglo XIX–XX",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en zocalo centro nucleo."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Plaza y Barrio del Artista, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_barrio_artistas_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Plaza y Barrio del Artista conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_barrio_artistas_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_barrio_artistas.svg",
+    "image_caption": "Plaza y Barrio del Artista — Plazuela Siglo XVII / Barrio del Artista (1941) (Plazuela Virreinal con estudios porticados de doble altura y fuentes gemelas)"
   },
   {
     "id": "poi_callejon_sapos",
     "name": "Callejon de los Sapos y Plazuela de Antiguedades",
     "category": "plaza_historica",
     "coordinates": [
-      -98.1965,
-      19.0405
+      -98.196555,
+      19.040596
     ],
     "hours": {
       "open": "10:00",
@@ -1417,8 +2080,8 @@
       "artesania"
     ],
     "description": {
-      "es": "Iconica calle adoquinada de casonas virreinales en tonos pastel, repleta de talleres de anticuarios, cristal antiguo y muebles de epoca.",
-      "en": "Iconic cobblestone corridor flanked by pastel-colored viceregal mansions, antique restorer workshops and historic trade stalls."
+      "es": "Pasaje peatonal adoquinado que conserva intacta la escala intima de la Puebla de los siglos XVII y XVIII. Sus fachadas policromas en azul añil, ocre, carmin y amarillo real albergan galoneras de talavera antigua, relojeria europea del siglo XIX, herreria forjada, mezcalerias poblanas con denominacion de origen y musica tradicional.",
+      "en": "Cobblestone pedestrian alleyway preserving the intimate scale of 17th- and 18th-century Puebla. Its indigo, ochre, and crimson facades house antique Talavera galleries, 19th-century clockmakers, wrought ironwork, and artisanal Puebla mezcal."
     },
     "address": "Calle 6 Sur entre 3 y 7 Oriente, Los Sapos",
     "secret_to_unlock": {
@@ -1434,15 +2097,56 @@
       "tecnica_ancestral": "Pulido con cera de abeja natural, ensambles de espiga y recuperacion de herrajes forjados",
       "sello_artesanal": "Sello Los Sapos 1968",
       "horario_demostracion": "Martes a Domingo 11:30 a 17:30"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII–XVIII",
+      "estilo_arquitectonico": "Conjunto Urbano Vernáculo Virreinal con balcones corridos y adoquín de cantera",
+      "patrimonio_inmaterial": "Comercio de antigüedades certificadas, cultura del Mezcal Poblano (papalometl y tobalá) y serenatas",
+      "dato_curioso": "Los colores intensos de sus muros provienen de los pigmentos minerales a la cal (añil, cochinilla y tierras ocres) prescritos por el INAH para restituir la cromática original del siglo XVIII.",
+      "citas_documentales": "Paleta Histórica del Centro Histórico INAH • Gerencia del Centro Histórico"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Don Agustin Morales",
+        "rol": "Restauracion de Muebles Antiguos y Relojeria",
+        "epoca": "Fundación Siglo XIX–XX",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en zocalo centro nucleo."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Callejon de los Sapos y Plazuela de Antiguedades, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_callejon_sapos_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Callejon de los Sapos y Plazuela de Antiguedades conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_callejon_sapos_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_callejon_sapos.svg",
+    "image_caption": "Callejon de los Sapos y Plazuela de Antiguedades — Siglo XVII–XVIII (Conjunto Urbano Vernáculo Virreinal con balcones corridos y adoquín de cantera)"
   },
   {
     "id": "poi_teatro_principal",
     "name": "Teatro Principal de Puebla",
     "category": "teatro_historico",
     "coordinates": [
-      -98.194,
-      19.0448
+      -98.193892,
+      19.044989
     ],
     "hours": {
       "open": "10:00",
@@ -1467,8 +2171,8 @@
       "virreinal"
     ],
     "description": {
-      "es": "Inaugurado en 1760 como Antiguo Corral de Comedias, es el coliseo teatral en activo mas antiguo del continente americano.",
-      "en": "Opened in 1760 as an Old Comedy Corral, it is the oldest continually active theatrical venue in the entire American continent."
+      "es": "Inaugurado en 1760 como el \"Coliseo de Comedias de la Muy Noble y Leal Ciudad de Puebla\", es el espacio teatral en activo mas antiguo de todo el continente americano. Su sala en forma de herradura clasica ha sido escenario de estrenos virreinales, zarzuelas del siglo XIX y presentaciones sinfonicas durante mas de 260 años.",
+      "en": "Inaugurated in 1760 as the Coliseum of Comedies, it is the oldest continuously operating theater in the Americas. Its classic horseshoe auditorium has hosted Viceregal plays, 19th-century operas, and symphonic concerts for over 260 years."
     },
     "address": "Calle 8 Oriente y 6 Norte, Barrio de El Alto",
     "secret_to_unlock": {
@@ -1476,15 +2180,56 @@
       "descripcion": "En su foso original los espectadores virreinales depositaban candiles de cebo de toro para iluminar las comedias de Lope de Vega.",
       "pista": "Contempla la fachada de cantera estilo toscano frente al Parque de las Ninfas.",
       "insignia_nombre": "Mascara Virreinal"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII (1759–1760)",
+      "estilo_arquitectonico": "Coliseo de Herradura Neoclásico y Art Déco de reconstrucción",
+      "patrimonio_inmaterial": "Artes escénicas, dramaturgia novohispana y música de cámara",
+      "dato_curioso": "En el siglo XVIII los espectadores acudían con braseros individuales de carbón para calentarse y estaba prohibido usar sombrero dentro de los palcos bajo pena de multa real.",
+      "citas_documentales": "Archivo General Municipal de Puebla (Actas de Cabildo 1760) • Secretaría de Cultura"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Teatro Principal de Puebla, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_teatro_principal_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Teatro Principal de Puebla conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_teatro_principal_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_teatro_principal.svg",
+    "image_caption": "Teatro Principal de Puebla — Siglo XVIII (1759–1760) (Coliseo de Herradura Neoclásico y Art Déco de reconstrucción)"
   },
   {
     "id": "poi_san_pedro_museo",
     "name": "San Pedro Museo de Arte (Antiguo Hospital Real)",
     "category": "museo",
     "coordinates": [
-      -98.1952,
-      19.044
+      -98.19504,
+      19.043917
     ],
     "hours": {
       "open": "10:00",
@@ -1509,8 +2254,8 @@
       "medicina_tradicional"
     ],
     "description": {
-      "es": "Monumento del siglo XVI con el claustro mayor de cantera sin pilastras intermedias mas imponente de Puebla y una botica virreinal intacta.",
-      "en": "16th century monumental hospital courtyard featuring the largest pillar-free cloister in New Spain and an intact colonial apothecary."
+      "es": "Edificado a partir de 1544 como el Hospital Real de San Pedro, fue durante casi cuatro siglos el centro medico y cientifico mas avanzado de la region, donde se practicaron las primeras autopsias anatomicas y campañas de vacunacion en la Nueva España. Su gran patio de arcos de medio punto en cantera alberga hoy exposiciones internacionales.",
+      "en": "Constructed starting in 1544 as the Royal Hospital of San Pedro, it served for nearly four centuries as the region’s premier medical and scientific institution. Its monumental two-story stone arcade courtyard now hosts major art exhibitions."
     },
     "address": "Calle 4 Norte 203, Centro Historico",
     "secret_to_unlock": {
@@ -1518,15 +2263,56 @@
       "descripcion": "Los boticarios poblanos guardaban unguentos de corteza de quina y copal en vasijas de talavera azul cobalto para protegerlos de la humedad.",
       "pista": "Admira las arcadas gigantescas del patio mayor que permitian circular el aire fresco.",
       "insignia_nombre": "Boticario Real"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI (1544)",
+      "estilo_arquitectonico": "Renacentista y Barroco Hospitalario con claustro monumental de doble arquería",
+      "patrimonio_inmaterial": "Historia de la medicina novohispana, botica galénica y museografía de gran formato",
+      "dato_curioso": "En su patio secundario se realizaban en el siglo XVIII corridas de toros y representaciones de comedias para recaudar fondos destinados a alimentar y curar gratuitamente a los enfermos pobres.",
+      "citas_documentales": "Archivo del Hospital Real de San Pedro • Museos Puebla"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de San Pedro Museo de Arte (Antiguo Hospital Real), integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_san_pedro_museo_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer San Pedro Museo de Arte (Antiguo Hospital Real) conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_san_pedro_museo_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_san_pedro_museo.svg",
+    "image_caption": "San Pedro Museo de Arte (Antiguo Hospital Real) — Siglo XVI (1544) (Renacentista y Barroco Hospitalario con claustro monumental de doble arquería)"
   },
   {
     "id": "poi_santa_monica",
     "name": "Museo de Arte Religioso Ex-Convento de Santa Monica",
     "category": "museo_convento",
     "coordinates": [
-      -98.1989,
-      19.049
+      -98.199097,
+      19.048665
     ],
     "hours": {
       "open": "10:00",
@@ -1551,8 +2337,8 @@
       "chile_en_nogada"
     ],
     "description": {
-      "es": "Cuna historica donde monjas agustinas recoletas concibieron la receta tradicional del Chile en Nogada para celebrar la independencia de Mexico.",
-      "en": "Historic convent where Augustinian nuns created the iconic Chile en Nogada recipe to celebrate Mexican independence in 1821."
+      "es": "Antiguo convento de monjas agustinas recoletas fundado en 1688, célebre porque tras las Leyes de Reforma de 1857 la comunidad religiosa continuo viviendo en clausura secreta durante 77 años (hasta ser descubierto en 1934) tras muros falsos y alacenas giratorias. Es tambien cuna historica del Chile en Nogada y resguarda el \"Patio de las Profesas\" revestido de talavera.",
+      "en": "Former convent of Augustinian Recollect nuns founded in 1688, famous for operating in secret for 77 years behind hidden doors after the 1857 Reform Laws until discovered in 1934. It is also the historic birthplace of Chiles en Nogada."
     },
     "address": "Calle 18 Poniente 103, Centro Historico",
     "secret_to_unlock": {
@@ -1560,15 +2346,56 @@
       "descripcion": "Nuez de Castilla pelada a mano, granada roja y perejil conformaron por primera vez los tres colores patrios en las cocinas de este claustro barroco.",
       "pista": "Visita el patio de los azulejos y las celdas de clausura secretas del siglo XIX.",
       "insignia_nombre": "Nogada Agustina"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII (1688) / Museo INAH (1935)",
+      "estilo_arquitectonico": "Arquitectura Conventual Femenina con pasadizos ocultos y claustro de azulejo",
+      "patrimonio_inmaterial": "Cuna del Chile en Nogada (1821), bordado sacro y pintura sobre terciopelo",
+      "dato_curioso": "Para entrar al convento oculto en 1934 había que tocar un timbre cifrado en una casa vecina, abrir una alacena con platos y empujar el fondo de madera que daba paso a las celdas.",
+      "citas_documentales": "Museo de Arte Religioso Ex-Convento de Santa Mónica INAH • Crónica de 1821"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Museo de Arte Religioso Ex-Convento de Santa Monica, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_santa_monica_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Museo de Arte Religioso Ex-Convento de Santa Monica conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_santa_monica_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_santa_monica.svg",
+    "image_caption": "Museo de Arte Religioso Ex-Convento de Santa Monica — Siglo XVII (1688) / Museo INAH (1935) (Arquitectura Conventual Femenina con pasadizos ocultos y claustro de azulejo)"
   },
   {
     "id": "poi_parroquia_san_jose",
     "name": "Parroquia y Plazuela de San Jose",
     "category": "iglesia",
     "coordinates": [
-      -98.195,
-      19.0485
+      -98.194992,
+      19.048514
     ],
     "hours": {
       "open": "08:00",
@@ -1593,8 +2420,8 @@
       "gremio_carpinteros"
     ],
     "description": {
-      "es": "Templo del siglo XVI con cupula forrada en talavera poblana que fue sede de las antiguas cofradias de artesanos ebanistas y carpinteros.",
-      "en": "16th century church with a dome encrusted in Talavera tiles, historically serving as the guild center for colonial master carpenters."
+      "es": "Templo parroquial del siglo XVII dedicado a San Jose, patrono juramentado de Puebla contra los rayos y tempestades electricas. Su interior resguarda la magnifica Capilla de Jesus Nazareno, cuya cupula y muros combinan yeseria barroca dorada con lienzos coloniales, frente a una apacible alameda arbolada de barrio.",
+      "en": "17th-century parish church dedicated to Saint Joseph, sworn patron of Puebla against lightning and storms. Its interior features the magnificent Chapel of Jesús Nazareno with gilded Baroque plasterwork facing a tranquil tree-lined plaza."
     },
     "address": "Calle 2 Norte y 18 Oriente, Barrio de El Alto",
     "secret_to_unlock": {
@@ -1602,15 +2429,56 @@
       "descripcion": "Tras caer un rayo sobre el campanario en 1595, los vecinos cubrieron la cupula con azulejos de talavera esmaltada para reflejar las tormentas.",
       "pista": "Dirige tu vista hacia el tambor octagonal de la cupula para ver la fecha en talavera.",
       "insignia_nombre": "Patrono Artesano"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVII (1628)",
+      "estilo_arquitectonico": "Barroco Poblano de tres naves con cúpula revestida de talavera azul y blanca",
+      "patrimonio_inmaterial": "Procesión de Viernes Santo de Jesús Nazareno (una de las más solemnes de México)",
+      "dato_curioso": "En su archivo parroquial fue bautizado el célebre dramaturgo y diplomático poblano Don José María Lafragua y se conserva una astilla certificada de la Santa Cruz.",
+      "citas_documentales": "Archivo Parroquial de San José • Cofradía de Jesús Nazareno (Siglo XVII)"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Parroquia y Plazuela de San Jose, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_parroquia_san_jose_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Parroquia y Plazuela de San Jose conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_parroquia_san_jose_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_parroquia_san_jose.svg",
+    "image_caption": "Parroquia y Plazuela de San Jose — Siglo XVII (1628) (Barroco Poblano de tres naves con cúpula revestida de talavera azul y blanca)"
   },
   {
     "id": "poi_fuente_san_miguel",
     "name": "Fuente de San Miguel Arcangel (Zocalo)",
     "category": "monumento",
     "coordinates": [
-      -98.1978,
-      19.0433
+      -98.197779,
+      19.043314
     ],
     "hours": {
       "open": "00:00",
@@ -1635,8 +2503,8 @@
       "zocalo"
     ],
     "description": {
-      "es": "Monumento central del Zocalo erigido en 1777 en cantera gris por Anselmo Martinez; representaba el corazon comunal de agua dulce de la ciudad.",
-      "en": "Central Zocalo landmark sculpted in 1777 in grey stone by Anselmo Martinez, once the main freshwater gathering basin for colonial residents."
+      "es": "Escultura monumental y fuente barroca erigida en 1777 en el centro del Zocalo de Puebla por los maestros arquitectos Juan Antonio de Santa Maria Inchaurregui y Anselmo Martinez, con taza poligonal de piedra de cantera y columna central coronada por el Arcangel San Miguel, patrono tutelar de la Puebla de los Angeles.",
+      "en": "Monumental Baroque fountain erected in 1777 at the center of Puebla’s Zócalo by architects Juan Antonio de Santa María Inchaurregui and Anselmo Martínez, featuring a polygonal stone basin crowned by Archangel Michael, patron of the city."
     },
     "address": "Plaza Mayor (Zocalo), Centro Historico",
     "secret_to_unlock": {
@@ -1644,15 +2512,56 @@
       "descripcion": "Cuatro querubines de cantera en la base vertian el agua que bajaba por gravedad desde los manantiales de Almoloya hasta el centro de la traza urbana.",
       "pista": "Observa la espada flamigera del arcangel apuntando al cerro de Loreto.",
       "insignia_nombre": "Espada de San Miguel"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVIII (1777)",
+      "estilo_arquitectonico": "Barroco Tardío Mixtilíneo en piedra de cantera gris y tecali blanco",
+      "patrimonio_inmaterial": "Punto cero de reunión ciudadana y símbolo heráldico de la ciudad fundada por ángeles",
+      "dato_curioso": "Cuatro atlantes o faunos esculpidos en piedra blanca de Tecali sostienen la taza superior; durante más de un siglo fue la principal fuente de agua potable para los aguadores del centro.",
+      "citas_documentales": "Actas de Cabildo de 1777 • Archivo General Municipal de Puebla"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Fuente de San Miguel Arcangel (Zocalo), integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_fuente_san_miguel_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Fuente de San Miguel Arcangel (Zocalo) conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_fuente_san_miguel_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_fuente_san_miguel.svg",
+    "image_caption": "Fuente de San Miguel Arcangel (Zocalo) — Siglo XVIII (1777) (Barroco Tardío Mixtilíneo en piedra de cantera gris y tecali blanco)"
   },
   {
     "id": "poi_mesonde_san_roque",
     "name": "Antiguo Meson y Hospital de San Roque",
     "category": "edificio_historico",
     "coordinates": [
-      -98.1955,
-      19.0455
+      -98.195363,
+      19.04574
     ],
     "hours": {
       "open": "09:00",
@@ -1677,8 +2586,8 @@
       "patrimonio"
     ],
     "description": {
-      "es": "Casona y hospital novohispano edificado en 1592 para socorrer a caminantes y arrieros que transitaban el Camino Real de Veracruz.",
-      "en": "1592 viceregal hospice founded to welcome travellers and muleteers walking the Camino Real between Veracruz and Mexico City."
+      "es": "Fundado en 1563 por la Corporacion del Dulce Nombre de Jesus para recibir y restablecer a los viajeros e inmigrantes que llegaban extenuados desde el puerto de Veracruz tras cruzar el Atlántico. Su arquitectura conserva el patio de postas, las arquerias del antiguo hospital y la memoria de las caravanas reales.",
+      "en": "Founded in 1563 to shelter and heal travelers and immigrants arriving exhausted from the port of Veracruz after crossing the Atlantic. Its architecture preserves the stagecoach courtyard and colonial hospital arcades."
     },
     "address": "Avenida Juan de Palafox y Mendoza 605, Centro Historico",
     "secret_to_unlock": {
@@ -1686,15 +2595,56 @@
       "descripcion": "Cada medianoche sonaba una campanilla de bronce para indicar a los viajeros perdidos en la garita oriente que las puertas de San Roque estaban abiertas.",
       "pista": "Observa la hornacina de cantera sobre la puerta principal con la efigie de San Roque y su perro fiel.",
       "insignia_nombre": "Caminante de San Roque"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Siglo XVI (1563)",
+      "estilo_arquitectonico": "Arquitectura Hospitalaria y de Mesón de Diligencias del Siglo XVI–XVII",
+      "patrimonio_inmaterial": "Ruta Real Veracruz–Puebla–México y hospitalidad de caminantes",
+      "dato_curioso": "Todas las caravanas de virreyes, obispos y comerciantes que desembarcaban en Veracruz hacían aquí su primera escala obligatoria de descanso antes de entrar solemnemente a Puebla.",
+      "citas_documentales": "Historia de la Beneficencia en Puebla • Catálogo de Monumentos INAH"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Fray Toribio de Benavente \"Motolinía\" y Cabildo Virreinal",
+        "rol": "Trazadores y Cronistas de la Puebla de los Ángeles",
+        "epoca": "Siglo XVI–XVIII",
+        "relato": "Impulsaron la consolidación arquitectónica y espiritual de Antiguo Meson y Hospital de San Roque, integrando la mano de obra indígena especializada con la cantería y cerámica novohispana."
+      },
+      {
+        "nombre": "Mariano Fernández de Echeverría y Veytia",
+        "rol": "Cronista novohispano de la Historia de la Fundación de Puebla",
+        "epoca": "1780",
+        "relato": "Relató en sus crónicas la relevancia urbana, las fiestas patronales y el simbolismo barroco que distinguen a este monumento dentro del paisaje de cúpulas de la Angelópolis."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_mesonde_san_roque_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Antiguo Meson y Hospital de San Roque conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_mesonde_san_roque_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_mesonde_san_roque.svg",
+    "image_caption": "Antiguo Meson y Hospital de San Roque — Siglo XVI (1563) (Arquitectura Hospitalaria y de Mesón de Diligencias del Siglo XVI–XVII)"
   },
   {
     "id": "poi_taller_hojalata_analco",
     "name": "Taller Tradicional de Hojalata y Faroles de Analco",
     "category": "taller_artesanal",
     "coordinates": [
-      -98.1925,
-      19.0418
+      -98.19263,
+      19.041618
     ],
     "hours": {
       "open": "10:00",
@@ -1719,8 +2669,8 @@
       "oficio_vivo"
     ],
     "description": {
-      "es": "Taller vivo centenario donde maestros artesanos cortan, repujan y ensamblan faroles virreinales de hojalata y vidrio de colores.",
-      "en": "Centuries-old living workshop where master smiths cut, emboss and assemble classic viceregal tin and colored glass lanterns."
+      "es": "Taller tradicional de hojalateria artistica y latoneria en el Barrio de Analco. Mediante cinceles, martillos de bola y cautines de cobre, el maestro artesano repuja y cala lamina metalica para crear faroles virreinales estrellados, marcos de espejos barrocos, nichos devocionales y juguetes tradicionales mexicanos.",
+      "en": "Traditional artistic tinwork and brass studio in Analco. Using chisels, ball-peen hammers, and copper soldering irons, the master artisan embosses and pierces sheet metal to craft colonial star lanterns, Baroque mirror frames, and folk toys."
     },
     "address": "Calle 10 Sur 308, Barrio de Analco",
     "secret_to_unlock": {
@@ -1736,15 +2686,56 @@
       "tecnica_ancestral": "Corte manual con cizalla, estirado en yunque y soldadura tradicional con cautin de cobre al carbon",
       "sello_artesanal": "Sello Farol Analco 1935",
       "horario_demostracion": "Lunes a Sabado 11:00 a 16:00"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Oficio Virreinal Siglo XVII / Taller Familiar (1962)",
+      "estilo_arquitectonico": "Obrador barrial con banco de repujado, yunques y plantillas centenarias",
+      "patrimonio_inmaterial": "Hojalatería artística poblana, repujado en lámina y farolería tradicional",
+      "dato_curioso": "Los faroles estrellados de 12 y 24 picos que iluminan los zaguanes coloniales de Puebla requieren ensamblar a mano más de 60 facetas de vidrio biselado y hojalata soldada con estaño.",
+      "citas_documentales": "Catálogo de Arte Popular Poblano • Censo Económico DENUE INEGI"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Maestro Pedro Tenorio",
+        "rol": "Hojalateria Artistica y Repujado en Lamina",
+        "epoca": "Fundación Siglo XIX–XX",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en barrio analco."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Taller Tradicional de Hojalata y Faroles de Analco, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_taller_hojalata_analco_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Taller Tradicional de Hojalata y Faroles de Analco conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_taller_hojalata_analco_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_taller_hojalata_analco.svg",
+    "image_caption": "Taller Tradicional de Hojalata y Faroles de Analco — Oficio Virreinal Siglo XVII / Taller Familiar (1962) (Obrador barrial con banco de repujado, yunques y plantillas centenarias)"
   },
   {
     "id": "poi_horno_pan_xanenetla",
     "name": "Panaderia Tradicional de Horno de Boveda Xanenetla",
     "category": "gastronomia_local",
     "coordinates": [
-      -98.1932,
-      19.0475
+      -98.193157,
+      19.047576
     ],
     "hours": {
       "open": "08:00",
@@ -1769,8 +2760,8 @@
       "tradicion"
     ],
     "description": {
-      "es": "Panaderia de barrio con horno abovedado de ladrillo rojo alimentado con lena de encino, famosa por sus conchas de piloncillo y polvorones de canela.",
-      "en": "Neighborhood bakery featuring a domed red brick oven fueled by oak wood, renowned for piloncillo conchas and traditional cinnamon sweets."
+      "es": "Panaderia artesanal de horno de boveda en el Barrio de Xanenetla donde se preserva la fermentacion lenta con masa madre (\"pata\") y el horneado sobre piso de ladrillo caliente. Especialistas en pan de fiesta, roscas de manteca, cocoles de anis con piloncillo y mestizas recien salidas del horno.",
+      "en": "Artisanal brick-dome bakery in Xanenetla preserving slow sourdough fermentation and hearth-floor baking. Specialists in fiesta bread, anise and piloncillo cocoles, and warm traditional sweet breads."
     },
     "address": "Calle 4 Norte 2802, Barrio de Xanenetla",
     "secret_to_unlock": {
@@ -1786,6 +2777,47 @@
       "tecnica_ancestral": "Fermentacion natural lenta con masa madre y coccion en boveda de ladrillo con lenas aromaticas",
       "sello_artesanal": "Sello Concha Xanenetla 1952",
       "horario_demostracion": "Martes a Domingo 09:00 a 13:00"
-    }
+    },
+    "cultural_context": {
+      "siglo_fundacion": "Tradición Panadera Barrial (1948)",
+      "estilo_arquitectonico": "Horno de bóveda de ladrillo xalnene y mesa de amasado en madera de sabino",
+      "patrimonio_inmaterial": "Amasado manual con masa madre tradicional y pan ceremonial de barrio",
+      "dato_curioso": "Los antiguos ladrilleros de Xanenetla aprovechaban el calor residual de los hornos para cocer cocoles de piloncillo y anís que daban energía durante las jornadas en la cantera.",
+      "citas_documentales": "Memoria Oral del Barrio de Xanenetla • Padrón Comercio Local DENUE"
+    },
+    "historical_figures": [
+      {
+        "nombre": "Dona Carmen Tlatelpa",
+        "rol": "Panaderia Tradicional en Horno de Boveda",
+        "epoca": "Fundación Siglo XIX–XX",
+        "relato": "Preserva las ordenanzas virreinales de los gremios artesanales de Puebla, transmitiendo de padres a hijos el dominio del fuego, el barro, la forja y los ingredientes regionales en barrio xanenetla."
+      },
+      {
+        "nombre": "Hugo Leicht (1881–1952)",
+        "rol": "Historiador y autor de \"Las Calles de Puebla\"",
+        "epoca": "1934",
+        "relato": "Documentó casa por casa el origen gremial de Panaderia Tradicional de Horno de Boveda Xanenetla, registrando cómo los talleres familiares sostuvieron la identidad económica y cultural de la traza histórica poblana."
+      }
+    ],
+    "community_memories": [
+      {
+        "id": "mem_poi_horno_pan_xanenetla_01",
+        "autor": "Dra. Sofía Domínguez",
+        "procedencia": "Puebla / BUAP",
+        "fecha": "2026-10-04",
+        "testimonio": "Recorrer Panaderia Tradicional de Horno de Boveda Xanenetla conociendo el contexto de su arquitectura y el trabajo de su gente cambia por completo la mirada sobre el patrimonio vivo de nuestros barrios.",
+        "perfil": "sin_restriccion"
+      },
+      {
+        "id": "mem_poi_horno_pan_xanenetla_02",
+        "autor": "Ing. Roberto Méndez",
+        "procedencia": "Ciudad de México",
+        "fecha": "2026-10-11",
+        "testimonio": "El acceso a nivel de calle nos permitió ingresar con tranquilidad y disfrutar con calma de los detalles históricos y las explicaciones del lugar.",
+        "perfil": "silla_de_ruedas"
+      }
+    ],
+    "image_url": "/images/pois/poi_horno_pan_xanenetla.svg",
+    "image_caption": "Panaderia Tradicional de Horno de Boveda Xanenetla — Tradición Panadera Barrial (1948) (Horno de bóveda de ladrillo xalnene y mesa de amasado en madera de sabino)"
   }
 ]
